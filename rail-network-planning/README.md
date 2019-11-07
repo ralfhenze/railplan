@@ -34,8 +34,10 @@ Station:
 
 * a Station is located within Germany's bounding rectangle
 * a Station is located on land
-* a Stations GeoLocation always has Latitude and Longitude
-* a Stations Name starts with an uppercase letter
+* a Station's GeoLocation always has Latitude and Longitude
+* a Station's Name begins with an uppercase letter
+* a Station's Name contains [a-zA-Z\ \.\-\(\)]
+* a Station's Name is unique
 * the minimum distance between two Stations is 10 km
 
 Track:
@@ -53,3 +55,4 @@ Rail Network Plan:
 * the Rail Network Plan is a single graph without unconnected islands / sub-graphs
 * the TimePeriods of released Rail Network Plans are continuous without gaps and don't overlap
 * the TimePeriods minimum duration is 6 months
+* released Rail Network Plans can't be changed any more
