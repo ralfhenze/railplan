@@ -28,10 +28,6 @@ External:
 
 * Rail Network Plan released
 
-### Workflows / Business Processes
-
-* TODO
-
 ### Invariants
 
 Station:
@@ -52,6 +48,7 @@ Track:
 
 Rail Network Plan:
 
+* the Rail Network Plan contains at least two Stations and one Track
 * the Rail Network Plan contains no stand-alone / unconnected Stations
 * the Rail Network Plan is a single graph without unconnected islands / sub-graphs
 * the TimePeriods of released Rail Network Plans are continuous without gaps and don't overlap
