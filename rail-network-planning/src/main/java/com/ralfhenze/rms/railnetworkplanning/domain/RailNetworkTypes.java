@@ -1,6 +1,7 @@
 package com.ralfhenze.rms.railnetworkplanning.domain;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -75,6 +76,8 @@ class DoubleTrackRailway {
     StationId station2;
 }
 
+class RailNetworkDraftId {}
+
 /**
  * MODIFIABLE
  *
@@ -86,19 +89,25 @@ class DoubleTrackRailway {
  * [x] two Stations can only be connected by a single Track
  *     -> connectStations()
  */
-abstract class WorkInProgressRailNetwork {
+abstract class RailNetworkDraft {
+    RailNetworkDraftId id;
     Set<TrainStation> stations;
     Set<DoubleTrackRailway> connections;
 
     abstract StationId addStation(TrainStation station);
-    // maybe make immutable and return new WorkInProgressRailNetwork instead of void
+    // maybe make immutable and return new RailNetworkDraft instead of void
     abstract void renameStation(StationId id, StationName name);
     abstract void moveStation(StationId id, GeoLocationInGermany location);
     abstract void deleteStation(StationId id);
     abstract void connectStations(StationId id1, StationId id2);
     abstract void disconnectStations(StationId id1, StationId id2);
 
-    abstract Optional<ValidatedRailNetwork> validate();
+    abstract Optional<RailNetworkProposal> propose();
+}
+
+interface RailNetworkDraftRepository {
+    Optional<RailNetworkDraft> getRailNetworkDraftOfId(RailNetworkDraftId id);
+    void persist(RailNetworkDraft railNetworkDraft);
 }
 
 class NonEmptySet<T> {}
@@ -110,13 +119,14 @@ class SetWithAtLeastTwoElements<T> {}
  * [x] the Rail Network Plan contains at least two Stations and one Track
  * [x] the Rail Network Plan contains no stand-alone / unconnected Stations
  * [x] the Rail Network Plan is a single graph without unconnected islands / sub-graphs
- *     -> Smart Constructor with WorkInProgressRailNetwork as input
+ *     -> Smart Constructor with RailNetworkDraft as input
  *        (otherwise I would need to ensure the same invariants again)
- *        (-) would require a "new ValidatedRailNetwork(this)" in WorkInProgressRailNetwork.validate()
+ *        (-) would require a "new ValidatedRailNetwork(this)" in RailNetworkDraft.validate()
  *        (-) circular dependency
  *     -> or dedicated Validation Service
  */
-abstract class ValidatedRailNetwork {
+abstract class RailNetworkProposal {
+    RailNetworkDraftId id;
     SetWithAtLeastTwoElements<TrainStation> stations;
     NonEmptySet<DoubleTrackRailway> connections;
 
@@ -124,7 +134,7 @@ abstract class ValidatedRailNetwork {
     // (-) wouldn't work at the beginning, when there is nothing released yet
     abstract Optional<ReleasedRailNetwork> releaseAfter(ReleasedRailNetwork releasedNetwork, LocalDate untilDate);
 
-    abstract WorkInProgressRailNetwork makeModifiable();
+    abstract RailNetworkDraft makeModifiable();
 }
 
 class RailNetworkId {}
@@ -149,6 +159,16 @@ abstract class ReleasedRailNetwork {
     NonEmptySet<DoubleTrackRailway> connections;
 }
 
+interface ReleasedRailNetworkRepository {
+    Optional<ReleasedRailNetwork> getReleasedRailNetworkOfId(RailNetworkId id);
+
+    Optional<ReleasedRailNetwork> getLastReleasedRailNetwork();
+    // Or more performant (because that's everything we need for consistent state):
+    Optional<LocalDate> getEndDateOfLastReleasedRailNetwork();
+
+    void persist(ReleasedRailNetwork railNetwork);
+}
+
 /**
  * [x] the Periods of released Rail Network Plans are continuous without gaps and don't overlap
  *     -> release()
@@ -156,5 +176,7 @@ abstract class ReleasedRailNetwork {
  * Needs to publish RailNetworkReleased event
  */
 abstract class RailNetworkReleaseService {
-    abstract Optional<ReleasedRailNetwork> release(ValidatedRailNetwork network, RailNetworkPeriod period);
+    ReleasedRailNetworkRepository releasedRailNetworkRepository;
+
+    abstract Optional<ReleasedRailNetwork> release(RailNetworkProposal proposal, RailNetworkPeriod period);
 }
