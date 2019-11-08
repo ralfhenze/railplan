@@ -2,6 +2,11 @@
 
 A domain-driven implementation of a fictional railway network. It contains subsystems / microservices for rail network and timetable planning, as well as ticket sales.
 
+## Railway Domain Links
+
+https://en.wikipedia.org/wiki/Rail_transport
+https://en.wikipedia.org/wiki/Glossary_of_rail_transport_terms
+
 
 ## Simplifying Assumptions
 
@@ -15,7 +20,8 @@ As this is a one-man project and my goal is not to model the real-world with all
 
 
 * the rail network is just within Germany (1 time zone)
-* a conncetion between two stations is always built of two tracks, one for each direction, no passing loops, no more than two parallel tracks
+* a connection between two stations is built of two tracks, one for each direction, no passing loops, no more than two parallel tracks
+* a connection between two stations is a straight line, no curves, no altitude differences
 * trains travel at constant speed of 150 km/h, no acceleration, no deceleration, no distinct high-speed-tracks and -trains
 * trains stop at each station on their way, no transit
 * no trains between 0:00 and 3:59
