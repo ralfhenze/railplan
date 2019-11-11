@@ -1,5 +1,7 @@
 package com.ralfhenze.rms.railnetworkplanning.domain;
 
+import com.ralfhenze.rms.railnetworkplanning.domain.common.ValueObject;
+
 import java.time.LocalDate;
 
 /**
@@ -7,7 +9,7 @@ import java.time.LocalDate;
  * [ ] the TimePeriod's StartDate is before (<) EndDate
  *     -> Smart Constructor
  */
-class RailNetworkPeriod {
+class RailNetworkPeriod implements ValueObject {
 
     private final LocalDate startDate;
     private final LocalDate endDate;

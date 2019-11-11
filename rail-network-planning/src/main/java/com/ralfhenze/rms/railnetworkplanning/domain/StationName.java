@@ -1,11 +1,13 @@
 package com.ralfhenze.rms.railnetworkplanning.domain;
 
+import com.ralfhenze.rms.railnetworkplanning.domain.common.ValueObject;
+
 /**
  * [ ] a Station's Name begins with an uppercase letter
  * [ ] a Station's Name contains [a-zA-Z\ \.\-\(\)]
  *     -> Smart Constructor
  */
-class StationName {
+class StationName implements ValueObject {
 
     private final String name;
 

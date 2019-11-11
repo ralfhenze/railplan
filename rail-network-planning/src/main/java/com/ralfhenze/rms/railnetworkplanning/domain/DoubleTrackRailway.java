@@ -1,5 +1,7 @@
 package com.ralfhenze.rms.railnetworkplanning.domain;
 
+import com.ralfhenze.rms.railnetworkplanning.domain.common.ValueObject;
+
 /**
  * https://en.wikipedia.org/wiki/Double-track_railway
  *
@@ -10,7 +12,7 @@ package com.ralfhenze.rms.railnetworkplanning.domain;
  *
  * [ ] equal when two DoubleTrackRailways connect the same Stations
  */
-class DoubleTrackRailway {
+class DoubleTrackRailway implements ValueObject {
 
     private final StationId firstStationId;
     private final StationId secondStationId;

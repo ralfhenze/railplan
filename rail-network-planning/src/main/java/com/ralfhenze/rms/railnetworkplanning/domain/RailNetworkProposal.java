@@ -1,5 +1,7 @@
 package com.ralfhenze.rms.railnetworkplanning.domain;
 
+import com.ralfhenze.rms.railnetworkplanning.domain.common.Aggregate;
+
 import java.time.LocalDate;
 import java.util.Optional;
 
@@ -15,7 +17,7 @@ import java.util.Optional;
  *        (-) circular dependency
  *     -> or dedicated Validation Service
  */
-class RailNetworkProposal {
+class RailNetworkProposal implements Aggregate {
     RailNetworkDraftId id;
     SetWithAtLeastTwoElements<TrainStation> stations;
     NonEmptySet<DoubleTrackRailway> connections;

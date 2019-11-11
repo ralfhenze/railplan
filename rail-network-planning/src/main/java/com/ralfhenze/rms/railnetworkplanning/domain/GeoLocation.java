@@ -1,5 +1,7 @@
 package com.ralfhenze.rms.railnetworkplanning.domain;
 
+import com.ralfhenze.rms.railnetworkplanning.domain.common.ValueObject;
+
 /**
  * [x] a Station's GeoLocation always has Latitude and Longitude
  *     -> Smart Constructor
@@ -7,7 +9,7 @@ package com.ralfhenze.rms.railnetworkplanning.domain;
  * https://github.com/locationtech/spatial4j
  * https://github.com/JavadocMD/simplelatlng
  */
-class GeoLocation {
+class GeoLocation implements ValueObject {
     private final double latitude;
     private final double longitude;
 

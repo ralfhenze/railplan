@@ -1,12 +1,14 @@
 package com.ralfhenze.rms.railnetworkplanning.domain;
 
+import com.ralfhenze.rms.railnetworkplanning.domain.common.Id;
+
 /**
  * Local Id
  *
  * TODO: make sure id != null
  */
 
-class StationId {
+class StationId implements Id {
 
     private final String id;
 

@@ -1,9 +1,11 @@
 package com.ralfhenze.rms.railnetworkplanning.domain;
 
+import com.ralfhenze.rms.railnetworkplanning.domain.common.Id;
+
 /**
  * TODO: make sure id != null
  */
-class RailNetworkDraftId {
+class RailNetworkDraftId implements Id {
 
     private final String id;
 

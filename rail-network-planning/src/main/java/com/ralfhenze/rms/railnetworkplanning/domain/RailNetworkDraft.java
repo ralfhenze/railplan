@@ -1,5 +1,7 @@
 package com.ralfhenze.rms.railnetworkplanning.domain;
 
+import com.ralfhenze.rms.railnetworkplanning.domain.common.Aggregate;
+
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -15,7 +17,7 @@ import java.util.Set;
  * [x] two Stations can only be connected by a single Track
  *     -> connectStations()
  */
-class RailNetworkDraft {
+class RailNetworkDraft implements Aggregate {
     RailNetworkDraftId id;
     Map<StationId, TrainStation> stations;
     // This alternative would enforce name uniqueness:

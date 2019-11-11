@@ -1,5 +1,7 @@
 package com.ralfhenze.rms.railnetworkplanning.domain;
 
+import com.ralfhenze.rms.railnetworkplanning.domain.common.DomainService;
+
 import java.util.Optional;
 
 /**
@@ -8,7 +10,7 @@ import java.util.Optional;
  *
  * Needs to publish RailNetworkReleased event
  */
-class RailNetworkReleaseService {
+class RailNetworkReleaseService implements DomainService {
     ReleasedRailNetworkRepository releasedRailNetworkRepository;
 
     Optional<ReleasedRailNetwork> release(RailNetworkProposal proposal, RailNetworkPeriod period) {
