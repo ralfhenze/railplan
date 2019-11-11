@@ -2,10 +2,16 @@ package com.ralfhenze.rms.railnetworkplanning.domain;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-class StationId {}
+/**
+ * Local Id
+ */
+class StationId {
+    String id;
+}
 
 /**
  * [x] a Station's Name begins with an uppercase letter
@@ -53,7 +59,7 @@ class GeoLocationInGermany {
 /**
  * https://en.wikipedia.org/wiki/Train_station
  *
- * Braucht der immer eine Id?
+ * Local Entity within RailNetwork Aggregate
  */
 abstract class TrainStation {
     StationId id;
@@ -91,10 +97,12 @@ class RailNetworkDraftId {}
  */
 abstract class RailNetworkDraft {
     RailNetworkDraftId id;
-    Set<TrainStation> stations;
+    Map<StationId, TrainStation> stations;
+    // This alternative would enforce name uniqueness:
+    Map<StationName, TrainStation> stations2;
     Set<DoubleTrackRailway> connections;
 
-    abstract StationId addStation(TrainStation station);
+    abstract StationId addStation(StationName name, GeoLocationInGermany location);
     // maybe make immutable and return new RailNetworkDraft instead of void
     abstract void renameStation(StationId id, StationName name);
     abstract void moveStation(StationId id, GeoLocationInGermany location);
