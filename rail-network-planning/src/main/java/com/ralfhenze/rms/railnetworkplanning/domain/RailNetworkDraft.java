@@ -4,7 +4,7 @@ import com.ralfhenze.rms.railnetworkplanning.domain.common.Aggregate;
 
 import java.util.*;
 
-import static com.ralfhenze.rms.railnetworkplanning.domain.common.Preconditions.assertNotNull;
+import static com.ralfhenze.rms.railnetworkplanning.domain.common.Preconditions.ensureNotNull;
 
 /**
  * MODIFIABLE
@@ -24,8 +24,7 @@ class RailNetworkDraft implements Aggregate {
     private final Set<DoubleTrackRailway> connections = new HashSet<>();
 
     RailNetworkDraft(final RailNetworkDraftId id) {
-        assertNotNull(id, "Id is required");
-        this.id = id;
+        this.id = ensureNotNull(id, "Id is required");
     }
 
     public StationId addStation(final StationName name, final GeoLocationInGermany location) {

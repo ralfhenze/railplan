@@ -2,7 +2,7 @@ package com.ralfhenze.rms.railnetworkplanning.domain;
 
 import com.ralfhenze.rms.railnetworkplanning.domain.common.ValueObject;
 
-import static com.ralfhenze.rms.railnetworkplanning.domain.common.Preconditions.assertNotBlank;
+import static com.ralfhenze.rms.railnetworkplanning.domain.common.Preconditions.ensureNotBlank;
 
 /**
  * [ ] a Station's Name begins with an uppercase letter
@@ -14,8 +14,7 @@ class StationName implements ValueObject {
     private final String name;
 
     StationName(final String name) {
-        assertNotBlank(name, "Name must not be blank");
-        this.name = name;
+        this.name = ensureNotBlank(name, "Name must not be blank");
     }
 
     public String getName() {

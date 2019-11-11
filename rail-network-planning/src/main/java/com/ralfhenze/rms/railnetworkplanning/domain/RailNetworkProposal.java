@@ -7,7 +7,7 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
-import static com.ralfhenze.rms.railnetworkplanning.domain.common.Preconditions.assertNotNull;
+import static com.ralfhenze.rms.railnetworkplanning.domain.common.Preconditions.ensureNotNull;
 
 /**
  * READ-ONLY
@@ -28,8 +28,7 @@ class RailNetworkProposal implements Aggregate {
     private final Set<DoubleTrackRailway> connections = new HashSet<>(); // Non-Empty
 
     RailNetworkProposal(final RailNetworkDraftId id) {
-        assertNotNull(id, "Id is required");
-        this.id = id;
+        this.id = ensureNotNull(id, "Id is required");
     }
 
     // or dedicated Release Service

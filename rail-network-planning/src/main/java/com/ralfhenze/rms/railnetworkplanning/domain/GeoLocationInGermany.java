@@ -2,7 +2,7 @@ package com.ralfhenze.rms.railnetworkplanning.domain;
 
 import com.ralfhenze.rms.railnetworkplanning.domain.common.ValueObject;
 
-import static com.ralfhenze.rms.railnetworkplanning.domain.common.Preconditions.assertNotNull;
+import static com.ralfhenze.rms.railnetworkplanning.domain.common.Preconditions.ensureNotNull;
 
 /**
  * [-] a Station is located on land
@@ -15,8 +15,6 @@ class GeoLocationInGermany implements ValueObject {
     private final GeoLocation location;
 
     GeoLocationInGermany(final GeoLocation location) {
-        assertNotNull(location, "Geo location is required");
-
-        this.location = location;
+        this.location = ensureNotNull(location, "Geo location is required");
     }
 }

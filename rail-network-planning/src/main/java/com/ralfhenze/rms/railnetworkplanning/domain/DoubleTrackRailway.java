@@ -2,7 +2,7 @@ package com.ralfhenze.rms.railnetworkplanning.domain;
 
 import com.ralfhenze.rms.railnetworkplanning.domain.common.ValueObject;
 
-import static com.ralfhenze.rms.railnetworkplanning.domain.common.Preconditions.assertNotNull;
+import static com.ralfhenze.rms.railnetworkplanning.domain.common.Preconditions.ensureNotNull;
 
 /**
  * https://en.wikipedia.org/wiki/Double-track_railway
@@ -20,11 +20,8 @@ class DoubleTrackRailway implements ValueObject {
     private final StationId secondStationId;
 
     DoubleTrackRailway(final StationId firstStationId, final StationId secondStationId) {
-        assertNotNull(firstStationId, "First station ID is required");
-        assertNotNull(secondStationId, "Second station ID is required");
-
-        this.firstStationId = firstStationId;
-        this.secondStationId = secondStationId;
+        this.firstStationId = ensureNotNull(firstStationId, "First station ID is required");
+        this.secondStationId = ensureNotNull(secondStationId, "Second station ID is required");
     }
 
     public StationId getFirstStationId() {

@@ -5,7 +5,7 @@ import com.ralfhenze.rms.railnetworkplanning.domain.common.Aggregate;
 import java.util.HashSet;
 import java.util.Set;
 
-import static com.ralfhenze.rms.railnetworkplanning.domain.common.Preconditions.assertNotNull;
+import static com.ralfhenze.rms.railnetworkplanning.domain.common.Preconditions.ensureNotNull;
 
 /**
  * READ-ONLY
@@ -21,10 +21,7 @@ class ReleasedRailNetwork implements Aggregate {
     private final Set<DoubleTrackRailway> connections = new HashSet<>(); // Non-empty
 
     ReleasedRailNetwork(final RailNetworkId id, final RailNetworkPeriod period) {
-        assertNotNull(id, "Id is required");
-        assertNotNull(period, "Period is required");
-
-        this.id = id;
-        this.period = period;
+        this.id = ensureNotNull(id, "Id is required");
+        this.period = ensureNotNull(period, "Period is required");
     }
 }

@@ -4,7 +4,7 @@ import com.ralfhenze.rms.railnetworkplanning.domain.common.ValueObject;
 
 import java.time.LocalDate;
 
-import static com.ralfhenze.rms.railnetworkplanning.domain.common.Preconditions.assertNotNull;
+import static com.ralfhenze.rms.railnetworkplanning.domain.common.Preconditions.ensureNotNull;
 
 /**
  * [ ] the TimePeriod's minimum duration is 6 months
@@ -17,11 +17,8 @@ class RailNetworkPeriod implements ValueObject {
     private final LocalDate endDate;
 
     RailNetworkPeriod(final LocalDate startDate, final LocalDate endDate) {
-        assertNotNull(startDate, "Start date is required");
-        assertNotNull(endDate, "End date is required");
-
-        this.startDate = startDate;
-        this.endDate = endDate;
+        this.startDate = ensureNotNull(startDate, "Start date is required");
+        this.endDate = ensureNotNull(endDate, "End date is required");
     }
 
     public LocalDate getStartDate() {
