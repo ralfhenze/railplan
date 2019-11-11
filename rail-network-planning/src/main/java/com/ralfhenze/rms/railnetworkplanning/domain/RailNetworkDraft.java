@@ -20,8 +20,7 @@ import static com.ralfhenze.rms.railnetworkplanning.domain.common.Preconditions.
 class RailNetworkDraft implements Aggregate {
 
     private final RailNetworkDraftId id;
-    private final Map<StationId, TrainStation> stations = new HashMap<>();
-    private final Set<DoubleTrackRailway> connections = new HashSet<>();
+    private final RailNetworkGraph graph = new RailNetworkGraph();
 
     RailNetworkDraft(final RailNetworkDraftId id) {
         this.id = ensureNotNull(id, "Id is required");
@@ -47,15 +46,7 @@ class RailNetworkDraft implements Aggregate {
     public void disconnectStations(final StationId id1, final StationId id2) {
     }
 
-    Optional<RailNetworkProposal> propose() {
-        return Optional.empty();
-    }
-
-    public Set<TrainStation> getStations() {
-        return new HashSet<>(stations.values());
-    }
-
-    public Set<DoubleTrackRailway> getConnections() {
-        return new HashSet<>(connections);
+    public RailNetworkGraph getGraph() {
+        return graph;
     }
 }

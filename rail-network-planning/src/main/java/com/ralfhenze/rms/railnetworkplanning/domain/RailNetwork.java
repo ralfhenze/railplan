@@ -2,11 +2,6 @@ package com.ralfhenze.rms.railnetworkplanning.domain;
 
 import com.ralfhenze.rms.railnetworkplanning.domain.common.Aggregate;
 
-import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
-
 import static com.ralfhenze.rms.railnetworkplanning.domain.common.Preconditions.ensureNotNull;
 
 /**
@@ -20,24 +15,17 @@ import static com.ralfhenze.rms.railnetworkplanning.domain.common.Preconditions.
  *        (-) would require a "new ValidatedRailNetwork(this)" in RailNetworkDraft.validate()
  *        (-) circular dependency
  *     -> or dedicated Validation Service
+ * [x] released Rail Network Plans can't be changed any more
+ *     -> immutable object, no setters
  */
-class RailNetworkProposal implements Aggregate {
+class RailNetwork implements Aggregate {
 
-    private final RailNetworkDraftId id;
-    private final Set<TrainStation> stations = new HashSet<>(); // Non-Empty with at least two elements
-    private final Set<DoubleTrackRailway> connections = new HashSet<>(); // Non-Empty
+    private final RailNetworkId id;
+    private final RailNetworkPeriod period;
+    private final RailNetworkGraph graph = new RailNetworkGraph();
 
-    RailNetworkProposal(final RailNetworkDraftId id) {
+    RailNetwork(final RailNetworkId id, final RailNetworkPeriod period) {
         this.id = ensureNotNull(id, "Id is required");
-    }
-
-    // or dedicated Release Service
-    // (-) wouldn't work at the beginning, when there is nothing released yet
-    Optional<ReleasedRailNetwork> releaseAfter(ReleasedRailNetwork releasedNetwork, LocalDate untilDate) {
-        return Optional.empty();
-    }
-
-    RailNetworkDraft makeModifiable() {
-        return new RailNetworkDraft(new RailNetworkDraftId("1"));
+        this.period = ensureNotNull(period, "Period is required");
     }
 }

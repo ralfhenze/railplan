@@ -4,16 +4,27 @@ import com.ralfhenze.rms.railnetworkplanning.domain.common.DomainService;
 
 import java.util.Optional;
 
+import static com.ralfhenze.rms.railnetworkplanning.domain.common.Preconditions.ensureNotNull;
+
 /**
  * [x] the Periods of released Rail Network Plans are continuous without gaps and don't overlap
  *     -> release()
- *
- * Needs to publish RailNetworkReleased event
  */
 class RailNetworkReleaseService implements DomainService {
-    ReleasedRailNetworkRepository releasedRailNetworkRepository;
 
-    Optional<ReleasedRailNetwork> release(RailNetworkProposal proposal, RailNetworkPeriod period) {
+    private final RailNetworkRepository railNetworkRepository;
+
+    RailNetworkReleaseService(final RailNetworkRepository railNetworkRepository) {
+        this.railNetworkRepository = ensureNotNull(railNetworkRepository, "RailNetworkRepository is required");
+    }
+
+    Optional<RailNetwork> release(RailNetworkDraft draft, RailNetworkPeriod period) {
+        // 1. Make sure period is valid
+        // 2. Copy Draft graph into new RailNetwork
+        // 3. Make sure RailNetwork invariants are met
+        // 4. Persist RailNetwork
+        // 5. Emit RailNetworkReleased event
+
         return Optional.empty();
     }
 }
