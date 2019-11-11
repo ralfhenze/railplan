@@ -1,8 +1,15 @@
 package com.ralfhenze.rms.railnetworkplanning.domain;
 
 /**
- * Needs a private constructor, only accessible for Germany!
+ * [-] a Station is located on land
+ *     -> since this is quite complicated I will pretend it for now
+ * [ ] a Station is located within Germany's bounding rectangle
+ *     -> Smart Constructor
  */
 class GeoLocationInGermany {
-    GeoLocation location;
+    private final GeoLocation location;
+
+    GeoLocationInGermany(final GeoLocation location) {
+        this.location = location;
+    }
 }

@@ -8,11 +8,16 @@ package com.ralfhenze.rms.railnetworkplanning.domain;
  * https://github.com/JavadocMD/simplelatlng
  */
 class GeoLocation {
-    double latitude;
-    double longitude;
+    private final double latitude;
+    private final double longitude;
+
+    GeoLocation(final double latitude, final double longitude) {
+        this.latitude = latitude;
+        this.longitude = longitude;
+    }
 
     // https://introcs.cs.princeton.edu/java/44st/Location.java.html
-    double distanceTo(GeoLocation location) {
+    double distanceTo(final GeoLocation location) {
         return 1.0;
     }
 }

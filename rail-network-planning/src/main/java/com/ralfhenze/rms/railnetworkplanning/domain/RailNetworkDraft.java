@@ -23,7 +23,7 @@ class RailNetworkDraft {
     Set<DoubleTrackRailway> connections;
 
     StationId addStation(StationName name, GeoLocationInGermany location) {
-        return new StationId();
+        return new StationId(null);
     }
 
     // maybe make immutable and return new RailNetworkDraft instead of void

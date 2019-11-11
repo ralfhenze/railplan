@@ -3,14 +3,28 @@ package com.ralfhenze.rms.railnetworkplanning.domain;
 /**
  * https://en.wikipedia.org/wiki/Double-track_railway
  *
- * [x] a Track connects two different Stations
+ * [ ] a Track connects two different Stations
  *     -> Smart Constructor
  * [x] a Track has no direction
  *     -> implementation
  *
- * equal when two DoubleTrackRailways connect the same Stations
+ * [ ] equal when two DoubleTrackRailways connect the same Stations
  */
 class DoubleTrackRailway {
-    StationId station1;
-    StationId station2;
+
+    private final StationId firstStationId;
+    private final StationId secondStationId;
+
+    DoubleTrackRailway(final StationId firstStationId, final StationId secondStationId) {
+        this.firstStationId = firstStationId;
+        this.secondStationId = secondStationId;
+    }
+
+    public StationId getFirstStationId() {
+        return firstStationId;
+    }
+
+    public StationId getSecondStationId() {
+        return secondStationId;
+    }
 }
