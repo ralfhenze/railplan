@@ -2,14 +2,14 @@ package com.ralfhenze.rms.railnetworkplanning.domain;
 
 import com.ralfhenze.rms.railnetworkplanning.domain.common.Id;
 
-/**
- * TODO: make sure id != null
- */
+import static com.ralfhenze.rms.railnetworkplanning.domain.common.Preconditions.assertNotBlank;
+
 class RailNetworkDraftId implements Id {
 
     private final String id;
 
     RailNetworkDraftId(final String id) {
+        assertNotBlank(id, "Id must not be blank");
         this.id = id;
     }
 
