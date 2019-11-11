@@ -2,9 +2,9 @@ package com.ralfhenze.rms.railnetworkplanning.domain;
 
 import com.ralfhenze.rms.railnetworkplanning.domain.common.Aggregate;
 
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
+
+import static com.ralfhenze.rms.railnetworkplanning.domain.common.Preconditions.assertNotNull;
 
 /**
  * MODIFIABLE
@@ -18,33 +18,45 @@ import java.util.Set;
  *     -> connectStations()
  */
 class RailNetworkDraft implements Aggregate {
-    RailNetworkDraftId id;
-    Map<StationId, TrainStation> stations;
-    // This alternative would enforce name uniqueness:
-    Map<StationName, TrainStation> stations2;
-    Set<DoubleTrackRailway> connections;
 
-    StationId addStation(StationName name, GeoLocationInGermany location) {
+    private final RailNetworkDraftId id;
+    private final Map<StationId, TrainStation> stations = new HashMap<>();
+    private final Set<DoubleTrackRailway> connections = new HashSet<>();
+
+    RailNetworkDraft(final RailNetworkDraftId id) {
+        assertNotNull(id, "Id is required");
+        this.id = id;
+    }
+
+    public StationId addStation(final StationName name, final GeoLocationInGermany location) {
         return new StationId(null);
     }
 
     // maybe make immutable and return new RailNetworkDraft instead of void
-    void renameStation(StationId id, StationName name) {
+    public void renameStation(final StationId id, final StationName name) {
     }
 
-    void moveStation(StationId id, GeoLocationInGermany location) {
+    public void moveStation(final StationId id, final GeoLocationInGermany location) {
     }
 
-    void deleteStation(StationId id) {
+    public void deleteStation(final StationId id) {
     }
 
-    void connectStations(StationId id1, StationId id2) {
+    public void connectStations(final StationId id1, final StationId id2) {
     }
 
-    void disconnectStations(StationId id1, StationId id2) {
+    public void disconnectStations(final StationId id1, final StationId id2) {
     }
 
     Optional<RailNetworkProposal> propose() {
         return Optional.empty();
+    }
+
+    public Set<TrainStation> getStations() {
+        return new HashSet<>(stations.values());
+    }
+
+    public Set<DoubleTrackRailway> getConnections() {
+        return new HashSet<>(connections);
     }
 }

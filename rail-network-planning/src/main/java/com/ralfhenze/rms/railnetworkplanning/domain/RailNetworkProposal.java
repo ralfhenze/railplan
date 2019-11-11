@@ -3,7 +3,11 @@ package com.ralfhenze.rms.railnetworkplanning.domain;
 import com.ralfhenze.rms.railnetworkplanning.domain.common.Aggregate;
 
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
+
+import static com.ralfhenze.rms.railnetworkplanning.domain.common.Preconditions.assertNotNull;
 
 /**
  * READ-ONLY
@@ -18,9 +22,15 @@ import java.util.Optional;
  *     -> or dedicated Validation Service
  */
 class RailNetworkProposal implements Aggregate {
-    RailNetworkDraftId id;
-    SetWithAtLeastTwoElements<TrainStation> stations;
-    NonEmptySet<DoubleTrackRailway> connections;
+
+    private final RailNetworkDraftId id;
+    private final Set<TrainStation> stations = new HashSet<>(); // Non-Empty with at least two elements
+    private final Set<DoubleTrackRailway> connections = new HashSet<>(); // Non-Empty
+
+    RailNetworkProposal(final RailNetworkDraftId id) {
+        assertNotNull(id, "Id is required");
+        this.id = id;
+    }
 
     // or dedicated Release Service
     // (-) wouldn't work at the beginning, when there is nothing released yet
@@ -29,6 +39,6 @@ class RailNetworkProposal implements Aggregate {
     }
 
     RailNetworkDraft makeModifiable() {
-        return new RailNetworkDraft();
+        return new RailNetworkDraft(new RailNetworkDraftId("1"));
     }
 }
