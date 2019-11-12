@@ -25,6 +25,10 @@ class DoubleTrackRailway implements ValueObject {
         this.secondStationId = ensureNotNull(secondStationId, "Second Station ID");
     }
 
+    public boolean connectsStation(final StationId stationId) {
+        return firstStationId.equals(stationId) || secondStationId.equals(stationId);
+    }
+
     public StationId getFirstStationId() {
         return firstStationId;
     }

@@ -39,17 +39,19 @@ class RailNetworkDraft implements Aggregate {
         ensureStationIdExist(id);
         ensureStationNameDoesNotExist(name);
 
-        stations.put(id, stations.get(id).withName(name));
+        stations.replace(id, stations.get(id).withName(name));
     }
 
     public void moveStation(final StationId id, final GeoLocationInGermany location) {
         ensureStationIdExist(id);
         ensureMinimumStationDistance(location, id);
 
-        stations.put(id, stations.get(id).withLocation(location));
+        stations.replace(id, stations.get(id).withLocation(location));
     }
 
     public void deleteStation(final StationId id) {
+        connections.removeIf(track -> track.connectsStation(id));
+        stations.remove(id);
     }
 
     public void connectStations(final StationId id1, final StationId id2) {
@@ -62,6 +64,8 @@ class RailNetworkDraft implements Aggregate {
     }
 
     public void disconnectStations(final StationId id1, final StationId id2) {
+        DoubleTrackRailway connection = new DoubleTrackRailway(id1, id2);
+        connections.removeIf(track -> track.equals(connection));
     }
 
     public RailNetworkGraph getGraph() {
