@@ -1,6 +1,7 @@
 package com.ralfhenze.rms.railnetworkplanning.domain;
 
 import com.ralfhenze.rms.railnetworkplanning.domain.station.GeoLocation;
+import com.ralfhenze.rms.railnetworkplanning.domain.station.GeoLocationInGermany;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -46,5 +47,19 @@ class GeoLocationTest {
         double distance = berlin.getKilometerDistanceTo(hamburg);
 
         assertEquals(distance, 255.51815737853386);
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+        // coordinates outside of Germany
+        "51.507460, -0.127607", // London
+        "60.170721, 24.940860", // Helsinki
+        "40.709212, -74.007229", // New York
+        "-33.863272, 151.211579", // Sydney
+    })
+    void should_fail_on_Coordinates_outside_of_Germany(Double latitude, Double longitude) {
+        assertThrows(Exception.class, () -> {
+            new GeoLocationInGermany(new GeoLocation(latitude, longitude));
+        });
     }
 }
