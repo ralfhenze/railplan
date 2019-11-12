@@ -16,6 +16,11 @@ public class StationId implements Id {
     }
 
     @Override
+    public boolean equals(Object o) {
+        return (o != null && ((StationId)o).id.equals(this.id));
+    }
+
+    @Override
     public String toString() {
         return id;
     }

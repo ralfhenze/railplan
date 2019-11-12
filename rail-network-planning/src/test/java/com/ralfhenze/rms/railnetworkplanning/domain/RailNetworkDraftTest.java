@@ -29,4 +29,31 @@ class RailNetworkDraftTest {
             draft.renameStation(secondStationId, new StationName("First Station"));
         });
     }
+
+    @Test
+    void should_ensure_minimum_distance_between_stations() {
+        RailNetworkDraft draft = new RailNetworkDraft(new RailNetworkDraftId("1"));
+        StationId berlinHbfId = draft.addStation(
+            new StationName("Berlin Hbf"),
+            new GeoLocationInGermany(new GeoLocation(52.524927, 13.369348))
+        );
+        StationId potsdamHbfId = draft.addStation(
+            new StationName("Potsdam Hbf"),
+            new GeoLocationInGermany(new GeoLocation(52.391726, 13.067120))
+        );
+
+        assertThrows(Exception.class, () -> {
+            draft.addStation(
+                new StationName("Berlin Ostbahnhof"), // is nearer than 10 km
+                new GeoLocationInGermany(new GeoLocation(52.510784, 13.434832))
+            );
+        });
+
+        assertThrows(Exception.class, () -> {
+            draft.moveStation(
+                potsdamHbfId,
+                new GeoLocationInGermany(new GeoLocation(52.510784, 13.434832))
+            );
+        });
+    }
 }

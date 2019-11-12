@@ -1,15 +1,9 @@
 package com.ralfhenze.rms.railnetworkplanning.domain;
 
 import com.ralfhenze.rms.railnetworkplanning.domain.common.Aggregate;
-import com.ralfhenze.rms.railnetworkplanning.domain.station.GeoLocationInGermany;
-import com.ralfhenze.rms.railnetworkplanning.domain.station.StationId;
-import com.ralfhenze.rms.railnetworkplanning.domain.station.StationName;
-import com.ralfhenze.rms.railnetworkplanning.domain.station.TrainStation;
+import com.ralfhenze.rms.railnetworkplanning.domain.station.*;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static com.ralfhenze.rms.railnetworkplanning.domain.common.Preconditions.ensureNotNull;
 
@@ -17,7 +11,7 @@ import static com.ralfhenze.rms.railnetworkplanning.domain.common.Preconditions.
  * MODIFIABLE
  *
  * [ ] the maximum length of a Track is 200 km
- * [ ] the minimum distance between two Stations is 10 km
+ * [x] the minimum distance between two Stations is 10 km
  *     -> addStation(), moveStation()
  * [x] a Station's Name is unique
  *     -> addStation(), renameStation()
@@ -38,6 +32,7 @@ class RailNetworkDraft implements Aggregate {
 
     public StationId addStation(final StationName name, final GeoLocationInGermany location) {
         ensureStationNameDoesNotExist(name);
+        ensureMinimumStationDistance(location);
 
         final StationId stationId = new StationId(String.valueOf(stations.size() + 1));
         stations.put(stationId, new TrainStation(stationId, name, location));
@@ -49,12 +44,14 @@ class RailNetworkDraft implements Aggregate {
         ensureStationIdExist(id);
         ensureStationNameDoesNotExist(name);
 
-        final TrainStation station = stations.get(id);
-
-        stations.put(id, station.withName(name));
+        stations.put(id, stations.get(id).withName(name));
     }
 
     public void moveStation(final StationId id, final GeoLocationInGermany location) {
+        ensureStationIdExist(id);
+        ensureMinimumStationDistance(location, id);
+
+        stations.put(id, stations.get(id).withLocation(location));
     }
 
     public void deleteStation(final StationId id) {
@@ -85,6 +82,36 @@ class RailNetworkDraft implements Aggregate {
         if (!stations.containsKey(stationId)) {
             throw new IllegalArgumentException(
                 "Station ID \"" + stationId + "\" does not exist"
+            );
+        }
+    }
+
+    private void ensureMinimumStationDistance(final GeoLocationInGermany location) {
+        ensureMinimumStationDistance(location, null);
+    }
+
+    private void ensureMinimumStationDistance(final GeoLocationInGermany location, final StationId ignoredId) {
+        final Optional<TrainStation> nearbyStation = this.stations
+            .values()
+            .stream()
+            .filter(station -> !station.getId().equals(ignoredId))
+            .filter(station ->
+                station
+                    .getLocation()
+                    .getLocation()
+                    .getKilometerDistanceTo(location.getLocation()) <= 10.0)
+            .findFirst();
+
+        if (nearbyStation.isPresent()) {
+            double distance = nearbyStation.get().getLocation()
+                .getLocation().getKilometerDistanceTo(location.getLocation());
+
+            throw new IllegalArgumentException(
+                "Distance to Station \""
+                    + nearbyStation.get().getName()
+                    + "\" should be > 10 km, but was "
+                    + (Math.round(distance * 100.0) / 100.0)
+                    + " km"
             );
         }
     }

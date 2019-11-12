@@ -36,4 +36,8 @@ public class TrainStation implements LocalEntity {
     public TrainStation withName(StationName name) {
         return new TrainStation(this.id, name, this.location);
     }
+
+    public TrainStation withLocation(GeoLocationInGermany location) {
+        return new TrainStation(this.id, this.name, location);
+    }
 }
