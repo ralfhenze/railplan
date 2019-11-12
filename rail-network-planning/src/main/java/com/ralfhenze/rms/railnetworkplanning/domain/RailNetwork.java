@@ -1,6 +1,11 @@
 package com.ralfhenze.rms.railnetworkplanning.domain;
 
 import com.ralfhenze.rms.railnetworkplanning.domain.common.Aggregate;
+import com.ralfhenze.rms.railnetworkplanning.domain.invariants.ContainsAtLeastTwoStationsAndOneTrack;
+import com.ralfhenze.rms.railnetworkplanning.domain.invariants.ContainsNoUnconnectedSubGraphs;
+
+import java.util.Arrays;
+import java.util.HashSet;
 
 import static com.ralfhenze.rms.railnetworkplanning.domain.common.Preconditions.ensureNotNull;
 
@@ -22,7 +27,10 @@ class RailNetwork implements Aggregate {
 
     private final RailNetworkId id;
     private final RailNetworkPeriod period;
-    private final RailNetworkGraph graph = new RailNetworkGraph();
+    private final RailNetworkGraph graph = new RailNetworkGraph(new HashSet<>(Arrays.asList(
+        new ContainsAtLeastTwoStationsAndOneTrack(),
+        new ContainsNoUnconnectedSubGraphs()
+    )));
 
     RailNetwork(final RailNetworkId id, final RailNetworkPeriod period) {
         this.id = ensureNotNull(id, "Id is required");
