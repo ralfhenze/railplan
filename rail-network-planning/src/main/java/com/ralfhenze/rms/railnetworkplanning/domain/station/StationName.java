@@ -23,4 +23,9 @@ public class StationName implements ValueObject {
     public String getName() {
         return name;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        return (o != null && ((StationName)o).name.equals(this.name));
+    }
 }
