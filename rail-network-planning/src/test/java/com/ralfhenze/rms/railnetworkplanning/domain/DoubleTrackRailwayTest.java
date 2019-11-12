@@ -4,6 +4,7 @@ import com.ralfhenze.rms.railnetworkplanning.domain.station.StationId;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class DoubleTrackRailwayTest {
 
@@ -17,5 +18,14 @@ class DoubleTrackRailwayTest {
 
         assertEquals(track1, track2);
         assertEquals(track2, track3);
+    }
+
+    @Test
+    void should_not_allow_to_connect_a_station_with_itself() {
+        StationId stationId1 = new StationId("1");
+
+        assertThrows(Exception.class, () -> {
+            new DoubleTrackRailway(stationId1, stationId1);
+        });
     }
 }
