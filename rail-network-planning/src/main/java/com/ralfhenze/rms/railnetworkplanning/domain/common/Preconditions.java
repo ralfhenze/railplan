@@ -21,4 +21,14 @@ public class Preconditions {
 
         return string;
     }
+
+    public static double ensureWithinRange(double value, double min, double max, String errorMessage) {
+        if (value < min || value > max) {
+            throw new IllegalArgumentException(
+                errorMessage + " must be within [" + min + " ... " + max + "], but was " + value
+            );
+        }
+
+        return value;
+    }
 }
