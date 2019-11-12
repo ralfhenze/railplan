@@ -72,4 +72,21 @@ class RailNetworkDraftTest {
             draft.connectStations(potsdamHbfId, berlinHbfId);
         });
     }
+
+    @Test
+    void should_ensure_max_track_length() {
+        RailNetworkDraft draft = new RailNetworkDraft(new RailNetworkDraftId("1"));
+        StationId berlinHbfId = draft.addStation(
+            new StationName("Berlin Hbf"),
+            new GeoLocationInGermany(new GeoLocation(52.524927, 13.369348))
+        );
+        StationId stuttgartHbfId = draft.addStation(
+            new StationName("Stuttgart Hbf"),
+            new GeoLocationInGermany(new GeoLocation(48.784245, 9.182160))
+        );
+
+        assertThrows(Exception.class, () -> {
+            draft.connectStations(berlinHbfId, stuttgartHbfId);
+        });
+    }
 }
