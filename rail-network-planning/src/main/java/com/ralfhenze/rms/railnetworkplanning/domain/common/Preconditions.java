@@ -1,5 +1,7 @@
 package com.ralfhenze.rms.railnetworkplanning.domain.common;
 
+import java.util.regex.Pattern;
+
 public class Preconditions {
 
     public static <T> T ensureNotNull(T object, String errorMessage) {
@@ -22,10 +24,21 @@ public class Preconditions {
         return string;
     }
 
-    public static double ensureWithinRange(double value, double min, double max, String errorMessage) {
+    public static String ensureRegexMatch(String string, String regexPattern, String parameterName) {
+        if (!Pattern.matches(regexPattern, string)) {
+            throw new IllegalArgumentException(
+                parameterName + " \"" + string
+                    + "\" doesn't match regular expression \"" + regexPattern + "\""
+            );
+        }
+
+        return string;
+    }
+
+    public static double ensureWithinRange(double value, double min, double max, String parameterName) {
         if (value < min || value > max) {
             throw new IllegalArgumentException(
-                errorMessage + " must be within [" + min + " ... " + max + "], but was " + value
+                parameterName + " must be within [" + min + " ... " + max + "], but was " + value
             );
         }
 
