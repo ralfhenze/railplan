@@ -11,9 +11,7 @@ import static com.ralfhenze.rms.railnetworkplanning.domain.common.Preconditions.
  * [ ] a Track connects two different Stations
  *     -> Smart Constructor
  * [x] a Track has no direction
- *     -> implementation
- *
- * [ ] equal when two DoubleTrackRailways connect the same Stations
+ * [x] equal when two DoubleTrackRailways connect the same Stations
  */
 class DoubleTrackRailway implements ValueObject {
 
@@ -31,5 +29,22 @@ class DoubleTrackRailway implements ValueObject {
 
     public StationId getSecondStationId() {
         return secondStationId;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (!(object instanceof DoubleTrackRailway)) {
+            return false;
+        }
+
+        DoubleTrackRailway track = (DoubleTrackRailway)object;
+
+        return (
+            (track.firstStationId.equals(this.firstStationId)
+                && track.secondStationId.equals(this.secondStationId))
+            ||
+            (track.firstStationId.equals(this.secondStationId)
+                && track.secondStationId.equals(this.firstStationId))
+        );
     }
 }
