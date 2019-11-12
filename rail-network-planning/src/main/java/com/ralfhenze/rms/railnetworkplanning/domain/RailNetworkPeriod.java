@@ -17,8 +17,8 @@ class RailNetworkPeriod implements ValueObject {
     private final LocalDate endDate;
 
     RailNetworkPeriod(final LocalDate startDate, final LocalDate endDate) {
-        this.startDate = ensureNotNull(startDate, "Start date is required");
-        this.endDate = ensureNotNull(endDate, "End date is required");
+        this.startDate = ensureNotNull(startDate, "Start Date");
+        this.endDate = ensureNotNull(endDate, "End Date");
     }
 
     public LocalDate getStartDate() {

@@ -15,7 +15,7 @@ class RailNetworkReleaseService implements DomainService {
     private final RailNetworkRepository railNetworkRepository;
 
     RailNetworkReleaseService(final RailNetworkRepository railNetworkRepository) {
-        this.railNetworkRepository = ensureNotNull(railNetworkRepository, "RailNetworkRepository is required");
+        this.railNetworkRepository = ensureNotNull(railNetworkRepository, "Rail Network Repository");
     }
 
     Optional<RailNetwork> release(RailNetworkDraft draft, RailNetworkPeriod period) {

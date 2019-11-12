@@ -4,20 +4,22 @@ import java.util.regex.Pattern;
 
 public class Preconditions {
 
-    public static <T> T ensureNotNull(T object, String errorMessage) {
+    public static <T> T ensureNotNull(T object, String parameterName) {
         if (object == null) {
             throw new IllegalArgumentException(
-                errorMessage + ", but was null"
+                parameterName + " is required, but was null"
             );
         }
 
         return object;
     }
 
-    public static String ensureNotBlank(String string, String errorMessage) {
-        if (string == null || string.isEmpty() || string.trim().isEmpty()) {
+    public static String ensureNotBlank(String string, String parameterName) {
+        ensureNotNull(string, parameterName);
+
+        if (string.isEmpty() || string.trim().isEmpty()) {
             throw new IllegalArgumentException(
-                errorMessage + ", but was \"" + string + "\""
+                parameterName + " must not be blank, but was \"" + string + "\""
             );
         }
 
@@ -25,6 +27,8 @@ public class Preconditions {
     }
 
     public static String ensureRegexMatch(String string, String regexPattern, String parameterName) {
+        ensureNotNull(string, parameterName);
+
         if (!Pattern.matches(regexPattern, string)) {
             throw new IllegalArgumentException(
                 parameterName + " \"" + string

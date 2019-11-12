@@ -33,7 +33,7 @@ class RailNetwork implements Aggregate {
     )));
 
     RailNetwork(final RailNetworkId id, final RailNetworkPeriod period) {
-        this.id = ensureNotNull(id, "Id is required");
-        this.period = ensureNotNull(period, "Period is required");
+        this.id = ensureNotNull(id, "Rail Network ID");
+        this.period = ensureNotNull(period, "Rail Network Period");
     }
 }

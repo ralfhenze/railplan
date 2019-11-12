@@ -21,8 +21,8 @@ class DoubleTrackRailway implements ValueObject {
     private final StationId secondStationId;
 
     DoubleTrackRailway(final StationId firstStationId, final StationId secondStationId) {
-        this.firstStationId = ensureNotNull(firstStationId, "First station ID is required");
-        this.secondStationId = ensureNotNull(secondStationId, "Second station ID is required");
+        this.firstStationId = ensureNotNull(firstStationId, "First Station ID");
+        this.secondStationId = ensureNotNull(secondStationId, "Second Station ID");
     }
 
     public StationId getFirstStationId() {

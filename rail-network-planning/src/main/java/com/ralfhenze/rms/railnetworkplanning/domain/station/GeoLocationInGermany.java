@@ -22,7 +22,7 @@ public class GeoLocationInGermany implements ValueObject {
     private final GeoLocation location;
 
     public GeoLocationInGermany(final GeoLocation location) {
-        ensureNotNull(location, "Geo location is required");
+        ensureNotNull(location, "Geo Location");
         ensureWithinRange(location.getLatitude(), GERMANY_WEST_LAT, GERMANY_EAST_LAT, "Latitude");
         ensureWithinRange(location.getLongitude(), GERMANY_SOUTH_LNG, GERMANY_NORTH_LNG, "Longitude");
 

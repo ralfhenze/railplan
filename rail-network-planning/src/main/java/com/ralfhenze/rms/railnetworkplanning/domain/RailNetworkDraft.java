@@ -24,7 +24,7 @@ class RailNetworkDraft implements Aggregate {
     private final RailNetworkGraph graph = new RailNetworkGraph();
 
     RailNetworkDraft(final RailNetworkDraftId id) {
-        this.id = ensureNotNull(id, "Id is required");
+        this.id = ensureNotNull(id, "Rail Network Draft ID");
     }
 
     public StationId addStation(final StationName name, final GeoLocationInGermany location) {

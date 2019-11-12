@@ -16,9 +16,9 @@ public class TrainStation implements LocalEntity {
     private final GeoLocationInGermany location;
 
     public TrainStation(final StationId id, final StationName name, final GeoLocationInGermany location) {
-        this.id = ensureNotNull(id, "Id is required");
-        this.name = ensureNotNull(name, "Name is required");
-        this.location = ensureNotNull(location, "Location is required");
+        this.id = ensureNotNull(id, "Station ID");
+        this.name = ensureNotNull(name, "Station Name");
+        this.location = ensureNotNull(location, "Geo Location");
     }
 
     public StationId getId() {

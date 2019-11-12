@@ -9,7 +9,7 @@ class RailNetworkDraftId implements Id {
     private final String id;
 
     RailNetworkDraftId(final String id) {
-        this.id = ensureNotBlank(id, "Id must not be blank");
+        this.id = ensureNotBlank(id, "ID");
     }
 
     @Override

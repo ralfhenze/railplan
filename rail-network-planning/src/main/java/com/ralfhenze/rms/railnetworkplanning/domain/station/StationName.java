@@ -2,7 +2,6 @@ package com.ralfhenze.rms.railnetworkplanning.domain.station;
 
 import com.ralfhenze.rms.railnetworkplanning.domain.common.ValueObject;
 
-import static com.ralfhenze.rms.railnetworkplanning.domain.common.Preconditions.ensureNotBlank;
 import static com.ralfhenze.rms.railnetworkplanning.domain.common.Preconditions.ensureRegexMatch;
 
 /**
@@ -13,13 +12,12 @@ import static com.ralfhenze.rms.railnetworkplanning.domain.common.Preconditions.
  */
 public class StationName implements ValueObject {
 
+    private final static String VALID_NAME_REGEX = "^[A-ZÄÖÜ]{1}[a-zäöüßA-Z\\ \\.\\-\\(\\)]{3,29}$";
+
     private final String name;
 
     public StationName(final String name) {
-        ensureNotBlank(name, "Station name must not be blank"); // TODO: <- not needed any more
-        ensureRegexMatch(name, "^[A-ZÄÖÜ]{1}[a-zäöüßA-Z\\ \\.\\-\\(\\)]{3,29}$", "Station name");
-
-        this.name = name;
+        this.name = ensureRegexMatch(name, VALID_NAME_REGEX, "Station name");
     }
 
     public String getName() {

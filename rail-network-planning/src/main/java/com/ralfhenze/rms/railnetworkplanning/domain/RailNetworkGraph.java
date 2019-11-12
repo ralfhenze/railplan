@@ -29,7 +29,7 @@ public class RailNetworkGraph {
     }
 
     RailNetworkGraph(final Set<Invariant> additionalInvariants) {
-        ensureNotNull(additionalInvariants, "Additional invariants are required");
+        ensureNotNull(additionalInvariants, "Additional Invariants");
 
         // TODO: improve this when moved to Java 11
         Set<Invariant> invariants = new HashSet<>(this.defaultInvariants);
