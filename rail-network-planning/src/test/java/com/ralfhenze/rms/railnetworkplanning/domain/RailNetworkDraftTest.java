@@ -6,8 +6,6 @@ import com.ralfhenze.rms.railnetworkplanning.domain.station.StationId;
 import com.ralfhenze.rms.railnetworkplanning.domain.station.StationName;
 import org.junit.jupiter.api.Test;
 
-import java.time.LocalDate;
-
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class RailNetworkDraftTest {
@@ -54,6 +52,24 @@ class RailNetworkDraftTest {
                 potsdamHbfId,
                 new GeoLocationInGermany(new GeoLocation(52.510784, 13.434832))
             );
+        });
+    }
+
+    @Test
+    void should_ensure_no_duplicate_connections() {
+        RailNetworkDraft draft = new RailNetworkDraft(new RailNetworkDraftId("1"));
+        StationId berlinHbfId = draft.addStation(
+            new StationName("Berlin Hbf"),
+            new GeoLocationInGermany(new GeoLocation(52.524927, 13.369348))
+        );
+        StationId potsdamHbfId = draft.addStation(
+            new StationName("Potsdam Hbf"),
+            new GeoLocationInGermany(new GeoLocation(52.391726, 13.067120))
+        );
+        draft.connectStations(berlinHbfId, potsdamHbfId);
+
+        assertThrows(Exception.class, () -> {
+            draft.connectStations(potsdamHbfId, berlinHbfId);
         });
     }
 }
