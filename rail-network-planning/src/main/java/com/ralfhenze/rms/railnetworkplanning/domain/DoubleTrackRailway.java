@@ -1,6 +1,7 @@
 package com.ralfhenze.rms.railnetworkplanning.domain;
 
 import com.ralfhenze.rms.railnetworkplanning.domain.common.ValueObject;
+import com.ralfhenze.rms.railnetworkplanning.domain.station.StationId;
 
 import static com.ralfhenze.rms.railnetworkplanning.domain.common.Preconditions.ensureNotNull;
 

@@ -1,4 +1,4 @@
-package com.ralfhenze.rms.railnetworkplanning.domain;
+package com.ralfhenze.rms.railnetworkplanning.domain.station;
 
 import com.ralfhenze.rms.railnetworkplanning.domain.common.ValueObject;
 
@@ -9,11 +9,12 @@ import com.ralfhenze.rms.railnetworkplanning.domain.common.ValueObject;
  * https://github.com/locationtech/spatial4j
  * https://github.com/JavadocMD/simplelatlng
  */
-class GeoLocation implements ValueObject {
+public class GeoLocation implements ValueObject {
+
     private final double latitude;
     private final double longitude;
 
-    GeoLocation(final double latitude, final double longitude) {
+    public GeoLocation(final double latitude, final double longitude) {
         this.latitude = latitude;
         this.longitude = longitude;
     }

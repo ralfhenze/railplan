@@ -1,6 +1,9 @@
 package com.ralfhenze.rms.railnetworkplanning.domain;
 
 import com.ralfhenze.rms.railnetworkplanning.domain.common.Aggregate;
+import com.ralfhenze.rms.railnetworkplanning.domain.station.GeoLocationInGermany;
+import com.ralfhenze.rms.railnetworkplanning.domain.station.StationId;
+import com.ralfhenze.rms.railnetworkplanning.domain.station.StationName;
 
 import static com.ralfhenze.rms.railnetworkplanning.domain.common.Preconditions.ensureNotNull;
 

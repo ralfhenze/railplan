@@ -1,4 +1,4 @@
-package com.ralfhenze.rms.railnetworkplanning.domain;
+package com.ralfhenze.rms.railnetworkplanning.domain.station;
 
 import com.ralfhenze.rms.railnetworkplanning.domain.common.ValueObject;
 
@@ -10,11 +10,11 @@ import static com.ralfhenze.rms.railnetworkplanning.domain.common.Preconditions.
  * [ ] a Station is located within Germany's bounding rectangle
  *     -> Smart Constructor
  */
-class GeoLocationInGermany implements ValueObject {
+public class GeoLocationInGermany implements ValueObject {
 
     private final GeoLocation location;
 
-    GeoLocationInGermany(final GeoLocation location) {
+    public GeoLocationInGermany(final GeoLocation location) {
         this.location = ensureNotNull(location, "Geo location is required");
     }
 }

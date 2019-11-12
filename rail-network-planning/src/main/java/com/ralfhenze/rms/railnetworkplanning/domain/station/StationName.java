@@ -1,4 +1,4 @@
-package com.ralfhenze.rms.railnetworkplanning.domain;
+package com.ralfhenze.rms.railnetworkplanning.domain.station;
 
 import com.ralfhenze.rms.railnetworkplanning.domain.common.ValueObject;
 
@@ -9,11 +9,11 @@ import static com.ralfhenze.rms.railnetworkplanning.domain.common.Preconditions.
  * [ ] a Station's Name contains [a-zA-Z\ \.\-\(\)]
  *     -> Smart Constructor
  */
-class StationName implements ValueObject {
+public class StationName implements ValueObject {
 
     private final String name;
 
-    StationName(final String name) {
+    public StationName(final String name) {
         this.name = ensureNotBlank(name, "Name must not be blank");
     }
 

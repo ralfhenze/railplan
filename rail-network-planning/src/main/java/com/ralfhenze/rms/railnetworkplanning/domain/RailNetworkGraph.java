@@ -1,6 +1,8 @@
 package com.ralfhenze.rms.railnetworkplanning.domain;
 
 import com.ralfhenze.rms.railnetworkplanning.domain.invariants.*;
+import com.ralfhenze.rms.railnetworkplanning.domain.station.StationId;
+import com.ralfhenze.rms.railnetworkplanning.domain.station.TrainStation;
 
 import java.util.*;
 
