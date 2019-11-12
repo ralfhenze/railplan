@@ -14,10 +14,10 @@ public class GeoLocationInGermany implements ValueObject {
 
     // Germany bounding box taken from
     // https://gist.github.com/graydon/11198540
-    private final double GERMANY_EAST_LAT = 55.099161;
-    private final double GERMANY_WEST_LAT = 47.2701114;
-    private final double GERMANY_NORTH_LNG = 15.0419319;
-    private final double GERMANY_SOUTH_LNG = 5.8663153;
+    private final static double GERMANY_EAST_LAT = 55.099161;
+    private final static double GERMANY_WEST_LAT = 47.2701114;
+    private final static double GERMANY_NORTH_LNG = 15.0419319;
+    private final static double GERMANY_SOUTH_LNG = 5.8663153;
 
     private final GeoLocation location;
 
