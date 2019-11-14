@@ -7,7 +7,6 @@ import java.time.LocalDate;
 import static com.ralfhenze.rms.railnetworkplanning.domain.common.Preconditions.ensureNotNull;
 
 /**
- * [ ] the TimePeriod's minimum duration is 6 months
  * [x] the TimePeriod's StartDate is before (<) EndDate
  */
 class RailNetworkPeriod implements ValueObject {

@@ -45,7 +45,6 @@ Track:
 * a Track connects two different Stations
 * two Stations can only be connected by a single Track
 * a Track has no direction
-* Tracks are weighted by the airline distance between their Stations
 * the maximum length of a Track is 200 km
 
 Rail Network Plan:
@@ -54,5 +53,4 @@ Rail Network Plan:
 * the Rail Network Plan contains no stand-alone / unconnected Stations
 * the Rail Network Plan is a single graph without unconnected islands / sub-graphs
 * the TimePeriods of released Rail Network Plans are continuous without gaps and don't overlap
-* the TimePeriods minimum duration is 6 months
 * released Rail Network Plans can't be changed any more
