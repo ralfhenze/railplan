@@ -8,8 +8,7 @@ import static com.ralfhenze.rms.railnetworkplanning.domain.common.Preconditions.
 
 /**
  * [ ] the TimePeriod's minimum duration is 6 months
- * [ ] the TimePeriod's StartDate is before (<) EndDate
- *     -> Smart Constructor
+ * [x] the TimePeriod's StartDate is before (<) EndDate
  */
 class RailNetworkPeriod implements ValueObject {
 
@@ -19,6 +18,8 @@ class RailNetworkPeriod implements ValueObject {
     RailNetworkPeriod(final LocalDate startDate, final LocalDate endDate) {
         this.startDate = ensureNotNull(startDate, "Start Date");
         this.endDate = ensureNotNull(endDate, "End Date");
+
+        ensureStartDateIsBeforeEndDate();
     }
 
     public LocalDate getStartDate() {
@@ -27,5 +28,13 @@ class RailNetworkPeriod implements ValueObject {
 
     public LocalDate getEndDate() {
         return endDate;
+    }
+
+    private void ensureStartDateIsBeforeEndDate() {
+        if (!startDate.isBefore(endDate)) {
+            throw new IllegalArgumentException(
+                "Start date (" + startDate + ") must be before end date (" + endDate + ")"
+            );
+        }
     }
 }
