@@ -46,7 +46,7 @@ class GeoLocationTest {
 
         double distance = berlin.getKilometerDistanceTo(hamburg);
 
-        assertEquals(distance, 255.51815737853386);
+        assertEquals(Math.floor(distance), 255);
     }
 
     @ParameterizedTest
