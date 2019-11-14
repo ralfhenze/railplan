@@ -2,11 +2,18 @@
 
 A domain-driven implementation of a fictional railway network. It contains subsystems / microservices for rail network and timetable planning, as well as ticket sales.
 
+## Run
+
+There is not much to run yet, except for a few unit tests:
+
+```
+$ mvn test
+```
+
 ## Railway Domain Links
 
 * https://en.wikipedia.org/wiki/Rail_transport
 * https://en.wikipedia.org/wiki/Glossary_of_rail_transport_terms
-
 
 ## Simplifying Assumptions
 
@@ -32,6 +39,5 @@ As this is a one-man project and my goal is not to model the real-world with all
 * just a constant ticket price per kilometer, no complex pricing models and special offers
 * just single day journeys between 4:00 and 23:59, no journeys over several days
 * everybody who has bought a ticket will go exactly the given route, no "I am sick and won't travel", no booking cancellation
-
 
 Even with these assumptions the domain is complex enough to study Microservices and Domain-Driven Design (which is my actual goal for this). Someday I will eventually remove and implement some of the assumptions to see, how the changes affect the overall system.
