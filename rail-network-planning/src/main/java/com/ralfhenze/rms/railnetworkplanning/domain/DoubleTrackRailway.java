@@ -13,7 +13,7 @@ import static com.ralfhenze.rms.railnetworkplanning.domain.common.Preconditions.
  * [x] a Track has no direction
  * [x] equal when two DoubleTrackRailways connect the same Stations
  */
-class DoubleTrackRailway implements ValueObject {
+public class DoubleTrackRailway implements ValueObject {
 
     private final StationId firstStationId;
     private final StationId secondStationId;

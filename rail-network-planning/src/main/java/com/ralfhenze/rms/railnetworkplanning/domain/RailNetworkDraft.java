@@ -16,7 +16,7 @@ import static com.ralfhenze.rms.railnetworkplanning.domain.common.Preconditions.
 class RailNetworkDraft implements Aggregate {
 
     private final RailNetworkDraftId id;
-    private final RailNetworkGraph graph = new RailNetworkGraph();
+    private final RailNetworkGraph graph = null;
 
     private final Map<StationId, TrainStation> stations = new HashMap<>();
     private final Set<DoubleTrackRailway> connections = new HashSet<>();
