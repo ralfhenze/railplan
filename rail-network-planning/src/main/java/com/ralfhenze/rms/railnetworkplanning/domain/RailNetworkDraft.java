@@ -11,12 +11,11 @@ import static com.ralfhenze.rms.railnetworkplanning.domain.common.Preconditions.
  * [x] the minimum distance between two Stations is 10 km
  * [x] a Station's Name is unique
  * [x] two Stations can only be connected by a single Track
- * [x] the maximum length of a Track is 200 km
+ * [x] the maximum length of a Track is 300 km
  */
 class RailNetworkDraft implements Aggregate {
 
     private final RailNetworkDraftId id;
-    private final RailNetworkGraph graph = null;
 
     private final Map<StationId, TrainStation> stations = new HashMap<>();
     private final Set<DoubleTrackRailway> connections = new HashSet<>();
@@ -66,10 +65,6 @@ class RailNetworkDraft implements Aggregate {
     public void disconnectStations(final StationId id1, final StationId id2) {
         DoubleTrackRailway connection = new DoubleTrackRailway(id1, id2);
         connections.removeIf(track -> track.equals(connection));
-    }
-
-    public RailNetworkGraph getGraph() {
-        return graph;
     }
 
     private void ensureStationNameDoesNotExist(final StationName stationName) {
@@ -143,11 +138,11 @@ class RailNetworkDraft implements Aggregate {
                 stations.get(id2).getLocation().getLocation()
             );
 
-        if (trackLength > 200) {
+        if (trackLength > 300) {
             throw new IllegalArgumentException(
                 "Track from \""
                     + stations.get(id1).getName() + "\" (" + id1 + ") to \""
-                    + stations.get(id2).getName() + "\" (" + id2 + ") must be shorter than 200 km"
+                    + stations.get(id2).getName() + "\" (" + id2 + ") must be shorter than 300 km"
                     + ", but was ~" + Math.round(trackLength) + " km"
             );
         }

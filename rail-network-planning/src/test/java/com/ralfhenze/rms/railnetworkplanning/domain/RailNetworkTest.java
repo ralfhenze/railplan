@@ -39,10 +39,8 @@ class RailNetworkTest {
             new RailNetwork(
                 new RailNetworkId("1"),
                 new RailNetworkPeriod(LocalDate.of(2019, 11, 14), LocalDate.of(2019, 11, 20)),
-                new RailNetworkGraph(
-                    new HashSet<>(),
-                    new HashSet<>()
-                )
+                new HashSet<>(),
+                new HashSet<>()
             );
         });
     }
@@ -53,10 +51,8 @@ class RailNetworkTest {
             new RailNetwork(
                 new RailNetworkId("1"),
                 new RailNetworkPeriod(LocalDate.of(2019, 11, 14), LocalDate.of(2019, 11, 20)),
-                new RailNetworkGraph(
-                    new HashSet<>(Arrays.asList(berlinHbf, hamburgHbf)),
-                    new HashSet<>()
-                )
+                new HashSet<>(Arrays.asList(berlinHbf, hamburgHbf)),
+                new HashSet<>()
             );
         });
     }
@@ -67,13 +63,39 @@ class RailNetworkTest {
             new RailNetwork(
                 new RailNetworkId("1"),
                 new RailNetworkPeriod(LocalDate.of(2019, 11, 14), LocalDate.of(2019, 11, 20)),
-                new RailNetworkGraph(
-                    new HashSet<>(Arrays.asList(berlinHbf, hamburgHbf, frankfurtHbf, stuttgartHbf)),
-                    new HashSet<>(Arrays.asList(
-                        new DoubleTrackRailway(berlinHbf.getId(), hamburgHbf.getId()),
-                        new DoubleTrackRailway(frankfurtHbf.getId(), stuttgartHbf.getId())
-                    ))
-                )
+                new HashSet<>(Arrays.asList(berlinHbf, hamburgHbf, frankfurtHbf, stuttgartHbf)),
+                new HashSet<>(Arrays.asList(
+                    new DoubleTrackRailway(berlinHbf.getId(), hamburgHbf.getId()),
+                    new DoubleTrackRailway(frankfurtHbf.getId(), stuttgartHbf.getId())
+                ))
+            );
+        });
+    }
+
+    @Test
+    void should_ensure_max_track_length() {
+        assertThrows(Exception.class, () -> {
+            new RailNetwork(
+                new RailNetworkId("1"),
+                new RailNetworkPeriod(LocalDate.of(2019, 11, 14), LocalDate.of(2019, 11, 20)),
+                new HashSet<>(Arrays.asList(berlinHbf, stuttgartHbf)),
+                new HashSet<>(Arrays.asList(
+                    new DoubleTrackRailway(berlinHbf.getId(), stuttgartHbf.getId())
+                ))
+            );
+        });
+    }
+
+    @Test
+    void should_ensure_unique_station_names() {
+        assertThrows(Exception.class, () -> {
+            new RailNetwork(
+                new RailNetworkId("1"),
+                new RailNetworkPeriod(LocalDate.of(2019, 11, 14), LocalDate.of(2019, 11, 20)),
+                new HashSet<>(Arrays.asList(berlinHbf, hamburgHbf.withName(new StationName("Berlin Hbf")))),
+                new HashSet<>(Arrays.asList(
+                    new DoubleTrackRailway(berlinHbf.getId(), hamburgHbf.getId())
+                ))
             );
         });
     }
