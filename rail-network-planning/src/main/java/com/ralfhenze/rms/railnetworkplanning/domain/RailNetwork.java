@@ -48,4 +48,8 @@ class RailNetwork implements Aggregate {
             invariant.ensureIsSatisfied(stations, connections);
         }
     }
+
+    public RailNetworkPeriod getPeriod() {
+        return period;
+    }
 }
