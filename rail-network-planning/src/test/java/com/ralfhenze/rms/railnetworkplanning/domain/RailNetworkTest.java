@@ -120,4 +120,19 @@ class RailNetworkTest {
             );
         });
     }
+
+    @Test
+    void should_ensure_no_duplicate_connections() {
+        assertThrows(Exception.class, () -> {
+            new RailNetwork(
+                new RailNetworkId("1"),
+                new RailNetworkPeriod(LocalDate.of(2019, 11, 14), LocalDate.of(2019, 11, 20)),
+                new LinkedHashSet<>(Arrays.asList(berlinHbf, hamburgHbf)),
+                new LinkedHashSet<>(Arrays.asList(
+                    new DoubleTrackRailway(berlinHbf.getId(), hamburgHbf.getId()),
+                    new DoubleTrackRailway(hamburgHbf.getId(), berlinHbf.getId())
+                ))
+            );
+        });
+    }
 }

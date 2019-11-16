@@ -13,8 +13,8 @@ import static com.ralfhenze.rms.railnetworkplanning.domain.common.Preconditions.
 /**
  * [x] the Rail Network Plan contains at least two Stations and one Track
  * [x] the Rail Network Plan is a single graph without unconnected sub-graphs
+ * [x] all invariants of RailNetworkDraft
  * [ ] released Rail Network Plans can't be changed any more
- * [ ] all invariants of RailNetworkDraft
  */
 class RailNetwork implements Aggregate {
 
@@ -25,6 +25,7 @@ class RailNetwork implements Aggregate {
     private final Set<DoubleTrackRailway> connections;
     private final Set<Invariant> invariants = new LinkedHashSet<>(Arrays.asList(
         new MinimumDistanceBetweenTwoStationsIs10Km(),
+        new TwoStationsCanOnlyBeConnectedByOneTrack(),
         new MaximumLengthOfTrackIs300Km(),
         new StationNamesAreUnique(),
 
