@@ -10,62 +10,53 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class RailNetworkDraftTest {
 
+    private final StationName berlinHbf = new StationName("Berlin Hbf");
+    private final GeoLocationInGermany berlinHbfPos = new GeoLocationInGermany(new GeoLocation(52.524927, 13.369348));
+
+    private final StationName berlinOst = new StationName("Berlin Ostbahnhof");
+    private final GeoLocationInGermany berlinOstPos = new GeoLocationInGermany(new GeoLocation(52.510784, 13.434832));
+
+    private final StationName potsdamHbf = new StationName("Potsdam Hbf");
+    private final GeoLocationInGermany potsdamHbfPos = new GeoLocationInGermany(new GeoLocation(52.391726, 13.067120));
+
+    private final StationName stuttgartHbf = new StationName("Stuttgart Hbf");
+    private final GeoLocationInGermany stuttgartHbfPos = new GeoLocationInGermany(new GeoLocation(48.784245, 9.182160));
+
     @Test
     void should_ensure_unique_station_names() {
         RailNetworkDraft draft = new RailNetworkDraft(new RailNetworkDraftId("1"));
-        GeoLocationInGermany location1 = new GeoLocationInGermany(new GeoLocation(51.0, 11.0));
-        GeoLocationInGermany location2 = new GeoLocationInGermany(new GeoLocation(52.0, 12.0));
-        GeoLocationInGermany location3 = new GeoLocationInGermany(new GeoLocation(53.0, 13.0));
-        StationId firstStationId = draft.addStation(new StationName("First Station"), location1);
-        StationId secondStationId = draft.addStation(new StationName("Second Station"), location2);
+        draft.addStation(berlinHbf, berlinHbfPos);
+        StationId potsdamHbfId = draft.addStation(potsdamHbf, potsdamHbfPos);
 
         assertThrows(IllegalArgumentException.class, () -> {
-            draft.addStation(new StationName("First Station"), location3);
+            draft.addStation(berlinHbf, stuttgartHbfPos);
         });
 
         assertThrows(IllegalArgumentException.class, () -> {
-            draft.renameStation(secondStationId, new StationName("First Station"));
+            draft.renameStation(potsdamHbfId, berlinHbf);
         });
     }
 
     @Test
     void should_ensure_minimum_distance_between_stations() {
         RailNetworkDraft draft = new RailNetworkDraft(new RailNetworkDraftId("1"));
-        StationId berlinHbfId = draft.addStation(
-            new StationName("Berlin Hbf"),
-            new GeoLocationInGermany(new GeoLocation(52.524927, 13.369348))
-        );
-        StationId potsdamHbfId = draft.addStation(
-            new StationName("Potsdam Hbf"),
-            new GeoLocationInGermany(new GeoLocation(52.391726, 13.067120))
-        );
+        draft.addStation(berlinHbf, berlinHbfPos);
+        StationId potsdamHbfId = draft.addStation(potsdamHbf, potsdamHbfPos);
 
         assertThrows(IllegalArgumentException.class, () -> {
-            draft.addStation(
-                new StationName("Berlin Ostbahnhof"), // is nearer than 10 km
-                new GeoLocationInGermany(new GeoLocation(52.510784, 13.434832))
-            );
+            draft.addStation(berlinOst, berlinOstPos);
         });
 
         assertThrows(IllegalArgumentException.class, () -> {
-            draft.moveStation(
-                potsdamHbfId,
-                new GeoLocationInGermany(new GeoLocation(52.510784, 13.434832))
-            );
+            draft.moveStation(potsdamHbfId, berlinOstPos);
         });
     }
 
     @Test
     void should_ensure_no_duplicate_connections() {
         RailNetworkDraft draft = new RailNetworkDraft(new RailNetworkDraftId("1"));
-        StationId berlinHbfId = draft.addStation(
-            new StationName("Berlin Hbf"),
-            new GeoLocationInGermany(new GeoLocation(52.524927, 13.369348))
-        );
-        StationId potsdamHbfId = draft.addStation(
-            new StationName("Potsdam Hbf"),
-            new GeoLocationInGermany(new GeoLocation(52.391726, 13.067120))
-        );
+        StationId berlinHbfId = draft.addStation(berlinHbf, berlinHbfPos);
+        StationId potsdamHbfId = draft.addStation(potsdamHbf, potsdamHbfPos);
         draft.connectStations(berlinHbfId, potsdamHbfId);
 
         assertThrows(IllegalArgumentException.class, () -> {
@@ -76,14 +67,8 @@ class RailNetworkDraftTest {
     @Test
     void should_ensure_max_track_length() {
         RailNetworkDraft draft = new RailNetworkDraft(new RailNetworkDraftId("1"));
-        StationId berlinHbfId = draft.addStation(
-            new StationName("Berlin Hbf"),
-            new GeoLocationInGermany(new GeoLocation(52.524927, 13.369348))
-        );
-        StationId stuttgartHbfId = draft.addStation(
-            new StationName("Stuttgart Hbf"),
-            new GeoLocationInGermany(new GeoLocation(48.784245, 9.182160))
-        );
+        StationId berlinHbfId = draft.addStation(berlinHbf, berlinHbfPos);
+        StationId stuttgartHbfId = draft.addStation(stuttgartHbf, stuttgartHbfPos);
 
         assertThrows(IllegalArgumentException.class, () -> {
             draft.connectStations(berlinHbfId, stuttgartHbfId);
@@ -93,10 +78,7 @@ class RailNetworkDraftTest {
     @Test
     void should_be_able_to_delete_stations() {
         RailNetworkDraft draft = new RailNetworkDraft(new RailNetworkDraftId("1"));
-        StationId berlinHbfId = draft.addStation(
-            new StationName("Berlin Hbf"),
-            new GeoLocationInGermany(new GeoLocation(52.524927, 13.369348))
-        );
+        StationId berlinHbfId = draft.addStation(berlinHbf, berlinHbfPos);
         assertEquals(1, draft.getStations().size());
 
         draft.deleteStation(berlinHbfId);
