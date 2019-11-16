@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -30,6 +31,11 @@ class RailNetworkTest {
         new StationId("4"),
         new StationName("Stuttgart Hbf"),
         new GeoLocationInGermany(new GeoLocation(48.784245, 9.182160))
+    );
+    private final TrainStation berlinOstbahnhof = new TrainStation(
+        new StationId("5"),
+        new StationName("Berlin Ostbahnhof"),
+        new GeoLocationInGermany(new GeoLocation(52.510784, 13.434832))
     );
 
 
@@ -94,6 +100,21 @@ class RailNetworkTest {
                 new RailNetworkPeriod(LocalDate.of(2019, 11, 14), LocalDate.of(2019, 11, 20)),
                 new HashSet<>(Arrays.asList(berlinHbf, hamburgHbf.withName(new StationName("Berlin Hbf")))),
                 new HashSet<>(Arrays.asList(
+                    new DoubleTrackRailway(berlinHbf.getId(), hamburgHbf.getId())
+                ))
+            );
+        });
+    }
+
+    @Test
+    void should_ensure_minimum_station_distance() {
+        assertThrows(Exception.class, () -> {
+            new RailNetwork(
+                new RailNetworkId("1"),
+                new RailNetworkPeriod(LocalDate.of(2019, 11, 14), LocalDate.of(2019, 11, 20)),
+                new LinkedHashSet<>(Arrays.asList(berlinHbf, berlinOstbahnhof, hamburgHbf)),
+                new LinkedHashSet<>(Arrays.asList(
+                    new DoubleTrackRailway(berlinHbf.getId(), berlinOstbahnhof.getId()),
                     new DoubleTrackRailway(berlinHbf.getId(), hamburgHbf.getId())
                 ))
             );

@@ -24,6 +24,7 @@ class RailNetwork implements Aggregate {
     private final Set<TrainStation> stations;
     private final Set<DoubleTrackRailway> connections;
     private final Set<Invariant> invariants = new LinkedHashSet<>(Arrays.asList(
+        new MinimumDistanceBetweenTwoStationsIs10Km(),
         new MaximumLengthOfTrackIs300Km(),
         new StationNamesAreUnique(),
 

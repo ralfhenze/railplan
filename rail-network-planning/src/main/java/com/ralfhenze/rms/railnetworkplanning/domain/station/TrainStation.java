@@ -40,4 +40,9 @@ public class TrainStation implements LocalEntity {
     public TrainStation withLocation(GeoLocationInGermany location) {
         return new TrainStation(this.id, this.name, location);
     }
+
+    @Override
+    public String toString() {
+        return name.getName();
+    }
 }
