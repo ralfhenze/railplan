@@ -100,9 +100,9 @@ class RailNetworkTest {
             new RailNetwork(
                 new RailNetworkId("1"),
                 new RailNetworkPeriod(LocalDate.of(2019, 11, 14), LocalDate.of(2019, 11, 20)),
-                new LinkedHashSet<>(Arrays.asList(berlinHbf, berlinOstbahnhof, hamburgHbf)),
+                new LinkedHashSet<>(Arrays.asList(berlinHbf, berlinOst, hamburgHbf)),
                 new LinkedHashSet<>(Arrays.asList(
-                    new DoubleTrackRailway(berlinHbf.getId(), berlinOstbahnhof.getId()),
+                    new DoubleTrackRailway(berlinHbf.getId(), berlinOst.getId()),
                     new DoubleTrackRailway(berlinHbf.getId(), hamburgHbf.getId())
                 ))
             );
