@@ -24,12 +24,14 @@ class RailNetworkDraft implements Aggregate {
     private final Set<DoubleTrackRailway> connections = new HashSet<>();
     private final Set<Invariant> invariants = DefaultRailNetworkInvariants.INVARIANTS;
 
+    private int stationId = 1;
+
     RailNetworkDraft(final RailNetworkDraftId id) {
         this.id = ensureNotNull(id, "Rail Network Draft ID");
     }
 
     public StationId addStation(final StationName name, final GeoLocationInGermany location) {
-        final StationId stationId = new StationId(String.valueOf(stations.size() + 1));
+        final StationId stationId = new StationId(String.valueOf(this.stationId++));
         final TrainStation addedStation = new TrainStation(stationId, name, location);
         final Set<TrainStation> newStations = new LinkedHashSet<>(stations.values());
         newStations.add(addedStation);
@@ -90,6 +92,14 @@ class RailNetworkDraft implements Aggregate {
     public void disconnectStations(final StationId id1, final StationId id2) {
         DoubleTrackRailway connection = new DoubleTrackRailway(id1, id2);
         connections.removeIf(track -> track.equals(connection));
+    }
+
+    public Set<TrainStation> getStations() {
+        return new LinkedHashSet<>(stations.values());
+    }
+
+    public Set<DoubleTrackRailway> getConnections() {
+        return connections;
     }
 
     private void ensureInvariants(Set<TrainStation> stations, Set<DoubleTrackRailway> connections) {

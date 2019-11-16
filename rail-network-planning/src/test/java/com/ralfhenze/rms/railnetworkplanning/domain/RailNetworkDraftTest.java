@@ -6,7 +6,7 @@ import com.ralfhenze.rms.railnetworkplanning.domain.station.StationId;
 import com.ralfhenze.rms.railnetworkplanning.domain.station.StationName;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 class RailNetworkDraftTest {
 
@@ -88,5 +88,19 @@ class RailNetworkDraftTest {
         assertThrows(IllegalArgumentException.class, () -> {
             draft.connectStations(berlinHbfId, stuttgartHbfId);
         });
+    }
+
+    @Test
+    void should_be_able_to_delete_stations() {
+        RailNetworkDraft draft = new RailNetworkDraft(new RailNetworkDraftId("1"));
+        StationId berlinHbfId = draft.addStation(
+            new StationName("Berlin Hbf"),
+            new GeoLocationInGermany(new GeoLocation(52.524927, 13.369348))
+        );
+        assertEquals(1, draft.getStations().size());
+
+        draft.deleteStation(berlinHbfId);
+
+        assertTrue(draft.getStations().isEmpty());
     }
 }

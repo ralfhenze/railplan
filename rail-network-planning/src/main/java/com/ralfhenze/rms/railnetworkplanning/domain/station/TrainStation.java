@@ -42,6 +42,16 @@ public class TrainStation implements LocalEntity {
     }
 
     @Override
+    public int hashCode() {
+        return id.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return (o != null && ((TrainStation)o).id.equals(this.id));
+    }
+
+    @Override
     public String toString() {
         return name.getName();
     }
