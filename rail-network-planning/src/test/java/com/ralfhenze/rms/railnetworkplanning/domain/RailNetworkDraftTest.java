@@ -99,4 +99,20 @@ class RailNetworkDraftTest {
 
         assertTrue(draft.getConnections().isEmpty());
     }
+
+    @Test
+    void should_delete_associated_connections_on_station_delete() {
+        RailNetworkDraft draft = new RailNetworkDraft(new RailNetworkDraftId("1"));
+        StationId berlinHbfId = draft.addStation(berlinHbf, berlinHbfPos);
+        StationId potsdamHbfId = draft.addStation(potsdamHbf, potsdamHbfPos);
+        draft.connectStations(berlinHbfId, potsdamHbfId);
+
+        assertEquals(2, draft.getStations().size());
+        assertEquals(1, draft.getConnections().size());
+
+        draft.deleteStation(potsdamHbfId);
+
+        assertEquals(1, draft.getStations().size());
+        assertTrue(draft.getConnections().isEmpty());
+    }
 }
