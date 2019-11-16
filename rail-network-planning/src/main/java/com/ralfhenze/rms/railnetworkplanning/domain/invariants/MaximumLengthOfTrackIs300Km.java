@@ -10,13 +10,20 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static com.ralfhenze.rms.railnetworkplanning.domain.common.Preconditions.ensureNotNull;
+
 public class MaximumLengthOfTrackIs300Km implements Invariant {
 
     private static final int MAXIMUM_LENGTH_KM = 300;
 
     @Override
     public void ensureIsSatisfied(Set<TrainStation> stations, Set<DoubleTrackRailway> connections) {
-        ensureMaximumTrackLength(stations, connections);
+        ensureNotNull(stations, "Stations");
+        ensureNotNull(connections, "Connections");
+
+        if (!connections.isEmpty()) {
+            ensureMaximumTrackLength(stations, connections);
+        }
     }
 
     private void ensureMaximumTrackLength(Set<TrainStation> stations, Set<DoubleTrackRailway> connections) {

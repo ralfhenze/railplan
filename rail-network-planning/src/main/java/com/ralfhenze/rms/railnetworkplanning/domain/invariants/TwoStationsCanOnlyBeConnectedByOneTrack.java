@@ -8,11 +8,18 @@ import org.javatuples.Pair;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.ralfhenze.rms.railnetworkplanning.domain.common.Preconditions.ensureNotNull;
+
 public class TwoStationsCanOnlyBeConnectedByOneTrack implements Invariant {
 
     @Override
     public void ensureIsSatisfied(Set<TrainStation> stations, Set<DoubleTrackRailway> connections) {
-        ensureNoDuplicateConnections(stations, connections);
+        ensureNotNull(stations, "Stations");
+        ensureNotNull(connections, "Connections");
+
+        if (connections.size() >= 2) {
+            ensureNoDuplicateConnections(stations, connections);
+        }
     }
 
     private void ensureNoDuplicateConnections(Set<TrainStation> stations, Set<DoubleTrackRailway> connections) {

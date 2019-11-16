@@ -19,11 +19,11 @@ class RailNetworkDraftTest {
         StationId firstStationId = draft.addStation(new StationName("First Station"), location1);
         StationId secondStationId = draft.addStation(new StationName("Second Station"), location2);
 
-        assertThrows(Exception.class, () -> {
+        assertThrows(IllegalArgumentException.class, () -> {
             draft.addStation(new StationName("First Station"), location3);
         });
 
-        assertThrows(Exception.class, () -> {
+        assertThrows(IllegalArgumentException.class, () -> {
             draft.renameStation(secondStationId, new StationName("First Station"));
         });
     }
@@ -40,14 +40,14 @@ class RailNetworkDraftTest {
             new GeoLocationInGermany(new GeoLocation(52.391726, 13.067120))
         );
 
-        assertThrows(Exception.class, () -> {
+        assertThrows(IllegalArgumentException.class, () -> {
             draft.addStation(
                 new StationName("Berlin Ostbahnhof"), // is nearer than 10 km
                 new GeoLocationInGermany(new GeoLocation(52.510784, 13.434832))
             );
         });
 
-        assertThrows(Exception.class, () -> {
+        assertThrows(IllegalArgumentException.class, () -> {
             draft.moveStation(
                 potsdamHbfId,
                 new GeoLocationInGermany(new GeoLocation(52.510784, 13.434832))
@@ -68,7 +68,7 @@ class RailNetworkDraftTest {
         );
         draft.connectStations(berlinHbfId, potsdamHbfId);
 
-        assertThrows(Exception.class, () -> {
+        assertThrows(IllegalArgumentException.class, () -> {
             draft.connectStations(potsdamHbfId, berlinHbfId);
         });
     }
@@ -85,7 +85,7 @@ class RailNetworkDraftTest {
             new GeoLocationInGermany(new GeoLocation(48.784245, 9.182160))
         );
 
-        assertThrows(Exception.class, () -> {
+        assertThrows(IllegalArgumentException.class, () -> {
             draft.connectStations(berlinHbfId, stuttgartHbfId);
         });
     }

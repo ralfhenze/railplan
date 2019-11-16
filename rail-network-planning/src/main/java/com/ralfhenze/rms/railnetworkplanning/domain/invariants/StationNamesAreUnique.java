@@ -8,11 +8,17 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static com.ralfhenze.rms.railnetworkplanning.domain.common.Preconditions.ensureNotNull;
+
 public class StationNamesAreUnique implements Invariant {
 
     @Override
     public void ensureIsSatisfied(Set<TrainStation> stations, Set<DoubleTrackRailway> connections) {
-        ensureUniqueStationNames(stations);
+        ensureNotNull(stations, "Stations");
+
+        if (stations.size() >= 2) {
+            ensureUniqueStationNames(stations);
+        }
     }
 
     private void ensureUniqueStationNames(Set<TrainStation> stations) {

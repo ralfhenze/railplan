@@ -1,9 +1,12 @@
 package com.ralfhenze.rms.railnetworkplanning.domain;
 
 import com.ralfhenze.rms.railnetworkplanning.domain.common.Aggregate;
+import com.ralfhenze.rms.railnetworkplanning.domain.invariants.Invariant;
+import com.ralfhenze.rms.railnetworkplanning.domain.invariants.DefaultRailNetworkInvariants;
 import com.ralfhenze.rms.railnetworkplanning.domain.station.*;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.ralfhenze.rms.railnetworkplanning.domain.common.Preconditions.ensureNotNull;
 
@@ -19,33 +22,51 @@ class RailNetworkDraft implements Aggregate {
 
     private final Map<StationId, TrainStation> stations = new HashMap<>();
     private final Set<DoubleTrackRailway> connections = new HashSet<>();
+    private final Set<Invariant> invariants = DefaultRailNetworkInvariants.INVARIANTS;
 
     RailNetworkDraft(final RailNetworkDraftId id) {
         this.id = ensureNotNull(id, "Rail Network Draft ID");
     }
 
     public StationId addStation(final StationName name, final GeoLocationInGermany location) {
-        ensureStationNameDoesNotExist(name);
-        ensureMinimumStationDistance(location);
-
         final StationId stationId = new StationId(String.valueOf(stations.size() + 1));
-        stations.put(stationId, new TrainStation(stationId, name, location));
+        final TrainStation addedStation = new TrainStation(stationId, name, location);
+        final Set<TrainStation> newStations = new LinkedHashSet<>(stations.values());
+        newStations.add(addedStation);
+
+        ensureInvariants(newStations, connections);
+
+        stations.put(stationId, addedStation);
 
         return stationId;
     }
 
     public void renameStation(final StationId id, final StationName name) {
         ensureStationIdExist(id);
-        ensureStationNameDoesNotExist(name);
 
-        stations.replace(id, stations.get(id).withName(name));
+        final TrainStation renamedStation = stations.get(id).withName(name);
+        final Set<TrainStation> newStations = stations.values().stream()
+            .filter(ts -> !ts.getId().equals(id))
+            .collect(Collectors.toSet());
+        newStations.add(renamedStation);
+
+        ensureInvariants(newStations, connections);
+
+        stations.replace(id, renamedStation);
     }
 
     public void moveStation(final StationId id, final GeoLocationInGermany location) {
         ensureStationIdExist(id);
-        ensureMinimumStationDistance(location, id);
 
-        stations.replace(id, stations.get(id).withLocation(location));
+        final TrainStation movedStation = stations.get(id).withLocation(location);
+        final Set<TrainStation> newStations = stations.values().stream()
+            .filter(ts -> !ts.getId().equals(id))
+            .collect(Collectors.toSet());
+        newStations.add(movedStation);
+
+        ensureInvariants(newStations, connections);
+
+        stations.replace(id, movedStation);
     }
 
     public void deleteStation(final StationId id) {
@@ -56,10 +77,14 @@ class RailNetworkDraft implements Aggregate {
     public void connectStations(final StationId id1, final StationId id2) {
         ensureStationIdExist(id1);
         ensureStationIdExist(id2);
-        ensureConnectionDoesNotExist(id1, id2);
-        ensureMaximumTrackLength(id1, id2);
 
-        connections.add(new DoubleTrackRailway(id1, id2));
+        final DoubleTrackRailway addedConnection = new DoubleTrackRailway(id1, id2);
+        final Set<DoubleTrackRailway> newConnections = new LinkedHashSet<>(connections);
+        newConnections.add(addedConnection);
+
+        ensureInvariants(new LinkedHashSet<>(stations.values()), newConnections);
+
+        connections.add(addedConnection);
     }
 
     public void disconnectStations(final StationId id1, final StationId id2) {
@@ -67,14 +92,9 @@ class RailNetworkDraft implements Aggregate {
         connections.removeIf(track -> track.equals(connection));
     }
 
-    private void ensureStationNameDoesNotExist(final StationName stationName) {
-        final boolean nameExists = stations.values().stream()
-            .anyMatch(station -> station.getName().equals(stationName));
-
-        if (nameExists) {
-            throw new IllegalArgumentException(
-                "Station Name \"" + stationName.getName() + "\" already exists"
-            );
+    private void ensureInvariants(Set<TrainStation> stations, Set<DoubleTrackRailway> connections) {
+        for (final Invariant invariant : invariants) {
+            invariant.ensureIsSatisfied(stations, connections);
         }
     }
 
@@ -82,68 +102,6 @@ class RailNetworkDraft implements Aggregate {
         if (!stations.containsKey(stationId)) {
             throw new IllegalArgumentException(
                 "Station ID \"" + stationId + "\" does not exist"
-            );
-        }
-    }
-
-    private void ensureMinimumStationDistance(final GeoLocationInGermany location) {
-        ensureMinimumStationDistance(location, null);
-    }
-
-    private void ensureMinimumStationDistance(final GeoLocationInGermany location, final StationId ignoredId) {
-        final Optional<TrainStation> nearbyStation = stations
-            .values()
-            .stream()
-            .filter(station -> !station.getId().equals(ignoredId))
-            .filter(station ->
-                station
-                    .getLocation()
-                    .getLocation()
-                    .getKilometerDistanceTo(location.getLocation()) <= 10.0)
-            .findFirst();
-
-        if (nearbyStation.isPresent()) {
-            double distance = nearbyStation.get().getLocation()
-                .getLocation().getKilometerDistanceTo(location.getLocation());
-
-            throw new IllegalArgumentException(
-                "Distance to Station \""
-                    + nearbyStation.get().getName()
-                    + "\" should be > 10 km, but was "
-                    + (Math.round(distance * 100.0) / 100.0)
-                    + " km"
-            );
-        }
-    }
-
-    private void ensureConnectionDoesNotExist(final StationId id1, final StationId id2) {
-        final DoubleTrackRailway newConnection = new DoubleTrackRailway(id1, id2);
-        final boolean connectionExists = connections.stream()
-            .anyMatch(connection -> connection.equals(newConnection));
-
-        if (connectionExists) {
-            throw new IllegalArgumentException(
-                "Connection from \""
-                    + stations.get(id1).getName() + "\" (" + id1 + ") to \""
-                    + stations.get(id2).getName() + "\" (" + id2 + ") already exists"
-            );
-        }
-    }
-
-    private void ensureMaximumTrackLength(final StationId id1, final StationId id2) {
-        final double trackLength = stations.get(id1)
-            .getLocation()
-            .getLocation()
-            .getKilometerDistanceTo(
-                stations.get(id2).getLocation().getLocation()
-            );
-
-        if (trackLength > 300) {
-            throw new IllegalArgumentException(
-                "Track from \""
-                    + stations.get(id1).getName() + "\" (" + id1 + ") to \""
-                    + stations.get(id2).getName() + "\" (" + id2 + ") must be shorter than 300 km"
-                    + ", but was ~" + Math.round(trackLength) + " km"
             );
         }
     }

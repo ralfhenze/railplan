@@ -5,10 +5,15 @@ import com.ralfhenze.rms.railnetworkplanning.domain.station.TrainStation;
 
 import java.util.Set;
 
+import static com.ralfhenze.rms.railnetworkplanning.domain.common.Preconditions.ensureNotNull;
+
 public class ContainsAtLeastTwoStationsAndOneTrack implements Invariant {
 
     @Override
     public void ensureIsSatisfied(Set<TrainStation> stations, Set<DoubleTrackRailway> connections) {
+        ensureNotNull(stations, "Stations");
+        ensureNotNull(connections, "Connections");
+
         ensureAtLeastTwoStations(stations);
         ensureAtLeastOneTrack(connections);
     }
