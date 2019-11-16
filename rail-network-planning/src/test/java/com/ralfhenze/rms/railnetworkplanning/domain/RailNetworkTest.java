@@ -8,36 +8,10 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 
+import static com.ralfhenze.rms.railnetworkplanning.domain.TestData.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class RailNetworkTest {
-
-    private final TrainStation berlinHbf = new TrainStation(
-        new StationId("1"),
-        new StationName("Berlin Hbf"),
-        new GeoLocationInGermany(new GeoLocation(52.524927, 13.369348))
-    );
-    private final TrainStation hamburgHbf = new TrainStation(
-        new StationId("2"),
-        new StationName("Hamburg Hbf"),
-        new GeoLocationInGermany(new GeoLocation(53.552596, 10.006727))
-    );
-    private final TrainStation frankfurtHbf = new TrainStation(
-        new StationId("3"),
-        new StationName("Frankfurt am Main Hbf"),
-        new GeoLocationInGermany(new GeoLocation(50.106880, 8.663739))
-    );
-    private final TrainStation stuttgartHbf = new TrainStation(
-        new StationId("4"),
-        new StationName("Stuttgart Hbf"),
-        new GeoLocationInGermany(new GeoLocation(48.784245, 9.182160))
-    );
-    private final TrainStation berlinOstbahnhof = new TrainStation(
-        new StationId("5"),
-        new StationName("Berlin Ostbahnhof"),
-        new GeoLocationInGermany(new GeoLocation(52.510784, 13.434832))
-    );
-
 
     @Test
     void should_ensure_at_least_two_stations() {
