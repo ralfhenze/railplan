@@ -9,14 +9,19 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import static com.ralfhenze.rms.railnetworkplanning.domain.common.Preconditions.ensureNotNull;
+
 public class ContainsNoUnconnectedSubGraphs implements Invariant {
 
     @Override
     public void ensureIsSatisfied(Set<TrainStation> stations, Set<DoubleTrackRailway> connections) {
-        ensureNoUnconnectedSubGraphs(connections);
+        ensureNotNull(stations, "Stations");
+        ensureNotNull(connections, "Connections");
+
+        ensureNoUnconnectedSubGraphs(stations, connections);
     }
 
-    private void ensureNoUnconnectedSubGraphs(Set<DoubleTrackRailway> connections) {
+    private void ensureNoUnconnectedSubGraphs(Set<TrainStation> stations, Set<DoubleTrackRailway> connections) {
         final Map<StationId, Set<StationId>> nodes = new HashMap<>();
 
         for (final DoubleTrackRailway connection : connections) {
@@ -34,6 +39,10 @@ public class ContainsNoUnconnectedSubGraphs implements Invariant {
 
         final StationId firstNode = nodes.keySet().stream().findFirst().get();
         final Set<StationId> visitedNodes = visitAdjacentNodes(firstNode, new HashSet<>(), nodes);
+
+        for (final TrainStation station : stations) {
+            nodes.putIfAbsent(station.getId(), new HashSet<>());
+        }
 
         final boolean unconnectedSubGraphExists = (visitedNodes.size() < nodes.size());
 

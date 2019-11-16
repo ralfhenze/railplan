@@ -41,7 +41,7 @@ class RailNetworkTest {
 
     @Test
     void should_ensure_at_least_two_stations() {
-        assertThrows(Exception.class, () -> {
+        assertThrows(IllegalArgumentException.class, () -> {
             new RailNetwork(
                 new RailNetworkId("1"),
                 new RailNetworkPeriod(LocalDate.of(2019, 11, 14), LocalDate.of(2019, 11, 20)),
@@ -53,7 +53,7 @@ class RailNetworkTest {
 
     @Test
     void should_ensure_at_least_one_connection() {
-        assertThrows(Exception.class, () -> {
+        assertThrows(IllegalArgumentException.class, () -> {
             new RailNetwork(
                 new RailNetworkId("1"),
                 new RailNetworkPeriod(LocalDate.of(2019, 11, 14), LocalDate.of(2019, 11, 20)),
@@ -65,7 +65,7 @@ class RailNetworkTest {
 
     @Test
     void should_ensure_no_unconnected_sub_graphs() {
-        assertThrows(Exception.class, () -> {
+        assertThrows(IllegalArgumentException.class, () -> {
             new RailNetwork(
                 new RailNetworkId("1"),
                 new RailNetworkPeriod(LocalDate.of(2019, 11, 14), LocalDate.of(2019, 11, 20)),
@@ -79,8 +79,22 @@ class RailNetworkTest {
     }
 
     @Test
+    void should_ensure_no_standalone_stations() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            new RailNetwork(
+                new RailNetworkId("1"),
+                new RailNetworkPeriod(LocalDate.of(2019, 11, 14), LocalDate.of(2019, 11, 20)),
+                new HashSet<>(Arrays.asList(berlinHbf, hamburgHbf, frankfurtHbf)),
+                new HashSet<>(Arrays.asList(
+                    new DoubleTrackRailway(berlinHbf.getId(), hamburgHbf.getId())
+                ))
+            );
+        });
+    }
+
+    @Test
     void should_ensure_max_track_length() {
-        assertThrows(Exception.class, () -> {
+        assertThrows(IllegalArgumentException.class, () -> {
             new RailNetwork(
                 new RailNetworkId("1"),
                 new RailNetworkPeriod(LocalDate.of(2019, 11, 14), LocalDate.of(2019, 11, 20)),
@@ -94,7 +108,7 @@ class RailNetworkTest {
 
     @Test
     void should_ensure_unique_station_names() {
-        assertThrows(Exception.class, () -> {
+        assertThrows(IllegalArgumentException.class, () -> {
             new RailNetwork(
                 new RailNetworkId("1"),
                 new RailNetworkPeriod(LocalDate.of(2019, 11, 14), LocalDate.of(2019, 11, 20)),
@@ -108,7 +122,7 @@ class RailNetworkTest {
 
     @Test
     void should_ensure_minimum_station_distance() {
-        assertThrows(Exception.class, () -> {
+        assertThrows(IllegalArgumentException.class, () -> {
             new RailNetwork(
                 new RailNetworkId("1"),
                 new RailNetworkPeriod(LocalDate.of(2019, 11, 14), LocalDate.of(2019, 11, 20)),
@@ -123,7 +137,7 @@ class RailNetworkTest {
 
     @Test
     void should_ensure_no_duplicate_connections() {
-        assertThrows(Exception.class, () -> {
+        assertThrows(IllegalArgumentException.class, () -> {
             new RailNetwork(
                 new RailNetworkId("1"),
                 new RailNetworkPeriod(LocalDate.of(2019, 11, 14), LocalDate.of(2019, 11, 20)),
