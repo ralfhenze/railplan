@@ -6,5 +6,5 @@ import java.util.Optional;
 
 public interface RailNetworkDraftRepository extends Repository {
     Optional<RailNetworkDraft> getRailNetworkDraftOfId(RailNetworkDraftId id);
-    void persist(RailNetworkDraft railNetworkDraft);
+    Optional<RailNetworkDraft> persist(RailNetworkDraft railNetworkDraft);
 }
