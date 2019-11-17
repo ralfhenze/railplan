@@ -5,6 +5,8 @@ import com.ralfhenze.rms.railnetworkplanning.domain.invariants.*;
 import com.ralfhenze.rms.railnetworkplanning.domain.station.TrainStation;
 import org.eclipse.collections.api.set.ImmutableSet;
 
+import java.util.Optional;
+
 import static com.ralfhenze.rms.railnetworkplanning.domain.common.Preconditions.ensureNotNull;
 
 /**
@@ -13,9 +15,9 @@ import static com.ralfhenze.rms.railnetworkplanning.domain.common.Preconditions.
  * [x] all invariants of RailNetworkDraft
  * [ ] released Rail Network Plans can't be changed any more
  */
-class RailNetwork implements Aggregate {
+public class RailNetwork implements Aggregate {
 
-    private final RailNetworkId id;
+    private final Optional<RailNetworkId> id;
     private final RailNetworkPeriod period;
 
     private final ImmutableSet<TrainStation> stations;
@@ -23,7 +25,15 @@ class RailNetwork implements Aggregate {
     private final ImmutableSet<Invariant> invariants;
 
     RailNetwork(
-        final RailNetworkId id,
+        final RailNetworkPeriod period,
+        final ImmutableSet<TrainStation> stations,
+        final ImmutableSet<DoubleTrackRailway> connections
+    ) {
+        this(Optional.empty(), period, stations, connections);
+    }
+
+    RailNetwork(
+        final Optional<RailNetworkId> id,
         final RailNetworkPeriod period,
         final ImmutableSet<TrainStation> stations,
         final ImmutableSet<DoubleTrackRailway> connections
@@ -44,6 +54,16 @@ class RailNetwork implements Aggregate {
         for (final Invariant invariant : invariants) {
             invariant.ensureIsSatisfied(stations.castToSet(), connections.castToSet());
         }
+    }
+
+    public RailNetwork withId(RailNetworkId id) {
+        ensureNotNull(id, "Rail Network ID");
+
+        return new RailNetwork(Optional.of(id), period, stations, connections);
+    }
+
+    public Optional<RailNetworkId> getId() {
+        return id;
     }
 
     public RailNetworkPeriod getPeriod() {
