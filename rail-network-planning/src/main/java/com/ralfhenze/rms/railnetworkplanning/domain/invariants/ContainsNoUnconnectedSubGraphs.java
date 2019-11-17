@@ -18,7 +18,9 @@ public class ContainsNoUnconnectedSubGraphs implements Invariant {
         ensureNotNull(stations, "Stations");
         ensureNotNull(connections, "Connections");
 
-        ensureNoUnconnectedSubGraphs(stations, connections);
+        if (!stations.isEmpty() && !connections.isEmpty()) {
+            ensureNoUnconnectedSubGraphs(stations, connections);
+        }
     }
 
     private void ensureNoUnconnectedSubGraphs(Set<TrainStation> stations, Set<DoubleTrackRailway> connections) {
