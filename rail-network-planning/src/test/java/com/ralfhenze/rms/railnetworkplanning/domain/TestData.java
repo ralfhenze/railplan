@@ -2,6 +2,8 @@ package com.ralfhenze.rms.railnetworkplanning.domain;
 
 import com.ralfhenze.rms.railnetworkplanning.domain.station.*;
 
+import java.time.LocalDate;
+
 public class TestData {
 
     public static final StationName berlinHbfName = new StationName("Berlin Hbf");
@@ -27,4 +29,9 @@ public class TestData {
     public static final StationName stuttgartHbfName = new StationName("Stuttgart Hbf");
     public static final GeoLocationInGermany stuttgartHbfPos = new GeoLocationInGermany(new GeoLocation(48.784245, 9.182160));
     public static final TrainStation stuttgartHbf = new TrainStation(new StationId("6"), stuttgartHbfName, stuttgartHbfPos);
+
+    public static final RailNetworkPeriod defaultPeriod = new RailNetworkPeriod(
+        LocalDate.of(2019, 11, 14),
+        LocalDate.of(2019, 11, 20)
+    );
 }

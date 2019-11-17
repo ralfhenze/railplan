@@ -5,8 +5,6 @@ import org.eclipse.collections.api.factory.Sets;
 import org.eclipse.collections.api.set.ImmutableSet;
 import org.junit.jupiter.api.Test;
 
-import java.time.LocalDate;
-
 import static com.ralfhenze.rms.railnetworkplanning.domain.TestData.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -16,22 +14,14 @@ class RailNetworkTest {
     @Test
     void should_ensure_at_least_two_stations() {
         assertThrows(IllegalArgumentException.class, () -> {
-            new RailNetwork(
-                new RailNetworkPeriod(LocalDate.of(2019, 11, 14), LocalDate.of(2019, 11, 20)),
-                emptySet(),
-                emptySet()
-            );
+            new RailNetwork(defaultPeriod, emptySet(), emptySet());
         });
     }
 
     @Test
     void should_ensure_at_least_one_connection() {
         assertThrows(IllegalArgumentException.class, () -> {
-            new RailNetwork(
-                new RailNetworkPeriod(LocalDate.of(2019, 11, 14), LocalDate.of(2019, 11, 20)),
-                setOf(berlinHbf, hamburgHbf),
-                emptySet()
-            );
+            new RailNetwork(defaultPeriod, setOf(berlinHbf, hamburgHbf), emptySet());
         });
     }
 
@@ -39,7 +29,7 @@ class RailNetworkTest {
     void should_ensure_no_unconnected_sub_graphs() {
         assertThrows(IllegalArgumentException.class, () -> {
             new RailNetwork(
-                new RailNetworkPeriod(LocalDate.of(2019, 11, 14), LocalDate.of(2019, 11, 20)),
+                defaultPeriod,
                 setOf(berlinHbf, hamburgHbf, frankfurtHbf, stuttgartHbf),
                 setOf(
                     new DoubleTrackRailway(berlinHbf.getId(), hamburgHbf.getId()),
@@ -53,7 +43,7 @@ class RailNetworkTest {
     void should_ensure_no_standalone_stations() {
         assertThrows(IllegalArgumentException.class, () -> {
             new RailNetwork(
-                new RailNetworkPeriod(LocalDate.of(2019, 11, 14), LocalDate.of(2019, 11, 20)),
+                defaultPeriod,
                 setOf(berlinHbf, hamburgHbf, frankfurtHbf),
                 setOf(new DoubleTrackRailway(berlinHbf.getId(), hamburgHbf.getId()))
             );
@@ -64,7 +54,7 @@ class RailNetworkTest {
     void should_ensure_max_track_length() {
         assertThrows(IllegalArgumentException.class, () -> {
             new RailNetwork(
-                new RailNetworkPeriod(LocalDate.of(2019, 11, 14), LocalDate.of(2019, 11, 20)),
+                defaultPeriod,
                 setOf(berlinHbf, stuttgartHbf),
                 setOf(new DoubleTrackRailway(berlinHbf.getId(), stuttgartHbf.getId()))
             );
@@ -75,7 +65,7 @@ class RailNetworkTest {
     void should_ensure_unique_station_names() {
         assertThrows(IllegalArgumentException.class, () -> {
             new RailNetwork(
-                new RailNetworkPeriod(LocalDate.of(2019, 11, 14), LocalDate.of(2019, 11, 20)),
+                defaultPeriod,
                 setOf(berlinHbf, hamburgHbf.withName(new StationName("Berlin Hbf"))),
                 setOf(new DoubleTrackRailway(berlinHbf.getId(), hamburgHbf.getId()))
             );
@@ -86,7 +76,7 @@ class RailNetworkTest {
     void should_ensure_minimum_station_distance() {
         assertThrows(IllegalArgumentException.class, () -> {
             new RailNetwork(
-                new RailNetworkPeriod(LocalDate.of(2019, 11, 14), LocalDate.of(2019, 11, 20)),
+                defaultPeriod,
                 setOf(berlinHbf, berlinOst, hamburgHbf),
                 setOf(
                     new DoubleTrackRailway(berlinHbf.getId(), berlinOst.getId()),
@@ -99,7 +89,7 @@ class RailNetworkTest {
     @Test
     void should_ensure_no_duplicate_connections() {
         final RailNetwork railNetwork = new RailNetwork(
-            new RailNetworkPeriod(LocalDate.of(2019, 11, 14), LocalDate.of(2019, 11, 20)),
+            defaultPeriod,
             setOf(berlinHbf, hamburgHbf),
             setOf(
                 new DoubleTrackRailway(berlinHbf.getId(), hamburgHbf.getId()),
