@@ -10,29 +10,24 @@ import static com.ralfhenze.rms.railnetworkplanning.domain.common.Preconditions.
 /**
  * [x] the Periods of released Rail Network Plans are continuous without gaps and don't overlap
  */
-class RailNetworkReleaseService implements DomainService {
+public class RailNetworkReleaseService implements DomainService {
 
     private final RailNetworkRepository railNetworkRepository;
 
-    RailNetworkReleaseService(final RailNetworkRepository railNetworkRepository) {
+    public RailNetworkReleaseService(final RailNetworkRepository railNetworkRepository) {
         this.railNetworkRepository = ensureNotNull(railNetworkRepository, "Rail Network Repository");
     }
 
-    Optional<RailNetwork> release(final RailNetworkDraft draft, final RailNetworkPeriod period) {
+    public Optional<RailNetwork> release(final RailNetworkDraft draft, final RailNetworkPeriod period) {
         ensureValidPeriod(period);
 
         RailNetwork railNetwork = new RailNetwork(
-            new RailNetworkId("1"),
             period,
             draft.getStations(),
             draft.getConnections()
         );
 
-        railNetworkRepository.persist(railNetwork);
-
-        // TODO: emit RailNetworkReleased event
-
-        return Optional.of(railNetwork);
+        return railNetworkRepository.add(railNetwork);
     }
 
     private void ensureValidPeriod(final RailNetworkPeriod period) {
