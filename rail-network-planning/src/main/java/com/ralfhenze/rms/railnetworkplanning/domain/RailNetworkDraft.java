@@ -7,8 +7,6 @@ import com.ralfhenze.rms.railnetworkplanning.domain.station.*;
 import org.eclipse.collections.api.set.ImmutableSet;
 import org.eclipse.collections.impl.factory.Sets;
 
-import java.util.*;
-
 import static com.ralfhenze.rms.railnetworkplanning.domain.common.Preconditions.ensureNotNull;
 
 /**
@@ -22,7 +20,7 @@ class RailNetworkDraft implements Aggregate {
     private final RailNetworkDraftId id;
     private final ImmutableSet<TrainStation> stations;
     private final ImmutableSet<DoubleTrackRailway> connections;
-    private final ImmutableSet<Invariant> invariants = Sets.adapt(DefaultRailNetworkInvariants.INVARIANTS).toImmutable();
+    private final ImmutableSet<Invariant> invariants = DefaultRailNetworkInvariants.INVARIANTS;
     private final int stationId;
 
     RailNetworkDraft(final RailNetworkDraftId id) {

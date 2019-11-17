@@ -4,7 +4,6 @@ import com.ralfhenze.rms.railnetworkplanning.domain.common.Aggregate;
 import com.ralfhenze.rms.railnetworkplanning.domain.invariants.*;
 import com.ralfhenze.rms.railnetworkplanning.domain.station.TrainStation;
 import org.eclipse.collections.api.set.ImmutableSet;
-import org.eclipse.collections.impl.factory.Sets;
 
 import static com.ralfhenze.rms.railnetworkplanning.domain.common.Preconditions.ensureNotNull;
 
@@ -34,7 +33,7 @@ class RailNetwork implements Aggregate {
         this.stations = ensureNotNull(stations, "Train Stations");
         this.connections = ensureNotNull(connections, "Connections");
 
-        this.invariants = Sets.adapt(DefaultRailNetworkInvariants.INVARIANTS).toImmutable()
+        this.invariants = DefaultRailNetworkInvariants.INVARIANTS
             .newWith(new ContainsAtLeastTwoStationsAndOneTrack())
             .newWith(new ContainsNoUnconnectedSubGraphs());
 

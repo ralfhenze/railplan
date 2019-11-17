@@ -1,17 +1,14 @@
 package com.ralfhenze.rms.railnetworkplanning.domain.invariants;
 
-import java.util.Arrays;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import org.eclipse.collections.api.factory.Sets;
+import org.eclipse.collections.api.set.ImmutableSet;
 
 public class DefaultRailNetworkInvariants {
 
-    public final static Set<Invariant> INVARIANTS = new LinkedHashSet<>(
-        Arrays.asList(
-            new StationNamesAreUnique(),
-            new MinimumDistanceBetweenTwoStationsIs10Km(),
-            new MaximumLengthOfTrackIs300Km(),
-            new TwoStationsCanOnlyBeConnectedByOneTrack()
-        )
+    public final static ImmutableSet<Invariant> INVARIANTS = Sets.immutable.of(
+        new StationNamesAreUnique(),
+        new MinimumDistanceBetweenTwoStationsIs10Km(),
+        new MaximumLengthOfTrackIs300Km(),
+        new TwoStationsCanOnlyBeConnectedByOneTrack()
     );
 }
