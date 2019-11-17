@@ -42,11 +42,10 @@ class RailNetworkDraftTest {
         final RailNetworkDraft draft = new RailNetworkDraft(new RailNetworkDraftId("1"))
             .withNewStation(berlinHbfName, berlinHbfPos)
             .withNewStation(potsdamHbfName, potsdamHbfPos)
-            .withConnection(berlinHbfName, potsdamHbfName);
+            .withConnection(berlinHbfName, potsdamHbfName)
+            .withConnection(potsdamHbfName, berlinHbfName); // the same connection again
 
-        assertThrows(IllegalArgumentException.class, () -> {
-            draft.withConnection(potsdamHbfName, berlinHbfName);
-        });
+        assertEquals(1, draft.getConnections().size());
     }
 
     @Test

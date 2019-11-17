@@ -4,9 +4,10 @@ import com.ralfhenze.rms.railnetworkplanning.domain.common.Aggregate;
 import com.ralfhenze.rms.railnetworkplanning.domain.invariants.Invariant;
 import com.ralfhenze.rms.railnetworkplanning.domain.invariants.DefaultRailNetworkInvariants;
 import com.ralfhenze.rms.railnetworkplanning.domain.station.*;
+import org.eclipse.collections.api.set.ImmutableSet;
+import org.eclipse.collections.impl.factory.Sets;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static com.ralfhenze.rms.railnetworkplanning.domain.common.Preconditions.ensureNotNull;
 
@@ -19,42 +20,39 @@ import static com.ralfhenze.rms.railnetworkplanning.domain.common.Preconditions.
 class RailNetworkDraft implements Aggregate {
 
     private final RailNetworkDraftId id;
-    private final Map<StationId, TrainStation> stations;
-    private final Set<DoubleTrackRailway> connections;
-    private final Set<Invariant> invariants = DefaultRailNetworkInvariants.INVARIANTS;
+    private final ImmutableSet<TrainStation> stations;
+    private final ImmutableSet<DoubleTrackRailway> connections;
+    private final ImmutableSet<Invariant> invariants = Sets.adapt(DefaultRailNetworkInvariants.INVARIANTS).toImmutable();
     private final int stationId;
 
     RailNetworkDraft(final RailNetworkDraftId id) {
         this.id = ensureNotNull(id, "Rail Network Draft ID");
-        this.stations = new HashMap<>();
-        this.connections = new HashSet<>();
+        this.stations = Sets.immutable.empty();
+        this.connections = Sets.immutable.empty();
         this.stationId = 1;
     }
 
     private RailNetworkDraft(
         final RailNetworkDraftId id,
-        final Map<StationId, TrainStation> stations,
-        final Set<DoubleTrackRailway> connections,
+        final ImmutableSet<TrainStation> stations,
+        final ImmutableSet<DoubleTrackRailway> connections,
         final int stationId
     ) {
         this.id = ensureNotNull(id, "Rail Network Draft ID");
         this.stations = stations;
         this.connections = connections;
         this.stationId = stationId;
+
     }
 
     public RailNetworkDraft withNewStation(final StationName name, final GeoLocationInGermany location) {
         final StationId stationId = new StationId(String.valueOf(this.stationId));
         final TrainStation addedStation = new TrainStation(stationId, name, location);
-        final Set<TrainStation> newStations = new LinkedHashSet<>(stations.values());
-        newStations.add(addedStation);
+        final ImmutableSet<TrainStation> newStations = stations.newWith(addedStation);
 
         ensureInvariants(newStations, connections);
 
-        final Map<StationId, TrainStation> newStationsMap = new HashMap<>(this.stations);
-        newStationsMap.put(stationId, addedStation);
-
-        return new RailNetworkDraft(this.id, newStationsMap, this.connections, this.stationId + 1);
+        return new RailNetworkDraft(this.id, newStations, this.connections, this.stationId + 1);
     }
 
     public RailNetworkDraft withRenamedStation(final StationName currentName, final StationName newName) {
@@ -64,18 +62,16 @@ class RailNetworkDraft implements Aggregate {
     public RailNetworkDraft withRenamedStation(final StationId id, final StationName name) {
         ensureStationIdExist(id);
 
-        final TrainStation renamedStation = stations.get(id).withName(name);
-        final Set<TrainStation> newStations = stations.values().stream()
-            .filter(ts -> !ts.getId().equals(id))
-            .collect(Collectors.toSet());
-        newStations.add(renamedStation);
+        final TrainStation renamedStation = stations
+            .detect(ts -> ts.getId().equals(id))
+            .withName(name);
+        final ImmutableSet<TrainStation> newStations = stations
+            .reject(ts -> ts.getId().equals(id))
+            .newWith(renamedStation);
 
         ensureInvariants(newStations, connections);
 
-        final Map<StationId, TrainStation> newStationsMap = new HashMap<>(this.stations);
-        newStationsMap.replace(id, renamedStation);
-
-        return new RailNetworkDraft(this.id, newStationsMap, this.connections, this.stationId);
+        return new RailNetworkDraft(this.id, newStations, this.connections, this.stationId);
     }
 
     public RailNetworkDraft withMovedStation(final StationName name, final GeoLocationInGermany location) {
@@ -85,18 +81,16 @@ class RailNetworkDraft implements Aggregate {
     public RailNetworkDraft withMovedStation(final StationId id, final GeoLocationInGermany location) {
         ensureStationIdExist(id);
 
-        final TrainStation movedStation = stations.get(id).withLocation(location);
-        final Set<TrainStation> newStations = stations.values().stream()
-            .filter(ts -> !ts.getId().equals(id))
-            .collect(Collectors.toSet());
-        newStations.add(movedStation);
+        final TrainStation movedStation = stations
+            .detect(ts -> ts.getId().equals(id))
+            .withLocation(location);
+        final ImmutableSet<TrainStation> newStations = stations
+            .reject(ts -> ts.getId().equals(id))
+            .newWith(movedStation);
 
         ensureInvariants(newStations, connections);
 
-        final Map<StationId, TrainStation> newStationsMap = new HashMap<>(this.stations);
-        newStationsMap.replace(id, movedStation);
-
-        return new RailNetworkDraft(this.id, newStationsMap, this.connections, this.stationId);
+        return new RailNetworkDraft(this.id, newStations, this.connections, this.stationId);
     }
 
     public RailNetworkDraft withoutStation(final StationName name) {
@@ -104,13 +98,12 @@ class RailNetworkDraft implements Aggregate {
     }
 
     public RailNetworkDraft withoutStation(final StationId id) {
-        final Set<DoubleTrackRailway> newConnections = new LinkedHashSet<>(connections);
-        newConnections.removeIf(track -> track.connectsStation(id));
-
-        final Map<StationId, TrainStation> newStationsMap = new HashMap<>(this.stations);
-        newStationsMap.remove(id);
-
-        return new RailNetworkDraft(this.id, newStationsMap, newConnections, this.stationId);
+        return new RailNetworkDraft(
+            this.id,
+            this.stations.reject(ts -> ts.getId().equals(id)),
+            this.connections.reject(track -> track.connectsStation(id)),
+            this.stationId
+        );
     }
 
     public RailNetworkDraft withConnection(final StationName name1, final StationName name2) {
@@ -121,11 +114,10 @@ class RailNetworkDraft implements Aggregate {
         ensureStationIdExist(id1);
         ensureStationIdExist(id2);
 
-        final DoubleTrackRailway addedConnection = new DoubleTrackRailway(id1, id2);
-        final Set<DoubleTrackRailway> newConnections = new LinkedHashSet<>(connections);
-        newConnections.add(addedConnection);
+        final ImmutableSet<DoubleTrackRailway> newConnections = connections
+            .newWith(new DoubleTrackRailway(id1, id2));
 
-        ensureInvariants(new LinkedHashSet<>(stations.values()), newConnections);
+        ensureInvariants(stations, newConnections);
 
         return new RailNetworkDraft(this.id, this.stations, newConnections, this.stationId);
     }
@@ -135,37 +127,41 @@ class RailNetworkDraft implements Aggregate {
     }
 
     public RailNetworkDraft withoutConnection(final StationId id1, final StationId id2) {
-        DoubleTrackRailway connection = new DoubleTrackRailway(id1, id2);
-        final Set<DoubleTrackRailway> newConnections = new LinkedHashSet<>(connections);
-        newConnections.removeIf(track -> track.equals(connection));
+        final DoubleTrackRailway connection = new DoubleTrackRailway(id1, id2);
 
-        return new RailNetworkDraft(this.id, this.stations, newConnections, this.stationId);
+        return new RailNetworkDraft(
+            this.id,
+            this.stations,
+            this.connections.reject(track -> track.equals(connection)),
+            this.stationId
+        );
     }
 
     public Set<TrainStation> getStations() {
-        return new LinkedHashSet<>(stations.values());
+        return stations.castToSet();
     }
 
     public Set<DoubleTrackRailway> getConnections() {
-        return connections;
+        return connections.castToSet();
     }
 
     private StationId getStationIdOf(final StationName name) {
-        Optional<TrainStation> station = stations.values().stream()
-            .filter(ts -> ts.getName().equals(name))
-            .findAny();
-
-        return station.get().getId();
+        return stations
+            .detect(ts -> ts.getName().equals(name))
+            .getId();
     }
 
-    private void ensureInvariants(Set<TrainStation> stations, Set<DoubleTrackRailway> connections) {
+    private void ensureInvariants(
+        final ImmutableSet<TrainStation> stations,
+        final ImmutableSet<DoubleTrackRailway> connections
+    ) {
         for (final Invariant invariant : invariants) {
-            invariant.ensureIsSatisfied(stations, connections);
+            invariant.ensureIsSatisfied(stations.castToSet(), connections.castToSet());
         }
     }
 
     private void ensureStationIdExist(final StationId stationId) {
-        if (!stations.containsKey(stationId)) {
+        if (stations.noneSatisfy(ts -> ts.getId().equals(stationId))) {
             throw new IllegalArgumentException(
                 "Station ID \"" + stationId + "\" does not exist"
             );
