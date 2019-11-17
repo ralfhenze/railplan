@@ -7,6 +7,8 @@ import com.ralfhenze.rms.railnetworkplanning.domain.station.*;
 import org.eclipse.collections.api.set.ImmutableSet;
 import org.eclipse.collections.impl.factory.Sets;
 
+import java.util.Optional;
+
 import static com.ralfhenze.rms.railnetworkplanning.domain.common.Preconditions.ensureNotNull;
 
 /**
@@ -17,21 +19,23 @@ import static com.ralfhenze.rms.railnetworkplanning.domain.common.Preconditions.
  */
 public class RailNetworkDraft implements Aggregate {
 
-    private final RailNetworkDraftId id;
+    private final Optional<RailNetworkDraftId> id;
     private final ImmutableSet<TrainStation> stations;
     private final ImmutableSet<DoubleTrackRailway> connections;
     private final ImmutableSet<Invariant> invariants = DefaultRailNetworkInvariants.INVARIANTS;
     private final int stationId;
 
-    public RailNetworkDraft(final RailNetworkDraftId id) {
-        this.id = ensureNotNull(id, "Rail Network Draft ID");
-        this.stations = Sets.immutable.empty();
-        this.connections = Sets.immutable.empty();
-        this.stationId = 1;
+    public RailNetworkDraft() {
+        this(
+            Optional.empty(),
+            Sets.immutable.empty(),
+            Sets.immutable.empty(),
+            1
+        );
     }
 
     private RailNetworkDraft(
-        final RailNetworkDraftId id,
+        final Optional<RailNetworkDraftId> id,
         final ImmutableSet<TrainStation> stations,
         final ImmutableSet<DoubleTrackRailway> connections,
         final int stationId
@@ -40,7 +44,12 @@ public class RailNetworkDraft implements Aggregate {
         this.stations = stations;
         this.connections = connections;
         this.stationId = stationId;
+    }
 
+    public RailNetworkDraft withId(RailNetworkDraftId id) {
+        ensureNotNull(id, "Rail Network Draft ID");
+
+        return new RailNetworkDraft(Optional.of(id), stations, connections, stationId);
     }
 
     public RailNetworkDraft withNewStation(final StationName name, final GeoLocationInGermany location) {
@@ -133,6 +142,10 @@ public class RailNetworkDraft implements Aggregate {
             this.connections.reject(track -> track.equals(connection)),
             this.stationId
         );
+    }
+
+    public Optional<RailNetworkDraftId> getId() {
+        return id;
     }
 
     public ImmutableSet<TrainStation> getStations() {

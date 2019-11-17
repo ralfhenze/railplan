@@ -2,7 +2,6 @@ package com.ralfhenze.rms.railnetworkplanning.application;
 
 import com.ralfhenze.rms.railnetworkplanning.application.commands.AddStationCommand;
 import com.ralfhenze.rms.railnetworkplanning.domain.RailNetworkDraft;
-import com.ralfhenze.rms.railnetworkplanning.domain.RailNetworkDraftId;
 import com.ralfhenze.rms.railnetworkplanning.domain.RailNetworkDraftRepository;
 import org.junit.jupiter.api.Test;
 
@@ -16,11 +15,10 @@ class CommandsTest {
 
     @Test
     void should_persist_added_station() {
-        RailNetworkDraftId id = new RailNetworkDraftId("1");
         RailNetworkDraftRepository draftRepository = mock(RailNetworkDraftRepository.class);
 
         when(draftRepository.getRailNetworkDraftOfId(any()))
-            .thenReturn(Optional.of(new RailNetworkDraft(id)));
+            .thenReturn(Optional.of(new RailNetworkDraft()));
 
         AddStationCommand addStationCommand = new AddStationCommand(draftRepository);
         addStationCommand.addStation(

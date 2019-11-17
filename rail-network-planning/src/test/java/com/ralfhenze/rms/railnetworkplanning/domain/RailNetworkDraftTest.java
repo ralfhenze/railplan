@@ -9,7 +9,7 @@ class RailNetworkDraftTest {
 
     @Test
     void should_ensure_unique_station_names() {
-        final RailNetworkDraft draft = new RailNetworkDraft(new RailNetworkDraftId("1"))
+        final RailNetworkDraft draft = new RailNetworkDraft()
             .withNewStation(berlinHbfName, berlinHbfPos)
             .withNewStation(potsdamHbfName, potsdamHbfPos);
 
@@ -24,7 +24,7 @@ class RailNetworkDraftTest {
 
     @Test
     void should_ensure_minimum_distance_between_stations() {
-        final RailNetworkDraft draft = new RailNetworkDraft(new RailNetworkDraftId("1"))
+        final RailNetworkDraft draft = new RailNetworkDraft()
             .withNewStation(berlinHbfName, berlinHbfPos)
             .withNewStation(potsdamHbfName, potsdamHbfPos);
 
@@ -39,7 +39,7 @@ class RailNetworkDraftTest {
 
     @Test
     void should_ensure_no_duplicate_connections() {
-        final RailNetworkDraft draft = new RailNetworkDraft(new RailNetworkDraftId("1"))
+        final RailNetworkDraft draft = new RailNetworkDraft()
             .withNewStation(berlinHbfName, berlinHbfPos)
             .withNewStation(potsdamHbfName, potsdamHbfPos)
             .withConnection(berlinHbfName, potsdamHbfName)
@@ -50,7 +50,7 @@ class RailNetworkDraftTest {
 
     @Test
     void should_ensure_max_track_length() {
-        final RailNetworkDraft draft = new RailNetworkDraft(new RailNetworkDraftId("1"))
+        final RailNetworkDraft draft = new RailNetworkDraft()
             .withNewStation(berlinHbfName, berlinHbfPos)
             .withNewStation(stuttgartHbfName, stuttgartHbfPos);
 
@@ -61,7 +61,7 @@ class RailNetworkDraftTest {
 
     @Test
     void should_be_able_to_delete_stations() {
-        RailNetworkDraft draft = new RailNetworkDraft(new RailNetworkDraftId("1"))
+        RailNetworkDraft draft = new RailNetworkDraft()
             .withNewStation(berlinHbfName, berlinHbfPos);
         assertEquals(1, draft.getStations().size());
 
@@ -72,7 +72,7 @@ class RailNetworkDraftTest {
 
     @Test
     void should_be_able_to_delete_connections() {
-        RailNetworkDraft draft = new RailNetworkDraft(new RailNetworkDraftId("1"))
+        RailNetworkDraft draft = new RailNetworkDraft()
             .withNewStation(berlinHbfName, berlinHbfPos)
             .withNewStation(potsdamHbfName, potsdamHbfPos)
             .withConnection(berlinHbfName, potsdamHbfName);
@@ -86,7 +86,7 @@ class RailNetworkDraftTest {
 
     @Test
     void should_delete_associated_connections_on_station_delete() {
-        RailNetworkDraft draft = new RailNetworkDraft(new RailNetworkDraftId("1"))
+        RailNetworkDraft draft = new RailNetworkDraft()
             .withNewStation(berlinHbfName, berlinHbfPos)
             .withNewStation(potsdamHbfName, potsdamHbfPos)
             .withConnection(berlinHbfName, potsdamHbfName);
