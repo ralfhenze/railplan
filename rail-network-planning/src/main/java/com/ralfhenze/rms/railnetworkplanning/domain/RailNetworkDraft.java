@@ -15,7 +15,7 @@ import static com.ralfhenze.rms.railnetworkplanning.domain.common.Preconditions.
  * [x] two Stations can only be connected by a single Track
  * [x] the maximum length of a Track is 300 km
  */
-class RailNetworkDraft implements Aggregate {
+public class RailNetworkDraft implements Aggregate {
 
     private final RailNetworkDraftId id;
     private final ImmutableSet<TrainStation> stations;
@@ -23,7 +23,7 @@ class RailNetworkDraft implements Aggregate {
     private final ImmutableSet<Invariant> invariants = DefaultRailNetworkInvariants.INVARIANTS;
     private final int stationId;
 
-    RailNetworkDraft(final RailNetworkDraftId id) {
+    public RailNetworkDraft(final RailNetworkDraftId id) {
         this.id = ensureNotNull(id, "Rail Network Draft ID");
         this.stations = Sets.immutable.empty();
         this.connections = Sets.immutable.empty();
