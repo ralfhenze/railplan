@@ -3,10 +3,8 @@ package com.ralfhenze.rms.railnetworkplanning.domain;
 import com.ralfhenze.rms.railnetworkplanning.domain.common.Aggregate;
 import com.ralfhenze.rms.railnetworkplanning.domain.invariants.*;
 import com.ralfhenze.rms.railnetworkplanning.domain.station.TrainStation;
-
-import java.util.Arrays;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import org.eclipse.collections.api.set.ImmutableSet;
+import org.eclipse.collections.impl.factory.Sets;
 
 import static com.ralfhenze.rms.railnetworkplanning.domain.common.Preconditions.ensureNotNull;
 
@@ -21,35 +19,39 @@ class RailNetwork implements Aggregate {
     private final RailNetworkId id;
     private final RailNetworkPeriod period;
 
-    private final Set<TrainStation> stations;
-    private final Set<DoubleTrackRailway> connections;
-    private final Set<Invariant> invariants;
+    private final ImmutableSet<TrainStation> stations;
+    private final ImmutableSet<DoubleTrackRailway> connections;
+    private final ImmutableSet<Invariant> invariants;
 
     RailNetwork(
         final RailNetworkId id,
         final RailNetworkPeriod period,
-        final Set<TrainStation> stations,
-        final Set<DoubleTrackRailway> connections
+        final ImmutableSet<TrainStation> stations,
+        final ImmutableSet<DoubleTrackRailway> connections
     ) {
         this.id = ensureNotNull(id, "Rail Network ID");
         this.period = ensureNotNull(period, "Rail Network Period");
         this.stations = ensureNotNull(stations, "Train Stations");
         this.connections = ensureNotNull(connections, "Connections");
 
-        this.invariants = new LinkedHashSet<>(DefaultRailNetworkInvariants.INVARIANTS);
-        this.invariants.add(new ContainsAtLeastTwoStationsAndOneTrack());
-        this.invariants.add(new ContainsNoUnconnectedSubGraphs());
+        this.invariants = Sets.adapt(DefaultRailNetworkInvariants.INVARIANTS).toImmutable()
+            .newWith(new ContainsAtLeastTwoStationsAndOneTrack())
+            .newWith(new ContainsNoUnconnectedSubGraphs());
 
         ensureInvariants();
     }
 
     private void ensureInvariants() {
         for (final Invariant invariant : invariants) {
-            invariant.ensureIsSatisfied(stations, connections);
+            invariant.ensureIsSatisfied(stations.castToSet(), connections.castToSet());
         }
     }
 
     public RailNetworkPeriod getPeriod() {
         return period;
+    }
+
+    public ImmutableSet<DoubleTrackRailway> getConnections() {
+        return connections;
     }
 }

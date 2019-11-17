@@ -137,12 +137,12 @@ class RailNetworkDraft implements Aggregate {
         );
     }
 
-    public Set<TrainStation> getStations() {
-        return stations.castToSet();
+    public ImmutableSet<TrainStation> getStations() {
+        return stations;
     }
 
-    public Set<DoubleTrackRailway> getConnections() {
-        return connections.castToSet();
+    public ImmutableSet<DoubleTrackRailway> getConnections() {
+        return connections;
     }
 
     private StationId getStationIdOf(final StationName name) {

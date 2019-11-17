@@ -1,14 +1,14 @@
 package com.ralfhenze.rms.railnetworkplanning.domain;
 
 import com.ralfhenze.rms.railnetworkplanning.domain.station.*;
+import org.eclipse.collections.api.factory.Sets;
+import org.eclipse.collections.api.set.ImmutableSet;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
 
 import static com.ralfhenze.rms.railnetworkplanning.domain.TestData.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class RailNetworkTest {
@@ -19,8 +19,8 @@ class RailNetworkTest {
             new RailNetwork(
                 new RailNetworkId("1"),
                 new RailNetworkPeriod(LocalDate.of(2019, 11, 14), LocalDate.of(2019, 11, 20)),
-                new HashSet<>(),
-                new HashSet<>()
+                emptySet(),
+                emptySet()
             );
         });
     }
@@ -31,8 +31,8 @@ class RailNetworkTest {
             new RailNetwork(
                 new RailNetworkId("1"),
                 new RailNetworkPeriod(LocalDate.of(2019, 11, 14), LocalDate.of(2019, 11, 20)),
-                new HashSet<>(Arrays.asList(berlinHbf, hamburgHbf)),
-                new HashSet<>()
+                setOf(berlinHbf, hamburgHbf),
+                emptySet()
             );
         });
     }
@@ -43,11 +43,11 @@ class RailNetworkTest {
             new RailNetwork(
                 new RailNetworkId("1"),
                 new RailNetworkPeriod(LocalDate.of(2019, 11, 14), LocalDate.of(2019, 11, 20)),
-                new HashSet<>(Arrays.asList(berlinHbf, hamburgHbf, frankfurtHbf, stuttgartHbf)),
-                new HashSet<>(Arrays.asList(
+                setOf(berlinHbf, hamburgHbf, frankfurtHbf, stuttgartHbf),
+                setOf(
                     new DoubleTrackRailway(berlinHbf.getId(), hamburgHbf.getId()),
                     new DoubleTrackRailway(frankfurtHbf.getId(), stuttgartHbf.getId())
-                ))
+                )
             );
         });
     }
@@ -58,10 +58,8 @@ class RailNetworkTest {
             new RailNetwork(
                 new RailNetworkId("1"),
                 new RailNetworkPeriod(LocalDate.of(2019, 11, 14), LocalDate.of(2019, 11, 20)),
-                new HashSet<>(Arrays.asList(berlinHbf, hamburgHbf, frankfurtHbf)),
-                new HashSet<>(Arrays.asList(
-                    new DoubleTrackRailway(berlinHbf.getId(), hamburgHbf.getId())
-                ))
+                setOf(berlinHbf, hamburgHbf, frankfurtHbf),
+                setOf(new DoubleTrackRailway(berlinHbf.getId(), hamburgHbf.getId()))
             );
         });
     }
@@ -72,10 +70,8 @@ class RailNetworkTest {
             new RailNetwork(
                 new RailNetworkId("1"),
                 new RailNetworkPeriod(LocalDate.of(2019, 11, 14), LocalDate.of(2019, 11, 20)),
-                new HashSet<>(Arrays.asList(berlinHbf, stuttgartHbf)),
-                new HashSet<>(Arrays.asList(
-                    new DoubleTrackRailway(berlinHbf.getId(), stuttgartHbf.getId())
-                ))
+                setOf(berlinHbf, stuttgartHbf),
+                setOf(new DoubleTrackRailway(berlinHbf.getId(), stuttgartHbf.getId()))
             );
         });
     }
@@ -86,10 +82,8 @@ class RailNetworkTest {
             new RailNetwork(
                 new RailNetworkId("1"),
                 new RailNetworkPeriod(LocalDate.of(2019, 11, 14), LocalDate.of(2019, 11, 20)),
-                new HashSet<>(Arrays.asList(berlinHbf, hamburgHbf.withName(new StationName("Berlin Hbf")))),
-                new HashSet<>(Arrays.asList(
-                    new DoubleTrackRailway(berlinHbf.getId(), hamburgHbf.getId())
-                ))
+                setOf(berlinHbf, hamburgHbf.withName(new StationName("Berlin Hbf"))),
+                setOf(new DoubleTrackRailway(berlinHbf.getId(), hamburgHbf.getId()))
             );
         });
     }
@@ -100,27 +94,35 @@ class RailNetworkTest {
             new RailNetwork(
                 new RailNetworkId("1"),
                 new RailNetworkPeriod(LocalDate.of(2019, 11, 14), LocalDate.of(2019, 11, 20)),
-                new LinkedHashSet<>(Arrays.asList(berlinHbf, berlinOst, hamburgHbf)),
-                new LinkedHashSet<>(Arrays.asList(
+                setOf(berlinHbf, berlinOst, hamburgHbf),
+                setOf(
                     new DoubleTrackRailway(berlinHbf.getId(), berlinOst.getId()),
                     new DoubleTrackRailway(berlinHbf.getId(), hamburgHbf.getId())
-                ))
+                )
             );
         });
     }
 
     @Test
     void should_ensure_no_duplicate_connections() {
-        assertThrows(IllegalArgumentException.class, () -> {
-            new RailNetwork(
-                new RailNetworkId("1"),
-                new RailNetworkPeriod(LocalDate.of(2019, 11, 14), LocalDate.of(2019, 11, 20)),
-                new LinkedHashSet<>(Arrays.asList(berlinHbf, hamburgHbf)),
-                new LinkedHashSet<>(Arrays.asList(
-                    new DoubleTrackRailway(berlinHbf.getId(), hamburgHbf.getId()),
-                    new DoubleTrackRailway(hamburgHbf.getId(), berlinHbf.getId())
-                ))
-            );
-        });
+        final RailNetwork railNetwork = new RailNetwork(
+            new RailNetworkId("1"),
+            new RailNetworkPeriod(LocalDate.of(2019, 11, 14), LocalDate.of(2019, 11, 20)),
+            setOf(berlinHbf, hamburgHbf),
+            setOf(
+                new DoubleTrackRailway(berlinHbf.getId(), hamburgHbf.getId()),
+                new DoubleTrackRailway(hamburgHbf.getId(), berlinHbf.getId()) // the same connection again
+            )
+        );
+
+        assertEquals(1, railNetwork.getConnections().size());
+    }
+
+    private <T> ImmutableSet<T> setOf(T... elements) {
+        return Sets.immutable.of(elements);
+    }
+
+    private <T> ImmutableSet<T> emptySet() {
+        return Sets.immutable.empty();
     }
 }
