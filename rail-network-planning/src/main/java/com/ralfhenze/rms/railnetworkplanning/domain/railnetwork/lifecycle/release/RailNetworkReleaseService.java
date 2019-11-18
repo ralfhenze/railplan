@@ -19,7 +19,7 @@ public class RailNetworkReleaseService implements DomainService {
         this.railNetworkRepository = ensureNotNull(railNetworkRepository, "Rail Network Repository");
     }
 
-    public Optional<RailNetwork> release(final RailNetworkDraft draft, final RailNetworkPeriod period) {
+    public Optional<RailNetwork> release(final RailNetworkDraft draft, final ValidityPeriod period) {
         ensureValidPeriod(period);
 
         RailNetwork railNetwork = new RailNetwork(
@@ -31,7 +31,7 @@ public class RailNetworkReleaseService implements DomainService {
         return railNetworkRepository.add(railNetwork);
     }
 
-    private void ensureValidPeriod(final RailNetworkPeriod period) {
+    private void ensureValidPeriod(final ValidityPeriod period) {
         final Optional<RailNetwork> lastReleasedRailNetwork = railNetworkRepository.getLastReleasedRailNetwork();
 
         if (lastReleasedRailNetwork.isPresent()) {

@@ -9,12 +9,12 @@ import static com.ralfhenze.rms.railnetworkplanning.domain.common.Preconditions.
 /**
  * [x] the TimePeriod's StartDate is before (<) EndDate
  */
-public class RailNetworkPeriod implements ValueObject {
+public class ValidityPeriod implements ValueObject {
 
     private final LocalDate startDate;
     private final LocalDate endDate;
 
-    public RailNetworkPeriod(final LocalDate startDate, final LocalDate endDate) {
+    public ValidityPeriod(final LocalDate startDate, final LocalDate endDate) {
         this.startDate = ensureNotNull(startDate, "Start Date");
         this.endDate = ensureNotNull(endDate, "End Date");
 

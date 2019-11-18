@@ -33,7 +33,7 @@ public class ReleaseRailNetworkCommand implements Command {
             final Optional<RailNetwork> releasedRailNetwork = railNetworkReleaseService
                 .release(
                     draft.get(),
-                    new RailNetworkPeriod(startDate, endDate)
+                    new ValidityPeriod(startDate, endDate)
                 );
 
             if (releasedRailNetwork.isPresent()) {

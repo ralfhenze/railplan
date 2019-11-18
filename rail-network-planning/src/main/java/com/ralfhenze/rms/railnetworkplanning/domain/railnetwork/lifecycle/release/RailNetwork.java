@@ -22,14 +22,14 @@ import static com.ralfhenze.rms.railnetworkplanning.domain.common.Preconditions.
 public class RailNetwork implements Aggregate {
 
     private final Optional<RailNetworkId> id;
-    private final RailNetworkPeriod period;
+    private final ValidityPeriod period;
 
     private final ImmutableSet<TrainStation> stations;
     private final ImmutableSet<RailwayTrack> connections;
     private final ImmutableSet<Invariant> invariants;
 
     public RailNetwork(
-        final RailNetworkPeriod period,
+        final ValidityPeriod period,
         final ImmutableSet<TrainStation> stations,
         final ImmutableSet<RailwayTrack> connections
     ) {
@@ -38,7 +38,7 @@ public class RailNetwork implements Aggregate {
 
     public RailNetwork(
         final Optional<RailNetworkId> id,
-        final RailNetworkPeriod period,
+        final ValidityPeriod period,
         final ImmutableSet<TrainStation> stations,
         final ImmutableSet<RailwayTrack> connections
     ) {
@@ -70,7 +70,7 @@ public class RailNetwork implements Aggregate {
         return id;
     }
 
-    public RailNetworkPeriod getPeriod() {
+    public ValidityPeriod getPeriod() {
         return period;
     }
 

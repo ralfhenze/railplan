@@ -2,7 +2,7 @@ package com.ralfhenze.rms.railnetworkplanning.domain;
 
 import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.lifecycle.draft.RailNetworkDraft;
 import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.lifecycle.release.RailNetwork;
-import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.lifecycle.release.RailNetworkPeriod;
+import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.lifecycle.release.ValidityPeriod;
 import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.lifecycle.release.RailNetworkReleaseService;
 import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.lifecycle.release.RailNetworkRepository;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -29,7 +29,7 @@ class ReleaseServiceTest {
         Mockito
             .when(lastRailNetwork.getPeriod())
             .thenReturn(
-                new RailNetworkPeriod(
+                new ValidityPeriod(
                     LocalDate.of(2019, 11, 14),
                     LocalDate.of(2019, 11, 20) // last end date
                 )
@@ -45,7 +45,7 @@ class ReleaseServiceTest {
         assertThrows(IllegalArgumentException.class, () -> {
             releaseService.release(
                 draft,
-                new RailNetworkPeriod(
+                new ValidityPeriod(
                     invalidStartDate, // should be one day after last end date (2019-11-21)
                     LocalDate.of(2019, 12, 1)
                 )

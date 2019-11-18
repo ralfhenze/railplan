@@ -1,7 +1,7 @@
 package com.ralfhenze.rms.railnetworkplanning.domain;
 
 import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.elements.*;
-import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.lifecycle.release.RailNetworkPeriod;
+import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.lifecycle.release.ValidityPeriod;
 
 import java.time.LocalDate;
 
@@ -31,7 +31,7 @@ public class TestData {
     public static final GeoLocationInGermany stuttgartHbfPos = new GeoLocationInGermany(new GeoLocation(48.784245, 9.182160));
     public static final TrainStation stuttgartHbf = new TrainStation(new TrainStationId("6"), stuttgartHbfName, stuttgartHbfPos);
 
-    public static final RailNetworkPeriod defaultPeriod = new RailNetworkPeriod(
+    public static final ValidityPeriod defaultPeriod = new ValidityPeriod(
         LocalDate.of(2019, 11, 14),
         LocalDate.of(2019, 11, 20)
     );
