@@ -14,25 +14,25 @@ import static com.ralfhenze.rms.railnetworkplanning.domain.common.Preconditions.
  */
 public class DoubleTrackRailway implements ValueObject {
 
-    private final StationId firstStationId;
-    private final StationId secondStationId;
+    private final TrainStationId firstStationId;
+    private final TrainStationId secondStationId;
 
-    public DoubleTrackRailway(final StationId firstStationId, final StationId secondStationId) {
+    public DoubleTrackRailway(final TrainStationId firstStationId, final TrainStationId secondStationId) {
         ensureNotEqual(firstStationId, secondStationId, "First Station ID", "Second Station ID");
 
         this.firstStationId = ensureNotNull(firstStationId, "First Station ID");
         this.secondStationId = ensureNotNull(secondStationId, "Second Station ID");
     }
 
-    public boolean connectsStation(final StationId stationId) {
+    public boolean connectsStation(final TrainStationId stationId) {
         return firstStationId.equals(stationId) || secondStationId.equals(stationId);
     }
 
-    public StationId getFirstStationId() {
+    public TrainStationId getFirstStationId() {
         return firstStationId;
     }
 
-    public StationId getSecondStationId() {
+    public TrainStationId getSecondStationId() {
         return secondStationId;
     }
 

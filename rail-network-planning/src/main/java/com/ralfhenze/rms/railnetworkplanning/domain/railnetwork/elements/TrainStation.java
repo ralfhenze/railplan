@@ -11,17 +11,17 @@ import static com.ralfhenze.rms.railnetworkplanning.domain.common.Preconditions.
  */
 public class TrainStation implements LocalEntity {
 
-    private final StationId id;
+    private final TrainStationId id;
     private final StationName name;
     private final GeoLocationInGermany location;
 
-    public TrainStation(final StationId id, final StationName name, final GeoLocationInGermany location) {
+    public TrainStation(final TrainStationId id, final StationName name, final GeoLocationInGermany location) {
         this.id = ensureNotNull(id, "Station ID");
         this.name = ensureNotNull(name, "Station Name");
         this.location = ensureNotNull(location, "Geo Location");
     }
 
-    public StationId getId() {
+    public TrainStationId getId() {
         return id;
     }
 

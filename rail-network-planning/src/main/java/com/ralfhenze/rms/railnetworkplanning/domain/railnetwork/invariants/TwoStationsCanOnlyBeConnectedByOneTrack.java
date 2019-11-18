@@ -1,7 +1,7 @@
 package com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.invariants;
 
 import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.elements.DoubleTrackRailway;
-import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.elements.StationId;
+import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.elements.TrainStationId;
 import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.elements.TrainStation;
 import org.javatuples.Pair;
 
@@ -47,9 +47,9 @@ public class TwoStationsCanOnlyBeConnectedByOneTrack implements Invariant {
             .findAny();
 
         if (equalConnectionCombination.isPresent()) {
-            final StationId id1 = equalConnectionCombination.get().getValue0().getFirstStationId();
-            final StationId id2 = equalConnectionCombination.get().getValue0().getSecondStationId();
-            final Map<StationId, TrainStation> stationsMap = stations.stream()
+            final TrainStationId id1 = equalConnectionCombination.get().getValue0().getFirstStationId();
+            final TrainStationId id2 = equalConnectionCombination.get().getValue0().getSecondStationId();
+            final Map<TrainStationId, TrainStation> stationsMap = stations.stream()
                 .collect(Collectors.toMap(TrainStation::getId, ts -> ts));
 
             throw new IllegalArgumentException(

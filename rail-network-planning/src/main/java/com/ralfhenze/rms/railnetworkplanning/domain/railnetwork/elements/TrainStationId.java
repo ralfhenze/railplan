@@ -7,11 +7,11 @@ import static com.ralfhenze.rms.railnetworkplanning.domain.common.Preconditions.
 /**
  * Local Id
  */
-public class StationId implements Id {
+public class TrainStationId implements Id {
 
     private final String id;
 
-    public StationId(final String id) {
+    public TrainStationId(final String id) {
         this.id = ensureNotBlank(id, "ID");
     }
 
@@ -22,7 +22,7 @@ public class StationId implements Id {
 
     @Override
     public boolean equals(Object o) {
-        return (o != null && ((StationId)o).id.equals(this.id));
+        return (o != null && ((TrainStationId)o).id.equals(this.id));
     }
 
     @Override

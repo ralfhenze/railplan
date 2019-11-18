@@ -1,7 +1,7 @@
 package com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.invariants;
 
 import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.elements.DoubleTrackRailway;
-import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.elements.StationId;
+import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.elements.TrainStationId;
 import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.elements.TrainStation;
 
 import java.util.HashMap;
@@ -24,23 +24,23 @@ public class ContainsNoUnconnectedSubGraphs implements Invariant {
     }
 
     private void ensureNoUnconnectedSubGraphs(Set<TrainStation> stations, Set<DoubleTrackRailway> connections) {
-        final Map<StationId, Set<StationId>> nodes = new HashMap<>();
+        final Map<TrainStationId, Set<TrainStationId>> nodes = new HashMap<>();
 
         for (final DoubleTrackRailway connection : connections) {
-            final StationId id1 = connection.getFirstStationId();
-            final StationId id2 = connection.getSecondStationId();
+            final TrainStationId id1 = connection.getFirstStationId();
+            final TrainStationId id2 = connection.getSecondStationId();
 
-            final Set<StationId> set1 = nodes.getOrDefault(id1, new HashSet<>());
+            final Set<TrainStationId> set1 = nodes.getOrDefault(id1, new HashSet<>());
             set1.add(id2);
             nodes.put(id1, set1);
 
-            final Set<StationId> set2 = nodes.getOrDefault(id2, new HashSet<>());
+            final Set<TrainStationId> set2 = nodes.getOrDefault(id2, new HashSet<>());
             set2.add(id1);
             nodes.put(id2, set2);
         }
 
-        final StationId firstNode = nodes.keySet().stream().findFirst().get();
-        final Set<StationId> visitedNodes = visitAdjacentNodes(firstNode, new HashSet<>(), nodes);
+        final TrainStationId firstNode = nodes.keySet().stream().findFirst().get();
+        final Set<TrainStationId> visitedNodes = visitAdjacentNodes(firstNode, new HashSet<>(), nodes);
 
         for (final TrainStation station : stations) {
             nodes.putIfAbsent(station.getId(), new HashSet<>());
@@ -56,17 +56,17 @@ public class ContainsNoUnconnectedSubGraphs implements Invariant {
         }
     }
 
-    private Set<StationId> visitAdjacentNodes(
-        final StationId node,
-        final Set<StationId> visitedNodes,
-        final Map<StationId, Set<StationId>> nodes
+    private Set<TrainStationId> visitAdjacentNodes(
+        final TrainStationId node,
+        final Set<TrainStationId> visitedNodes,
+        final Map<TrainStationId, Set<TrainStationId>> nodes
     ) {
         visitedNodes.add(node);
 
-        final Set<StationId> unvisitedAdjacentNodes = new HashSet<>(nodes.get(node));
+        final Set<TrainStationId> unvisitedAdjacentNodes = new HashSet<>(nodes.get(node));
         unvisitedAdjacentNodes.removeAll(visitedNodes);
 
-        for (final StationId adjacentNode : unvisitedAdjacentNodes) {
+        for (final TrainStationId adjacentNode : unvisitedAdjacentNodes) {
             visitedNodes.addAll(
                 visitAdjacentNodes(adjacentNode, new HashSet<>(visitedNodes), nodes)
             );

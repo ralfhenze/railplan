@@ -1,7 +1,7 @@
 package com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.invariants;
 
 import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.elements.DoubleTrackRailway;
-import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.elements.StationId;
+import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.elements.TrainStationId;
 import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.elements.TrainStation;
 
 import java.util.Map;
@@ -27,7 +27,7 @@ public class MaximumLengthOfTrackIs300Km implements Invariant {
     }
 
     private void ensureMaximumTrackLength(Set<TrainStation> stations, Set<DoubleTrackRailway> connections) {
-        final Map<StationId, TrainStation> stationsMap = stations.stream()
+        final Map<TrainStationId, TrainStation> stationsMap = stations.stream()
             .collect(Collectors.toMap(TrainStation::getId, ts -> ts));
 
         final Map<DoubleTrackRailway, Double> trackLengthPerConnection = connections.stream()
@@ -53,8 +53,8 @@ public class MaximumLengthOfTrackIs300Km implements Invariant {
             .findAny();
 
         if (tooLongTrack.isPresent()) {
-            final StationId id1 = tooLongTrack.get().getKey().getFirstStationId();
-            final StationId id2 = tooLongTrack.get().getKey().getSecondStationId();
+            final TrainStationId id1 = tooLongTrack.get().getKey().getFirstStationId();
+            final TrainStationId id2 = tooLongTrack.get().getKey().getSecondStationId();
             final double trackLength = tooLongTrack.get().getValue();
 
             throw new IllegalArgumentException(

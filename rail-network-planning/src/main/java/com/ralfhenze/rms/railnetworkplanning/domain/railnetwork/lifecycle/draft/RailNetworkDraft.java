@@ -53,7 +53,7 @@ public class RailNetworkDraft implements Aggregate {
     }
 
     public RailNetworkDraft withNewStation(final StationName name, final GeoLocationInGermany location) {
-        final StationId stationId = new StationId(String.valueOf(this.stationId));
+        final TrainStationId stationId = new TrainStationId(String.valueOf(this.stationId));
         final TrainStation addedStation = new TrainStation(stationId, name, location);
         final ImmutableSet<TrainStation> newStations = stations.newWith(addedStation);
 
@@ -66,7 +66,7 @@ public class RailNetworkDraft implements Aggregate {
         return withRenamedStation(getStationIdOf(currentName), newName);
     }
 
-    public RailNetworkDraft withRenamedStation(final StationId id, final StationName name) {
+    public RailNetworkDraft withRenamedStation(final TrainStationId id, final StationName name) {
         ensureStationIdExist(id);
 
         final TrainStation renamedStation = stations
@@ -85,7 +85,7 @@ public class RailNetworkDraft implements Aggregate {
         return withMovedStation(getStationIdOf(name), location);
     }
 
-    public RailNetworkDraft withMovedStation(final StationId id, final GeoLocationInGermany location) {
+    public RailNetworkDraft withMovedStation(final TrainStationId id, final GeoLocationInGermany location) {
         ensureStationIdExist(id);
 
         final TrainStation movedStation = stations
@@ -104,7 +104,7 @@ public class RailNetworkDraft implements Aggregate {
         return withoutStation(getStationIdOf(name));
     }
 
-    public RailNetworkDraft withoutStation(final StationId id) {
+    public RailNetworkDraft withoutStation(final TrainStationId id) {
         return new RailNetworkDraft(
             this.id,
             this.stations.reject(ts -> ts.getId().equals(id)),
@@ -117,7 +117,7 @@ public class RailNetworkDraft implements Aggregate {
         return withConnection(getStationIdOf(name1), getStationIdOf(name2));
     }
 
-    public RailNetworkDraft withConnection(final StationId id1, final StationId id2) {
+    public RailNetworkDraft withConnection(final TrainStationId id1, final TrainStationId id2) {
         ensureStationIdExist(id1);
         ensureStationIdExist(id2);
 
@@ -133,7 +133,7 @@ public class RailNetworkDraft implements Aggregate {
         return withoutConnection(getStationIdOf(name1), getStationIdOf(name2));
     }
 
-    public RailNetworkDraft withoutConnection(final StationId id1, final StationId id2) {
+    public RailNetworkDraft withoutConnection(final TrainStationId id1, final TrainStationId id2) {
         final DoubleTrackRailway connection = new DoubleTrackRailway(id1, id2);
 
         return new RailNetworkDraft(
@@ -156,7 +156,7 @@ public class RailNetworkDraft implements Aggregate {
         return connections;
     }
 
-    private StationId getStationIdOf(final StationName name) {
+    private TrainStationId getStationIdOf(final StationName name) {
         return stations
             .detect(ts -> ts.getName().equals(name))
             .getId();
@@ -171,7 +171,7 @@ public class RailNetworkDraft implements Aggregate {
         }
     }
 
-    private void ensureStationIdExist(final StationId stationId) {
+    private void ensureStationIdExist(final TrainStationId stationId) {
         if (stations.noneSatisfy(ts -> ts.getId().equals(stationId))) {
             throw new IllegalArgumentException(
                 "Station ID \"" + stationId + "\" does not exist"
