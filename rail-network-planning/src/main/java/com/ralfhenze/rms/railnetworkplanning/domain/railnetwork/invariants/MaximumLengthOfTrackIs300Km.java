@@ -1,6 +1,6 @@
 package com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.invariants;
 
-import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.elements.DoubleTrackRailway;
+import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.elements.RailwayTrack;
 import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.elements.TrainStationId;
 import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.elements.TrainStation;
 
@@ -17,7 +17,7 @@ public class MaximumLengthOfTrackIs300Km implements Invariant {
     private static final int MAXIMUM_LENGTH_KM = 300;
 
     @Override
-    public void ensureIsSatisfied(Set<TrainStation> stations, Set<DoubleTrackRailway> connections) {
+    public void ensureIsSatisfied(Set<TrainStation> stations, Set<RailwayTrack> connections) {
         ensureNotNull(stations, "Stations");
         ensureNotNull(connections, "Connections");
 
@@ -26,11 +26,11 @@ public class MaximumLengthOfTrackIs300Km implements Invariant {
         }
     }
 
-    private void ensureMaximumTrackLength(Set<TrainStation> stations, Set<DoubleTrackRailway> connections) {
+    private void ensureMaximumTrackLength(Set<TrainStation> stations, Set<RailwayTrack> connections) {
         final Map<TrainStationId, TrainStation> stationsMap = stations.stream()
             .collect(Collectors.toMap(TrainStation::getId, ts -> ts));
 
-        final Map<DoubleTrackRailway, Double> trackLengthPerConnection = connections.stream()
+        final Map<RailwayTrack, Double> trackLengthPerConnection = connections.stream()
             .collect(Collectors.toMap(
                 c -> c,
                 c -> stationsMap
@@ -46,7 +46,7 @@ public class MaximumLengthOfTrackIs300Km implements Invariant {
                 )
             );
 
-        Optional<Entry<DoubleTrackRailway, Double>> tooLongTrack = trackLengthPerConnection
+        Optional<Entry<RailwayTrack, Double>> tooLongTrack = trackLengthPerConnection
             .entrySet()
             .stream()
             .filter(c -> c.getValue() > MAXIMUM_LENGTH_KM)

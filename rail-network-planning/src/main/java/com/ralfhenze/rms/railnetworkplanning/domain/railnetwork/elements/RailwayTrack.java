@@ -12,12 +12,12 @@ import static com.ralfhenze.rms.railnetworkplanning.domain.common.Preconditions.
  * [x] a Track has no direction
  * [x] equal when two DoubleTrackRailways connect the same Stations
  */
-public class DoubleTrackRailway implements ValueObject {
+public class RailwayTrack implements ValueObject {
 
     private final TrainStationId firstStationId;
     private final TrainStationId secondStationId;
 
-    public DoubleTrackRailway(final TrainStationId firstStationId, final TrainStationId secondStationId) {
+    public RailwayTrack(final TrainStationId firstStationId, final TrainStationId secondStationId) {
         ensureNotEqual(firstStationId, secondStationId, "First Station ID", "Second Station ID");
 
         this.firstStationId = ensureNotNull(firstStationId, "First Station ID");
@@ -38,11 +38,11 @@ public class DoubleTrackRailway implements ValueObject {
 
     @Override
     public boolean equals(Object object) {
-        if (!(object instanceof DoubleTrackRailway)) {
+        if (!(object instanceof RailwayTrack)) {
             return false;
         }
 
-        DoubleTrackRailway track = (DoubleTrackRailway)object;
+        RailwayTrack track = (RailwayTrack)object;
 
         return (
             (track.firstStationId.equals(this.firstStationId)

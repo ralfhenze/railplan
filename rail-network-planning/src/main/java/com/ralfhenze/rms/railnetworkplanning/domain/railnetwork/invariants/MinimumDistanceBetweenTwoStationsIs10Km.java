@@ -1,6 +1,6 @@
 package com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.invariants;
 
-import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.elements.DoubleTrackRailway;
+import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.elements.RailwayTrack;
 import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.elements.TrainStation;
 import org.javatuples.Pair;
 
@@ -13,7 +13,7 @@ public class MinimumDistanceBetweenTwoStationsIs10Km implements Invariant {
     private final static int MINIMUM_STATION_DISTANCE_KM = 10;
 
     @Override
-    public void ensureIsSatisfied(Set<TrainStation> stations, Set<DoubleTrackRailway> connections) {
+    public void ensureIsSatisfied(Set<TrainStation> stations, Set<RailwayTrack> connections) {
         ensureNotNull(stations, "Stations");
 
         if (stations.size() >= 2) {

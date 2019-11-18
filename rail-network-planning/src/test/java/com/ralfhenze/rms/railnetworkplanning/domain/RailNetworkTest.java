@@ -1,6 +1,6 @@
 package com.ralfhenze.rms.railnetworkplanning.domain;
 
-import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.elements.DoubleTrackRailway;
+import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.elements.RailwayTrack;
 import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.elements.TrainStationName;
 import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.lifecycle.release.RailNetwork;
 import org.eclipse.collections.api.factory.Sets;
@@ -34,8 +34,8 @@ class RailNetworkTest {
                 defaultPeriod,
                 setOf(berlinHbf, hamburgHbf, frankfurtHbf, stuttgartHbf),
                 setOf(
-                    new DoubleTrackRailway(berlinHbf.getId(), hamburgHbf.getId()),
-                    new DoubleTrackRailway(frankfurtHbf.getId(), stuttgartHbf.getId())
+                    new RailwayTrack(berlinHbf.getId(), hamburgHbf.getId()),
+                    new RailwayTrack(frankfurtHbf.getId(), stuttgartHbf.getId())
                 )
             );
         });
@@ -47,7 +47,7 @@ class RailNetworkTest {
             new RailNetwork(
                 defaultPeriod,
                 setOf(berlinHbf, hamburgHbf, frankfurtHbf),
-                setOf(new DoubleTrackRailway(berlinHbf.getId(), hamburgHbf.getId()))
+                setOf(new RailwayTrack(berlinHbf.getId(), hamburgHbf.getId()))
             );
         });
     }
@@ -58,7 +58,7 @@ class RailNetworkTest {
             new RailNetwork(
                 defaultPeriod,
                 setOf(berlinHbf, stuttgartHbf),
-                setOf(new DoubleTrackRailway(berlinHbf.getId(), stuttgartHbf.getId()))
+                setOf(new RailwayTrack(berlinHbf.getId(), stuttgartHbf.getId()))
             );
         });
     }
@@ -69,7 +69,7 @@ class RailNetworkTest {
             new RailNetwork(
                 defaultPeriod,
                 setOf(berlinHbf, hamburgHbf.withName(new TrainStationName("Berlin Hbf"))),
-                setOf(new DoubleTrackRailway(berlinHbf.getId(), hamburgHbf.getId()))
+                setOf(new RailwayTrack(berlinHbf.getId(), hamburgHbf.getId()))
             );
         });
     }
@@ -81,8 +81,8 @@ class RailNetworkTest {
                 defaultPeriod,
                 setOf(berlinHbf, berlinOst, hamburgHbf),
                 setOf(
-                    new DoubleTrackRailway(berlinHbf.getId(), berlinOst.getId()),
-                    new DoubleTrackRailway(berlinHbf.getId(), hamburgHbf.getId())
+                    new RailwayTrack(berlinHbf.getId(), berlinOst.getId()),
+                    new RailwayTrack(berlinHbf.getId(), hamburgHbf.getId())
                 )
             );
         });
@@ -94,8 +94,8 @@ class RailNetworkTest {
             defaultPeriod,
             setOf(berlinHbf, hamburgHbf),
             setOf(
-                new DoubleTrackRailway(berlinHbf.getId(), hamburgHbf.getId()),
-                new DoubleTrackRailway(hamburgHbf.getId(), berlinHbf.getId()) // the same connection again
+                new RailwayTrack(berlinHbf.getId(), hamburgHbf.getId()),
+                new RailwayTrack(hamburgHbf.getId(), berlinHbf.getId()) // the same connection again
             )
         );
 

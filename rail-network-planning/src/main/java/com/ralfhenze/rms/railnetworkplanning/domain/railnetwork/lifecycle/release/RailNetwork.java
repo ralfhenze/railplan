@@ -1,7 +1,7 @@
 package com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.lifecycle.release;
 
 import com.ralfhenze.rms.railnetworkplanning.domain.common.Aggregate;
-import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.elements.DoubleTrackRailway;
+import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.elements.RailwayTrack;
 import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.elements.TrainStation;
 import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.invariants.ContainsAtLeastTwoStationsAndOneTrack;
 import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.invariants.ContainsNoUnconnectedSubGraphs;
@@ -25,13 +25,13 @@ public class RailNetwork implements Aggregate {
     private final RailNetworkPeriod period;
 
     private final ImmutableSet<TrainStation> stations;
-    private final ImmutableSet<DoubleTrackRailway> connections;
+    private final ImmutableSet<RailwayTrack> connections;
     private final ImmutableSet<Invariant> invariants;
 
     public RailNetwork(
         final RailNetworkPeriod period,
         final ImmutableSet<TrainStation> stations,
-        final ImmutableSet<DoubleTrackRailway> connections
+        final ImmutableSet<RailwayTrack> connections
     ) {
         this(Optional.empty(), period, stations, connections);
     }
@@ -40,7 +40,7 @@ public class RailNetwork implements Aggregate {
         final Optional<RailNetworkId> id,
         final RailNetworkPeriod period,
         final ImmutableSet<TrainStation> stations,
-        final ImmutableSet<DoubleTrackRailway> connections
+        final ImmutableSet<RailwayTrack> connections
     ) {
         this.id = ensureNotNull(id, "Rail Network ID");
         this.period = ensureNotNull(period, "Rail Network Period");
@@ -74,7 +74,7 @@ public class RailNetwork implements Aggregate {
         return period;
     }
 
-    public ImmutableSet<DoubleTrackRailway> getConnections() {
+    public ImmutableSet<RailwayTrack> getConnections() {
         return connections;
     }
 }

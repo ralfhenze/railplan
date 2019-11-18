@@ -21,7 +21,7 @@ public class RailNetworkDraft implements Aggregate {
 
     private final Optional<RailNetworkDraftId> id;
     private final ImmutableSet<TrainStation> stations;
-    private final ImmutableSet<DoubleTrackRailway> connections;
+    private final ImmutableSet<RailwayTrack> connections;
     private final ImmutableSet<Invariant> invariants = DefaultRailNetworkInvariants.INVARIANTS;
     private final int stationId;
 
@@ -37,7 +37,7 @@ public class RailNetworkDraft implements Aggregate {
     private RailNetworkDraft(
         final Optional<RailNetworkDraftId> id,
         final ImmutableSet<TrainStation> stations,
-        final ImmutableSet<DoubleTrackRailway> connections,
+        final ImmutableSet<RailwayTrack> connections,
         final int stationId
     ) {
         this.id = ensureNotNull(id, "Rail Network Draft ID");
@@ -121,8 +121,8 @@ public class RailNetworkDraft implements Aggregate {
         ensureStationIdExist(id1);
         ensureStationIdExist(id2);
 
-        final ImmutableSet<DoubleTrackRailway> newConnections = connections
-            .newWith(new DoubleTrackRailway(id1, id2));
+        final ImmutableSet<RailwayTrack> newConnections = connections
+            .newWith(new RailwayTrack(id1, id2));
 
         ensureInvariants(stations, newConnections);
 
@@ -134,7 +134,7 @@ public class RailNetworkDraft implements Aggregate {
     }
 
     public RailNetworkDraft withoutConnection(final TrainStationId id1, final TrainStationId id2) {
-        final DoubleTrackRailway connection = new DoubleTrackRailway(id1, id2);
+        final RailwayTrack connection = new RailwayTrack(id1, id2);
 
         return new RailNetworkDraft(
             this.id,
@@ -152,7 +152,7 @@ public class RailNetworkDraft implements Aggregate {
         return stations;
     }
 
-    public ImmutableSet<DoubleTrackRailway> getConnections() {
+    public ImmutableSet<RailwayTrack> getConnections() {
         return connections;
     }
 
@@ -164,7 +164,7 @@ public class RailNetworkDraft implements Aggregate {
 
     private void ensureInvariants(
         final ImmutableSet<TrainStation> stations,
-        final ImmutableSet<DoubleTrackRailway> connections
+        final ImmutableSet<RailwayTrack> connections
     ) {
         for (final Invariant invariant : invariants) {
             invariant.ensureIsSatisfied(stations.castToSet(), connections.castToSet());

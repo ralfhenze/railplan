@@ -1,6 +1,6 @@
 package com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.invariants;
 
-import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.elements.DoubleTrackRailway;
+import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.elements.RailwayTrack;
 import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.elements.TrainStationId;
 import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.elements.TrainStation;
 
@@ -14,7 +14,7 @@ import static com.ralfhenze.rms.railnetworkplanning.domain.common.Preconditions.
 public class ContainsNoUnconnectedSubGraphs implements Invariant {
 
     @Override
-    public void ensureIsSatisfied(Set<TrainStation> stations, Set<DoubleTrackRailway> connections) {
+    public void ensureIsSatisfied(Set<TrainStation> stations, Set<RailwayTrack> connections) {
         ensureNotNull(stations, "Stations");
         ensureNotNull(connections, "Connections");
 
@@ -23,10 +23,10 @@ public class ContainsNoUnconnectedSubGraphs implements Invariant {
         }
     }
 
-    private void ensureNoUnconnectedSubGraphs(Set<TrainStation> stations, Set<DoubleTrackRailway> connections) {
+    private void ensureNoUnconnectedSubGraphs(Set<TrainStation> stations, Set<RailwayTrack> connections) {
         final Map<TrainStationId, Set<TrainStationId>> nodes = new HashMap<>();
 
-        for (final DoubleTrackRailway connection : connections) {
+        for (final RailwayTrack connection : connections) {
             final TrainStationId id1 = connection.getFirstStationId();
             final TrainStationId id2 = connection.getSecondStationId();
 

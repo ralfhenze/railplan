@@ -1,6 +1,6 @@
 package com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.invariants;
 
-import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.elements.DoubleTrackRailway;
+import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.elements.RailwayTrack;
 import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.elements.TrainStationId;
 import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.elements.TrainStation;
 import org.javatuples.Pair;
@@ -13,7 +13,7 @@ import static com.ralfhenze.rms.railnetworkplanning.domain.common.Preconditions.
 public class TwoStationsCanOnlyBeConnectedByOneTrack implements Invariant {
 
     @Override
-    public void ensureIsSatisfied(Set<TrainStation> stations, Set<DoubleTrackRailway> connections) {
+    public void ensureIsSatisfied(Set<TrainStation> stations, Set<RailwayTrack> connections) {
         ensureNotNull(stations, "Stations");
         ensureNotNull(connections, "Connections");
 
@@ -22,22 +22,22 @@ public class TwoStationsCanOnlyBeConnectedByOneTrack implements Invariant {
         }
     }
 
-    private void ensureNoDuplicateConnections(Set<TrainStation> stations, Set<DoubleTrackRailway> connections) {
+    private void ensureNoDuplicateConnections(Set<TrainStation> stations, Set<RailwayTrack> connections) {
 
-        final List<Pair<DoubleTrackRailway, DoubleTrackRailway>> uniqueConnectionCombinations = new ArrayList<>();
-        final Deque<DoubleTrackRailway> sourceConnections = new LinkedList<>(connections);
-        final Deque<DoubleTrackRailway> otherConnections = new LinkedList<>(connections);
+        final List<Pair<RailwayTrack, RailwayTrack>> uniqueConnectionCombinations = new ArrayList<>();
+        final Deque<RailwayTrack> sourceConnections = new LinkedList<>(connections);
+        final Deque<RailwayTrack> otherConnections = new LinkedList<>(connections);
 
         sourceConnections.removeLast();
 
-        for (final DoubleTrackRailway sourceConnection : sourceConnections) {
+        for (final RailwayTrack sourceConnection : sourceConnections) {
             otherConnections.removeFirst();
-            for (DoubleTrackRailway otherConnection : otherConnections) {
+            for (RailwayTrack otherConnection : otherConnections) {
                 uniqueConnectionCombinations.add(new Pair<>(sourceConnection, otherConnection));
             }
         }
 
-        final Optional<Pair<DoubleTrackRailway, DoubleTrackRailway>> equalConnectionCombination = uniqueConnectionCombinations
+        final Optional<Pair<RailwayTrack, RailwayTrack>> equalConnectionCombination = uniqueConnectionCombinations
             .stream()
             .filter(stationCombination ->
                 stationCombination
