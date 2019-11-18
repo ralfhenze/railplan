@@ -1,5 +1,6 @@
 package com.ralfhenze.rms.railnetworkplanning.domain;
 
+import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.lifecycle.release.RailNetworkPeriod;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 

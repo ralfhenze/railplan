@@ -1,6 +1,7 @@
 package com.ralfhenze.rms.railnetworkplanning.domain;
 
 import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.elements.*;
+import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.lifecycle.release.RailNetworkPeriod;
 
 import java.time.LocalDate;
 

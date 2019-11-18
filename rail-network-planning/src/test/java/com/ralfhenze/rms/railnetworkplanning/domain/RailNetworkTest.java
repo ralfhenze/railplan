@@ -2,6 +2,7 @@ package com.ralfhenze.rms.railnetworkplanning.domain;
 
 import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.elements.DoubleTrackRailway;
 import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.elements.StationName;
+import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.lifecycle.release.RailNetwork;
 import org.eclipse.collections.api.factory.Sets;
 import org.eclipse.collections.api.set.ImmutableSet;
 import org.junit.jupiter.api.Test;

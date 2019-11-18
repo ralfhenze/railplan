@@ -1,8 +1,8 @@
 package com.ralfhenze.rms.railnetworkplanning.application.commands;
 
-import com.ralfhenze.rms.railnetworkplanning.domain.RailNetworkDraft;
-import com.ralfhenze.rms.railnetworkplanning.domain.RailNetworkDraftId;
-import com.ralfhenze.rms.railnetworkplanning.domain.RailNetworkDraftRepository;
+import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.lifecycle.draft.RailNetworkDraft;
+import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.lifecycle.draft.RailNetworkDraftId;
+import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.lifecycle.draft.RailNetworkDraftRepository;
 import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.elements.GeoLocation;
 import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.elements.GeoLocationInGermany;
 import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.elements.StationName;

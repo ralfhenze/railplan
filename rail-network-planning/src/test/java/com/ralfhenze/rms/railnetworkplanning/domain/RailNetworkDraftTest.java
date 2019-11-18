@@ -1,5 +1,6 @@
 package com.ralfhenze.rms.railnetworkplanning.domain;
 
+import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.lifecycle.draft.RailNetworkDraft;
 import org.junit.jupiter.api.Test;
 
 import static com.ralfhenze.rms.railnetworkplanning.domain.TestData.*;

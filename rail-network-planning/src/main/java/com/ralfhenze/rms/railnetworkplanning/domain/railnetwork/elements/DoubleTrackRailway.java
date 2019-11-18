@@ -17,7 +17,7 @@ public class DoubleTrackRailway implements ValueObject {
     private final StationId firstStationId;
     private final StationId secondStationId;
 
-    DoubleTrackRailway(final StationId firstStationId, final StationId secondStationId) {
+    public DoubleTrackRailway(final StationId firstStationId, final StationId secondStationId) {
         ensureNotEqual(firstStationId, secondStationId, "First Station ID", "Second Station ID");
 
         this.firstStationId = ensureNotNull(firstStationId, "First Station ID");

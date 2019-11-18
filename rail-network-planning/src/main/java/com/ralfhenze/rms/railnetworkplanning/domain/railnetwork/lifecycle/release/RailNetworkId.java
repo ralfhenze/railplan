@@ -1,4 +1,4 @@
-package com.ralfhenze.rms.railnetworkplanning.domain;
+package com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.lifecycle.release;
 
 import com.ralfhenze.rms.railnetworkplanning.domain.common.Id;
 

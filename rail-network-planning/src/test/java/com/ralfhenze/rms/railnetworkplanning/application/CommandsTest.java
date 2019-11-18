@@ -3,9 +3,9 @@ package com.ralfhenze.rms.railnetworkplanning.application;
 import com.ralfhenze.rms.railnetworkplanning.application.commands.AddStationCommand;
 import com.ralfhenze.rms.railnetworkplanning.application.commands.CreateRailNetworkDraftCommand;
 import com.ralfhenze.rms.railnetworkplanning.application.commands.ReleaseRailNetworkCommand;
-import com.ralfhenze.rms.railnetworkplanning.domain.RailNetworkDraft;
-import com.ralfhenze.rms.railnetworkplanning.domain.RailNetworkDraftRepository;
-import com.ralfhenze.rms.railnetworkplanning.domain.RailNetworkRepository;
+import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.lifecycle.draft.RailNetworkDraft;
+import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.lifecycle.draft.RailNetworkDraftRepository;
+import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.lifecycle.release.RailNetworkRepository;
 import org.junit.jupiter.api.Test;
 
 import java.util.Optional;

@@ -1,4 +1,4 @@
-package com.ralfhenze.rms.railnetworkplanning.domain;
+package com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.lifecycle.release;
 
 import com.ralfhenze.rms.railnetworkplanning.domain.common.Aggregate;
 import com.ralfhenze.rms.railnetworkplanning.domain.invariants.*;
@@ -25,7 +25,7 @@ public class RailNetwork implements Aggregate {
     private final ImmutableSet<DoubleTrackRailway> connections;
     private final ImmutableSet<Invariant> invariants;
 
-    RailNetwork(
+    public RailNetwork(
         final RailNetworkPeriod period,
         final ImmutableSet<TrainStation> stations,
         final ImmutableSet<DoubleTrackRailway> connections
@@ -33,7 +33,7 @@ public class RailNetwork implements Aggregate {
         this(Optional.empty(), period, stations, connections);
     }
 
-    RailNetwork(
+    public RailNetwork(
         final Optional<RailNetworkId> id,
         final RailNetworkPeriod period,
         final ImmutableSet<TrainStation> stations,
