@@ -5,12 +5,18 @@
 
 ## Domain Model
 
-### Aggregates
+### Ubiquitous Language Glossary
 
-* **Station**: a train station (StationName, GeoLocation)
-* **Track**: a connection between two Stations (Station A, Station B, Length)
-* **Rail Network Proposal**: an unvalidated, undirected, weighted graph  of connected Stations (Stations, Tracks)
-* **Rail Network Plan**: a validated, unchangeable, undirected, weighted graph of connected Stations (Stations, Tracks, TimePeriod)
+Term                      | Acceptable Synonym | Description
+--------------------------|--------------------|-----------------------------------------------------
+**Train Station**         | _Station_          | Building where trains regularly stop to load or unload passengers, [more info](https://en.wikipedia.org/wiki/Train_station)
+**Railway Track**         | _Track_            | Straight [double track railway](https://en.wikipedia.org/wiki/Double-track_railway) connection between two train stations, [more info](https://en.wikipedia.org/wiki/Track_%28rail_transport%29)
+**Rail Network**          |                    | TODO
+**Rail Network Draft**    | _Draft_            | TODO
+**Released Rail Network** | _Network_          | TODO
+**Validity Period**       | _Period_           | TODO
+**Geo Location**          | _Location_         | [Geographic coordinates](https://en.wikipedia.org/wiki/Geographic_coordinate_system) within Germany, defined by [Latitude](https://en.wikipedia.org/wiki/Latitude) and [Longitude](https://en.wikipedia.org/wiki/Longitude)
+
 
 ### Domain Events
 
