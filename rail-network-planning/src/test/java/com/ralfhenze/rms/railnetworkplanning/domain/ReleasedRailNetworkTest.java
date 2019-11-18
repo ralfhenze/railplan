@@ -21,7 +21,7 @@ class ReleasedRailNetworkTest {
     }
 
     @Test
-    void should_ensure_at_least_one_connection() {
+    void should_ensure_at_least_one_track() {
         assertThrows(IllegalArgumentException.class, () -> {
             new ReleasedRailNetwork(defaultPeriod, setOf(berlinHbf, hamburgHbf), emptySet());
         });
@@ -89,17 +89,17 @@ class ReleasedRailNetworkTest {
     }
 
     @Test
-    void should_ensure_no_duplicate_connections() {
+    void should_ensure_no_duplicate_tracks() {
         final ReleasedRailNetwork railNetwork = new ReleasedRailNetwork(
             defaultPeriod,
             setOf(berlinHbf, hamburgHbf),
             setOf(
                 new RailwayTrack(berlinHbf.getId(), hamburgHbf.getId()),
-                new RailwayTrack(hamburgHbf.getId(), berlinHbf.getId()) // the same connection again
+                new RailwayTrack(hamburgHbf.getId(), berlinHbf.getId())
             )
         );
 
-        assertEquals(1, railNetwork.getConnections().size());
+        assertEquals(1, railNetwork.getTracks().size());
     }
 
     private <T> ImmutableSet<T> setOf(T... elements) {

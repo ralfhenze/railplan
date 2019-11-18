@@ -25,7 +25,7 @@ public class RailNetworkReleaseService implements DomainService {
         ReleasedRailNetwork railNetwork = new ReleasedRailNetwork(
             period,
             draft.getStations(),
-            draft.getConnections()
+            draft.getTracks()
         );
 
         return railNetworkRepository.add(railNetwork);

@@ -10,12 +10,12 @@ import static com.ralfhenze.rms.railnetworkplanning.domain.common.Preconditions.
 public class ContainsAtLeastTwoStationsAndOneTrack implements Invariant {
 
     @Override
-    public void ensureIsSatisfied(Set<TrainStation> stations, Set<RailwayTrack> connections) {
-        ensureNotNull(stations, "Stations");
-        ensureNotNull(connections, "Connections");
+    public void ensureIsSatisfied(Set<TrainStation> stations, Set<RailwayTrack> tracks) {
+        ensureNotNull(stations, "Train Stations");
+        ensureNotNull(tracks, "Railway Tracks");
 
         ensureAtLeastTwoStations(stations);
-        ensureAtLeastOneTrack(connections);
+        ensureAtLeastOneTrack(tracks);
     }
 
     private void ensureAtLeastTwoStations(Set<TrainStation> stations) {
@@ -26,10 +26,10 @@ public class ContainsAtLeastTwoStationsAndOneTrack implements Invariant {
         }
     }
 
-    private void ensureAtLeastOneTrack(Set<RailwayTrack> connections) {
-        if (connections.size() < 1) {
+    private void ensureAtLeastOneTrack(Set<RailwayTrack> tracks) {
+        if (tracks.size() < 1) {
             throw new IllegalArgumentException(
-                "At least 1 connection is required, but got " + connections.size()
+                "At least 1 track is required, but got " + tracks.size()
             );
         }
     }

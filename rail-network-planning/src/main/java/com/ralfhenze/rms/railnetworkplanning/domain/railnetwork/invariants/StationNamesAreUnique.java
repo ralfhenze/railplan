@@ -13,8 +13,8 @@ import static com.ralfhenze.rms.railnetworkplanning.domain.common.Preconditions.
 public class StationNamesAreUnique implements Invariant {
 
     @Override
-    public void ensureIsSatisfied(Set<TrainStation> stations, Set<RailwayTrack> connections) {
-        ensureNotNull(stations, "Stations");
+    public void ensureIsSatisfied(Set<TrainStation> stations, Set<RailwayTrack> tracks) {
+        ensureNotNull(stations, "Train Stations");
 
         if (stations.size() >= 2) {
             ensureUniqueStationNames(stations);

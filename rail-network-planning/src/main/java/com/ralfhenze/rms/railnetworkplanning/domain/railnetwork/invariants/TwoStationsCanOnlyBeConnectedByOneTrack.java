@@ -13,31 +13,31 @@ import static com.ralfhenze.rms.railnetworkplanning.domain.common.Preconditions.
 public class TwoStationsCanOnlyBeConnectedByOneTrack implements Invariant {
 
     @Override
-    public void ensureIsSatisfied(Set<TrainStation> stations, Set<RailwayTrack> connections) {
-        ensureNotNull(stations, "Stations");
-        ensureNotNull(connections, "Connections");
+    public void ensureIsSatisfied(Set<TrainStation> stations, Set<RailwayTrack> tracks) {
+        ensureNotNull(stations, "Train Stations");
+        ensureNotNull(tracks, "Railway Tracks");
 
-        if (connections.size() >= 2) {
-            ensureNoDuplicateConnections(stations, connections);
+        if (tracks.size() >= 2) {
+            ensureNoDuplicateTracks(stations, tracks);
         }
     }
 
-    private void ensureNoDuplicateConnections(Set<TrainStation> stations, Set<RailwayTrack> connections) {
+    private void ensureNoDuplicateTracks(Set<TrainStation> stations, Set<RailwayTrack> tracks) {
 
-        final List<Pair<RailwayTrack, RailwayTrack>> uniqueConnectionCombinations = new ArrayList<>();
-        final Deque<RailwayTrack> sourceConnections = new LinkedList<>(connections);
-        final Deque<RailwayTrack> otherConnections = new LinkedList<>(connections);
+        final List<Pair<RailwayTrack, RailwayTrack>> uniqueTrackCombinations = new ArrayList<>();
+        final Deque<RailwayTrack> sourceTracks = new LinkedList<>(tracks);
+        final Deque<RailwayTrack> otherTracks = new LinkedList<>(tracks);
 
-        sourceConnections.removeLast();
+        sourceTracks.removeLast();
 
-        for (final RailwayTrack sourceConnection : sourceConnections) {
-            otherConnections.removeFirst();
-            for (RailwayTrack otherConnection : otherConnections) {
-                uniqueConnectionCombinations.add(new Pair<>(sourceConnection, otherConnection));
+        for (final RailwayTrack sourceTrack : sourceTracks) {
+            otherTracks.removeFirst();
+            for (RailwayTrack otherTrack : otherTracks) {
+                uniqueTrackCombinations.add(new Pair<>(sourceTrack, otherTrack));
             }
         }
 
-        final Optional<Pair<RailwayTrack, RailwayTrack>> equalConnectionCombination = uniqueConnectionCombinations
+        final Optional<Pair<RailwayTrack, RailwayTrack>> equalTrackCombination = uniqueTrackCombinations
             .stream()
             .filter(stationCombination ->
                 stationCombination
@@ -46,15 +46,15 @@ public class TwoStationsCanOnlyBeConnectedByOneTrack implements Invariant {
                 )
             .findAny();
 
-        if (equalConnectionCombination.isPresent()) {
-            final TrainStationId id1 = equalConnectionCombination.get().getValue0().getFirstStationId();
-            final TrainStationId id2 = equalConnectionCombination.get().getValue0().getSecondStationId();
+        if (equalTrackCombination.isPresent()) {
+            final TrainStationId id1 = equalTrackCombination.get().getValue0().getFirstStationId();
+            final TrainStationId id2 = equalTrackCombination.get().getValue0().getSecondStationId();
             final Map<TrainStationId, TrainStation> stationsMap = stations.stream()
                 .collect(Collectors.toMap(TrainStation::getId, ts -> ts));
 
             throw new IllegalArgumentException(
-                "Connection from \""
-                    + stationsMap.get(id1).getName() + "\" to \""
+                "Track between \""
+                    + stationsMap.get(id1).getName() + "\" and \""
                     + stationsMap.get(id2).getName() + "\" already exists"
             );
         }

@@ -25,27 +25,27 @@ public class ReleasedRailNetwork implements Aggregate {
     private final ValidityPeriod period;
 
     private final ImmutableSet<TrainStation> stations;
-    private final ImmutableSet<RailwayTrack> connections;
+    private final ImmutableSet<RailwayTrack> tracks;
     private final ImmutableSet<Invariant> invariants;
 
     public ReleasedRailNetwork(
         final ValidityPeriod period,
         final ImmutableSet<TrainStation> stations,
-        final ImmutableSet<RailwayTrack> connections
+        final ImmutableSet<RailwayTrack> tracks
     ) {
-        this(Optional.empty(), period, stations, connections);
+        this(Optional.empty(), period, stations, tracks);
     }
 
     public ReleasedRailNetwork(
         final Optional<ReleasedRailNetworkId> id,
         final ValidityPeriod period,
         final ImmutableSet<TrainStation> stations,
-        final ImmutableSet<RailwayTrack> connections
+        final ImmutableSet<RailwayTrack> tracks
     ) {
         this.id = ensureNotNull(id, "Rail Network ID");
-        this.period = ensureNotNull(period, "Rail Network Period");
+        this.period = ensureNotNull(period, "Validity Period");
         this.stations = ensureNotNull(stations, "Train Stations");
-        this.connections = ensureNotNull(connections, "Connections");
+        this.tracks = ensureNotNull(tracks, "Railway Tracks");
 
         this.invariants = DefaultRailNetworkInvariants.INVARIANTS
             .newWith(new ContainsAtLeastTwoStationsAndOneTrack())
@@ -56,14 +56,14 @@ public class ReleasedRailNetwork implements Aggregate {
 
     private void ensureInvariants() {
         for (final Invariant invariant : invariants) {
-            invariant.ensureIsSatisfied(stations.castToSet(), connections.castToSet());
+            invariant.ensureIsSatisfied(stations.castToSet(), tracks.castToSet());
         }
     }
 
     public ReleasedRailNetwork withId(ReleasedRailNetworkId id) {
         ensureNotNull(id, "Rail Network ID");
 
-        return new ReleasedRailNetwork(Optional.of(id), period, stations, connections);
+        return new ReleasedRailNetwork(Optional.of(id), period, stations, tracks);
     }
 
     public Optional<ReleasedRailNetworkId> getId() {
@@ -74,7 +74,7 @@ public class ReleasedRailNetwork implements Aggregate {
         return period;
     }
 
-    public ImmutableSet<RailwayTrack> getConnections() {
-        return connections;
+    public ImmutableSet<RailwayTrack> getTracks() {
+        return tracks;
     }
 }

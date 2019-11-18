@@ -39,14 +39,14 @@ class RailNetworkDraftTest {
     }
 
     @Test
-    void should_ensure_no_duplicate_connections() {
+    void should_ensure_no_duplicate_tracks() {
         final RailNetworkDraft draft = new RailNetworkDraft()
             .withNewStation(berlinHbfName, berlinHbfPos)
             .withNewStation(potsdamHbfName, potsdamHbfPos)
-            .withConnection(berlinHbfName, potsdamHbfName)
-            .withConnection(potsdamHbfName, berlinHbfName); // the same connection again
+            .withNewTrack(berlinHbfName, potsdamHbfName)
+            .withNewTrack(potsdamHbfName, berlinHbfName);
 
-        assertEquals(1, draft.getConnections().size());
+        assertEquals(1, draft.getTracks().size());
     }
 
     @Test
@@ -56,7 +56,7 @@ class RailNetworkDraftTest {
             .withNewStation(stuttgartHbfName, stuttgartHbfPos);
 
         assertThrows(IllegalArgumentException.class, () -> {
-            draft.withConnection(berlinHbfName, stuttgartHbfName);
+            draft.withNewTrack(berlinHbfName, stuttgartHbfName);
         });
     }
 
@@ -72,32 +72,32 @@ class RailNetworkDraftTest {
     }
 
     @Test
-    void should_be_able_to_delete_connections() {
+    void should_be_able_to_delete_tracks() {
         RailNetworkDraft draft = new RailNetworkDraft()
             .withNewStation(berlinHbfName, berlinHbfPos)
             .withNewStation(potsdamHbfName, potsdamHbfPos)
-            .withConnection(berlinHbfName, potsdamHbfName);
+            .withNewTrack(berlinHbfName, potsdamHbfName);
 
-        assertEquals(1, draft.getConnections().size());
+        assertEquals(1, draft.getTracks().size());
 
-        draft = draft.withoutConnection(potsdamHbfName, berlinHbfName);
+        draft = draft.withoutTrack(potsdamHbfName, berlinHbfName);
 
-        assertTrue(draft.getConnections().isEmpty());
+        assertTrue(draft.getTracks().isEmpty());
     }
 
     @Test
-    void should_delete_associated_connections_on_station_delete() {
+    void should_delete_associated_tracks_on_station_delete() {
         RailNetworkDraft draft = new RailNetworkDraft()
             .withNewStation(berlinHbfName, berlinHbfPos)
             .withNewStation(potsdamHbfName, potsdamHbfPos)
-            .withConnection(berlinHbfName, potsdamHbfName);
+            .withNewTrack(berlinHbfName, potsdamHbfName);
 
         assertEquals(2, draft.getStations().size());
-        assertEquals(1, draft.getConnections().size());
+        assertEquals(1, draft.getTracks().size());
 
         draft = draft.withoutStation(potsdamHbfName);
 
         assertEquals(1, draft.getStations().size());
-        assertTrue(draft.getConnections().isEmpty());
+        assertTrue(draft.getTracks().isEmpty());
     }
 }

@@ -6,5 +6,5 @@ import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.elements.TrainSt
 import java.util.Set;
 
 public interface Invariant {
-    void ensureIsSatisfied(Set<TrainStation> stations, Set<RailwayTrack> connections);
+    void ensureIsSatisfied(Set<TrainStation> stations, Set<RailwayTrack> tracks);
 }

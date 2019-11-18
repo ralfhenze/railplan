@@ -50,7 +50,7 @@ class CommandsTest {
         final RailNetworkDraft draft = new RailNetworkDraft()
             .withNewStation(berlinHbfName, berlinHbfPos)
             .withNewStation(hamburgHbfName, hamburgHbfPos)
-            .withConnection(berlinHbfName, hamburgHbfName);
+            .withNewTrack(berlinHbfName, hamburgHbfName);
         when(draftRepository.getRailNetworkDraftOfId(any()))
             .thenReturn(Optional.of(draft));
 

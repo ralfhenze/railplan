@@ -17,37 +17,37 @@ public class MaximumLengthOfTrackIs300Km implements Invariant {
     private static final int MAXIMUM_LENGTH_KM = 300;
 
     @Override
-    public void ensureIsSatisfied(Set<TrainStation> stations, Set<RailwayTrack> connections) {
-        ensureNotNull(stations, "Stations");
-        ensureNotNull(connections, "Connections");
+    public void ensureIsSatisfied(Set<TrainStation> stations, Set<RailwayTrack> tracks) {
+        ensureNotNull(stations, "Train Stations");
+        ensureNotNull(tracks, "Railway Tracks");
 
-        if (!connections.isEmpty()) {
-            ensureMaximumTrackLength(stations, connections);
+        if (!tracks.isEmpty()) {
+            ensureMaximumTrackLength(stations, tracks);
         }
     }
 
-    private void ensureMaximumTrackLength(Set<TrainStation> stations, Set<RailwayTrack> connections) {
+    private void ensureMaximumTrackLength(Set<TrainStation> stations, Set<RailwayTrack> tracks) {
         final Map<TrainStationId, TrainStation> stationsMap = stations.stream()
             .collect(Collectors.toMap(TrainStation::getId, ts -> ts));
 
-        final Map<RailwayTrack, Double> trackLengthPerConnection = connections.stream()
+        final Map<RailwayTrack, Double> trackLengths = tracks.stream()
             .collect(Collectors.toMap(
-                c -> c,
-                c -> stationsMap
-                    .get(c.getFirstStationId())
+                track -> track,
+                track -> stationsMap
+                    .get(track.getFirstStationId())
                     .getLocation()
                     .getKilometerDistanceTo(
                         stationsMap
-                            .get(c.getSecondStationId())
+                            .get(track.getSecondStationId())
                             .getLocation()
                     )
                 )
             );
 
-        Optional<Entry<RailwayTrack, Double>> tooLongTrack = trackLengthPerConnection
+        Optional<Entry<RailwayTrack, Double>> tooLongTrack = trackLengths
             .entrySet()
             .stream()
-            .filter(c -> c.getValue() > MAXIMUM_LENGTH_KM)
+            .filter(entry -> entry.getValue() > MAXIMUM_LENGTH_KM)
             .findAny();
 
         if (tooLongTrack.isPresent()) {

@@ -14,21 +14,21 @@ import static com.ralfhenze.rms.railnetworkplanning.domain.common.Preconditions.
 public class ContainsNoUnconnectedSubGraphs implements Invariant {
 
     @Override
-    public void ensureIsSatisfied(Set<TrainStation> stations, Set<RailwayTrack> connections) {
-        ensureNotNull(stations, "Stations");
-        ensureNotNull(connections, "Connections");
+    public void ensureIsSatisfied(Set<TrainStation> stations, Set<RailwayTrack> tracks) {
+        ensureNotNull(stations, "Train Stations");
+        ensureNotNull(tracks, "Railway Tracks");
 
-        if (!stations.isEmpty() && !connections.isEmpty()) {
-            ensureNoUnconnectedSubGraphs(stations, connections);
+        if (!stations.isEmpty() && !tracks.isEmpty()) {
+            ensureNoUnconnectedSubGraphs(stations, tracks);
         }
     }
 
-    private void ensureNoUnconnectedSubGraphs(Set<TrainStation> stations, Set<RailwayTrack> connections) {
+    private void ensureNoUnconnectedSubGraphs(Set<TrainStation> stations, Set<RailwayTrack> tracks) {
         final Map<TrainStationId, Set<TrainStationId>> nodes = new HashMap<>();
 
-        for (final RailwayTrack connection : connections) {
-            final TrainStationId id1 = connection.getFirstStationId();
-            final TrainStationId id2 = connection.getSecondStationId();
+        for (final RailwayTrack track : tracks) {
+            final TrainStationId id1 = track.getFirstStationId();
+            final TrainStationId id2 = track.getSecondStationId();
 
             final Set<TrainStationId> set1 = nodes.getOrDefault(id1, new HashSet<>());
             set1.add(id2);

@@ -13,8 +13,8 @@ public class MinimumDistanceBetweenTwoStationsIs10Km implements Invariant {
     private final static int MINIMUM_STATION_DISTANCE_KM = 10;
 
     @Override
-    public void ensureIsSatisfied(Set<TrainStation> stations, Set<RailwayTrack> connections) {
-        ensureNotNull(stations, "Stations");
+    public void ensureIsSatisfied(Set<TrainStation> stations, Set<RailwayTrack> tracks) {
+        ensureNotNull(stations, "Train Stations");
 
         if (stations.size() >= 2) {
             ensureMinimumStationDistance(stations);
