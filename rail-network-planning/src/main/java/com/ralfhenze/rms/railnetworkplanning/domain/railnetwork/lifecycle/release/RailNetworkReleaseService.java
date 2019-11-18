@@ -13,16 +13,16 @@ import static com.ralfhenze.rms.railnetworkplanning.domain.common.Preconditions.
  */
 public class RailNetworkReleaseService implements DomainService {
 
-    private final RailNetworkRepository railNetworkRepository;
+    private final ReleasedRailNetworkRepository railNetworkRepository;
 
-    public RailNetworkReleaseService(final RailNetworkRepository railNetworkRepository) {
+    public RailNetworkReleaseService(final ReleasedRailNetworkRepository railNetworkRepository) {
         this.railNetworkRepository = ensureNotNull(railNetworkRepository, "Rail Network Repository");
     }
 
-    public Optional<RailNetwork> release(final RailNetworkDraft draft, final ValidityPeriod period) {
+    public Optional<ReleasedRailNetwork> release(final RailNetworkDraft draft, final ValidityPeriod period) {
         ensureValidPeriod(period);
 
-        RailNetwork railNetwork = new RailNetwork(
+        ReleasedRailNetwork railNetwork = new ReleasedRailNetwork(
             period,
             draft.getStations(),
             draft.getConnections()
@@ -32,7 +32,7 @@ public class RailNetworkReleaseService implements DomainService {
     }
 
     private void ensureValidPeriod(final ValidityPeriod period) {
-        final Optional<RailNetwork> lastReleasedRailNetwork = railNetworkRepository.getLastReleasedRailNetwork();
+        final Optional<ReleasedRailNetwork> lastReleasedRailNetwork = railNetworkRepository.getLastReleasedRailNetwork();
 
         if (lastReleasedRailNetwork.isPresent()) {
             LocalDate lastEndDate = lastReleasedRailNetwork.get().getPeriod().getEndDate();

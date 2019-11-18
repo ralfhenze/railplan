@@ -4,11 +4,11 @@ import com.ralfhenze.rms.railnetworkplanning.domain.common.Id;
 
 import static com.ralfhenze.rms.railnetworkplanning.domain.common.Preconditions.ensureNotBlank;
 
-public class RailNetworkId implements Id {
+public class ReleasedRailNetworkId implements Id {
 
     private final String id;
 
-    RailNetworkId(final String id) {
+    ReleasedRailNetworkId(final String id) {
         this.id = ensureNotBlank(id, "ID");
     }
 

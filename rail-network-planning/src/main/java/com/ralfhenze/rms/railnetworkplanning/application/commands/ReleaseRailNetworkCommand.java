@@ -15,13 +15,13 @@ public class ReleaseRailNetworkCommand implements Command {
 
     public ReleaseRailNetworkCommand(
         final RailNetworkDraftRepository railNetworkDraftRepository,
-        final RailNetworkRepository railNetworkRepository
+        final ReleasedRailNetworkRepository railNetworkRepository
     ) {
         this.railNetworkDraftRepository = railNetworkDraftRepository;
         this.railNetworkReleaseService = new RailNetworkReleaseService(railNetworkRepository);
     }
 
-    public Optional<RailNetworkId> releaseRailNetworkDraft(
+    public Optional<ReleasedRailNetworkId> releaseRailNetworkDraft(
         final String railNetworkDraftId,
         final LocalDate startDate,
         final LocalDate endDate
@@ -30,7 +30,7 @@ public class ReleaseRailNetworkCommand implements Command {
             .getRailNetworkDraftOfId(new RailNetworkDraftId(railNetworkDraftId));
 
         if (draft.isPresent()) {
-            final Optional<RailNetwork> releasedRailNetwork = railNetworkReleaseService
+            final Optional<ReleasedRailNetwork> releasedRailNetwork = railNetworkReleaseService
                 .release(
                     draft.get(),
                     new ValidityPeriod(startDate, endDate)

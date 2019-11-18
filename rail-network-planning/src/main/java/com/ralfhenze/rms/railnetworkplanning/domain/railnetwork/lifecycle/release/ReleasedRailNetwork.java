@@ -19,16 +19,16 @@ import static com.ralfhenze.rms.railnetworkplanning.domain.common.Preconditions.
  * [x] all invariants of RailNetworkDraft
  * [ ] released Rail Network Plans can't be changed any more
  */
-public class RailNetwork implements Aggregate {
+public class ReleasedRailNetwork implements Aggregate {
 
-    private final Optional<RailNetworkId> id;
+    private final Optional<ReleasedRailNetworkId> id;
     private final ValidityPeriod period;
 
     private final ImmutableSet<TrainStation> stations;
     private final ImmutableSet<RailwayTrack> connections;
     private final ImmutableSet<Invariant> invariants;
 
-    public RailNetwork(
+    public ReleasedRailNetwork(
         final ValidityPeriod period,
         final ImmutableSet<TrainStation> stations,
         final ImmutableSet<RailwayTrack> connections
@@ -36,8 +36,8 @@ public class RailNetwork implements Aggregate {
         this(Optional.empty(), period, stations, connections);
     }
 
-    public RailNetwork(
-        final Optional<RailNetworkId> id,
+    public ReleasedRailNetwork(
+        final Optional<ReleasedRailNetworkId> id,
         final ValidityPeriod period,
         final ImmutableSet<TrainStation> stations,
         final ImmutableSet<RailwayTrack> connections
@@ -60,13 +60,13 @@ public class RailNetwork implements Aggregate {
         }
     }
 
-    public RailNetwork withId(RailNetworkId id) {
+    public ReleasedRailNetwork withId(ReleasedRailNetworkId id) {
         ensureNotNull(id, "Rail Network ID");
 
-        return new RailNetwork(Optional.of(id), period, stations, connections);
+        return new ReleasedRailNetwork(Optional.of(id), period, stations, connections);
     }
 
-    public Optional<RailNetworkId> getId() {
+    public Optional<ReleasedRailNetworkId> getId() {
         return id;
     }
 

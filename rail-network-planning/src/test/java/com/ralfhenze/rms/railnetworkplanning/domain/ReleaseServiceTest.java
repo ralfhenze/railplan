@@ -1,10 +1,10 @@
 package com.ralfhenze.rms.railnetworkplanning.domain;
 
 import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.lifecycle.draft.RailNetworkDraft;
-import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.lifecycle.release.RailNetwork;
+import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.lifecycle.release.ReleasedRailNetwork;
 import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.lifecycle.release.ValidityPeriod;
 import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.lifecycle.release.RailNetworkReleaseService;
-import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.lifecycle.release.RailNetworkRepository;
+import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.lifecycle.release.ReleasedRailNetworkRepository;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.Mockito;
@@ -24,8 +24,8 @@ class ReleaseServiceTest {
         "2019-11-22",
     })
     void should_ensure_consecutive_periods(LocalDate invalidStartDate) {
-        RailNetworkRepository railNetworkRepository = Mockito.mock(RailNetworkRepository.class);
-        RailNetwork lastRailNetwork = Mockito.mock(RailNetwork.class);
+        ReleasedRailNetworkRepository railNetworkRepository = Mockito.mock(ReleasedRailNetworkRepository.class);
+        ReleasedRailNetwork lastRailNetwork = Mockito.mock(ReleasedRailNetwork.class);
         Mockito
             .when(lastRailNetwork.getPeriod())
             .thenReturn(

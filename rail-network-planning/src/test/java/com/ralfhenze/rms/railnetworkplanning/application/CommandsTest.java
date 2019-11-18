@@ -5,7 +5,7 @@ import com.ralfhenze.rms.railnetworkplanning.application.commands.CreateRailNetw
 import com.ralfhenze.rms.railnetworkplanning.application.commands.ReleaseRailNetworkCommand;
 import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.lifecycle.draft.RailNetworkDraft;
 import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.lifecycle.draft.RailNetworkDraftRepository;
-import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.lifecycle.release.RailNetworkRepository;
+import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.lifecycle.release.ReleasedRailNetworkRepository;
 import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
@@ -45,7 +45,7 @@ class CommandsTest {
     @Test
     void should_persist_released_network() {
         final RailNetworkDraftRepository draftRepository = mock(RailNetworkDraftRepository.class);
-        final RailNetworkRepository networkRepository = mock(RailNetworkRepository.class);
+        final ReleasedRailNetworkRepository networkRepository = mock(ReleasedRailNetworkRepository.class);
         final ReleaseRailNetworkCommand releaseCommand = new ReleaseRailNetworkCommand(draftRepository, networkRepository);
         final RailNetworkDraft draft = new RailNetworkDraft()
             .withNewStation(berlinHbfName, berlinHbfPos)
