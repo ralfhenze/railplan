@@ -1,6 +1,6 @@
 package com.ralfhenze.rms.railnetworkplanning.application;
 
-import com.ralfhenze.rms.railnetworkplanning.application.commands.AddStationCommand;
+import com.ralfhenze.rms.railnetworkplanning.application.commands.AddTrainStationCommand;
 import com.ralfhenze.rms.railnetworkplanning.application.commands.CreateRailNetworkDraftCommand;
 import com.ralfhenze.rms.railnetworkplanning.application.commands.ReleaseRailNetworkCommand;
 import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.lifecycle.draft.RailNetworkDraft;
@@ -18,11 +18,11 @@ class CommandsTest {
     @Test
     void should_persist_added_station() {
         final RailNetworkDraftRepository draftRepository = mock(RailNetworkDraftRepository.class);
-        final AddStationCommand addStationCommand = new AddStationCommand(draftRepository);
+        final AddTrainStationCommand command = new AddTrainStationCommand(draftRepository);
         when(draftRepository.getRailNetworkDraftOfId(any()))
             .thenReturn(Optional.of(new RailNetworkDraft()));
 
-        addStationCommand.addStation(
+        command.addTrainStation(
             "1",
             berlinHbfName.getName(),
             berlinHbfPos.getLatitude(),

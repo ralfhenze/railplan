@@ -8,15 +8,15 @@ import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.elements.TrainSt
 
 import java.util.Optional;
 
-public class AddStationCommand implements Command {
+public class AddTrainStationCommand implements Command {
 
     final private RailNetworkDraftRepository railNetworkDraftRepository;
 
-    public AddStationCommand(final RailNetworkDraftRepository railNetworkDraftRepository) {
+    public AddTrainStationCommand(final RailNetworkDraftRepository railNetworkDraftRepository) {
         this.railNetworkDraftRepository = railNetworkDraftRepository;
     }
 
-    public void addStation(
+    public void addTrainStation(
         final String railNetworkDraftId,
         final String stationName,
         final double latitude,
