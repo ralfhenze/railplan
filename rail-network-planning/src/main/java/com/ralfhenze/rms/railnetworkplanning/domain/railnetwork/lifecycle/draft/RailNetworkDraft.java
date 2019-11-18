@@ -52,7 +52,7 @@ public class RailNetworkDraft implements Aggregate {
         return new RailNetworkDraft(Optional.of(id), stations, connections, stationId);
     }
 
-    public RailNetworkDraft withNewStation(final StationName name, final GeoLocationInGermany location) {
+    public RailNetworkDraft withNewStation(final TrainStationName name, final GeoLocationInGermany location) {
         final TrainStationId stationId = new TrainStationId(String.valueOf(this.stationId));
         final TrainStation addedStation = new TrainStation(stationId, name, location);
         final ImmutableSet<TrainStation> newStations = stations.newWith(addedStation);
@@ -62,11 +62,11 @@ public class RailNetworkDraft implements Aggregate {
         return new RailNetworkDraft(this.id, newStations, this.connections, this.stationId + 1);
     }
 
-    public RailNetworkDraft withRenamedStation(final StationName currentName, final StationName newName) {
+    public RailNetworkDraft withRenamedStation(final TrainStationName currentName, final TrainStationName newName) {
         return withRenamedStation(getStationIdOf(currentName), newName);
     }
 
-    public RailNetworkDraft withRenamedStation(final TrainStationId id, final StationName name) {
+    public RailNetworkDraft withRenamedStation(final TrainStationId id, final TrainStationName name) {
         ensureStationIdExist(id);
 
         final TrainStation renamedStation = stations
@@ -81,7 +81,7 @@ public class RailNetworkDraft implements Aggregate {
         return new RailNetworkDraft(this.id, newStations, this.connections, this.stationId);
     }
 
-    public RailNetworkDraft withMovedStation(final StationName name, final GeoLocationInGermany location) {
+    public RailNetworkDraft withMovedStation(final TrainStationName name, final GeoLocationInGermany location) {
         return withMovedStation(getStationIdOf(name), location);
     }
 
@@ -100,7 +100,7 @@ public class RailNetworkDraft implements Aggregate {
         return new RailNetworkDraft(this.id, newStations, this.connections, this.stationId);
     }
 
-    public RailNetworkDraft withoutStation(final StationName name) {
+    public RailNetworkDraft withoutStation(final TrainStationName name) {
         return withoutStation(getStationIdOf(name));
     }
 
@@ -113,7 +113,7 @@ public class RailNetworkDraft implements Aggregate {
         );
     }
 
-    public RailNetworkDraft withConnection(final StationName name1, final StationName name2) {
+    public RailNetworkDraft withConnection(final TrainStationName name1, final TrainStationName name2) {
         return withConnection(getStationIdOf(name1), getStationIdOf(name2));
     }
 
@@ -129,7 +129,7 @@ public class RailNetworkDraft implements Aggregate {
         return new RailNetworkDraft(this.id, this.stations, newConnections, this.stationId);
     }
 
-    public RailNetworkDraft withoutConnection(final StationName name1, final StationName name2) {
+    public RailNetworkDraft withoutConnection(final TrainStationName name1, final TrainStationName name2) {
         return withoutConnection(getStationIdOf(name1), getStationIdOf(name2));
     }
 
@@ -156,7 +156,7 @@ public class RailNetworkDraft implements Aggregate {
         return connections;
     }
 
-    private TrainStationId getStationIdOf(final StationName name) {
+    private TrainStationId getStationIdOf(final TrainStationName name) {
         return stations
             .detect(ts -> ts.getName().equals(name))
             .getId();

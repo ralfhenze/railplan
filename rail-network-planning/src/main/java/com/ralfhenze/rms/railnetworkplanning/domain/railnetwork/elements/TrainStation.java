@@ -12,10 +12,10 @@ import static com.ralfhenze.rms.railnetworkplanning.domain.common.Preconditions.
 public class TrainStation implements LocalEntity {
 
     private final TrainStationId id;
-    private final StationName name;
+    private final TrainStationName name;
     private final GeoLocationInGermany location;
 
-    public TrainStation(final TrainStationId id, final StationName name, final GeoLocationInGermany location) {
+    public TrainStation(final TrainStationId id, final TrainStationName name, final GeoLocationInGermany location) {
         this.id = ensureNotNull(id, "Station ID");
         this.name = ensureNotNull(name, "Station Name");
         this.location = ensureNotNull(location, "Geo Location");
@@ -25,7 +25,7 @@ public class TrainStation implements LocalEntity {
         return id;
     }
 
-    public StationName getName() {
+    public TrainStationName getName() {
         return name;
     }
 
@@ -33,7 +33,7 @@ public class TrainStation implements LocalEntity {
         return location;
     }
 
-    public TrainStation withName(StationName name) {
+    public TrainStation withName(TrainStationName name) {
         return new TrainStation(this.id, name, this.location);
     }
 

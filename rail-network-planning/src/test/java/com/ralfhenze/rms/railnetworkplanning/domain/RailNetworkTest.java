@@ -1,7 +1,7 @@
 package com.ralfhenze.rms.railnetworkplanning.domain;
 
 import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.elements.DoubleTrackRailway;
-import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.elements.StationName;
+import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.elements.TrainStationName;
 import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.lifecycle.release.RailNetwork;
 import org.eclipse.collections.api.factory.Sets;
 import org.eclipse.collections.api.set.ImmutableSet;
@@ -68,7 +68,7 @@ class RailNetworkTest {
         assertThrows(IllegalArgumentException.class, () -> {
             new RailNetwork(
                 defaultPeriod,
-                setOf(berlinHbf, hamburgHbf.withName(new StationName("Berlin Hbf"))),
+                setOf(berlinHbf, hamburgHbf.withName(new TrainStationName("Berlin Hbf"))),
                 setOf(new DoubleTrackRailway(berlinHbf.getId(), hamburgHbf.getId()))
             );
         });

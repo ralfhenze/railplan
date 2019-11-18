@@ -1,6 +1,6 @@
 package com.ralfhenze.rms.railnetworkplanning.domain;
 
-import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.elements.StationName;
+import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.elements.TrainStationName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
@@ -19,7 +19,7 @@ class TrainStationTest {
     })
     void should_fail_on_invalid_station_names(String stationName) {
         assertThrows(Exception.class, () -> {
-            new StationName(stationName);
+            new TrainStationName(stationName);
         });
     }
 
@@ -33,7 +33,7 @@ class TrainStationTest {
         "Kassel-Wilhelmshöhe",
     })
     void should_provide_station_name(String stationName) {
-        StationName name = new StationName(stationName);
+        TrainStationName name = new TrainStationName(stationName);
 
         assertEquals(name.getName(), stationName);
     }
