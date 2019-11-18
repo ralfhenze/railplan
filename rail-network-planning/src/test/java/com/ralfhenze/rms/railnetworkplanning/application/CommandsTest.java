@@ -1,7 +1,7 @@
 package com.ralfhenze.rms.railnetworkplanning.application;
 
 import com.ralfhenze.rms.railnetworkplanning.application.commands.AddTrainStationCommand;
-import com.ralfhenze.rms.railnetworkplanning.application.commands.CreateRailNetworkDraftCommand;
+import com.ralfhenze.rms.railnetworkplanning.application.commands.AddRailNetworkDraftCommand;
 import com.ralfhenze.rms.railnetworkplanning.application.commands.ReleaseRailNetworkCommand;
 import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.lifecycle.draft.RailNetworkDraft;
 import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.lifecycle.draft.RailNetworkDraftRepository;
@@ -35,9 +35,9 @@ class CommandsTest {
     @Test
     void should_persist_created_draft() {
         final RailNetworkDraftRepository draftRepository = mock(RailNetworkDraftRepository.class);
-        final CreateRailNetworkDraftCommand createDraftCommand = new CreateRailNetworkDraftCommand(draftRepository);
+        final AddRailNetworkDraftCommand command = new AddRailNetworkDraftCommand(draftRepository);
 
-        createDraftCommand.createRailNetworkDraft();
+        command.addRailNetworkDraft();
 
         verify(draftRepository).persist(any());
     }
@@ -46,7 +46,7 @@ class CommandsTest {
     void should_persist_released_network() {
         final RailNetworkDraftRepository draftRepository = mock(RailNetworkDraftRepository.class);
         final ReleasedRailNetworkRepository networkRepository = mock(ReleasedRailNetworkRepository.class);
-        final ReleaseRailNetworkCommand releaseCommand = new ReleaseRailNetworkCommand(draftRepository, networkRepository);
+        final ReleaseRailNetworkCommand command = new ReleaseRailNetworkCommand(draftRepository, networkRepository);
         final RailNetworkDraft draft = new RailNetworkDraft()
             .withNewStation(berlinHbfName, berlinHbfPos)
             .withNewStation(hamburgHbfName, hamburgHbfPos)
@@ -54,7 +54,7 @@ class CommandsTest {
         when(draftRepository.getRailNetworkDraftOfId(any()))
             .thenReturn(Optional.of(draft));
 
-        releaseCommand.releaseRailNetworkDraft(
+        command.releaseRailNetworkDraft(
             "1",
             defaultPeriod.getStartDate(),
             defaultPeriod.getEndDate()

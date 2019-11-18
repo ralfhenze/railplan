@@ -6,17 +6,17 @@ import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.lifecycle.draft.
 
 import java.util.Optional;
 
-public class CreateRailNetworkDraftCommand implements Command {
+public class AddRailNetworkDraftCommand implements Command {
 
     final private RailNetworkDraftRepository railNetworkDraftRepository;
 
-    public CreateRailNetworkDraftCommand(
+    public AddRailNetworkDraftCommand(
         final RailNetworkDraftRepository railNetworkDraftRepository
     ) {
         this.railNetworkDraftRepository = railNetworkDraftRepository;
     }
 
-    public Optional<RailNetworkDraftId> createRailNetworkDraft() {
+    public Optional<RailNetworkDraftId> addRailNetworkDraft() {
         RailNetworkDraft draft = new RailNetworkDraft();
 
         Optional<RailNetworkDraft> persistedDraft = railNetworkDraftRepository.persist(draft);
