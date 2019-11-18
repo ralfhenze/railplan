@@ -165,7 +165,7 @@ public class RailNetworkDraft implements Aggregate {
         final ImmutableSet<RailwayTrack> tracks
     ) {
         for (final Invariant invariant : invariants) {
-            invariant.ensureIsSatisfied(stations.castToSet(), tracks.castToSet());
+            invariant.ensureIsSatisfied(stations, tracks);
         }
     }
 

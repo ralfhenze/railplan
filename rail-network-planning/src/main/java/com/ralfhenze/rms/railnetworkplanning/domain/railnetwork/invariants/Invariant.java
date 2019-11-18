@@ -2,9 +2,11 @@ package com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.invariants;
 
 import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.elements.RailwayTrack;
 import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.elements.TrainStation;
-
-import java.util.Set;
+import org.eclipse.collections.api.set.ImmutableSet;
 
 public interface Invariant {
-    void ensureIsSatisfied(Set<TrainStation> stations, Set<RailwayTrack> tracks);
+    void ensureIsSatisfied(
+        final ImmutableSet<TrainStation> stations,
+        final ImmutableSet<RailwayTrack> tracks
+    );
 }

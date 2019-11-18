@@ -1,10 +1,12 @@
 package com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.invariants;
 
+import com.ralfhenze.rms.railnetworkplanning.domain.common.Combinations;
 import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.elements.RailwayTrack;
 import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.elements.TrainStation;
+import org.eclipse.collections.api.set.ImmutableSet;
 import org.javatuples.Pair;
 
-import java.util.*;
+import java.util.Optional;
 
 import static com.ralfhenze.rms.railnetworkplanning.domain.common.Preconditions.ensureNotNull;
 
@@ -12,8 +14,13 @@ public class MinimumDistanceBetweenTwoStationsIs10Km implements Invariant {
 
     private final static int MINIMUM_STATION_DISTANCE_KM = 10;
 
+    private final Combinations combinations = new Combinations();
+
     @Override
-    public void ensureIsSatisfied(Set<TrainStation> stations, Set<RailwayTrack> tracks) {
+    public void ensureIsSatisfied(
+        final ImmutableSet<TrainStation> stations,
+        final ImmutableSet<RailwayTrack> tracks
+    ) {
         ensureNotNull(stations, "Train Stations");
 
         if (stations.size() >= 2) {
@@ -21,7 +28,7 @@ public class MinimumDistanceBetweenTwoStationsIs10Km implements Invariant {
         }
     }
 
-    private void ensureMinimumStationDistance(Set<TrainStation> stations) {
+    private void ensureMinimumStationDistance(final ImmutableSet<TrainStation> stations) {
 
         // When have 4 stations A, B, C, D, we only need to calculate the distance
         // of unique station combinations (sourceStation, otherStation):
@@ -30,22 +37,9 @@ public class MinimumDistanceBetweenTwoStationsIs10Km implements Invariant {
         // (C,D)
         // because distance(A,B) = distance(B,A)
 
-        final List<Pair<TrainStation, TrainStation>> uniqueStationCombinations = new ArrayList<>();
-        final Deque<TrainStation> sourceStations = new LinkedList<>(stations);
-        final Deque<TrainStation> otherStations = new LinkedList<>(stations);
-
-        sourceStations.removeLast();
-
-        for (final TrainStation sourceStation : sourceStations) {
-            otherStations.removeFirst();
-            for (TrainStation otherStation : otherStations) {
-                uniqueStationCombinations.add(new Pair<>(sourceStation, otherStation));
-            }
-        }
-
-        final Optional<Pair<TrainStation, TrainStation>> tooNearStationCombination = uniqueStationCombinations
-            .stream()
-            .filter(stationCombination ->
+        final Optional<Pair<TrainStation, TrainStation>> tooNearStationCombination = combinations
+            .getUniqueCombinations(stations)
+            .detectOptional(stationCombination ->
                 stationCombination
                     .getValue0()
                     .getLocation()
@@ -53,8 +47,8 @@ public class MinimumDistanceBetweenTwoStationsIs10Km implements Invariant {
                         stationCombination
                             .getValue1()
                             .getLocation()
-                    ) <= MINIMUM_STATION_DISTANCE_KM)
-            .findAny();
+                    ) <= MINIMUM_STATION_DISTANCE_KM
+            );
 
         if (tooNearStationCombination.isPresent()) {
             final TrainStation firstStation = tooNearStationCombination.get().getValue0();

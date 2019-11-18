@@ -3,12 +3,10 @@ package com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.invariants;
 import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.elements.RailwayTrack;
 import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.elements.TrainStationId;
 import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.elements.TrainStation;
+import org.eclipse.collections.api.map.ImmutableMap;
+import org.eclipse.collections.api.set.ImmutableSet;
 
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 import static com.ralfhenze.rms.railnetworkplanning.domain.common.Preconditions.ensureNotNull;
 
@@ -17,7 +15,10 @@ public class MaximumLengthOfTrackIs300Km implements Invariant {
     private static final int MAXIMUM_LENGTH_KM = 300;
 
     @Override
-    public void ensureIsSatisfied(Set<TrainStation> stations, Set<RailwayTrack> tracks) {
+    public void ensureIsSatisfied(
+        final ImmutableSet<TrainStation> stations,
+        final ImmutableSet<RailwayTrack> tracks
+    ) {
         ensureNotNull(stations, "Train Stations");
         ensureNotNull(tracks, "Railway Tracks");
 
@@ -26,34 +27,24 @@ public class MaximumLengthOfTrackIs300Km implements Invariant {
         }
     }
 
-    private void ensureMaximumTrackLength(Set<TrainStation> stations, Set<RailwayTrack> tracks) {
-        final Map<TrainStationId, TrainStation> stationsMap = stations.stream()
-            .collect(Collectors.toMap(TrainStation::getId, ts -> ts));
+    private void ensureMaximumTrackLength(
+        final ImmutableSet<TrainStation> stations,
+        final ImmutableSet<RailwayTrack> tracks
+    ) {
+        final ImmutableMap<TrainStationId, TrainStation> stationsMap = stations
+            .toMap(TrainStation::getId, ts -> ts).toImmutable();
 
-        final Map<RailwayTrack, Double> trackLengths = tracks.stream()
-            .collect(Collectors.toMap(
-                track -> track,
-                track -> stationsMap
-                    .get(track.getFirstStationId())
-                    .getLocation()
-                    .getKilometerDistanceTo(
-                        stationsMap
-                            .get(track.getSecondStationId())
-                            .getLocation()
-                    )
-                )
-            );
-
-        Optional<Entry<RailwayTrack, Double>> tooLongTrack = trackLengths
-            .entrySet()
-            .stream()
-            .filter(entry -> entry.getValue() > MAXIMUM_LENGTH_KM)
-            .findAny();
+        final Optional<RailwayTrack> tooLongTrack = tracks
+            .detectOptional(track -> getTrackLength(
+                stationsMap,
+                track.getFirstStationId(),
+                track.getSecondStationId()
+            ) > MAXIMUM_LENGTH_KM);
 
         if (tooLongTrack.isPresent()) {
-            final TrainStationId id1 = tooLongTrack.get().getKey().getFirstStationId();
-            final TrainStationId id2 = tooLongTrack.get().getKey().getSecondStationId();
-            final double trackLength = tooLongTrack.get().getValue();
+            final TrainStationId id1 = tooLongTrack.get().getFirstStationId();
+            final TrainStationId id2 = tooLongTrack.get().getSecondStationId();
+            final double trackLength = getTrackLength(stationsMap, id1, id2);
 
             throw new IllegalArgumentException(
                 "Track from \""
@@ -63,5 +54,16 @@ public class MaximumLengthOfTrackIs300Km implements Invariant {
                     + ", but was ~" + Math.round(trackLength) + " km"
             );
         }
+    }
+
+    private double getTrackLength(
+        final ImmutableMap<TrainStationId, TrainStation> stationsMap,
+        final TrainStationId id1,
+        final TrainStationId id2
+    ) {
+        return stationsMap
+            .get(id1)
+            .getLocation()
+            .getKilometerDistanceTo(stationsMap.get(id2).getLocation());
     }
 }

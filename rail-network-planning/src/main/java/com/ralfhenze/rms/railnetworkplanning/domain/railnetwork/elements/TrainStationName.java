@@ -25,6 +25,11 @@ public class TrainStationName implements ValueObject {
     }
 
     @Override
+    public int hashCode() {
+        return name.hashCode();
+    }
+
+    @Override
     public boolean equals(Object o) {
         return (o != null && ((TrainStationName)o).name.equals(this.name));
     }
