@@ -3,7 +3,6 @@ package com.ralfhenze.rms.railnetworkplanning.application.commands;
 import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.lifecycle.draft.RailNetworkDraft;
 import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.lifecycle.draft.RailNetworkDraftId;
 import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.lifecycle.draft.RailNetworkDraftRepository;
-import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.elements.GeoLocation;
 import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.elements.GeoLocationInGermany;
 import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.elements.TrainStationName;
 
@@ -29,7 +28,7 @@ public class AddStationCommand implements Command {
         if (draft.isPresent()) {
             final RailNetworkDraft updatedDraft = draft.get().withNewStation(
                 new TrainStationName(stationName),
-                new GeoLocationInGermany(new GeoLocation(latitude, longitude))
+                new GeoLocationInGermany(latitude, longitude)
             );
 
             railNetworkDraftRepository.persist(updatedDraft);

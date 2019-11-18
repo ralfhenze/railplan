@@ -25,8 +25,8 @@ class CommandsTest {
         addStationCommand.addStation(
             "1",
             berlinHbfName.getName(),
-            berlinHbfPos.getLocation().getLatitude(),
-            berlinHbfPos.getLocation().getLongitude()
+            berlinHbfPos.getLatitude(),
+            berlinHbfPos.getLongitude()
         );
 
         verify(draftRepository).persist(any());

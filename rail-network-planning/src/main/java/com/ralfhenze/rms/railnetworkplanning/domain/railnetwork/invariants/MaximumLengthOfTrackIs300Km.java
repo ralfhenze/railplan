@@ -36,11 +36,9 @@ public class MaximumLengthOfTrackIs300Km implements Invariant {
                 c -> stationsMap
                     .get(c.getFirstStationId())
                     .getLocation()
-                    .getLocation()
                     .getKilometerDistanceTo(
                         stationsMap
                             .get(c.getSecondStationId())
-                            .getLocation()
                             .getLocation()
                     )
                 )

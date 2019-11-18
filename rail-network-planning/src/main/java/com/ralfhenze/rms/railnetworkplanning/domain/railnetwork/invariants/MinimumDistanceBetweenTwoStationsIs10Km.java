@@ -49,11 +49,9 @@ public class MinimumDistanceBetweenTwoStationsIs10Km implements Invariant {
                 stationCombination
                     .getValue0()
                     .getLocation()
-                    .getLocation()
                     .getKilometerDistanceTo(
                         stationCombination
                             .getValue1()
-                            .getLocation()
                             .getLocation()
                     ) <= MINIMUM_STATION_DISTANCE_KM)
             .findAny();
@@ -63,7 +61,7 @@ public class MinimumDistanceBetweenTwoStationsIs10Km implements Invariant {
             final TrainStation secondStation = tooNearStationCombination.get().getValue1();
 
             final double distance = firstStation.getLocation()
-                .getLocation().getKilometerDistanceTo(secondStation.getLocation().getLocation());
+                .getKilometerDistanceTo(secondStation.getLocation());
 
             throw new IllegalArgumentException(
                 "Distance between Station \""
