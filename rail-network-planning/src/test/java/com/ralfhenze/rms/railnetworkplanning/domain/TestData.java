@@ -1,6 +1,6 @@
 package com.ralfhenze.rms.railnetworkplanning.domain;
 
-import com.ralfhenze.rms.railnetworkplanning.domain.station.*;
+import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.elements.*;
 
 import java.time.LocalDate;
 

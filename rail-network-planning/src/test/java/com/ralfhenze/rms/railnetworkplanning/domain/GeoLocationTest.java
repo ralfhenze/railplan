@@ -1,7 +1,7 @@
 package com.ralfhenze.rms.railnetworkplanning.domain;
 
-import com.ralfhenze.rms.railnetworkplanning.domain.station.GeoLocation;
-import com.ralfhenze.rms.railnetworkplanning.domain.station.GeoLocationInGermany;
+import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.elements.GeoLocation;
+import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.elements.GeoLocationInGermany;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;

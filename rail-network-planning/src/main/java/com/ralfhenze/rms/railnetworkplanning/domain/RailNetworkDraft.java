@@ -3,7 +3,7 @@ package com.ralfhenze.rms.railnetworkplanning.domain;
 import com.ralfhenze.rms.railnetworkplanning.domain.common.Aggregate;
 import com.ralfhenze.rms.railnetworkplanning.domain.invariants.Invariant;
 import com.ralfhenze.rms.railnetworkplanning.domain.invariants.DefaultRailNetworkInvariants;
-import com.ralfhenze.rms.railnetworkplanning.domain.station.*;
+import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.elements.*;
 import org.eclipse.collections.api.set.ImmutableSet;
 import org.eclipse.collections.impl.factory.Sets;
 

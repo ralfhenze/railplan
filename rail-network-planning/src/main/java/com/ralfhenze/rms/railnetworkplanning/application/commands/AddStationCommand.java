@@ -3,9 +3,9 @@ package com.ralfhenze.rms.railnetworkplanning.application.commands;
 import com.ralfhenze.rms.railnetworkplanning.domain.RailNetworkDraft;
 import com.ralfhenze.rms.railnetworkplanning.domain.RailNetworkDraftId;
 import com.ralfhenze.rms.railnetworkplanning.domain.RailNetworkDraftRepository;
-import com.ralfhenze.rms.railnetworkplanning.domain.station.GeoLocation;
-import com.ralfhenze.rms.railnetworkplanning.domain.station.GeoLocationInGermany;
-import com.ralfhenze.rms.railnetworkplanning.domain.station.StationName;
+import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.elements.GeoLocation;
+import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.elements.GeoLocationInGermany;
+import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.elements.StationName;
 
 import java.util.Optional;
 

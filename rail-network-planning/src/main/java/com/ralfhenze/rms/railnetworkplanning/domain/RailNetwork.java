@@ -2,7 +2,8 @@ package com.ralfhenze.rms.railnetworkplanning.domain;
 
 import com.ralfhenze.rms.railnetworkplanning.domain.common.Aggregate;
 import com.ralfhenze.rms.railnetworkplanning.domain.invariants.*;
-import com.ralfhenze.rms.railnetworkplanning.domain.station.TrainStation;
+import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.elements.DoubleTrackRailway;
+import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.elements.TrainStation;
 import org.eclipse.collections.api.set.ImmutableSet;
 
 import java.util.Optional;

@@ -1,6 +1,7 @@
 package com.ralfhenze.rms.railnetworkplanning.domain;
 
-import com.ralfhenze.rms.railnetworkplanning.domain.station.StationId;
+import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.elements.DoubleTrackRailway;
+import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.elements.StationId;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

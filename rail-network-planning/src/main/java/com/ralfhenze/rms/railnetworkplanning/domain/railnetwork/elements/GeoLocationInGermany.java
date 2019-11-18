@@ -1,6 +1,7 @@
-package com.ralfhenze.rms.railnetworkplanning.domain.station;
+package com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.elements;
 
 import com.ralfhenze.rms.railnetworkplanning.domain.common.ValueObject;
+import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.elements.GeoLocation;
 
 import static com.ralfhenze.rms.railnetworkplanning.domain.common.Preconditions.ensureNotNull;
 import static com.ralfhenze.rms.railnetworkplanning.domain.common.Preconditions.ensureWithinRange;

@@ -1,6 +1,6 @@
 package com.ralfhenze.rms.railnetworkplanning.domain;
 
-import com.ralfhenze.rms.railnetworkplanning.domain.station.StationName;
+import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.elements.StationName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 

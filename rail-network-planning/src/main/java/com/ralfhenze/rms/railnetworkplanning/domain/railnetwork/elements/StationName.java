@@ -1,4 +1,4 @@
-package com.ralfhenze.rms.railnetworkplanning.domain.station;
+package com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.elements;
 
 import com.ralfhenze.rms.railnetworkplanning.domain.common.ValueObject;
 

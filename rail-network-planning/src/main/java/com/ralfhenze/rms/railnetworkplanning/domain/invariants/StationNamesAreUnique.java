@@ -1,7 +1,7 @@
 package com.ralfhenze.rms.railnetworkplanning.domain.invariants;
 
-import com.ralfhenze.rms.railnetworkplanning.domain.DoubleTrackRailway;
-import com.ralfhenze.rms.railnetworkplanning.domain.station.TrainStation;
+import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.elements.DoubleTrackRailway;
+import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.elements.TrainStation;
 
 import java.util.Map;
 import java.util.Optional;
