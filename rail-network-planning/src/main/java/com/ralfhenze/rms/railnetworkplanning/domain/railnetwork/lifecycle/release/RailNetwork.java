@@ -1,9 +1,12 @@
 package com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.lifecycle.release;
 
 import com.ralfhenze.rms.railnetworkplanning.domain.common.Aggregate;
-import com.ralfhenze.rms.railnetworkplanning.domain.invariants.*;
 import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.elements.DoubleTrackRailway;
 import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.elements.TrainStation;
+import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.invariants.ContainsAtLeastTwoStationsAndOneTrack;
+import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.invariants.ContainsNoUnconnectedSubGraphs;
+import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.invariants.DefaultRailNetworkInvariants;
+import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.invariants.Invariant;
 import org.eclipse.collections.api.set.ImmutableSet;
 
 import java.util.Optional;

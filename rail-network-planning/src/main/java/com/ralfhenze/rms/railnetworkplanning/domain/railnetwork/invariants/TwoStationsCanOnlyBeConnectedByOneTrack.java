@@ -1,4 +1,4 @@
-package com.ralfhenze.rms.railnetworkplanning.domain.invariants;
+package com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.invariants;
 
 import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.elements.DoubleTrackRailway;
 import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.elements.StationId;

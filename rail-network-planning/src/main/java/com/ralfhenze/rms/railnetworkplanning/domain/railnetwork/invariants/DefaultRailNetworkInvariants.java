@@ -1,4 +1,4 @@
-package com.ralfhenze.rms.railnetworkplanning.domain.invariants;
+package com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.invariants;
 
 import org.eclipse.collections.api.factory.Sets;
 import org.eclipse.collections.api.set.ImmutableSet;
