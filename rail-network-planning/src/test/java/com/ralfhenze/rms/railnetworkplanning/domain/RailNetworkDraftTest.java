@@ -9,14 +9,10 @@ import static org.junit.jupiter.api.Assertions.*;
 class RailNetworkDraftTest {
 
     @Test
-    void should_ensure_unique_station_names() {
+    void should_ensure_unique_station_names_when_renaming() {
         final RailNetworkDraft draft = new RailNetworkDraft()
             .withNewStation(berlinHbfName, berlinHbfPos)
             .withNewStation(potsdamHbfName, potsdamHbfPos);
-
-        assertThrows(IllegalArgumentException.class, () -> {
-            draft.withNewStation(berlinHbfName, stuttgartHbfPos);
-        });
 
         assertThrows(IllegalArgumentException.class, () -> {
             draft.withRenamedStation(potsdamHbfName, berlinHbfName);
