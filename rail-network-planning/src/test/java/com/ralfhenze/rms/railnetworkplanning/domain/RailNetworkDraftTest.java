@@ -50,17 +50,6 @@ class RailNetworkDraftTest {
     }
 
     @Test
-    void should_ensure_max_track_length() {
-        final RailNetworkDraft draft = new RailNetworkDraft()
-            .withNewStation(berlinHbfName, berlinHbfPos)
-            .withNewStation(stuttgartHbfName, stuttgartHbfPos);
-
-        assertThrows(IllegalArgumentException.class, () -> {
-            draft.withNewTrack(berlinHbfName, stuttgartHbfName);
-        });
-    }
-
-    @Test
     void should_be_able_to_delete_stations() {
         RailNetworkDraft draft = new RailNetworkDraft()
             .withNewStation(berlinHbfName, berlinHbfPos);

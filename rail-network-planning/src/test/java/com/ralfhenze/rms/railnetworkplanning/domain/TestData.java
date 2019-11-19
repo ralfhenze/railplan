@@ -2,6 +2,8 @@ package com.ralfhenze.rms.railnetworkplanning.domain;
 
 import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.elements.*;
 import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.lifecycle.release.ValidityPeriod;
+import org.eclipse.collections.api.factory.Sets;
+import org.eclipse.collections.api.map.ImmutableMap;
 
 import java.time.LocalDate;
 
@@ -30,6 +32,26 @@ public class TestData {
     public static final TrainStationName stuttgartHbfName = new TrainStationName("Stuttgart Hbf");
     public static final GeoLocationInGermany stuttgartHbfPos = new GeoLocationInGermany(48.784245, 9.182160);
     public static final TrainStation stuttgartHbf = new TrainStation(new TrainStationId("6"), stuttgartHbfName, stuttgartHbfPos);
+
+    public static TrainStation getStation(String stationName) {
+        ImmutableMap<String, TrainStation> stations =
+            Sets.immutable.of(
+                berlinHbf,
+                berlinOst,
+                potsdamHbf,
+                hamburgHbf,
+                frankfurtHbf,
+                stuttgartHbf
+            )
+            .toMap(s -> s.getName().getName(), s -> s)
+            .toImmutable();
+
+        if (!stations.containsKey(stationName)) {
+            throw new IllegalArgumentException("\"" + stationName + "\" not found in TestData");
+        }
+
+        return stations.get(stationName);
+    }
 
     public static final ValidityPeriod defaultPeriod = new ValidityPeriod(
         LocalDate.of(2019, 11, 14),
