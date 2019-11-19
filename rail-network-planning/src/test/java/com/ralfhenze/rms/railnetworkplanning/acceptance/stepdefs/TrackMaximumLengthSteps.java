@@ -3,9 +3,9 @@ package com.ralfhenze.rms.railnetworkplanning.acceptance.stepdefs;
 import com.ralfhenze.rms.railnetworkplanning.domain.TestData;
 import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.elements.TrainStation;
 import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.lifecycle.draft.RailNetworkDraft;
-import io.cucumber.java.en.Given;
-import io.cucumber.java.en.Then;
-import io.cucumber.java.en.When;
+import cucumber.api.java.en.Given;
+import cucumber.api.java.en.Then;
+import cucumber.api.java.en.When;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -16,8 +16,8 @@ public class TrackMaximumLengthSteps {
     private TrainStation station2;
     private boolean exceptionWasThrown;
 
-    @Given("a Rail Network Draft with two Stations {string} and {string} \\(distance: ~{int} km)")
-    public void setupTwoStations(String stationName1, String stationName2, Integer distance) {
+    @Given("^a Rail Network Draft with two Stations \"(.*)\" and \"(.*)\" \\(distance: (.*)\\)$")
+    public void setupTwoStations(String stationName1, String stationName2, String distance) {
         station1 = TestData.getStation(stationName1);
         station2 = TestData.getStation(stationName2);
         draft = new RailNetworkDraft()
@@ -25,7 +25,7 @@ public class TrackMaximumLengthSteps {
             .withNewStation(station2.getName(), station2.getLocation());
     }
 
-    @When("a Network Planner tries to connect those two stations with a new Railway Track")
+    @When("^a Network Planner tries to connect those two stations with a new Railway Track$")
     public void addRailwayTrack() {
         exceptionWasThrown = false;
         try {
@@ -35,14 +35,13 @@ public class TrackMaximumLengthSteps {
         }
     }
 
-    @Then("the new Track should be added")
-    public void assertAdded() {
-        assertFalse(exceptionWasThrown);
-        assertEquals(1, draft.getTracks().size());
-    }
-
-    @Then("the new Track should be rejected")
-    public void assertRejected() {
-        assertTrue(exceptionWasThrown);
+    @Then("^the new Track should be (.*)$")
+    public void assertAdded(String addedOrRejected) {
+        if (addedOrRejected.equals("added")) {
+            assertFalse(exceptionWasThrown);
+            assertEquals(1, draft.getTracks().size());
+        } else if (addedOrRejected.equals("rejected")) {
+            assertTrue(exceptionWasThrown);
+        }
     }
 }
