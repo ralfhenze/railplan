@@ -20,14 +20,10 @@ class RailNetworkDraftTest {
     }
 
     @Test
-    void should_ensure_minimum_distance_between_stations() {
+    void should_ensure_minimum_distance_between_stations_when_relocating() {
         final RailNetworkDraft draft = new RailNetworkDraft()
             .withNewStation(berlinHbfName, berlinHbfPos)
             .withNewStation(potsdamHbfName, potsdamHbfPos);
-
-        assertThrows(IllegalArgumentException.class, () -> {
-            draft.withNewStation(berlinOstName, berlinOstPos);
-        });
 
         assertThrows(IllegalArgumentException.class, () -> {
             draft.withMovedStation(potsdamHbfName, berlinOstPos);
