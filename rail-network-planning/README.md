@@ -16,6 +16,7 @@ Term                      | Acceptable Synonym | Description
 **Released Rail Network** | _Network_          | TODO
 **Validity Period**       | _Period_           | TODO
 **Geo Location**          | _Location_         | [Geographic coordinates](https://en.wikipedia.org/wiki/Geographic_coordinate_system) within Germany, defined by [Latitude](https://en.wikipedia.org/wiki/Latitude) and [Longitude](https://en.wikipedia.org/wiki/Longitude)
+**Network Planner**       | _Planner_          | Person who plans and designs the Rail Network
 
 ### Commands
 
