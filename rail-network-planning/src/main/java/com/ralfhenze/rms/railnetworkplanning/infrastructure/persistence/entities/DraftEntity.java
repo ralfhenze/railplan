@@ -1,5 +1,9 @@
 package com.ralfhenze.rms.railnetworkplanning.infrastructure.persistence.entities;
 
+import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.elements.GeoLocationInGermany;
+import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.elements.TrainStationName;
+import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.lifecycle.draft.RailNetworkDraft;
+import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.lifecycle.draft.RailNetworkDraftId;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
@@ -27,6 +31,20 @@ public class DraftEntity implements Serializable {
     @OneToMany
     @JoinColumn(name = "draftId")
     private Set<DraftTrackEntity> tracks;
+
+    public RailNetworkDraft toRailNetworkDraft() {
+        RailNetworkDraft draft = new RailNetworkDraft()
+            .withId(new RailNetworkDraftId(String.valueOf(id)));
+
+        for (DraftStationEntity station : stations) {
+            draft = draft.withNewStation(
+                new TrainStationName(station.getName()),
+                new GeoLocationInGermany(station.getLatitude(), station.getLongitude())
+            );
+        }
+
+        return draft;
+    }
 
     public long getId() {
         return id;

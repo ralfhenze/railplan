@@ -20,6 +20,13 @@ public class RailNetworkDraftJpaRepository implements RailNetworkDraftRepository
 
     @Override
     public Optional<RailNetworkDraft> getRailNetworkDraftOfId(RailNetworkDraftId id) {
+        DraftEntity draftEntity = entityManager
+            .find(DraftEntity.class, Long.valueOf(id.toString()));
+
+        if (draftEntity != null) {
+            return Optional.of(draftEntity.toRailNetworkDraft());
+        }
+
         return Optional.empty();
     }
 
