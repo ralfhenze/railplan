@@ -5,6 +5,6 @@ import com.ralfhenze.rms.railnetworkplanning.domain.common.Repository;
 import java.util.Optional;
 
 public interface RailNetworkDraftRepository extends Repository {
-    Optional<RailNetworkDraft> getRailNetworkDraftOfId(RailNetworkDraftId id);
-    Optional<RailNetworkDraft> persist(RailNetworkDraft railNetworkDraft);
+    Optional<RailNetworkDraft> getRailNetworkDraftOfId(final RailNetworkDraftId id);
+    Optional<RailNetworkDraft> persist(final RailNetworkDraft railNetworkDraft);
 }

@@ -19,7 +19,7 @@ public class RailNetworkDraftMongoDbRepository implements RailNetworkDraftReposi
     MongoTemplate mongoTemplate;
 
     @Override
-    public Optional<RailNetworkDraft> getRailNetworkDraftOfId(RailNetworkDraftId id) {
+    public Optional<RailNetworkDraft> getRailNetworkDraftOfId(final RailNetworkDraftId id) {
         final RailNetworkDraftDto dto = mongoTemplate
             .findById(id.toString(), RailNetworkDraftDto.class, COLLECTION_NAME);
 
@@ -28,7 +28,7 @@ public class RailNetworkDraftMongoDbRepository implements RailNetworkDraftReposi
     }
 
     @Override
-    public Optional<RailNetworkDraft> persist(RailNetworkDraft railNetworkDraft) {
+    public Optional<RailNetworkDraft> persist(final RailNetworkDraft railNetworkDraft) {
         final RailNetworkDraftDto draftEntity = new RailNetworkDraftDto(railNetworkDraft);
         final RailNetworkDraftDto persistedDraftEntity = mongoTemplate
             .save(draftEntity, COLLECTION_NAME);
