@@ -8,7 +8,7 @@ public class ReleasedRailNetworkId implements Id {
 
     private final String id;
 
-    ReleasedRailNetworkId(final String id) {
+    public ReleasedRailNetworkId(final String id) {
         this.id = ensureNotBlank(id, "ID");
     }
 

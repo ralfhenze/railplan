@@ -23,7 +23,6 @@ public class ReleasedRailNetwork implements Aggregate {
 
     private final Optional<ReleasedRailNetworkId> id;
     private final ValidityPeriod period;
-
     private final ImmutableSet<TrainStation> stations;
     private final ImmutableSet<RailwayTrack> tracks;
     private final ImmutableSet<Invariant> invariants;
@@ -72,6 +71,10 @@ public class ReleasedRailNetwork implements Aggregate {
 
     public ValidityPeriod getPeriod() {
         return period;
+    }
+
+    public ImmutableSet<TrainStation> getStations() {
+        return stations;
     }
 
     public ImmutableSet<RailwayTrack> getTracks() {

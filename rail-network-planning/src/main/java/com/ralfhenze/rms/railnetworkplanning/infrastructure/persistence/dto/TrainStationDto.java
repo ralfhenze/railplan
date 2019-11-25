@@ -1,6 +1,9 @@
 package com.ralfhenze.rms.railnetworkplanning.infrastructure.persistence.dto;
 
+import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.elements.GeoLocationInGermany;
 import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.elements.TrainStation;
+import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.elements.TrainStationId;
+import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.elements.TrainStationName;
 
 public class TrainStationDto {
 
@@ -16,6 +19,14 @@ public class TrainStationDto {
         this.name = station.getName().getName();
         this.latitude = station.getLocation().getLatitude();
         this.longitude = station.getLocation().getLongitude();
+    }
+
+    public TrainStation toTrainStation() {
+        return new TrainStation(
+            new TrainStationId(String.valueOf(id)),
+            new TrainStationName(name),
+            new GeoLocationInGermany(latitude, longitude)
+        );
     }
 
     public int getId() {

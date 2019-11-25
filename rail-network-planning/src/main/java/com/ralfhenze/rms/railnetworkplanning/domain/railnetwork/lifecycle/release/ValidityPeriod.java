@@ -36,4 +36,9 @@ public class ValidityPeriod implements ValueObject {
             );
         }
     }
+
+    @Override
+    public String toString() {
+        return "Start: " + startDate.toString() + " End: " + endDate.toString();
+    }
 }
