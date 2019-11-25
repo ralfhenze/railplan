@@ -4,8 +4,5 @@ services:
   mongodb:
     image: mongo:latest
     container_name: rms_mongodb
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: 123123
     ports:
       - "27017:27017"
