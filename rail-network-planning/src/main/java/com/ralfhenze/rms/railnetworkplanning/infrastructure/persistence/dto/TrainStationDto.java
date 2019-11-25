@@ -1,37 +1,28 @@
-package com.ralfhenze.rms.railnetworkplanning.infrastructure.persistence.entities;
+package com.ralfhenze.rms.railnetworkplanning.infrastructure.persistence.dto;
 
 import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.elements.TrainStation;
 
-import javax.persistence.*;
-import java.io.Serializable;
+public class TrainStationDto {
 
-@Entity
-@Table(name = "DraftStations")
-public class DraftStationEntity implements Serializable {
-
-    private static final long serialVersionUID = 1L;
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
-
+    private int id;
     private String name;
     private double latitude;
     private double longitude;
 
-    public DraftStationEntity() {}
+    public TrainStationDto() {}
 
-    public DraftStationEntity(TrainStation station) {
+    public TrainStationDto(TrainStation station) {
+        this.id = Integer.parseInt(station.getId().toString());
         this.name = station.getName().getName();
         this.latitude = station.getLocation().getLatitude();
         this.longitude = station.getLocation().getLongitude();
     }
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(int id) {
         this.id = id;
     }
 
