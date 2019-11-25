@@ -1,13 +1,11 @@
 version: '3'
 services:
 
-  mysql:
-    image: mysql:8.0.18
-    container_name: rms_mysql
+  mongodb:
+    image: mongo:latest
+    container_name: rms_mongodb
     environment:
-      MYSQL_DATABASE: rms
-      MYSQL_USER: rms_user
-      MYSQL_PASSWORD: 123123
-      MYSQL_ROOT_PASSWORD: 123123
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: 123123
     ports:
-      - "3306:3306"
+      - "27017:27017"
