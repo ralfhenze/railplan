@@ -1,0 +1,19 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>RailPlan - Draft</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+    <h1>RailPlan</h1>
+    <h2>Rail Network Drafts</h2>
+    <ul>
+        <li th:each="draft: ${drafts}">
+            <a href="" th:text="${draft}">1</a>
+        </li>
+    </ul>
+    <div>
+        <a href="">New Draft</a>
+    </div>
+</body>
+</html>
