@@ -8,8 +8,8 @@
     <h1>RailPlan</h1>
     <h2>Rail Network Drafts</h2>
     <ul>
-        <li th:each="draft: ${drafts}">
-            <a href="" th:text="${draft}">1</a>
+        <li th:each="draftId,status : ${draftIds}">
+            <a th:href="@{'/drafts/' + ${draftId}}" th:text="'Draft ' + ${status.count}">Draft 1</a>
         </li>
     </ul>
     <div>
