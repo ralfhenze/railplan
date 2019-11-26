@@ -41,7 +41,7 @@ public class RailNetworkPlanningApplication implements CommandLineRunner {
                 new GeoLocationInGermany(53.552596, 10.006727)
             )
             .withNewTrack(berlinHbf, hamburgHbf);
-
+        /*
         draft = draftRepository.persist(draft).get();
         System.out.println(draft.getId());
 
@@ -54,5 +54,6 @@ public class RailNetworkPlanningApplication implements CommandLineRunner {
         networkRepository.getLastReleasedRailNetwork().ifPresent(
             n -> System.out.println(n.getPeriod())
         );
+         */
     }
 }

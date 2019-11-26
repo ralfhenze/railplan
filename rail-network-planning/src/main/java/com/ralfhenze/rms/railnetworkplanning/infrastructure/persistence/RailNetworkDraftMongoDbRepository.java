@@ -13,7 +13,7 @@ import java.util.Optional;
 @Repository
 public class RailNetworkDraftMongoDbRepository implements RailNetworkDraftRepository {
 
-    private final static String COLLECTION_NAME = "RailNetworkDrafts";
+    final static String COLLECTION_NAME = "RailNetworkDrafts";
 
     @Autowired
     MongoTemplate mongoTemplate;
