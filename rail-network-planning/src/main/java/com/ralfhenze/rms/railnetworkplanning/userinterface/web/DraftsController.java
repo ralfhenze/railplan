@@ -2,8 +2,11 @@ package com.ralfhenze.rms.railnetworkplanning.userinterface.web;
 
 import com.ralfhenze.rms.railnetworkplanning.application.commands.AddRailNetworkDraftCommand;
 import com.ralfhenze.rms.railnetworkplanning.application.queries.Queries;
+import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.lifecycle.draft.RailNetworkDraftId;
+import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.lifecycle.draft.RailNetworkDraftRepository;
 import com.ralfhenze.rms.railnetworkplanning.infrastructure.persistence.MongoDbQueries;
 import com.ralfhenze.rms.railnetworkplanning.infrastructure.persistence.RailNetworkDraftMongoDbRepository;
+import com.ralfhenze.rms.railnetworkplanning.infrastructure.persistence.dto.RailNetworkDraftDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Controller;
@@ -30,6 +33,14 @@ public class DraftsController {
         final Queries queries = new MongoDbQueries(mongoTemplate);
         model.addAttribute("draftIds", queries.getAllDraftIds());
         model.addAttribute("currentDraftId", draftId);
+
+        final RailNetworkDraftRepository draftRepository =
+            new RailNetworkDraftMongoDbRepository(mongoTemplate);
+        draftRepository.getRailNetworkDraftOfId(new RailNetworkDraftId(draftId))
+            .map(RailNetworkDraftDto::new)
+            .ifPresent(draftDto ->
+                model.addAttribute("currentDraftDto", draftDto)
+            );
 
         return "drafts";
     }

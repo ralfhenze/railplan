@@ -16,5 +16,27 @@
     <div>
         <a href="/drafts/new">New Draft</a>
     </div>
+    <div th:if="${currentDraftDto != null}">
+        <h3>Stations</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Name</th>
+                    <th>Latitude</th>
+                    <th>Longitude</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="station,status : ${currentDraftDto.getStations()}">
+                    <td th:text="${status.count}">1</td>
+                    <td th:text="${station.getName()}">Berlin Hbf</td>
+                    <td th:text="${station.getLatitude()}">52.524927</td>
+                    <td th:text="${station.getLongitude()}">13.369348</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
 </body>
 </html>
