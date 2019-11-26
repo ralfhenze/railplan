@@ -16,13 +16,13 @@ public class AddRailNetworkDraftCommand implements Command {
         this.railNetworkDraftRepository = railNetworkDraftRepository;
     }
 
-    public Optional<RailNetworkDraftId> addRailNetworkDraft() {
+    public Optional<String> addRailNetworkDraft() {
         RailNetworkDraft draft = new RailNetworkDraft();
 
         Optional<RailNetworkDraft> persistedDraft = railNetworkDraftRepository.persist(draft);
 
         if (persistedDraft.isPresent()) {
-            return persistedDraft.get().getId();
+            return persistedDraft.get().getId().map(RailNetworkDraftId::toString);
         } else {
             return Optional.empty();
         }
