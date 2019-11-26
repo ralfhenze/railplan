@@ -4,9 +4,10 @@ A domain-driven implementation of a fictional railway network. It contains subsy
 
 ## Run
 
-There is not much to run yet, except for a few unit tests:
+There is not much to run yet, except for a few tests:
 
 ```
+$ docker-compose up -d
 $ mvn test
 ```
 
