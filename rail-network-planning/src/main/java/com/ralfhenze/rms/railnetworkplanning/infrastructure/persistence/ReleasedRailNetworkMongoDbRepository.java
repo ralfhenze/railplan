@@ -1,16 +1,11 @@
 package com.ralfhenze.rms.railnetworkplanning.infrastructure.persistence;
 
-import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.lifecycle.draft.RailNetworkDraft;
-import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.lifecycle.draft.RailNetworkDraftId;
-import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.lifecycle.draft.RailNetworkDraftRepository;
 import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.lifecycle.release.ReleasedRailNetwork;
 import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.lifecycle.release.ReleasedRailNetworkRepository;
-import com.ralfhenze.rms.railnetworkplanning.infrastructure.persistence.dto.RailNetworkDraftDto;
 import com.ralfhenze.rms.railnetworkplanning.infrastructure.persistence.dto.ReleasedRailNetworkDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 
@@ -19,7 +14,7 @@ import java.util.Optional;
 @Repository
 public class ReleasedRailNetworkMongoDbRepository implements ReleasedRailNetworkRepository {
 
-    private final static String COLLECTION_NAME = "ReleasedRailNetworks";
+    final static String COLLECTION_NAME = "ReleasedRailNetworks";
 
     @Autowired
     MongoTemplate mongoTemplate;
