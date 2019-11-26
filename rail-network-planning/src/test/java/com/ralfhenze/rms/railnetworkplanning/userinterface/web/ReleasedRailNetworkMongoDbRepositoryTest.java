@@ -1,7 +1,8 @@
-package com.ralfhenze.rms.railnetworkplanning.infrastructure.persistence;
+package com.ralfhenze.rms.railnetworkplanning.userinterface.web;
 
 import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.elements.RailwayTrack;
 import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.lifecycle.release.ReleasedRailNetwork;
+import com.ralfhenze.rms.railnetworkplanning.infrastructure.persistence.ReleasedRailNetworkMongoDbRepository;
 import org.eclipse.collections.api.factory.Sets;
 import org.junit.Before;
 import org.junit.Test;
@@ -19,10 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class ReleasedRailNetworkMongoDbRepositoryTest {
 
     @Autowired
-    ReleasedRailNetworkMongoDbRepository networkRepository;
-
-    @Autowired
-    MongoTemplate mongoTemplate;
+    private MongoTemplate mongoTemplate;
 
     @Before
     public void clearRepository() {
@@ -31,6 +29,8 @@ public class ReleasedRailNetworkMongoDbRepositoryTest {
 
     @Test
     public void should_persist_given_network() {
+        final ReleasedRailNetworkMongoDbRepository networkRepository =
+            new ReleasedRailNetworkMongoDbRepository(mongoTemplate);
         final ReleasedRailNetwork network = new ReleasedRailNetwork(
             defaultPeriod,
             Sets.immutable.of(berlinHbf, hamburgHbf),

@@ -13,10 +13,14 @@ import java.util.Optional;
 @Repository
 public class RailNetworkDraftMongoDbRepository implements RailNetworkDraftRepository {
 
-    final static String COLLECTION_NAME = "RailNetworkDrafts";
+    public final static String COLLECTION_NAME = "RailNetworkDrafts";
+
+    private final MongoTemplate mongoTemplate;
 
     @Autowired
-    MongoTemplate mongoTemplate;
+    public RailNetworkDraftMongoDbRepository(MongoTemplate mongoTemplate) {
+        this.mongoTemplate = mongoTemplate;
+    }
 
     @Override
     public Optional<RailNetworkDraft> getRailNetworkDraftOfId(final RailNetworkDraftId id) {

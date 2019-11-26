@@ -14,10 +14,14 @@ import java.util.Optional;
 @Repository
 public class ReleasedRailNetworkMongoDbRepository implements ReleasedRailNetworkRepository {
 
-    final static String COLLECTION_NAME = "ReleasedRailNetworks";
+    public final static String COLLECTION_NAME = "ReleasedRailNetworks";
+
+    private final MongoTemplate mongoTemplate;
 
     @Autowired
-    MongoTemplate mongoTemplate;
+    public ReleasedRailNetworkMongoDbRepository(MongoTemplate mongoTemplate) {
+        this.mongoTemplate = mongoTemplate;
+    }
 
     @Override
     public Optional<ReleasedRailNetwork> getLastReleasedRailNetwork() {

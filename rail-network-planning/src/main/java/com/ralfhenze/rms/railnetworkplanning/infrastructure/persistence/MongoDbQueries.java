@@ -12,8 +12,12 @@ import java.util.stream.Collectors;
 @Repository
 public class MongoDbQueries implements Queries {
 
+    private final MongoTemplate mongoTemplate;
+
     @Autowired
-    MongoTemplate mongoTemplate;
+    public MongoDbQueries(MongoTemplate mongoTemplate) {
+        this.mongoTemplate = mongoTemplate;
+    }
 
     @Override
     public List<String> getAllDraftIds() {

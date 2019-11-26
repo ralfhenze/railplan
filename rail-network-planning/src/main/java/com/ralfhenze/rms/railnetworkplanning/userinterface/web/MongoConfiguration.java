@@ -1,4 +1,4 @@
-package com.ralfhenze.rms.railnetworkplanning.infrastructure.persistence;
+package com.ralfhenze.rms.railnetworkplanning.userinterface.web;
 
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
