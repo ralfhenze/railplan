@@ -36,6 +36,18 @@
                 </tr>
             </tbody>
         </table>
+
+        <h3>Tracks</h3>
+        <table>
+            <tbody>
+                <tr th:each="track,status : ${tracks}">
+                    <td th:text="${status.count}">1</td>
+                    <td th:text="${track.get(0)}">Berlin Hbf</td>
+                    <td>&lt;&equals;&gt;</td>
+                    <td th:text="${track.get(1)}">Hamburg Hbf</td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 
 </body>

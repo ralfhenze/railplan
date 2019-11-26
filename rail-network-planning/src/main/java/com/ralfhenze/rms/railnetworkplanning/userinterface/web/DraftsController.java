@@ -7,12 +7,18 @@ import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.lifecycle.draft.
 import com.ralfhenze.rms.railnetworkplanning.infrastructure.persistence.MongoDbQueries;
 import com.ralfhenze.rms.railnetworkplanning.infrastructure.persistence.RailNetworkDraftMongoDbRepository;
 import com.ralfhenze.rms.railnetworkplanning.infrastructure.persistence.dto.RailNetworkDraftDto;
+import com.ralfhenze.rms.railnetworkplanning.infrastructure.persistence.dto.TrainStationDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Controller
 public class DraftsController {
@@ -38,9 +44,22 @@ public class DraftsController {
             new RailNetworkDraftMongoDbRepository(mongoTemplate);
         draftRepository.getRailNetworkDraftOfId(new RailNetworkDraftId(draftId))
             .map(RailNetworkDraftDto::new)
-            .ifPresent(draftDto ->
-                model.addAttribute("currentDraftDto", draftDto)
-            );
+            .ifPresent(draftDto -> {
+                model.addAttribute("currentDraftDto", draftDto);
+                final Map<Integer, String> stationNames = draftDto
+                    .getStations()
+                    .stream()
+                    .collect(Collectors.toMap(TrainStationDto::getId, TrainStationDto::getName));
+                final List<List<String>> tracksWithStationNames = draftDto
+                    .getTracks()
+                    .stream()
+                    .map(trackDto -> Arrays.asList(
+                        stationNames.get(trackDto.getFirstStationId()),
+                        stationNames.get(trackDto.getSecondStationId()))
+                    )
+                    .collect(Collectors.toList());
+                model.addAttribute("tracks", tracksWithStationNames);
+            });
 
         return "drafts";
     }
