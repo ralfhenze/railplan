@@ -9,6 +9,7 @@
     <h2>Rail Network Drafts</h2>
     <ul>
         <li th:each="draftId,status : ${draftIds}">
+            <span th:if="${currentDraftId == draftId}">*</span>
             <a th:href="@{'/drafts/' + ${draftId}}" th:text="'Draft ' + ${status.count}">Draft 1</a>
         </li>
     </ul>
