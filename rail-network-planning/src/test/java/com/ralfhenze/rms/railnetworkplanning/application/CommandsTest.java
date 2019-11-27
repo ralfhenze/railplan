@@ -1,5 +1,6 @@
 package com.ralfhenze.rms.railnetworkplanning.application;
 
+import com.ralfhenze.rms.railnetworkplanning.application.commands.AddRailwayTrackCommand;
 import com.ralfhenze.rms.railnetworkplanning.application.commands.AddTrainStationCommand;
 import com.ralfhenze.rms.railnetworkplanning.application.commands.AddRailNetworkDraftCommand;
 import com.ralfhenze.rms.railnetworkplanning.application.commands.ReleaseRailNetworkCommand;
@@ -28,6 +29,21 @@ class CommandsTest {
             berlinHbfPos.getLatitude(),
             berlinHbfPos.getLongitude()
         );
+
+        verify(draftRepository).persist(any());
+    }
+
+    @Test
+    void should_persist_added_track() {
+        final RailNetworkDraftRepository draftRepository = mock(RailNetworkDraftRepository.class);
+        final AddRailwayTrackCommand command = new AddRailwayTrackCommand(draftRepository);
+        final RailNetworkDraft draft = new RailNetworkDraft()
+            .withNewStation(berlinHbfName, berlinHbfPos)
+            .withNewStation(hamburgHbfName, hamburgHbfPos);
+        when(draftRepository.getRailNetworkDraftOfId(any()))
+            .thenReturn(Optional.of(draft));
+
+        command.addRailwayTrack("1", "1", "2");
 
         verify(draftRepository).persist(any());
     }
