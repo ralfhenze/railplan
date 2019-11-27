@@ -1,6 +1,7 @@
 package com.ralfhenze.rms.railnetworkplanning.userinterface.web;
 
 import com.ralfhenze.rms.railnetworkplanning.application.commands.AddRailNetworkDraftCommand;
+import com.ralfhenze.rms.railnetworkplanning.application.commands.AddTrainStationCommand;
 import com.ralfhenze.rms.railnetworkplanning.application.queries.Queries;
 import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.lifecycle.draft.RailNetworkDraftId;
 import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.lifecycle.draft.RailNetworkDraftRepository;
@@ -13,7 +14,9 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.Arrays;
 import java.util.List;
@@ -61,7 +64,27 @@ public class DraftsController {
                 model.addAttribute("tracks", tracksWithStationNames);
             });
 
+        model.addAttribute("newStation", new TrainStationDto());
+
         return "drafts";
+    }
+
+    @PostMapping("/drafts/{draftId}/stations/new")
+    public String createNewStation(
+        @PathVariable String draftId,
+        @ModelAttribute TrainStationDto stationDto
+    ) {
+        final RailNetworkDraftRepository draftRepository =
+            new RailNetworkDraftMongoDbRepository(mongoTemplate);
+
+        new AddTrainStationCommand(draftRepository).addTrainStation(
+            draftId,
+            stationDto.getName(),
+            stationDto.getLatitude(),
+            stationDto.getLongitude()
+        );
+
+        return "redirect:/drafts/{draftId}";
     }
 
     @GetMapping("/drafts/new")
