@@ -3,7 +3,7 @@ package com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.invariants;
 import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.elements.RailwayTrack;
 import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.elements.TrainStation;
 import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.elements.TrainStationName;
-import org.eclipse.collections.api.set.ImmutableSet;
+import org.eclipse.collections.api.list.ImmutableList;
 
 import java.util.Collection;
 
@@ -13,8 +13,8 @@ public class StationNamesAreUnique implements Invariant {
 
     @Override
     public void ensureIsSatisfied(
-        final ImmutableSet<TrainStation> stations,
-        final ImmutableSet<RailwayTrack> tracks
+        final ImmutableList<TrainStation> stations,
+        final ImmutableList<RailwayTrack> tracks
     ) {
         ensureNotNull(stations, "Train Stations");
 
@@ -23,7 +23,7 @@ public class StationNamesAreUnique implements Invariant {
         }
     }
 
-    private void ensureUniqueStationNames(final ImmutableSet<TrainStation> stations) {
+    private void ensureUniqueStationNames(final ImmutableList<TrainStation> stations) {
         final TrainStationName duplicateStationName = stations
             .groupBy(TrainStation::getName)
             .selectKeysMultiValues((name, s) -> ((Collection)s).size() > 1)

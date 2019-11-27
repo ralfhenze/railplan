@@ -4,8 +4,8 @@ import com.ralfhenze.rms.railnetworkplanning.domain.common.Aggregate;
 import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.invariants.Invariant;
 import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.invariants.DefaultRailNetworkInvariants;
 import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.elements.*;
-import org.eclipse.collections.api.set.ImmutableSet;
-import org.eclipse.collections.impl.factory.Sets;
+import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.list.ImmutableList;
 
 import java.util.Optional;
 
@@ -20,24 +20,24 @@ import static com.ralfhenze.rms.railnetworkplanning.domain.common.Preconditions.
 public class RailNetworkDraft implements Aggregate {
 
     private final Optional<RailNetworkDraftId> id;
-    private final ImmutableSet<TrainStation> stations;
-    private final ImmutableSet<RailwayTrack> tracks;
-    private final ImmutableSet<Invariant> invariants = DefaultRailNetworkInvariants.INVARIANTS;
+    private final ImmutableList<TrainStation> stations;
+    private final ImmutableList<RailwayTrack> tracks;
+    private final ImmutableList<Invariant> invariants = DefaultRailNetworkInvariants.INVARIANTS;
     private final int stationId;
 
     public RailNetworkDraft() {
         this(
             Optional.empty(),
-            Sets.immutable.empty(),
-            Sets.immutable.empty(),
+            Lists.immutable.empty(),
+            Lists.immutable.empty(),
             1
         );
     }
 
     private RailNetworkDraft(
         final Optional<RailNetworkDraftId> id,
-        final ImmutableSet<TrainStation> stations,
-        final ImmutableSet<RailwayTrack> tracks,
+        final ImmutableList<TrainStation> stations,
+        final ImmutableList<RailwayTrack> tracks,
         final int stationId
     ) {
         this.id = ensureNotNull(id, "Rail Network Draft ID");
@@ -55,7 +55,7 @@ public class RailNetworkDraft implements Aggregate {
     public RailNetworkDraft withNewStation(final TrainStationName name, final GeoLocationInGermany location) {
         final TrainStationId stationId = new TrainStationId(String.valueOf(this.stationId));
         final TrainStation addedStation = new TrainStation(stationId, name, location);
-        final ImmutableSet<TrainStation> newStations = stations.newWith(addedStation);
+        final ImmutableList<TrainStation> newStations = stations.newWith(addedStation);
 
         ensureInvariants(newStations, tracks);
 
@@ -72,7 +72,7 @@ public class RailNetworkDraft implements Aggregate {
         final TrainStation renamedStation = stations
             .detect(ts -> ts.getId().equals(id))
             .withName(name);
-        final ImmutableSet<TrainStation> newStations = stations
+        final ImmutableList<TrainStation> newStations = stations
             .reject(ts -> ts.getId().equals(id))
             .newWith(renamedStation);
 
@@ -91,7 +91,7 @@ public class RailNetworkDraft implements Aggregate {
         final TrainStation movedStation = stations
             .detect(station -> station.getId().equals(id))
             .withLocation(location);
-        final ImmutableSet<TrainStation> updatedStations = stations
+        final ImmutableList<TrainStation> updatedStations = stations
             .reject(station -> station.getId().equals(id))
             .newWith(movedStation);
 
@@ -121,7 +121,7 @@ public class RailNetworkDraft implements Aggregate {
         ensureStationIdExist(id1);
         ensureStationIdExist(id2);
 
-        final ImmutableSet<RailwayTrack> updatedTracks = tracks
+        final ImmutableList<RailwayTrack> updatedTracks = tracks
             .newWith(new RailwayTrack(id1, id2));
 
         ensureInvariants(stations, updatedTracks);
@@ -146,11 +146,11 @@ public class RailNetworkDraft implements Aggregate {
         return id;
     }
 
-    public ImmutableSet<TrainStation> getStations() {
+    public ImmutableList<TrainStation> getStations() {
         return stations;
     }
 
-    public ImmutableSet<RailwayTrack> getTracks() {
+    public ImmutableList<RailwayTrack> getTracks() {
         return tracks;
     }
 
@@ -161,8 +161,8 @@ public class RailNetworkDraft implements Aggregate {
     }
 
     private void ensureInvariants(
-        final ImmutableSet<TrainStation> stations,
-        final ImmutableSet<RailwayTrack> tracks
+        final ImmutableList<TrainStation> stations,
+        final ImmutableList<RailwayTrack> tracks
     ) {
         for (final Invariant invariant : invariants) {
             invariant.ensureIsSatisfied(stations, tracks);

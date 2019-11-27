@@ -3,12 +3,12 @@ package com.ralfhenze.rms.railnetworkplanning.infrastructure.persistence.dto;
 import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.lifecycle.release.ReleasedRailNetwork;
 import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.lifecycle.release.ReleasedRailNetworkId;
 import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.lifecycle.release.ValidityPeriod;
-import org.eclipse.collections.api.factory.Sets;
+import org.eclipse.collections.api.factory.Lists;
 import org.springframework.data.annotation.Id;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 public class ReleasedRailNetworkDto {
 
@@ -16,8 +16,8 @@ public class ReleasedRailNetworkDto {
     private String id;
     private String startDate;
     private String endDate;
-    private Set<TrainStationDto> stations;
-    private Set<RailwayTrackDto> tracks;
+    private List<TrainStationDto> stations;
+    private List<RailwayTrackDto> tracks;
 
     public ReleasedRailNetworkDto() {}
 
@@ -27,16 +27,16 @@ public class ReleasedRailNetworkDto {
         }
         this.startDate = network.getPeriod().getStartDate().toString();
         this.endDate = network.getPeriod().getEndDate().toString();
-        this.stations = network.getStations().collect(TrainStationDto::new).castToSet();
-        this.tracks = network.getTracks().collect(RailwayTrackDto::new).castToSet();
+        this.stations = network.getStations().collect(TrainStationDto::new).castToList();
+        this.tracks = network.getTracks().collect(RailwayTrackDto::new).castToList();
     }
 
     public ReleasedRailNetwork toReleasedRailNetwork() {
         return new ReleasedRailNetwork(
             Optional.of(new ReleasedRailNetworkId(String.valueOf(id))),
             new ValidityPeriod(LocalDate.parse(startDate), LocalDate.parse(endDate)),
-            Sets.immutable.ofAll(stations).collect(TrainStationDto::toTrainStation),
-            Sets.immutable.ofAll(tracks).collect(RailwayTrackDto::toRailwayTrack)
+            Lists.immutable.ofAll(stations).collect(TrainStationDto::toTrainStation),
+            Lists.immutable.ofAll(tracks).collect(RailwayTrackDto::toRailwayTrack)
         );
     }
 
@@ -64,19 +64,19 @@ public class ReleasedRailNetworkDto {
         this.endDate = endDate;
     }
 
-    public Set<TrainStationDto> getStations() {
+    public List<TrainStationDto> getStations() {
         return stations;
     }
 
-    public void setStations(Set<TrainStationDto> stations) {
+    public void setStations(List<TrainStationDto> stations) {
         this.stations = stations;
     }
 
-    public Set<RailwayTrackDto> getTracks() {
+    public List<RailwayTrackDto> getTracks() {
         return tracks;
     }
 
-    public void setTracks(Set<RailwayTrackDto> tracks) {
+    public void setTracks(List<RailwayTrackDto> tracks) {
         this.tracks = tracks;
     }
 }

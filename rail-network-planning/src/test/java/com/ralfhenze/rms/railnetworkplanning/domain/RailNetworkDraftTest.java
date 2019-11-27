@@ -35,10 +35,11 @@ class RailNetworkDraftTest {
         final RailNetworkDraft draft = new RailNetworkDraft()
             .withNewStation(berlinHbfName, berlinHbfPos)
             .withNewStation(potsdamHbfName, potsdamHbfPos)
-            .withNewTrack(berlinHbfName, potsdamHbfName)
-            .withNewTrack(potsdamHbfName, berlinHbfName);
+            .withNewTrack(berlinHbfName, potsdamHbfName);
 
-        assertEquals(1, draft.getTracks().size());
+        assertThrows(IllegalArgumentException.class, () -> {
+            draft.withNewTrack(potsdamHbfName, berlinHbfName);
+        });
     }
 
     @Test

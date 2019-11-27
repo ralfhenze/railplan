@@ -7,14 +7,14 @@ import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.lifecycle.draft.
 import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.lifecycle.draft.RailNetworkDraftId;
 import org.springframework.data.annotation.Id;
 
-import java.util.Set;
+import java.util.List;
 
 public class RailNetworkDraftDto {
 
     @Id
     private String id;
-    private Set<TrainStationDto> stations;
-    private Set<RailwayTrackDto> tracks;
+    private List<TrainStationDto> stations;
+    private List<RailwayTrackDto> tracks;
 
     public RailNetworkDraftDto() {}
 
@@ -22,8 +22,8 @@ public class RailNetworkDraftDto {
         if (draft.getId().isPresent()) {
             this.id = draft.getId().get().toString();
         }
-        this.stations = draft.getStations().collect(TrainStationDto::new).castToSet();
-        this.tracks = draft.getTracks().collect(RailwayTrackDto::new).castToSet();
+        this.stations = draft.getStations().collect(TrainStationDto::new).castToList();
+        this.tracks = draft.getTracks().collect(RailwayTrackDto::new).castToList();
     }
 
     public RailNetworkDraft toRailNetworkDraft() {
@@ -55,19 +55,19 @@ public class RailNetworkDraftDto {
         this.id = id;
     }
 
-    public Set<TrainStationDto> getStations() {
+    public List<TrainStationDto> getStations() {
         return stations;
     }
 
-    public void setStations(Set<TrainStationDto> stations) {
+    public void setStations(List<TrainStationDto> stations) {
         this.stations = stations;
     }
 
-    public Set<RailwayTrackDto> getTracks() {
+    public List<RailwayTrackDto> getTracks() {
         return tracks;
     }
 
-    public void setTracks(Set<RailwayTrackDto> tracks) {
+    public void setTracks(List<RailwayTrackDto> tracks) {
         this.tracks = tracks;
     }
 }

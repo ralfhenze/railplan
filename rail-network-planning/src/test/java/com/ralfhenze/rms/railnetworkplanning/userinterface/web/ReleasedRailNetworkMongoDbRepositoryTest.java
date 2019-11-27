@@ -3,7 +3,7 @@ package com.ralfhenze.rms.railnetworkplanning.userinterface.web;
 import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.elements.RailwayTrack;
 import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.lifecycle.release.ReleasedRailNetwork;
 import com.ralfhenze.rms.railnetworkplanning.infrastructure.persistence.ReleasedRailNetworkMongoDbRepository;
-import org.eclipse.collections.api.factory.Sets;
+import org.eclipse.collections.api.factory.Lists;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,8 +33,8 @@ public class ReleasedRailNetworkMongoDbRepositoryTest {
             new ReleasedRailNetworkMongoDbRepository(mongoTemplate);
         final ReleasedRailNetwork network = new ReleasedRailNetwork(
             defaultPeriod,
-            Sets.immutable.of(berlinHbf, hamburgHbf),
-            Sets.immutable.of(new RailwayTrack(berlinHbf.getId(), hamburgHbf.getId()))
+            Lists.immutable.of(berlinHbf, hamburgHbf),
+            Lists.immutable.of(new RailwayTrack(berlinHbf.getId(), hamburgHbf.getId()))
         );
 
         networkRepository.add(network).get();

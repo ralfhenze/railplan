@@ -3,7 +3,7 @@ package com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.invariants;
 import com.ralfhenze.rms.railnetworkplanning.domain.common.Combinations;
 import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.elements.RailwayTrack;
 import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.elements.TrainStation;
-import org.eclipse.collections.api.set.ImmutableSet;
+import org.eclipse.collections.api.list.ImmutableList;
 import org.javatuples.Pair;
 
 import java.util.Optional;
@@ -18,8 +18,8 @@ public class MinimumDistanceBetweenTwoStationsIs10Km implements Invariant {
 
     @Override
     public void ensureIsSatisfied(
-        final ImmutableSet<TrainStation> stations,
-        final ImmutableSet<RailwayTrack> tracks
+        final ImmutableList<TrainStation> stations,
+        final ImmutableList<RailwayTrack> tracks
     ) {
         ensureNotNull(stations, "Train Stations");
 
@@ -28,7 +28,7 @@ public class MinimumDistanceBetweenTwoStationsIs10Km implements Invariant {
         }
     }
 
-    private void ensureMinimumStationDistance(final ImmutableSet<TrainStation> stations) {
+    private void ensureMinimumStationDistance(final ImmutableList<TrainStation> stations) {
 
         // When have 4 stations A, B, C, D, we only need to calculate the distance
         // of unique station combinations (sourceStation, otherStation):

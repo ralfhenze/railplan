@@ -7,7 +7,7 @@ import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.invariants.Conta
 import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.invariants.ContainsNoUnconnectedSubGraphs;
 import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.invariants.DefaultRailNetworkInvariants;
 import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.invariants.Invariant;
-import org.eclipse.collections.api.set.ImmutableSet;
+import org.eclipse.collections.api.list.ImmutableList;
 
 import java.util.Optional;
 
@@ -23,14 +23,14 @@ public class ReleasedRailNetwork implements Aggregate {
 
     private final Optional<ReleasedRailNetworkId> id;
     private final ValidityPeriod period;
-    private final ImmutableSet<TrainStation> stations;
-    private final ImmutableSet<RailwayTrack> tracks;
-    private final ImmutableSet<Invariant> invariants;
+    private final ImmutableList<TrainStation> stations;
+    private final ImmutableList<RailwayTrack> tracks;
+    private final ImmutableList<Invariant> invariants;
 
     public ReleasedRailNetwork(
         final ValidityPeriod period,
-        final ImmutableSet<TrainStation> stations,
-        final ImmutableSet<RailwayTrack> tracks
+        final ImmutableList<TrainStation> stations,
+        final ImmutableList<RailwayTrack> tracks
     ) {
         this(Optional.empty(), period, stations, tracks);
     }
@@ -38,8 +38,8 @@ public class ReleasedRailNetwork implements Aggregate {
     public ReleasedRailNetwork(
         final Optional<ReleasedRailNetworkId> id,
         final ValidityPeriod period,
-        final ImmutableSet<TrainStation> stations,
-        final ImmutableSet<RailwayTrack> tracks
+        final ImmutableList<TrainStation> stations,
+        final ImmutableList<RailwayTrack> tracks
     ) {
         this.id = ensureNotNull(id, "Rail Network ID");
         this.period = ensureNotNull(period, "Validity Period");
@@ -73,11 +73,11 @@ public class ReleasedRailNetwork implements Aggregate {
         return period;
     }
 
-    public ImmutableSet<TrainStation> getStations() {
+    public ImmutableList<TrainStation> getStations() {
         return stations;
     }
 
-    public ImmutableSet<RailwayTrack> getTracks() {
+    public ImmutableList<RailwayTrack> getTracks() {
         return tracks;
     }
 }
