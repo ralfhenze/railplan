@@ -1,6 +1,6 @@
-# Railway Management System
+# RailPlan
 
-A domain-driven implementation of a fictional railway network. It contains subsystems / microservices for rail network and timetable planning, as well as ticket sales.
+A domain-driven implementation of a railway network editor.
 
 ## Run
 
