@@ -20,8 +20,6 @@
 
     <modules>
         <module>rail-network-planning</module>
-        <module>ticket-sales</module>
-        <module>timetable-planning</module>
     </modules>
 
     <properties>
