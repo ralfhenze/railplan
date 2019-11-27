@@ -25,7 +25,7 @@ public class Preconditions {
     public static String ensureNotBlank(String string, String parameterName) {
         ensureNotNull(string, parameterName);
 
-        if (string.isEmpty() || string.trim().isEmpty()) {
+        if (string.isBlank()) {
             throw new IllegalArgumentException(
                 parameterName + " must not be blank, but was \"" + string + "\""
             );
