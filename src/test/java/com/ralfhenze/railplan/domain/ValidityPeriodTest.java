@@ -6,14 +6,14 @@ import org.junit.jupiter.params.provider.CsvSource;
 
 import java.time.LocalDate;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 class ValidityPeriodTest {
 
     @ParameterizedTest
     @CsvSource({"2019-11-15", "2019-11-16"})
     void should_ensure_start_date_is_before_end_date(LocalDate invalidStartDate) {
-        assertThrows(IllegalArgumentException.class, () -> {
+        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
             new ValidityPeriod(invalidStartDate, LocalDate.of(2019, 11, 15));
         });
     }

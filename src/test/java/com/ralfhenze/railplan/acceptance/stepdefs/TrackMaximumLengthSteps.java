@@ -7,7 +7,7 @@ import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class TrackMaximumLengthSteps {
 
@@ -38,10 +38,10 @@ public class TrackMaximumLengthSteps {
     @Then("^the new Track should be (.*)$")
     public void assertAdded(String addedOrRejected) {
         if (addedOrRejected.equals("added")) {
-            assertFalse(exceptionWasThrown);
-            assertEquals(1, draft.getTracks().size());
+            assertThat(exceptionWasThrown).isFalse();
+            assertThat(draft.getTracks()).hasSize(1);
         } else if (addedOrRejected.equals("rejected")) {
-            assertTrue(exceptionWasThrown);
+            assertThat(exceptionWasThrown).isTrue();
         }
     }
 }

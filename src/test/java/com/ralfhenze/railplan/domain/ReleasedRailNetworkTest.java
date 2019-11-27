@@ -8,27 +8,27 @@ import org.eclipse.collections.api.list.ImmutableList;
 import org.junit.jupiter.api.Test;
 
 import static com.ralfhenze.railplan.domain.TestData.*;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 class ReleasedRailNetworkTest {
 
     @Test
     void should_ensure_at_least_two_stations() {
-        assertThrows(IllegalArgumentException.class, () -> {
+        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
             new ReleasedRailNetwork(defaultPeriod, emptyList(), emptyList());
         });
     }
 
     @Test
     void should_ensure_at_least_one_track() {
-        assertThrows(IllegalArgumentException.class, () -> {
+        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
             new ReleasedRailNetwork(defaultPeriod, listOf(berlinHbf, hamburgHbf), emptyList());
         });
     }
 
     @Test
     void should_ensure_no_unconnected_sub_graphs() {
-        assertThrows(IllegalArgumentException.class, () -> {
+        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
             new ReleasedRailNetwork(
                 defaultPeriod,
                 listOf(berlinHbf, hamburgHbf, frankfurtHbf, stuttgartHbf),
@@ -42,7 +42,7 @@ class ReleasedRailNetworkTest {
 
     @Test
     void should_ensure_no_standalone_stations() {
-        assertThrows(IllegalArgumentException.class, () -> {
+        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
             new ReleasedRailNetwork(
                 defaultPeriod,
                 listOf(berlinHbf, hamburgHbf, frankfurtHbf),
@@ -53,7 +53,7 @@ class ReleasedRailNetworkTest {
 
     @Test
     void should_ensure_max_track_length() {
-        assertThrows(IllegalArgumentException.class, () -> {
+        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
             new ReleasedRailNetwork(
                 defaultPeriod,
                 listOf(berlinHbf, stuttgartHbf),
@@ -64,7 +64,7 @@ class ReleasedRailNetworkTest {
 
     @Test
     void should_ensure_unique_station_names() {
-        assertThrows(IllegalArgumentException.class, () -> {
+        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
             new ReleasedRailNetwork(
                 defaultPeriod,
                 listOf(berlinHbf, hamburgHbf.withName(new TrainStationName("Berlin Hbf"))),
@@ -75,7 +75,7 @@ class ReleasedRailNetworkTest {
 
     @Test
     void should_ensure_minimum_station_distance() {
-        assertThrows(IllegalArgumentException.class, () -> {
+        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
             new ReleasedRailNetwork(
                 defaultPeriod,
                 listOf(berlinHbf, berlinOst, hamburgHbf),
@@ -89,7 +89,7 @@ class ReleasedRailNetworkTest {
 
     @Test
     void should_ensure_no_duplicate_tracks() {
-        assertThrows(IllegalArgumentException.class, () -> {
+        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
             new ReleasedRailNetwork(
                 defaultPeriod,
                 listOf(berlinHbf, hamburgHbf),

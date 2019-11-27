@@ -5,7 +5,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 class GeoLocationTest {
 
@@ -16,7 +17,7 @@ class GeoLocationTest {
 
         double distance = berlin.getKilometerDistanceTo(hamburg);
 
-        assertEquals(Math.floor(distance), 255);
+        assertThat(Math.floor(distance)).isEqualTo(255);
     }
 
     @ParameterizedTest
@@ -28,7 +29,7 @@ class GeoLocationTest {
         "-33.863272, 151.211579", // Sydney
     })
     void should_fail_on_Coordinates_outside_of_Germany(Double latitude, Double longitude) {
-        assertThrows(Exception.class, () -> {
+        assertThatExceptionOfType(Exception.class).isThrownBy(() -> {
             new GeoLocationInGermany(latitude, longitude);
         });
     }

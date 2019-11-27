@@ -4,8 +4,8 @@ import com.ralfhenze.railplan.domain.railnetwork.elements.RailwayTrack;
 import com.ralfhenze.railplan.domain.railnetwork.elements.TrainStationId;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 class RailwayTrackTest {
 
@@ -17,15 +17,15 @@ class RailwayTrackTest {
         final var track2 = new RailwayTrack(stationId1, stationId2);
         final var track3 = new RailwayTrack(stationId2, stationId1);
 
-        assertEquals(track1, track2);
-        assertEquals(track2, track3);
+        assertThat(track1).isEqualTo(track2);
+        assertThat(track2).isEqualTo(track3);
     }
 
     @Test
     void should_not_allow_to_connect_a_station_with_itself() {
         final var stationId1 = new TrainStationId("1");
 
-        assertThrows(Exception.class, () -> {
+        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
             new RailwayTrack(stationId1, stationId1);
         });
     }

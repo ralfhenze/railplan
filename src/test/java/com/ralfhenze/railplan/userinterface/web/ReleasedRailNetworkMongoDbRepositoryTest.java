@@ -13,7 +13,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import static com.ralfhenze.railplan.domain.TestData.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -39,7 +39,7 @@ public class ReleasedRailNetworkMongoDbRepositoryTest {
 
         final var loadedNetwork = networkRepository.getLastReleasedRailNetwork().get();
 
-        assertEquals(2, loadedNetwork.getStations().size());
-        assertEquals(1, loadedNetwork.getTracks().size());
+        assertThat(loadedNetwork.getStations()).hasSize(2);
+        assertThat(loadedNetwork.getTracks()).hasSize(1);
     }
 }

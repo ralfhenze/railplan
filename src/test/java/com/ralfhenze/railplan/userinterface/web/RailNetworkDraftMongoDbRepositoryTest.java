@@ -12,7 +12,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import static com.ralfhenze.railplan.domain.TestData.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -38,8 +38,8 @@ public class RailNetworkDraftMongoDbRepositoryTest {
 
         final var loadedDraft = draftRepository.getRailNetworkDraftOfId(draftId).get();
 
-        assertEquals(2, loadedDraft.getStations().size());
-        assertEquals(1, loadedDraft.getTracks().size());
+        assertThat(loadedDraft.getStations()).hasSize(2);
+        assertThat(loadedDraft.getTracks()).hasSize(1);
     }
 
     @Test
@@ -63,8 +63,8 @@ public class RailNetworkDraftMongoDbRepositoryTest {
             .findAll(RailNetworkDraftDto.class, RailNetworkDraftMongoDbRepository.COLLECTION_NAME)
             .size();
 
-        assertEquals(1, numberOfPersistedDrafts);
-        assertEquals(3, loadedDraft.getStations().size());
-        assertEquals(2, loadedDraft.getTracks().size());
+        assertThat(numberOfPersistedDrafts).isEqualTo(1);
+        assertThat(loadedDraft.getStations()).hasSize(3);
+        assertThat(loadedDraft.getTracks()).hasSize(2);
     }
 }

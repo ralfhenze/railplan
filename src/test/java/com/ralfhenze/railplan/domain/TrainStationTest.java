@@ -4,8 +4,8 @@ import com.ralfhenze.railplan.domain.railnetwork.elements.TrainStationName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 class TrainStationTest {
 
@@ -18,7 +18,7 @@ class TrainStationTest {
         "This is a very very very very very long station name", // too long
     })
     void should_fail_on_invalid_station_names(String stationName) {
-        assertThrows(Exception.class, () -> {
+        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
             new TrainStationName(stationName);
         });
     }
@@ -35,6 +35,6 @@ class TrainStationTest {
     void should_provide_station_name(String stationName) {
         final var name = new TrainStationName(stationName);
 
-        assertEquals(name.getName(), stationName);
+        assertThat(name.getName()).isEqualTo(stationName);
     }
 }

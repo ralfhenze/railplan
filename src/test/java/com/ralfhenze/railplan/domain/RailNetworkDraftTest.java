@@ -4,7 +4,8 @@ import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraf
 import org.junit.jupiter.api.Test;
 
 import static com.ralfhenze.railplan.domain.TestData.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 class RailNetworkDraftTest {
 
@@ -14,7 +15,7 @@ class RailNetworkDraftTest {
             .withNewStation(berlinHbfName, berlinHbfPos)
             .withNewStation(potsdamHbfName, potsdamHbfPos);
 
-        assertThrows(IllegalArgumentException.class, () -> {
+        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
             draft.withRenamedStation(potsdamHbfName, berlinHbfName);
         });
     }
@@ -25,7 +26,7 @@ class RailNetworkDraftTest {
             .withNewStation(berlinHbfName, berlinHbfPos)
             .withNewStation(potsdamHbfName, potsdamHbfPos);
 
-        assertThrows(IllegalArgumentException.class, () -> {
+        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
             draft.withMovedStation(potsdamHbfName, berlinOstPos);
         });
     }
@@ -37,7 +38,7 @@ class RailNetworkDraftTest {
             .withNewStation(potsdamHbfName, potsdamHbfPos)
             .withNewTrack(berlinHbfName, potsdamHbfName);
 
-        assertThrows(IllegalArgumentException.class, () -> {
+        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
             draft.withNewTrack(potsdamHbfName, berlinHbfName);
         });
     }
@@ -46,11 +47,11 @@ class RailNetworkDraftTest {
     void should_be_able_to_delete_stations() {
         var draft = new RailNetworkDraft()
             .withNewStation(berlinHbfName, berlinHbfPos);
-        assertEquals(1, draft.getStations().size());
+        assertThat(draft.getStations()).hasSize(1);
 
         draft = draft.withoutStation(berlinHbfName);
 
-        assertTrue(draft.getStations().isEmpty());
+        assertThat(draft.getStations()).isEmpty();
     }
 
     @Test
@@ -60,11 +61,11 @@ class RailNetworkDraftTest {
             .withNewStation(potsdamHbfName, potsdamHbfPos)
             .withNewTrack(berlinHbfName, potsdamHbfName);
 
-        assertEquals(1, draft.getTracks().size());
+        assertThat(draft.getTracks()).hasSize(1);
 
         draft = draft.withoutTrack(potsdamHbfName, berlinHbfName);
 
-        assertTrue(draft.getTracks().isEmpty());
+        assertThat(draft.getTracks()).isEmpty();
     }
 
     @Test
@@ -74,12 +75,12 @@ class RailNetworkDraftTest {
             .withNewStation(potsdamHbfName, potsdamHbfPos)
             .withNewTrack(berlinHbfName, potsdamHbfName);
 
-        assertEquals(2, draft.getStations().size());
-        assertEquals(1, draft.getTracks().size());
+        assertThat(draft.getStations()).hasSize(2);
+        assertThat(draft.getTracks()).hasSize(1);
 
         draft = draft.withoutStation(potsdamHbfName);
 
-        assertEquals(1, draft.getStations().size());
-        assertTrue(draft.getTracks().isEmpty());
+        assertThat(draft.getStations()).hasSize(1);
+        assertThat(draft.getTracks()).isEmpty();
     }
 }

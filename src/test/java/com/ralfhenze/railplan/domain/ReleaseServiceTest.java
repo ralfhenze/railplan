@@ -11,7 +11,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 import java.time.LocalDate;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -42,7 +42,7 @@ class ReleaseServiceTest {
         final var releaseService = new RailNetworkReleaseService(railNetworkRepository);
         final var draft = mock(RailNetworkDraft.class);
 
-        assertThrows(IllegalArgumentException.class, () -> {
+        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
             releaseService.release(
                 draft,
                 new ValidityPeriod(
