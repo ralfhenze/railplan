@@ -49,16 +49,34 @@
         </form>
 
         <h3>Tracks</h3>
-        <table>
-            <tbody>
-                <tr th:each="track,status : ${tracks}">
-                    <td th:text="${status.count}">1</td>
-                    <td th:text="${track.get(0)}">Berlin Hbf</td>
-                    <td>&lt;&equals;&gt;</td>
-                    <td th:text="${track.get(1)}">Hamburg Hbf</td>
-                </tr>
-            </tbody>
-        </table>
+        <form action="#" th:action="@{|/drafts/${currentDraftId}/tracks/new|}" th:object="${newTrack}" method="post">
+            <table>
+                <tbody>
+                    <tr th:each="track,status : ${tracks}">
+                        <td th:text="${status.count}">1</td>
+                        <td th:text="${track.get(0)}">Berlin Hbf</td>
+                        <td>&lt;&equals;&gt;</td>
+                        <td th:text="${track.get(1)}">Hamburg Hbf</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>+</td>
+                        <td>
+                            <select th:field="*{firstStationId}">
+                                <option th:each="name : ${stationNames}" th:value="${name.getKey()}" th:text="${name.getValue()}">Berlin Hbf</option>
+                            </select>
+                        </td>
+                        <td>&lt;&equals;&gt;</td>
+                        <td>
+                            <select th:field="*{secondStationId}">
+                                <option th:each="name : ${stationNames}" th:value="${name.getKey()}" th:text="${name.getValue()}">Berlin Hbf</option>
+                            </select>
+                        </td>
+                        <td><input type="submit" value="Add Track"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </form>
     </div>
 
 </body>
