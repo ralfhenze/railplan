@@ -22,6 +22,9 @@ public class ReleasedRailNetworkDto {
     public ReleasedRailNetworkDto() {}
 
     public ReleasedRailNetworkDto(ReleasedRailNetwork network) {
+        if (network.getId().isPresent()) {
+            this.id = network.getId().get().toString();
+        }
         this.startDate = network.getPeriod().getStartDate().toString();
         this.endDate = network.getPeriod().getEndDate().toString();
         this.stations = network.getStations().collect(TrainStationDto::new).castToSet();

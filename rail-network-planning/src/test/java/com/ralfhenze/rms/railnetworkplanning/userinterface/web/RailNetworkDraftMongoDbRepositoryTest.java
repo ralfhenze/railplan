@@ -3,6 +3,7 @@ package com.ralfhenze.rms.railnetworkplanning.userinterface.web;
 import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.lifecycle.draft.RailNetworkDraft;
 import com.ralfhenze.rms.railnetworkplanning.domain.railnetwork.lifecycle.draft.RailNetworkDraftId;
 import com.ralfhenze.rms.railnetworkplanning.infrastructure.persistence.RailNetworkDraftMongoDbRepository;
+import com.ralfhenze.rms.railnetworkplanning.infrastructure.persistence.dto.RailNetworkDraftDto;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -43,5 +44,32 @@ public class RailNetworkDraftMongoDbRepositoryTest {
 
         assertEquals(2, loadedDraft.getStations().size());
         assertEquals(1, loadedDraft.getTracks().size());
+    }
+
+    @Test
+    public void should_update_persisted_draft() {
+        final RailNetworkDraftMongoDbRepository draftRepository =
+            new RailNetworkDraftMongoDbRepository(mongoTemplate);
+        final RailNetworkDraft draft = new RailNetworkDraft()
+            .withNewStation(berlinHbfName, berlinHbfPos)
+            .withNewStation(hamburgHbfName, hamburgHbfPos)
+            .withNewTrack(berlinHbfName, hamburgHbfName);
+        final RailNetworkDraft persistedDraft = draftRepository.persist(draft).get();
+        final RailNetworkDraft updatedDraft = persistedDraft
+            .withNewStation(potsdamHbfName, potsdamHbfPos)
+            .withNewTrack(potsdamHbfName, berlinHbfName);
+
+        draftRepository.persist(updatedDraft);
+
+        final RailNetworkDraftId draftId = persistedDraft.getId().get();
+        final RailNetworkDraft loadedDraft = draftRepository
+            .getRailNetworkDraftOfId(draftId).get();
+        final int numberOfPersistedDrafts = mongoTemplate
+            .findAll(RailNetworkDraftDto.class, RailNetworkDraftMongoDbRepository.COLLECTION_NAME)
+            .size();
+
+        assertEquals(1, numberOfPersistedDrafts);
+        assertEquals(3, loadedDraft.getStations().size());
+        assertEquals(2, loadedDraft.getTracks().size());
     }
 }

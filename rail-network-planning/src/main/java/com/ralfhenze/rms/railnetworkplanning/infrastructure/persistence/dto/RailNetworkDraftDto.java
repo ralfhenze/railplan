@@ -19,6 +19,9 @@ public class RailNetworkDraftDto {
     public RailNetworkDraftDto() {}
 
     public RailNetworkDraftDto(RailNetworkDraft draft) {
+        if (draft.getId().isPresent()) {
+            this.id = draft.getId().get().toString();
+        }
         this.stations = draft.getStations().collect(TrainStationDto::new).castToSet();
         this.tracks = draft.getTracks().collect(RailwayTrackDto::new).castToSet();
     }

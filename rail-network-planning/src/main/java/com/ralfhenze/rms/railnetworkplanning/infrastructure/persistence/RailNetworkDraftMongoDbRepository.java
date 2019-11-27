@@ -33,12 +33,12 @@ public class RailNetworkDraftMongoDbRepository implements RailNetworkDraftReposi
 
     @Override
     public Optional<RailNetworkDraft> persist(final RailNetworkDraft railNetworkDraft) {
-        final RailNetworkDraftDto draftEntity = new RailNetworkDraftDto(railNetworkDraft);
-        final RailNetworkDraftDto persistedDraftEntity = mongoTemplate
-            .save(draftEntity, COLLECTION_NAME);
+        final RailNetworkDraftDto draftDto = new RailNetworkDraftDto(railNetworkDraft);
+        final RailNetworkDraftDto persistedDraftDto = mongoTemplate
+            .save(draftDto, COLLECTION_NAME);
 
         return Optional.of(
-            persistedDraftEntity.toRailNetworkDraft()
+            persistedDraftDto.toRailNetworkDraft()
         );
     }
 }
