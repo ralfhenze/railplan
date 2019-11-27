@@ -1,7 +1,6 @@
 package com.ralfhenze.railplan.userinterface.web;
 
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraft;
-import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftId;
 import com.ralfhenze.railplan.infrastructure.persistence.RailNetworkDraftMongoDbRepository;
 import com.ralfhenze.railplan.infrastructure.persistence.dto.RailNetworkDraftDto;
 import org.junit.Before;
@@ -29,18 +28,15 @@ public class RailNetworkDraftMongoDbRepositoryTest {
 
     @Test
     public void should_persist_given_draft() {
-        final RailNetworkDraftMongoDbRepository draftRepository =
-            new RailNetworkDraftMongoDbRepository(mongoTemplate);
-        final RailNetworkDraft draft = new RailNetworkDraft()
+        final var draftRepository = new RailNetworkDraftMongoDbRepository(mongoTemplate);
+        final var draft = new RailNetworkDraft()
             .withNewStation(berlinHbfName, berlinHbfPos)
             .withNewStation(hamburgHbfName, hamburgHbfPos)
             .withNewTrack(berlinHbfName, hamburgHbfName);
+        final var persistedDraft = draftRepository.persist(draft).get();
+        final var draftId = persistedDraft.getId().get();
 
-        final RailNetworkDraft persistedDraft = draftRepository.persist(draft).get();
-        final RailNetworkDraftId draftId = persistedDraft.getId().get();
-
-        final RailNetworkDraft loadedDraft = draftRepository
-            .getRailNetworkDraftOfId(draftId).get();
+        final var loadedDraft = draftRepository.getRailNetworkDraftOfId(draftId).get();
 
         assertEquals(2, loadedDraft.getStations().size());
         assertEquals(1, loadedDraft.getTracks().size());
@@ -48,23 +44,22 @@ public class RailNetworkDraftMongoDbRepositoryTest {
 
     @Test
     public void should_update_persisted_draft() {
-        final RailNetworkDraftMongoDbRepository draftRepository =
-            new RailNetworkDraftMongoDbRepository(mongoTemplate);
-        final RailNetworkDraft draft = new RailNetworkDraft()
+        final var draftRepository = new RailNetworkDraftMongoDbRepository(mongoTemplate);
+        final var draft = new RailNetworkDraft()
             .withNewStation(berlinHbfName, berlinHbfPos)
             .withNewStation(hamburgHbfName, hamburgHbfPos)
             .withNewTrack(berlinHbfName, hamburgHbfName);
-        final RailNetworkDraft persistedDraft = draftRepository.persist(draft).get();
-        final RailNetworkDraft updatedDraft = persistedDraft
+        final var persistedDraft = draftRepository.persist(draft).get();
+        final var updatedDraft = persistedDraft
             .withNewStation(potsdamHbfName, potsdamHbfPos)
             .withNewTrack(potsdamHbfName, berlinHbfName);
 
         draftRepository.persist(updatedDraft);
 
-        final RailNetworkDraftId draftId = persistedDraft.getId().get();
-        final RailNetworkDraft loadedDraft = draftRepository
+        final var draftId = persistedDraft.getId().get();
+        final var loadedDraft = draftRepository
             .getRailNetworkDraftOfId(draftId).get();
-        final int numberOfPersistedDrafts = mongoTemplate
+        final var numberOfPersistedDrafts = mongoTemplate
             .findAll(RailNetworkDraftDto.class, RailNetworkDraftMongoDbRepository.COLLECTION_NAME)
             .size();
 

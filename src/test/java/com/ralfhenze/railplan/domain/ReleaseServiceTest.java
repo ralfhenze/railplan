@@ -7,12 +7,13 @@ import com.ralfhenze.railplan.domain.railnetwork.lifecycle.release.RailNetworkRe
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.release.ReleasedRailNetworkRepository;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-import org.mockito.Mockito;
 
 import java.time.LocalDate;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 class ReleaseServiceTest {
 
@@ -24,23 +25,22 @@ class ReleaseServiceTest {
         "2019-11-22",
     })
     void should_ensure_consecutive_periods(LocalDate invalidStartDate) {
-        ReleasedRailNetworkRepository railNetworkRepository = Mockito.mock(ReleasedRailNetworkRepository.class);
-        ReleasedRailNetwork lastRailNetwork = Mockito.mock(ReleasedRailNetwork.class);
-        Mockito
-            .when(lastRailNetwork.getPeriod())
+        final var railNetworkRepository = mock(ReleasedRailNetworkRepository.class);
+        final var lastRailNetwork = mock(ReleasedRailNetwork.class);
+
+        when(lastRailNetwork.getPeriod())
             .thenReturn(
                 new ValidityPeriod(
                     LocalDate.of(2019, 11, 14),
                     LocalDate.of(2019, 11, 20) // last end date
                 )
             );
-        Mockito
-            .when(railNetworkRepository.getLastReleasedRailNetwork())
+
+        when(railNetworkRepository.getLastReleasedRailNetwork())
             .thenReturn(Optional.of(lastRailNetwork));
 
-        RailNetworkReleaseService releaseService = new RailNetworkReleaseService(railNetworkRepository);
-
-        RailNetworkDraft draft = Mockito.mock(RailNetworkDraft.class);
+        final var releaseService = new RailNetworkReleaseService(railNetworkRepository);
+        final var draft = mock(RailNetworkDraft.class);
 
         assertThrows(IllegalArgumentException.class, () -> {
             releaseService.release(

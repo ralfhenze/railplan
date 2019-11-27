@@ -2,7 +2,6 @@ package com.ralfhenze.railplan.domain.railnetwork.invariants;
 
 import com.ralfhenze.railplan.domain.railnetwork.elements.RailwayTrack;
 import com.ralfhenze.railplan.domain.railnetwork.elements.TrainStation;
-import com.ralfhenze.railplan.domain.railnetwork.elements.TrainStationName;
 import org.eclipse.collections.api.list.ImmutableList;
 
 import java.util.Collection;
@@ -24,7 +23,7 @@ public class StationNamesAreUnique implements Invariant {
     }
 
     private void ensureUniqueStationNames(final ImmutableList<TrainStation> stations) {
-        final TrainStationName duplicateStationName = stations
+        final var duplicateStationName = stations
             .groupBy(TrainStation::getName)
             .selectKeysMultiValues((name, s) -> ((Collection)s).size() > 1)
             .keyBag()

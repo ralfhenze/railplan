@@ -4,9 +4,6 @@ import com.ralfhenze.railplan.domain.common.Combinations;
 import com.ralfhenze.railplan.domain.railnetwork.elements.RailwayTrack;
 import com.ralfhenze.railplan.domain.railnetwork.elements.TrainStation;
 import org.eclipse.collections.api.list.ImmutableList;
-import org.javatuples.Pair;
-
-import java.util.Optional;
 
 import static com.ralfhenze.railplan.domain.common.Preconditions.ensureNotNull;
 
@@ -31,7 +28,7 @@ public class TwoStationsCanOnlyBeConnectedByOneTrack implements Invariant {
         final ImmutableList<TrainStation> stations,
         final ImmutableList<RailwayTrack> tracks
     ) {
-        final Optional<Pair<RailwayTrack, RailwayTrack>> equalTrackCombination = combinations
+        final var equalTrackCombination = combinations
             .getUniqueCombinations(tracks)
             .detectOptional(stationCombination ->
                 stationCombination
@@ -40,10 +37,10 @@ public class TwoStationsCanOnlyBeConnectedByOneTrack implements Invariant {
                 );
 
         if (equalTrackCombination.isPresent()) {
-            final RailwayTrack track = equalTrackCombination.get().getValue0();
-            final TrainStation station1 = stations
+            final var track = equalTrackCombination.get().getValue0();
+            final var station1 = stations
                 .detect(s -> s.getId().equals(track.getFirstStationId()));
-            final TrainStation station2 = stations
+            final var station2 = stations
                 .detect(s -> s.getId().equals(track.getSecondStationId()));
 
             throw new IllegalArgumentException(

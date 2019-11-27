@@ -18,8 +18,8 @@ class CommandsTest {
 
     @Test
     void should_persist_added_station() {
-        final RailNetworkDraftRepository draftRepository = mock(RailNetworkDraftRepository.class);
-        final AddTrainStationCommand command = new AddTrainStationCommand(draftRepository);
+        final var draftRepository = mock(RailNetworkDraftRepository.class);
+        final var command = new AddTrainStationCommand(draftRepository);
         when(draftRepository.getRailNetworkDraftOfId(any()))
             .thenReturn(Optional.of(new RailNetworkDraft()));
 
@@ -35,9 +35,9 @@ class CommandsTest {
 
     @Test
     void should_persist_added_track() {
-        final RailNetworkDraftRepository draftRepository = mock(RailNetworkDraftRepository.class);
-        final AddRailwayTrackCommand command = new AddRailwayTrackCommand(draftRepository);
-        final RailNetworkDraft draft = new RailNetworkDraft()
+        final var draftRepository = mock(RailNetworkDraftRepository.class);
+        final var command = new AddRailwayTrackCommand(draftRepository);
+        final var draft = new RailNetworkDraft()
             .withNewStation(berlinHbfName, berlinHbfPos)
             .withNewStation(hamburgHbfName, hamburgHbfPos);
         when(draftRepository.getRailNetworkDraftOfId(any()))
@@ -50,8 +50,8 @@ class CommandsTest {
 
     @Test
     void should_persist_created_draft() {
-        final RailNetworkDraftRepository draftRepository = mock(RailNetworkDraftRepository.class);
-        final AddRailNetworkDraftCommand command = new AddRailNetworkDraftCommand(draftRepository);
+        final var draftRepository = mock(RailNetworkDraftRepository.class);
+        final var command = new AddRailNetworkDraftCommand(draftRepository);
 
         command.addRailNetworkDraft();
 
@@ -60,10 +60,10 @@ class CommandsTest {
 
     @Test
     void should_persist_released_network() {
-        final RailNetworkDraftRepository draftRepository = mock(RailNetworkDraftRepository.class);
-        final ReleasedRailNetworkRepository networkRepository = mock(ReleasedRailNetworkRepository.class);
-        final ReleaseRailNetworkCommand command = new ReleaseRailNetworkCommand(draftRepository, networkRepository);
-        final RailNetworkDraft draft = new RailNetworkDraft()
+        final var draftRepository = mock(RailNetworkDraftRepository.class);
+        final var networkRepository = mock(ReleasedRailNetworkRepository.class);
+        final var command = new ReleaseRailNetworkCommand(draftRepository, networkRepository);
+        final var draft = new RailNetworkDraft()
             .withNewStation(berlinHbfName, berlinHbfPos)
             .withNewStation(hamburgHbfName, hamburgHbfPos)
             .withNewTrack(berlinHbfName, hamburgHbfName);

@@ -3,7 +3,6 @@ package com.ralfhenze.railplan.domain.railnetwork.lifecycle.release;
 import com.ralfhenze.railplan.domain.common.DomainService;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraft;
 
-import java.time.LocalDate;
 import java.util.Optional;
 
 import static com.ralfhenze.railplan.domain.common.Preconditions.ensureNotNull;
@@ -22,7 +21,7 @@ public class RailNetworkReleaseService implements DomainService {
     public Optional<ReleasedRailNetwork> release(final RailNetworkDraft draft, final ValidityPeriod period) {
         ensureValidPeriod(period);
 
-        ReleasedRailNetwork railNetwork = new ReleasedRailNetwork(
+        final var railNetwork = new ReleasedRailNetwork(
             period,
             draft.getStations(),
             draft.getTracks()
@@ -32,12 +31,12 @@ public class RailNetworkReleaseService implements DomainService {
     }
 
     private void ensureValidPeriod(final ValidityPeriod period) {
-        final Optional<ReleasedRailNetwork> lastReleasedRailNetwork = railNetworkRepository.getLastReleasedRailNetwork();
+        final var lastReleasedRailNetwork = railNetworkRepository.getLastReleasedRailNetwork();
 
         if (lastReleasedRailNetwork.isPresent()) {
-            LocalDate lastEndDate = lastReleasedRailNetwork.get().getPeriod().getEndDate();
-            LocalDate validStartDate = lastEndDate.plusDays(1);
-            LocalDate periodStartDate = period.getStartDate();
+            final var lastEndDate = lastReleasedRailNetwork.get().getPeriod().getEndDate();
+            final var validStartDate = lastEndDate.plusDays(1);
+            final var periodStartDate = period.getStartDate();
 
             // ensure no gaps and no overlapping
             if (!periodStartDate.equals(validStartDate)) {

@@ -33,7 +33,7 @@ class TrainStationTest {
         "Kassel-Wilhelmshöhe",
     })
     void should_provide_station_name(String stationName) {
-        TrainStationName name = new TrainStationName(stationName);
+        final var name = new TrainStationName(stationName);
 
         assertEquals(name.getName(), stationName);
     }

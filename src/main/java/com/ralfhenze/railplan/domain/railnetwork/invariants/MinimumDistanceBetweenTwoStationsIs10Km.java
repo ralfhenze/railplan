@@ -4,9 +4,6 @@ import com.ralfhenze.railplan.domain.common.Combinations;
 import com.ralfhenze.railplan.domain.railnetwork.elements.RailwayTrack;
 import com.ralfhenze.railplan.domain.railnetwork.elements.TrainStation;
 import org.eclipse.collections.api.list.ImmutableList;
-import org.javatuples.Pair;
-
-import java.util.Optional;
 
 import static com.ralfhenze.railplan.domain.common.Preconditions.ensureNotNull;
 
@@ -37,7 +34,7 @@ public class MinimumDistanceBetweenTwoStationsIs10Km implements Invariant {
         // (C,D)
         // because distance(A,B) = distance(B,A)
 
-        final Optional<Pair<TrainStation, TrainStation>> tooNearStationCombination = combinations
+        final var tooNearStationCombination = combinations
             .getUniqueCombinations(stations)
             .detectOptional(stationCombination ->
                 stationCombination
@@ -51,10 +48,10 @@ public class MinimumDistanceBetweenTwoStationsIs10Km implements Invariant {
             );
 
         if (tooNearStationCombination.isPresent()) {
-            final TrainStation firstStation = tooNearStationCombination.get().getValue0();
-            final TrainStation secondStation = tooNearStationCombination.get().getValue1();
+            final var firstStation = tooNearStationCombination.get().getValue0();
+            final var secondStation = tooNearStationCombination.get().getValue1();
 
-            final double distance = firstStation.getLocation()
+            final var distance = firstStation.getLocation()
                 .getKilometerDistanceTo(secondStation.getLocation());
 
             throw new IllegalArgumentException(

@@ -1,7 +1,6 @@
 package com.ralfhenze.railplan.userinterface.web;
 
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraft;
-import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftId;
 import com.ralfhenze.railplan.infrastructure.persistence.MongoDbQueries;
 import com.ralfhenze.railplan.infrastructure.persistence.RailNetworkDraftMongoDbRepository;
 import org.junit.Before;
@@ -32,16 +31,15 @@ public class MongoDbQueriesTest {
 
     @Test
     public void should_provide_all_draft_ids() {
-        final RailNetworkDraftMongoDbRepository draftRepository =
-            new RailNetworkDraftMongoDbRepository(mongoTemplate);
-        final MongoDbQueries queries = new MongoDbQueries(mongoTemplate);
-        final RailNetworkDraft draft = new RailNetworkDraft()
+        final var draftRepository = new RailNetworkDraftMongoDbRepository(mongoTemplate);
+        final var queries = new MongoDbQueries(mongoTemplate);
+        final var draft = new RailNetworkDraft()
             .withNewStation(berlinHbfName, berlinHbfPos)
             .withNewStation(hamburgHbfName, hamburgHbfPos)
             .withNewTrack(berlinHbfName, hamburgHbfName);
-        final RailNetworkDraftId draftId1 = draftRepository
+        final var draftId1 = draftRepository
             .persist(draft).get().getId().get();
-        final RailNetworkDraftId draftId2 = draftRepository
+        final var draftId2 = draftRepository
             .persist(draft.withRenamedStation(hamburgHbfName, frankfurtHbfName))
             .get().getId().get();
 

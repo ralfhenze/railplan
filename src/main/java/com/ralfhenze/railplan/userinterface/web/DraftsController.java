@@ -3,9 +3,7 @@ package com.ralfhenze.railplan.userinterface.web;
 import com.ralfhenze.railplan.application.commands.AddRailNetworkDraftCommand;
 import com.ralfhenze.railplan.application.commands.AddRailwayTrackCommand;
 import com.ralfhenze.railplan.application.commands.AddTrainStationCommand;
-import com.ralfhenze.railplan.application.queries.Queries;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftId;
-import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftRepository;
 import com.ralfhenze.railplan.infrastructure.persistence.MongoDbQueries;
 import com.ralfhenze.railplan.infrastructure.persistence.RailNetworkDraftMongoDbRepository;
 import com.ralfhenze.railplan.infrastructure.persistence.dto.RailNetworkDraftDto;
@@ -33,7 +31,7 @@ public class DraftsController {
 
     @GetMapping("/drafts")
     public String drafts(Model model) {
-        final Queries queries = new MongoDbQueries(mongoTemplate);
+        final var queries = new MongoDbQueries(mongoTemplate);
         model.addAttribute("draftIds", queries.getAllDraftIds());
 
         return "drafts";
@@ -41,12 +39,11 @@ public class DraftsController {
 
     @GetMapping("/drafts/{draftId}")
     public String draft(@PathVariable String draftId, Model model) {
-        final Queries queries = new MongoDbQueries(mongoTemplate);
+        final var queries = new MongoDbQueries(mongoTemplate);
         model.addAttribute("draftIds", queries.getAllDraftIds());
         model.addAttribute("currentDraftId", draftId);
 
-        final RailNetworkDraftRepository draftRepository =
-            new RailNetworkDraftMongoDbRepository(mongoTemplate);
+        final var draftRepository = new RailNetworkDraftMongoDbRepository(mongoTemplate);
         draftRepository.getRailNetworkDraftOfId(new RailNetworkDraftId(draftId))
             .map(RailNetworkDraftDto::new)
             .ifPresent(draftDto -> {
@@ -78,8 +75,7 @@ public class DraftsController {
         @PathVariable String draftId,
         @ModelAttribute TrainStationDto stationDto
     ) {
-        final RailNetworkDraftRepository draftRepository =
-            new RailNetworkDraftMongoDbRepository(mongoTemplate);
+        final var draftRepository = new RailNetworkDraftMongoDbRepository(mongoTemplate);
 
         new AddTrainStationCommand(draftRepository).addTrainStation(
             draftId,
@@ -96,8 +92,7 @@ public class DraftsController {
         @PathVariable String draftId,
         @ModelAttribute RailwayTrackDto trackDto
     ) {
-        final RailNetworkDraftRepository draftRepository =
-            new RailNetworkDraftMongoDbRepository(mongoTemplate);
+        final var draftRepository = new RailNetworkDraftMongoDbRepository(mongoTemplate);
 
         new AddRailwayTrackCommand(draftRepository).addRailwayTrack(
             draftId,
@@ -110,7 +105,7 @@ public class DraftsController {
 
     @GetMapping("/drafts/new")
     public String createNewDraft() {
-        final String draftId =
+        final var draftId =
             new AddRailNetworkDraftCommand(new RailNetworkDraftMongoDbRepository(mongoTemplate))
             .addRailNetworkDraft()
             .get();

@@ -8,7 +8,6 @@ import org.eclipse.collections.api.list.ImmutableList;
 import org.junit.jupiter.api.Test;
 
 import static com.ralfhenze.railplan.domain.TestData.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class ReleasedRailNetworkTest {

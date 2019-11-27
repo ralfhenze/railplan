@@ -33,9 +33,9 @@ public class ContainsNoUnconnectedSubGraphs implements Invariant {
     ) {
         final Map<TrainStationId, Set<TrainStationId>> nodes = new HashMap<>();
 
-        for (final RailwayTrack track : tracks) {
-            final TrainStationId id1 = track.getFirstStationId();
-            final TrainStationId id2 = track.getSecondStationId();
+        for (final var track : tracks) {
+            final var id1 = track.getFirstStationId();
+            final var id2 = track.getSecondStationId();
 
             final Set<TrainStationId> set1 = nodes.getOrDefault(id1, new HashSet<>());
             set1.add(id2);
@@ -46,14 +46,14 @@ public class ContainsNoUnconnectedSubGraphs implements Invariant {
             nodes.put(id2, set2);
         }
 
-        final TrainStationId firstNode = nodes.keySet().stream().findFirst().get();
+        final var firstNode = nodes.keySet().stream().findFirst().get();
         final Set<TrainStationId> visitedNodes = visitAdjacentNodes(firstNode, new HashSet<>(), nodes);
 
-        for (final TrainStation station : stations) {
+        for (final var station : stations) {
             nodes.putIfAbsent(station.getId(), new HashSet<>());
         }
 
-        final boolean unconnectedSubGraphExists = (visitedNodes.size() < nodes.size());
+        final var unconnectedSubGraphExists = (visitedNodes.size() < nodes.size());
 
         if (unconnectedSubGraphExists) {
             throw new IllegalArgumentException(
@@ -73,7 +73,7 @@ public class ContainsNoUnconnectedSubGraphs implements Invariant {
         final Set<TrainStationId> unvisitedAdjacentNodes = new HashSet<>(nodes.get(node));
         unvisitedAdjacentNodes.removeAll(visitedNodes);
 
-        for (final TrainStationId adjacentNode : unvisitedAdjacentNodes) {
+        for (final var adjacentNode : unvisitedAdjacentNodes) {
             visitedNodes.addAll(
                 visitAdjacentNodes(adjacentNode, new HashSet<>(visitedNodes), nodes)
             );

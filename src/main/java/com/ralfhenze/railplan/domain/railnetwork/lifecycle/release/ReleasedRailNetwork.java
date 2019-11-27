@@ -54,7 +54,7 @@ public class ReleasedRailNetwork implements Aggregate {
     }
 
     private void ensureInvariants() {
-        for (final Invariant invariant : invariants) {
+        for (final var invariant : invariants) {
             invariant.ensureIsSatisfied(stations, tracks);
         }
     }

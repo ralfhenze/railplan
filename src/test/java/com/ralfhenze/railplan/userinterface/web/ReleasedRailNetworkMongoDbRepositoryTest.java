@@ -29,18 +29,15 @@ public class ReleasedRailNetworkMongoDbRepositoryTest {
 
     @Test
     public void should_persist_given_network() {
-        final ReleasedRailNetworkMongoDbRepository networkRepository =
-            new ReleasedRailNetworkMongoDbRepository(mongoTemplate);
-        final ReleasedRailNetwork network = new ReleasedRailNetwork(
+        final var networkRepository = new ReleasedRailNetworkMongoDbRepository(mongoTemplate);
+        final var network = new ReleasedRailNetwork(
             defaultPeriod,
             Lists.immutable.of(berlinHbf, hamburgHbf),
             Lists.immutable.of(new RailwayTrack(berlinHbf.getId(), hamburgHbf.getId()))
         );
+        networkRepository.add(network);
 
-        networkRepository.add(network).get();
-
-        final ReleasedRailNetwork loadedNetwork = networkRepository
-            .getLastReleasedRailNetwork().get();
+        final var loadedNetwork = networkRepository.getLastReleasedRailNetwork().get();
 
         assertEquals(2, loadedNetwork.getStations().size());
         assertEquals(1, loadedNetwork.getTracks().size());

@@ -25,22 +25,21 @@ public class ReleasedRailNetworkMongoDbRepository implements ReleasedRailNetwork
 
     @Override
     public Optional<ReleasedRailNetwork> getLastReleasedRailNetwork() {
-        final Query sortedByStartDateQuery = new Query();
+        final var sortedByStartDateQuery = new Query();
         sortedByStartDateQuery.with(Sort.by(Sort.Direction.DESC, "startDate"));
 
-        final ReleasedRailNetworkDto dto = mongoTemplate
+        final var networkDto = mongoTemplate
             .findOne(sortedByStartDateQuery, ReleasedRailNetworkDto.class, COLLECTION_NAME);
 
-        return Optional.ofNullable(dto)
+        return Optional.ofNullable(networkDto)
             .map(ReleasedRailNetworkDto::toReleasedRailNetwork);
     }
 
     @Override
     public Optional<ReleasedRailNetwork> add(ReleasedRailNetwork railNetwork) {
         // TODO: only accept networks without ID
-        final ReleasedRailNetworkDto networkDto = new ReleasedRailNetworkDto(railNetwork);
-        final ReleasedRailNetworkDto persistedNetworkDto = mongoTemplate
-            .insert(networkDto, COLLECTION_NAME);
+        final var networkDto = new ReleasedRailNetworkDto(railNetwork);
+        final var persistedNetworkDto = mongoTemplate.insert(networkDto, COLLECTION_NAME);
 
         return Optional.of(
             persistedNetworkDto.toReleasedRailNetwork()

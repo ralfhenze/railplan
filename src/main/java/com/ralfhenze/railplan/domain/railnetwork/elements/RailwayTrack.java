@@ -42,7 +42,7 @@ public class RailwayTrack implements ValueObject {
             return false;
         }
 
-        RailwayTrack track = (RailwayTrack)object;
+        final var track = (RailwayTrack)object;
 
         return (
             (track.firstStationId.equals(this.firstStationId)

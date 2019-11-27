@@ -1,7 +1,6 @@
 package com.ralfhenze.railplan.acceptance.stepdefs;
 
 import com.ralfhenze.railplan.domain.TestData;
-import com.ralfhenze.railplan.domain.railnetwork.elements.TrainStation;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraft;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
@@ -16,7 +15,7 @@ public class StationInvariantsSteps {
 
     @Given("^a Rail Network Draft with a Station \"(.*)\"$")
     public void setupRailNetworkDraft(final String stationName) {
-        final TrainStation station = TestData.getStation(stationName);
+        final var station = TestData.getStation(stationName);
         draft = new RailNetworkDraft()
             .withNewStation(station.getName(), station.getLocation());
     }
@@ -32,7 +31,7 @@ public class StationInvariantsSteps {
     }
 
     private void addStation(final String stationName) {
-        final TrainStation stationToAdd = TestData.getStation(stationName);
+        final var stationToAdd = TestData.getStation(stationName);
         exceptionWasThrown = false;
         try {
             draft = draft.withNewStation(stationToAdd.getName(), stationToAdd.getLocation());

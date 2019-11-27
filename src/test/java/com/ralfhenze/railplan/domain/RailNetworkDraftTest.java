@@ -10,7 +10,7 @@ class RailNetworkDraftTest {
 
     @Test
     void should_ensure_unique_station_names_when_renaming() {
-        final RailNetworkDraft draft = new RailNetworkDraft()
+        final var draft = new RailNetworkDraft()
             .withNewStation(berlinHbfName, berlinHbfPos)
             .withNewStation(potsdamHbfName, potsdamHbfPos);
 
@@ -21,7 +21,7 @@ class RailNetworkDraftTest {
 
     @Test
     void should_ensure_minimum_distance_between_stations_when_relocating() {
-        final RailNetworkDraft draft = new RailNetworkDraft()
+        final var draft = new RailNetworkDraft()
             .withNewStation(berlinHbfName, berlinHbfPos)
             .withNewStation(potsdamHbfName, potsdamHbfPos);
 
@@ -32,7 +32,7 @@ class RailNetworkDraftTest {
 
     @Test
     void should_ensure_no_duplicate_tracks() {
-        final RailNetworkDraft draft = new RailNetworkDraft()
+        final var draft = new RailNetworkDraft()
             .withNewStation(berlinHbfName, berlinHbfPos)
             .withNewStation(potsdamHbfName, potsdamHbfPos)
             .withNewTrack(berlinHbfName, potsdamHbfName);
@@ -44,7 +44,7 @@ class RailNetworkDraftTest {
 
     @Test
     void should_be_able_to_delete_stations() {
-        RailNetworkDraft draft = new RailNetworkDraft()
+        var draft = new RailNetworkDraft()
             .withNewStation(berlinHbfName, berlinHbfPos);
         assertEquals(1, draft.getStations().size());
 
@@ -55,7 +55,7 @@ class RailNetworkDraftTest {
 
     @Test
     void should_be_able_to_delete_tracks() {
-        RailNetworkDraft draft = new RailNetworkDraft()
+        var draft = new RailNetworkDraft()
             .withNewStation(berlinHbfName, berlinHbfPos)
             .withNewStation(potsdamHbfName, potsdamHbfPos)
             .withNewTrack(berlinHbfName, potsdamHbfName);
@@ -69,7 +69,7 @@ class RailNetworkDraftTest {
 
     @Test
     void should_delete_associated_tracks_on_station_delete() {
-        RailNetworkDraft draft = new RailNetworkDraft()
+        var draft = new RailNetworkDraft()
             .withNewStation(berlinHbfName, berlinHbfPos)
             .withNewStation(potsdamHbfName, potsdamHbfPos)
             .withNewTrack(berlinHbfName, potsdamHbfName);

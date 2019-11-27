@@ -11,8 +11,8 @@ class GeoLocationTest {
 
     @Test
     void should_calculate_the_Distance_between_two_Locations() {
-        GeoLocationInGermany berlin = new GeoLocationInGermany(52.518611, 13.408333);
-        GeoLocationInGermany hamburg = new GeoLocationInGermany(53.550556, 9.993333);
+        final var berlin = new GeoLocationInGermany(52.518611, 13.408333);
+        final var hamburg = new GeoLocationInGermany(53.550556, 9.993333);
 
         double distance = berlin.getKilometerDistanceTo(hamburg);
 

@@ -27,17 +27,17 @@ public class RailNetworkDraftDto {
     }
 
     public RailNetworkDraft toRailNetworkDraft() {
-        RailNetworkDraft draft = new RailNetworkDraft()
+        var draft = new RailNetworkDraft()
             .withId(new RailNetworkDraftId(String.valueOf(id)));
 
-        for (TrainStationDto station : stations) {
+        for (final var station : stations) {
             draft = draft.withNewStation(
                 new TrainStationName(station.getName()),
                 new GeoLocationInGermany(station.getLatitude(), station.getLongitude())
             );
         }
 
-        for (RailwayTrackDto track : tracks) {
+        for (final var track : tracks) {
             draft = draft.withNewTrack(
                 new TrainStationId(String.valueOf(track.getFirstStationId())),
                 new TrainStationId(String.valueOf(track.getSecondStationId()))
