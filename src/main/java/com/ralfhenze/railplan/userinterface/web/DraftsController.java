@@ -37,32 +37,9 @@ public class DraftsController {
         return "drafts";
     }
 
-    @GetMapping("/drafts/{draftId}")
-    public String draft(@PathVariable String draftId, Model model) {
-        final var queries = new MongoDbQueries(mongoTemplate);
-        model.addAttribute("draftIds", queries.getAllDraftIds());
-        model.addAttribute("currentDraftId", draftId);
-
-        final var draftRepository = new RailNetworkDraftMongoDbRepository(mongoTemplate);
-        draftRepository.getRailNetworkDraftOfId(new RailNetworkDraftId(draftId))
-            .map(RailNetworkDraftDto::new)
-            .ifPresent(draftDto -> {
-                model.addAttribute("currentDraftDto", draftDto);
-                final Map<Integer, String> stationNames = draftDto
-                    .getStations()
-                    .stream()
-                    .collect(Collectors.toMap(TrainStationDto::getId, TrainStationDto::getName));
-                model.addAttribute("stationNames", stationNames);
-                final List<List<String>> tracksWithStationNames = draftDto
-                    .getTracks()
-                    .stream()
-                    .map(trackDto -> Arrays.asList(
-                        stationNames.get(trackDto.getFirstStationId()),
-                        stationNames.get(trackDto.getSecondStationId()))
-                    )
-                    .collect(Collectors.toList());
-                model.addAttribute("tracks", tracksWithStationNames);
-            });
+    @GetMapping("/drafts/{currentDraftId}")
+    public String draft(@PathVariable String currentDraftId, Model model) {
+        setModelAttributes(currentDraftId, model);
 
         model.addAttribute("newStation", new TrainStationDto());
         model.addAttribute("newTrack", new RailwayTrackDto());
@@ -70,37 +47,75 @@ public class DraftsController {
         return "drafts";
     }
 
-    @PostMapping("/drafts/{draftId}/stations/new")
+    @PostMapping("/drafts/{currentDraftId}/stations/new")
     public String createNewStation(
-        @PathVariable String draftId,
-        @ModelAttribute TrainStationDto stationDto
+        @PathVariable String currentDraftId,
+        @ModelAttribute(name = "newStation") TrainStationDto stationDto,
+        Model model
     ) {
         final var draftRepository = new RailNetworkDraftMongoDbRepository(mongoTemplate);
 
-        new AddTrainStationCommand(draftRepository).addTrainStation(
-            draftId,
-            stationDto.getName(),
-            stationDto.getLatitude(),
-            stationDto.getLongitude()
-        );
+        try {
+            new AddTrainStationCommand(draftRepository).addTrainStation(
+                currentDraftId,
+                stationDto.getName(),
+                stationDto.getLatitude(),
+                stationDto.getLongitude()
+            );
+        } catch (IllegalArgumentException exception) {
+            setModelAttributes(currentDraftId, model);
+            model.addAttribute("newTrack", new RailwayTrackDto());
+            model.addAttribute("stationError", exception.getMessage());
 
-        return "redirect:/drafts/{draftId}";
+            return "drafts";
+        }
+
+        return "redirect:/drafts/{currentDraftId}";
     }
 
-    @PostMapping("/drafts/{draftId}/tracks/new")
+    @PostMapping("/drafts/{currentDraftId}/tracks/new")
     public String createNewTrack(
-        @PathVariable String draftId,
+        @PathVariable String currentDraftId,
         @ModelAttribute RailwayTrackDto trackDto
     ) {
         final var draftRepository = new RailNetworkDraftMongoDbRepository(mongoTemplate);
 
         new AddRailwayTrackCommand(draftRepository).addRailwayTrack(
-            draftId,
+            currentDraftId,
             String.valueOf(trackDto.getFirstStationId()),
             String.valueOf(trackDto.getSecondStationId())
         );
 
-        return "redirect:/drafts/{draftId}";
+        return "redirect:/drafts/{currentDraftId}";
+    }
+
+    private void setModelAttributes(String currentDraftId, Model model) {
+        final var queries = new MongoDbQueries(mongoTemplate);
+        model.addAttribute("draftIds", queries.getAllDraftIds());
+
+        final var draftDto = new RailNetworkDraftMongoDbRepository(mongoTemplate)
+            .getRailNetworkDraftOfId(new RailNetworkDraftId(currentDraftId))
+            .map(RailNetworkDraftDto::new);
+
+        if (draftDto.isPresent()) {
+            model.addAttribute("currentDraftDto", draftDto.get());
+
+            final Map<Integer, String> stationNames = draftDto.get()
+                .getStations()
+                .stream()
+                .collect(Collectors.toMap(TrainStationDto::getId, TrainStationDto::getName));
+            model.addAttribute("stationNames", stationNames);
+
+            final List<List<String>> tracksWithStationNames = draftDto.get()
+                .getTracks()
+                .stream()
+                .map(trackDto -> Arrays.asList(
+                    stationNames.get(trackDto.getFirstStationId()),
+                    stationNames.get(trackDto.getSecondStationId()))
+                )
+                .collect(Collectors.toList());
+            model.addAttribute("tracks", tracksWithStationNames);
+        }
     }
 
     @GetMapping("/drafts/new")

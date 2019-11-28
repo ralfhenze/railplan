@@ -44,6 +44,10 @@
                         <td><input type="text" th:field="*{longitude}"></td>
                         <td><input type="submit" value="Add Station"></td>
                     </tr>
+                    <tr th:if="${stationError != null}">
+                        <td></td>
+                        <td colspan="4"><p th:text="${stationError}">Station Error</p></td>
+                    </tr>
                 </tbody>
             </table>
         </form>
@@ -69,7 +73,7 @@
                         <td>&lt;&equals;&gt;</td>
                         <td>
                             <select th:field="*{secondStationId}">
-                                <option th:each="name : ${stationNames}" th:value="${name.getKey()}" th:text="${name.getValue()}">Berlin Hbf</option>
+                                <option th:each="name : ${stationNames}" th:value="${name.getKey()}" th:text="${name.getValue()}">Hamburg Hbf</option>
                             </select>
                         </td>
                         <td><input type="submit" value="Add Track"></td>
