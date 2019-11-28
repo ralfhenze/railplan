@@ -37,6 +37,16 @@ public class DraftsController {
         return "drafts";
     }
 
+    @GetMapping("/drafts/new")
+    public String addDraft() {
+        final var draftId =
+            new AddRailNetworkDraftCommand(new RailNetworkDraftMongoDbRepository(mongoTemplate))
+                .addRailNetworkDraft().get()
+                .getId().get().toString();
+
+        return "redirect:/drafts/" + draftId;
+    }
+
     @GetMapping("/drafts/{currentDraftId}")
     public String draft(@PathVariable String currentDraftId, Model model) {
         setModelAttributes(currentDraftId, model);
@@ -125,15 +135,5 @@ public class DraftsController {
                 .collect(Collectors.toList());
             model.addAttribute("tracks", tracksWithStationNames);
         }
-    }
-
-    @GetMapping("/drafts/new")
-    public String createNewDraft() {
-        final var draftId =
-            new AddRailNetworkDraftCommand(new RailNetworkDraftMongoDbRepository(mongoTemplate))
-            .addRailNetworkDraft()
-            .get();
-
-        return "redirect:/drafts/" + draftId;
     }
 }
