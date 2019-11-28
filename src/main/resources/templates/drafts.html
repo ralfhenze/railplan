@@ -78,6 +78,10 @@
                         </td>
                         <td><input type="submit" value="Add Track"></td>
                     </tr>
+                    <tr th:if="${trackError != null}">
+                        <td></td>
+                        <td colspan="4"><p th:text="${trackError}">Track Error</p></td>
+                    </tr>
                 </tbody>
             </table>
         </form>

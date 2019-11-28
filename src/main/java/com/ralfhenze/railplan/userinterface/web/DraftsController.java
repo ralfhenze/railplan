@@ -76,15 +76,24 @@ public class DraftsController {
     @PostMapping("/drafts/{currentDraftId}/tracks/new")
     public String createNewTrack(
         @PathVariable String currentDraftId,
-        @ModelAttribute RailwayTrackDto trackDto
+        @ModelAttribute(name = "newTrack") RailwayTrackDto trackDto,
+        Model model
     ) {
         final var draftRepository = new RailNetworkDraftMongoDbRepository(mongoTemplate);
 
-        new AddRailwayTrackCommand(draftRepository).addRailwayTrack(
-            currentDraftId,
-            String.valueOf(trackDto.getFirstStationId()),
-            String.valueOf(trackDto.getSecondStationId())
-        );
+        try {
+            new AddRailwayTrackCommand(draftRepository).addRailwayTrack(
+                currentDraftId,
+                String.valueOf(trackDto.getFirstStationId()),
+                String.valueOf(trackDto.getSecondStationId())
+            );
+        } catch (IllegalArgumentException exception) {
+            setModelAttributes(currentDraftId, model);
+            model.addAttribute("newStation", new TrainStationDto());
+            model.addAttribute("trackError", exception.getMessage());
+
+            return "drafts";
+        }
 
         return "redirect:/drafts/{currentDraftId}";
     }
