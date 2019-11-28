@@ -4,12 +4,11 @@ A domain-driven implementation of a railway network editor.
 
 ## Run
 
-There is not much to run yet, except for a few tests:
-
 ```
 $ docker-compose up -d
-$ mvn test
+$ mvn spring-boot:run
 ```
+The UI should now be accessible: http://localhost:8080/
 
 ### REST API Documentation
 
