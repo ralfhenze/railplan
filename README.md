@@ -11,6 +11,10 @@ $ docker-compose up -d
 $ mvn test
 ```
 
+### REST API Documentation
+
+http://localhost:8080/swagger-ui.html
+
 ## Railway Domain Links
 
 * https://en.wikipedia.org/wiki/Rail_transport
