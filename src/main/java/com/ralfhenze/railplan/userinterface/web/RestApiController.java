@@ -17,6 +17,11 @@ public class RestApiController {
 
     @GetMapping("/drafts")
     public List<RailNetworkDraftDto> drafts() {
-        return new MongoDbQueries(mongoTemplate).getAllDraftDtos();
+        return new MongoDbQueries(mongoTemplate).getAllDrafts();
+    }
+
+    @GetMapping("/drafts/{draftId}")
+    public RailNetworkDraftDto draft(@PathVariable String draftId) {
+        return new MongoDbQueries(mongoTemplate).getDraftOfId(draftId);
     }
 }

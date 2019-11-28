@@ -28,8 +28,16 @@ public class MongoDbQueries implements Queries {
             .collect(Collectors.toList());
     }
 
-    public List<RailNetworkDraftDto> getAllDraftDtos() {
+    public List<RailNetworkDraftDto> getAllDrafts() {
         return mongoTemplate
             .findAll(RailNetworkDraftDto.class, RailNetworkDraftMongoDbRepository.COLLECTION_NAME);
+    }
+
+    public RailNetworkDraftDto getDraftOfId(String id) {
+        return mongoTemplate.findById(
+            id,
+            RailNetworkDraftDto.class,
+            RailNetworkDraftMongoDbRepository.COLLECTION_NAME
+        );
     }
 }
