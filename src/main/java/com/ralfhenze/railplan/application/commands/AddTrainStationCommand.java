@@ -1,5 +1,6 @@
 package com.ralfhenze.railplan.application.commands;
 
+import com.ralfhenze.railplan.domain.railnetwork.elements.TrainStation;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraft;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftId;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftRepository;
@@ -16,22 +17,26 @@ public class AddTrainStationCommand implements Command {
         this.railNetworkDraftRepository = railNetworkDraftRepository;
     }
 
-    public void addTrainStation(
+    public Optional<TrainStation> addTrainStation(
         final String railNetworkDraftId,
         final String stationName,
         final double latitude,
         final double longitude
     ) {
-        final Optional<RailNetworkDraft> draft = railNetworkDraftRepository
+        final var draft = railNetworkDraftRepository
             .getRailNetworkDraftOfId(new RailNetworkDraftId(railNetworkDraftId));
 
         if (draft.isPresent()) {
-            final RailNetworkDraft updatedDraft = draft.get().withNewStation(
+            final var updatedDraft = draft.get().withNewStation(
                 new TrainStationName(stationName),
                 new GeoLocationInGermany(latitude, longitude)
             );
 
             railNetworkDraftRepository.persist(updatedDraft);
+
+            return updatedDraft.getStations().getLastOptional();
         }
+
+        return Optional.empty();
     }
 }
