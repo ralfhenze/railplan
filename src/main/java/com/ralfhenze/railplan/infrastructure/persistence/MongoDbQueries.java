@@ -27,4 +27,9 @@ public class MongoDbQueries implements Queries {
             .map(RailNetworkDraftDto::getId)
             .collect(Collectors.toList());
     }
+
+    public List<RailNetworkDraftDto> getAllDraftDtos() {
+        return mongoTemplate
+            .findAll(RailNetworkDraftDto.class, RailNetworkDraftMongoDbRepository.COLLECTION_NAME);
+    }
 }
