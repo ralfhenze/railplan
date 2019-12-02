@@ -1,8 +1,9 @@
 package com.ralfhenze.railplan.domain.railnetwork.elements;
 
 import com.ralfhenze.railplan.domain.common.ValueObject;
-
-import static com.ralfhenze.railplan.domain.common.Preconditions.ensureWithinRange;
+import com.ralfhenze.railplan.domain.common.validation.Validation;
+import com.ralfhenze.railplan.domain.common.validation.ValidationException;
+import com.ralfhenze.railplan.domain.common.validation.constraints.IsWithinRange;
 
 /**
  * [-] a Station is located on land
@@ -27,9 +28,17 @@ public class GeoLocationInGermany implements ValueObject {
     private final double latitude;
     private final double longitude;
 
-    public GeoLocationInGermany(final double latitude, final double longitude) {
-        this.latitude = ensureWithinRange(latitude, GERMANY_WEST_LAT, GERMANY_EAST_LAT, "Latitude");
-        this.longitude = ensureWithinRange(longitude, GERMANY_SOUTH_LNG, GERMANY_NORTH_LNG, "Longitude");
+    public GeoLocationInGermany(
+        final double latitude,
+        final double longitude
+    ) throws ValidationException {
+        new Validation()
+            .ensureThat(latitude, new IsWithinRange(GERMANY_WEST_LAT, GERMANY_EAST_LAT), "Latitude")
+            .ensureThat(longitude, new IsWithinRange(GERMANY_SOUTH_LNG, GERMANY_NORTH_LNG), "Longitude")
+            .throwExceptionIfInvalid();
+
+        this.latitude = latitude;
+        this.longitude = longitude;
     }
 
     /**

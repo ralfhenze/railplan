@@ -1,5 +1,6 @@
 package com.ralfhenze.railplan.domain;
 
+import com.ralfhenze.railplan.domain.common.validation.ValidationException;
 import com.ralfhenze.railplan.domain.railnetwork.elements.GeoLocationInGermany;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -29,8 +30,8 @@ class GeoLocationTest {
         "-33.863272, 151.211579", // Sydney
     })
     void should_fail_on_Coordinates_outside_of_Germany(Double latitude, Double longitude) {
-        assertThatExceptionOfType(Exception.class).isThrownBy(() -> {
-            new GeoLocationInGermany(latitude, longitude);
-        });
+        assertThatExceptionOfType(ValidationException.class).isThrownBy(() ->
+            new GeoLocationInGermany(latitude, longitude)
+        );
     }
 }
