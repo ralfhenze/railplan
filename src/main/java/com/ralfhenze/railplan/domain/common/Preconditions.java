@@ -46,14 +46,4 @@ public class Preconditions {
 
         return string;
     }
-
-    public static double ensureWithinRange(double value, double min, double max, String parameterName) {
-        if (value < min || value > max) {
-            throw new IllegalArgumentException(
-                parameterName + " must be within [" + min + " ... " + max + "], but was " + value
-            );
-        }
-
-        return value;
-    }
 }
