@@ -1,9 +1,9 @@
 package com.ralfhenze.railplan.domain.railnetwork.elements;
 
 import com.ralfhenze.railplan.domain.common.ValueObject;
-
-import static com.ralfhenze.railplan.domain.common.Preconditions.ensureNotEqual;
-import static com.ralfhenze.railplan.domain.common.Preconditions.ensureNotNull;
+import com.ralfhenze.railplan.domain.common.validation.Validation;
+import com.ralfhenze.railplan.domain.common.validation.ValidationException;
+import com.ralfhenze.railplan.domain.common.validation.constraints.IsNotEqualTo;
 
 /**
  * https://en.wikipedia.org/wiki/Double-track_railway
@@ -17,11 +17,16 @@ public class RailwayTrack implements ValueObject {
     private final TrainStationId firstStationId;
     private final TrainStationId secondStationId;
 
-    public RailwayTrack(final TrainStationId firstStationId, final TrainStationId secondStationId) {
-        ensureNotEqual(firstStationId, secondStationId, "First Station ID", "Second Station ID");
+    public RailwayTrack(
+        final TrainStationId firstStationId,
+        final TrainStationId secondStationId
+    ) throws ValidationException {
+        new Validation()
+            .ensureThat(firstStationId, new IsNotEqualTo(secondStationId), "First Station ID")
+            .throwExceptionIfInvalid();
 
-        this.firstStationId = ensureNotNull(firstStationId, "First Station ID");
-        this.secondStationId = ensureNotNull(secondStationId, "Second Station ID");
+        this.firstStationId = firstStationId;
+        this.secondStationId = secondStationId;
     }
 
     public boolean connectsStation(final TrainStationId stationId) {

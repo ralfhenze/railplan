@@ -1,5 +1,6 @@
 package com.ralfhenze.railplan.domain;
 
+import com.ralfhenze.railplan.domain.common.validation.ValidationException;
 import com.ralfhenze.railplan.domain.railnetwork.elements.RailwayTrack;
 import com.ralfhenze.railplan.domain.railnetwork.elements.TrainStationId;
 import org.junit.jupiter.api.Test;
@@ -23,10 +24,10 @@ class RailwayTrackTest {
 
     @Test
     void should_not_allow_to_connect_a_station_with_itself() {
-        final var stationId1 = new TrainStationId("1");
+        final var stationId = new TrainStationId("1");
 
-        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
-            new RailwayTrack(stationId1, stationId1);
-        });
+        assertThatExceptionOfType(ValidationException.class).isThrownBy(() ->
+            new RailwayTrack(stationId, stationId)
+        );
     }
 }
