@@ -1,5 +1,6 @@
 package com.ralfhenze.railplan.domain;
 
+import com.ralfhenze.railplan.domain.common.validation.ValidationException;
 import com.ralfhenze.railplan.domain.railnetwork.elements.TrainStationName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -7,7 +8,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
-class TrainStationTest {
+class TrainStationNameTest {
 
     @ParameterizedTest
     @ValueSource(strings = {
@@ -18,9 +19,9 @@ class TrainStationTest {
         "This is a very very very very very long station name", // too long
     })
     void should_fail_on_invalid_station_names(String stationName) {
-        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
-            new TrainStationName(stationName);
-        });
+        assertThatExceptionOfType(ValidationException.class).isThrownBy(() ->
+            new TrainStationName(stationName)
+        );
     }
 
     @ParameterizedTest

@@ -33,17 +33,4 @@ public class Preconditions {
 
         return string;
     }
-
-    public static String ensureRegexMatch(String string, String regexPattern, String parameterName) {
-        ensureNotNull(string, parameterName);
-
-        if (!Pattern.matches(regexPattern, string)) {
-            throw new IllegalArgumentException(
-                parameterName + " \"" + string
-                    + "\" doesn't match regular expression \"" + regexPattern + "\""
-            );
-        }
-
-        return string;
-    }
 }
