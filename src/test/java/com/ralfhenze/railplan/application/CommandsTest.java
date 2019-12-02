@@ -1,7 +1,6 @@
 package com.ralfhenze.railplan.application;
 
 import com.ralfhenze.railplan.application.commands.AddRailwayTrackCommand;
-import com.ralfhenze.railplan.application.commands.AddTrainStationCommand;
 import com.ralfhenze.railplan.application.commands.AddRailNetworkDraftCommand;
 import com.ralfhenze.railplan.application.commands.ReleaseRailNetworkCommand;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraft;
@@ -15,23 +14,6 @@ import static com.ralfhenze.railplan.domain.TestData.*;
 import static org.mockito.Mockito.*;
 
 class CommandsTest {
-
-    @Test
-    void should_persist_added_station() {
-        final var draftRepository = mock(RailNetworkDraftRepository.class);
-        final var command = new AddTrainStationCommand(draftRepository);
-        when(draftRepository.getRailNetworkDraftOfId(any()))
-            .thenReturn(Optional.of(new RailNetworkDraft()));
-
-        command.addTrainStation(
-            "1",
-            berlinHbfName.getName(),
-            berlinHbfPos.getLatitude(),
-            berlinHbfPos.getLongitude()
-        );
-
-        verify(draftRepository).persist(any());
-    }
 
     @Test
     void should_persist_added_track() {

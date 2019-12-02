@@ -1,7 +1,8 @@
 package com.ralfhenze.railplan.application.commands;
 
+import com.ralfhenze.railplan.domain.common.validation.Validation;
+import com.ralfhenze.railplan.domain.common.validation.ValidationException;
 import com.ralfhenze.railplan.domain.railnetwork.elements.TrainStation;
-import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraft;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftId;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftRepository;
 import com.ralfhenze.railplan.domain.railnetwork.elements.GeoLocationInGermany;
@@ -11,10 +12,10 @@ import java.util.Optional;
 
 public class AddTrainStationCommand implements Command {
 
-    final private RailNetworkDraftRepository railNetworkDraftRepository;
+    private final RailNetworkDraftRepository draftRepository;
 
-    public AddTrainStationCommand(final RailNetworkDraftRepository railNetworkDraftRepository) {
-        this.railNetworkDraftRepository = railNetworkDraftRepository;
+    public AddTrainStationCommand(final RailNetworkDraftRepository draftRepository) {
+        this.draftRepository = draftRepository;
     }
 
     public Optional<TrainStation> addTrainStation(
@@ -22,17 +23,21 @@ public class AddTrainStationCommand implements Command {
         final String stationName,
         final double latitude,
         final double longitude
-    ) {
-        final var draft = railNetworkDraftRepository
+    ) throws ValidationException {
+        final var draft = draftRepository
             .getRailNetworkDraftOfId(new RailNetworkDraftId(railNetworkDraftId));
 
         if (draft.isPresent()) {
-            final var updatedDraft = draft.get().withNewStation(
-                new TrainStationName(stationName),
-                new GeoLocationInGermany(latitude, longitude)
+            final var validation = new Validation();
+            final var name = validation.catchErrors(() -> new TrainStationName(stationName));
+            final var location = validation.catchErrors(
+                () -> new GeoLocationInGermany(latitude, longitude)
             );
+            validation.throwExceptionIfInvalid();
 
-            railNetworkDraftRepository.persist(updatedDraft);
+            final var updatedDraft = draft.get().withNewStation(name, location);
+
+            draftRepository.persist(updatedDraft);
 
             return updatedDraft.getStations().getLastOptional();
         }
