@@ -1,6 +1,9 @@
 package com.ralfhenze.railplan.domain.common.validation.constraints;
 
+import com.ralfhenze.railplan.domain.common.validation.ErrorMessage;
 import com.ralfhenze.railplan.domain.common.validation.ValidationConstraint;
+
+import java.util.Optional;
 
 public class HasMinLength implements ValidationConstraint<String> {
 
@@ -11,13 +14,16 @@ public class HasMinLength implements ValidationConstraint<String> {
     }
 
     @Override
-    public boolean isValid(final String value) {
-        return (value.length() >= minLength);
-    }
+    public Optional<ErrorMessage> validate(final String value, final String fieldName) {
+        if (value.length() < minLength) {
+            return Optional.of(
+                new ErrorMessage(
+                    fieldName + " \"" + value
+                    + "\" must have a minimum length of " + minLength + " characters"
+                )
+            );
+        }
 
-    @Override
-    public String getErrorMessage(final String fieldName, final String value) {
-        return fieldName + " \"" + value
-            + "\" must have a minimum length of " + minLength + " characters";
+        return Optional.empty();
     }
 }

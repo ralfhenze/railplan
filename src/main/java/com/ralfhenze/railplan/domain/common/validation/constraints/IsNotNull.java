@@ -1,16 +1,20 @@
 package com.ralfhenze.railplan.domain.common.validation.constraints;
 
+import com.ralfhenze.railplan.domain.common.validation.ErrorMessage;
 import com.ralfhenze.railplan.domain.common.validation.ValidationConstraint;
+
+import java.util.Optional;
 
 public class IsNotNull<T> implements ValidationConstraint<T> {
 
     @Override
-    public boolean isValid(final T value) {
-        return (value != null);
-    }
+    public Optional<ErrorMessage> validate(final T value, final String fieldName) {
+        if (value == null) {
+            return Optional.of(
+                new ErrorMessage(fieldName + " is required, but was null")
+            );
+        }
 
-    @Override
-    public String getErrorMessage(final String fieldName, final T value) {
-        return fieldName + " is required, but was null";
+        return Optional.empty();
     }
 }

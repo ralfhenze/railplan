@@ -1,6 +1,7 @@
 package com.ralfhenze.railplan.domain.common.validation;
 
+import java.util.Optional;
+
 public interface ValidationConstraint<T> {
-    boolean isValid(final T value);
-    String getErrorMessage(final String fieldName, final T value);
+    Optional<ErrorMessage> validate(final T value, final String fieldName);
 }

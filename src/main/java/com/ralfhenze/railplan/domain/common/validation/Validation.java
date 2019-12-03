@@ -6,6 +6,7 @@ import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.map.MutableMap;
 
+import java.util.Optional;
 import java.util.function.Supplier;
 
 public class Validation {
@@ -70,10 +71,12 @@ public class Validation {
     public Validation throwExceptionIfInvalid() throws ValidationException {
         final MutableMap<String, MutableList<String>> errors = Maps.mutable.empty();
         for (final var rule : rules) {
-            if (!rule.constraint.isValid(rule.value)) {
+            final Optional<ErrorMessage> errorMessage = rule.constraint
+                .validate(rule.value, rule.fieldName);
+            if (errorMessage.isPresent()) {
                 errors
                     .getIfAbsentPut(rule.fieldName, Lists.mutable.empty())
-                    .add(rule.constraint.getErrorMessage(rule.fieldName, rule.value));
+                    .add(errorMessage.get().getMessage());
             }
         }
         errorMessages.forEachKeyValue((fieldName, messages) ->

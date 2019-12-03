@@ -1,7 +1,9 @@
 package com.ralfhenze.railplan.domain.common.validation.constraints;
 
+import com.ralfhenze.railplan.domain.common.validation.ErrorMessage;
 import com.ralfhenze.railplan.domain.common.validation.ValidationConstraint;
 
+import java.util.Optional;
 import java.util.regex.Pattern;
 
 public class MatchesRegex implements ValidationConstraint<String> {
@@ -13,13 +15,16 @@ public class MatchesRegex implements ValidationConstraint<String> {
     }
 
     @Override
-    public boolean isValid(final String value) {
-        return Pattern.matches(regexPattern, value);
-    }
+    public Optional<ErrorMessage> validate(final String value, final String fieldName) {
+        if (!Pattern.matches(regexPattern, value)) {
+            return Optional.of(
+                new ErrorMessage(
+                    fieldName + " \"" + value
+                    + "\" doesn't match regular expression \"" + regexPattern + "\""
+                )
+            );
+        }
 
-    @Override
-    public String getErrorMessage(final String fieldName, final String value) {
-        return fieldName + " \"" + value
-            + "\" doesn't match regular expression \"" + regexPattern + "\"";
+        return Optional.empty();
     }
 }

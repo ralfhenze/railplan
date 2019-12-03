@@ -1,6 +1,9 @@
 package com.ralfhenze.railplan.domain.common.validation.constraints;
 
+import com.ralfhenze.railplan.domain.common.validation.ErrorMessage;
 import com.ralfhenze.railplan.domain.common.validation.ValidationConstraint;
+
+import java.util.Optional;
 
 public class IsNotEqualTo<T> implements ValidationConstraint<T> {
 
@@ -11,12 +14,13 @@ public class IsNotEqualTo<T> implements ValidationConstraint<T> {
     }
 
     @Override
-    public boolean isValid(final T value) {
-        return !value.equals(comparedValue);
-    }
+    public Optional<ErrorMessage> validate(final T value, final String fieldName) {
+        if (value.equals(comparedValue)) {
+            return Optional.of(
+                new ErrorMessage(fieldName + " must not be equal to \"" + value + "\"")
+            );
+        }
 
-    @Override
-    public String getErrorMessage(final String fieldName, final T value) {
-        return fieldName + " must not be equal to \"" + value + "\"";
+        return Optional.empty();
     }
 }
