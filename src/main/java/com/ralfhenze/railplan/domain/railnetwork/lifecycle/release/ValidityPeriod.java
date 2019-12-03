@@ -2,6 +2,7 @@ package com.ralfhenze.railplan.domain.railnetwork.lifecycle.release;
 
 import com.ralfhenze.railplan.domain.common.ValueObject;
 import com.ralfhenze.railplan.domain.common.validation.Validation;
+import com.ralfhenze.railplan.domain.common.validation.ValidationException;
 import com.ralfhenze.railplan.domain.common.validation.constraints.IsBefore;
 import com.ralfhenze.railplan.domain.common.validation.constraints.IsNotNull;
 
@@ -15,7 +16,10 @@ public class ValidityPeriod implements ValueObject {
     private final LocalDate startDate;
     private final LocalDate endDate;
 
-    public ValidityPeriod(final LocalDate startDate, final LocalDate endDate) {
+    public ValidityPeriod(
+        final LocalDate startDate,
+        final LocalDate endDate
+    ) throws ValidationException {
         new Validation()
             .ensureThat(startDate, new IsNotNull(), "Start Date")
             .ensureThat(endDate, new IsNotNull(), "End Date")
