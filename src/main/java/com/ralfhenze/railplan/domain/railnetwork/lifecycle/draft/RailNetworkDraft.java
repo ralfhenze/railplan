@@ -1,6 +1,10 @@
 package com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft;
 
 import com.ralfhenze.railplan.domain.common.Aggregate;
+import com.ralfhenze.railplan.domain.common.validation.Validation;
+import com.ralfhenze.railplan.domain.common.validation.ValidationException;
+import com.ralfhenze.railplan.domain.common.validation.constraints.IsNotNull;
+import com.ralfhenze.railplan.domain.railnetwork.invariants.HasUniqueStationNames;
 import com.ralfhenze.railplan.domain.railnetwork.invariants.Invariant;
 import com.ralfhenze.railplan.domain.railnetwork.invariants.DefaultRailNetworkInvariants;
 import com.ralfhenze.railplan.domain.railnetwork.elements.*;
@@ -39,8 +43,13 @@ public class RailNetworkDraft implements Aggregate {
         final ImmutableList<TrainStation> stations,
         final ImmutableList<RailwayTrack> tracks,
         final int stationId
-    ) {
-        this.id = ensureNotNull(id, "Rail Network Draft ID");
+    ) throws ValidationException {
+        new Validation()
+            .ensureThat(id, new IsNotNull<>(), "Rail Network Draft ID")
+            .ensureThat(stations, new HasUniqueStationNames(), "Station Name")
+            .throwExceptionIfInvalid();
+
+        this.id = id;
         this.stations = stations;
         this.tracks = tracks;
         this.stationId = stationId;

@@ -1,12 +1,12 @@
 package com.ralfhenze.railplan.domain.railnetwork.lifecycle.release;
 
 import com.ralfhenze.railplan.domain.common.Aggregate;
+import com.ralfhenze.railplan.domain.common.validation.Validation;
+import com.ralfhenze.railplan.domain.common.validation.ValidationException;
+import com.ralfhenze.railplan.domain.common.validation.constraints.IsNotNull;
 import com.ralfhenze.railplan.domain.railnetwork.elements.RailwayTrack;
 import com.ralfhenze.railplan.domain.railnetwork.elements.TrainStation;
-import com.ralfhenze.railplan.domain.railnetwork.invariants.ContainsAtLeastTwoStationsAndOneTrack;
-import com.ralfhenze.railplan.domain.railnetwork.invariants.ContainsNoUnconnectedSubGraphs;
-import com.ralfhenze.railplan.domain.railnetwork.invariants.DefaultRailNetworkInvariants;
-import com.ralfhenze.railplan.domain.railnetwork.invariants.Invariant;
+import com.ralfhenze.railplan.domain.railnetwork.invariants.*;
 import org.eclipse.collections.api.list.ImmutableList;
 
 import java.util.Optional;
@@ -31,7 +31,7 @@ public class ReleasedRailNetwork implements Aggregate {
         final ValidityPeriod period,
         final ImmutableList<TrainStation> stations,
         final ImmutableList<RailwayTrack> tracks
-    ) {
+    ) throws ValidationException {
         this(Optional.empty(), period, stations, tracks);
     }
 
@@ -40,11 +40,19 @@ public class ReleasedRailNetwork implements Aggregate {
         final ValidityPeriod period,
         final ImmutableList<TrainStation> stations,
         final ImmutableList<RailwayTrack> tracks
-    ) {
-        this.id = ensureNotNull(id, "Rail Network ID");
-        this.period = ensureNotNull(period, "Validity Period");
-        this.stations = ensureNotNull(stations, "Train Stations");
-        this.tracks = ensureNotNull(tracks, "Railway Tracks");
+    ) throws ValidationException {
+        new Validation()
+            .ensureThat(id, new IsNotNull<>(), "Rail Network ID")
+            .ensureThat(period, new IsNotNull<>(), "Validity Period")
+            .ensureThat(stations, new IsNotNull<>(), "Train Stations")
+            .ensureThat(tracks, new IsNotNull<>(), "Railway Tracks")
+            .ensureThat(stations, new HasUniqueStationNames(), "Station Name")
+            .throwExceptionIfInvalid();
+
+        this.id = id;
+        this.period = period;
+        this.stations = stations;
+        this.tracks = tracks;
 
         this.invariants = DefaultRailNetworkInvariants.INVARIANTS
             .newWith(new ContainsAtLeastTwoStationsAndOneTrack())
@@ -57,12 +65,6 @@ public class ReleasedRailNetwork implements Aggregate {
         for (final var invariant : invariants) {
             invariant.ensureIsSatisfied(stations, tracks);
         }
-    }
-
-    public ReleasedRailNetwork withId(ReleasedRailNetworkId id) {
-        ensureNotNull(id, "Rail Network ID");
-
-        return new ReleasedRailNetwork(Optional.of(id), period, stations, tracks);
     }
 
     public Optional<ReleasedRailNetworkId> getId() {

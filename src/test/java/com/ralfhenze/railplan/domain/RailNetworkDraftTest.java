@@ -1,5 +1,6 @@
 package com.ralfhenze.railplan.domain;
 
+import com.ralfhenze.railplan.domain.common.validation.ValidationException;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraft;
 import org.junit.jupiter.api.Test;
 
@@ -15,7 +16,7 @@ class RailNetworkDraftTest {
             .withNewStation(berlinHbfName, berlinHbfPos)
             .withNewStation(potsdamHbfName, potsdamHbfPos);
 
-        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
+        assertThatExceptionOfType(ValidationException.class).isThrownBy(() -> {
             draft.withRenamedStation(potsdamHbfName, berlinHbfName);
         });
     }

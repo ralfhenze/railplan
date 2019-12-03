@@ -1,5 +1,6 @@
 package com.ralfhenze.railplan.domain;
 
+import com.ralfhenze.railplan.domain.common.validation.ValidationException;
 import com.ralfhenze.railplan.domain.railnetwork.elements.RailwayTrack;
 import com.ralfhenze.railplan.domain.railnetwork.elements.TrainStationName;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.release.ReleasedRailNetwork;
@@ -64,7 +65,7 @@ class ReleasedRailNetworkTest {
 
     @Test
     void should_ensure_unique_station_names() {
-        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
+        assertThatExceptionOfType(ValidationException.class).isThrownBy(() -> {
             new ReleasedRailNetwork(
                 defaultPeriod,
                 listOf(berlinHbf, hamburgHbf.withName(new TrainStationName("Berlin Hbf"))),
