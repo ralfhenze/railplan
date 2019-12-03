@@ -1,10 +1,11 @@
 package com.ralfhenze.railplan.domain.railnetwork.lifecycle.release;
 
 import com.ralfhenze.railplan.domain.common.ValueObject;
+import com.ralfhenze.railplan.domain.common.validation.Validation;
+import com.ralfhenze.railplan.domain.common.validation.constraints.IsBefore;
+import com.ralfhenze.railplan.domain.common.validation.constraints.IsNotNull;
 
 import java.time.LocalDate;
-
-import static com.ralfhenze.railplan.domain.common.Preconditions.ensureNotNull;
 
 /**
  * [x] the TimePeriod's StartDate is before (<) EndDate
@@ -15,10 +16,14 @@ public class ValidityPeriod implements ValueObject {
     private final LocalDate endDate;
 
     public ValidityPeriod(final LocalDate startDate, final LocalDate endDate) {
-        this.startDate = ensureNotNull(startDate, "Start Date");
-        this.endDate = ensureNotNull(endDate, "End Date");
+        new Validation()
+            .ensureThat(startDate, new IsNotNull<>(), "Start Date")
+            .ensureThat(endDate, new IsNotNull<>(), "End Date")
+            .ensureThat(startDate, new IsBefore(endDate), "Start Date")
+            .throwExceptionIfInvalid();
 
-        ensureStartDateIsBeforeEndDate();
+        this.startDate = startDate;
+        this.endDate = endDate;
     }
 
     public LocalDate getStartDate() {
@@ -27,14 +32,6 @@ public class ValidityPeriod implements ValueObject {
 
     public LocalDate getEndDate() {
         return endDate;
-    }
-
-    private void ensureStartDateIsBeforeEndDate() {
-        if (!startDate.isBefore(endDate)) {
-            throw new IllegalArgumentException(
-                "Start date (" + startDate + ") must be before end date (" + endDate + ")"
-            );
-        }
     }
 
     @Override
