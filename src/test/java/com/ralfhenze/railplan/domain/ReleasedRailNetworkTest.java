@@ -29,7 +29,7 @@ class ReleasedRailNetworkTest {
 
     @Test
     void should_ensure_no_unconnected_sub_graphs() {
-        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
+        assertThatExceptionOfType(ValidationException.class).isThrownBy(() ->
             new ReleasedRailNetwork(
                 defaultPeriod,
                 listOf(berlinHbf, hamburgHbf, frankfurtHbf, stuttgartHbf),
@@ -37,19 +37,19 @@ class ReleasedRailNetworkTest {
                     new RailwayTrack(berlinHbf.getId(), hamburgHbf.getId()),
                     new RailwayTrack(frankfurtHbf.getId(), stuttgartHbf.getId())
                 )
-            );
-        });
+            )
+        );
     }
 
     @Test
     void should_ensure_no_standalone_stations() {
-        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
+        assertThatExceptionOfType(ValidationException.class).isThrownBy(() ->
             new ReleasedRailNetwork(
                 defaultPeriod,
                 listOf(berlinHbf, hamburgHbf, frankfurtHbf),
                 listOf(new RailwayTrack(berlinHbf.getId(), hamburgHbf.getId()))
-            );
-        });
+            )
+        );
     }
 
     @Test

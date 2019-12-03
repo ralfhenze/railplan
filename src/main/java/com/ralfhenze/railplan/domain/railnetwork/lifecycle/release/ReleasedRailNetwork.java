@@ -49,6 +49,7 @@ public class ReleasedRailNetwork implements Aggregate {
             .ensureThat(stations, new HasNoStationsNearerThan10Km(), "Station Name")
             .ensureThat(tracks, new HasNoTracksLongerThan300Km(stations), "Railway Tracks")
             .ensureThat(tracks, new HasNoDuplicateTracks(stations), "Railway Tracks")
+            .ensureThat(tracks, new HasNoUnconnectedSubGraphs(stations), "Railway Tracks")
             .throwExceptionIfInvalid();
 
         this.id = id;
@@ -57,8 +58,7 @@ public class ReleasedRailNetwork implements Aggregate {
         this.tracks = tracks;
 
         this.invariants = Lists.immutable.of(
-            new ContainsAtLeastTwoStationsAndOneTrack(),
-            new ContainsNoUnconnectedSubGraphs()
+            new ContainsAtLeastTwoStationsAndOneTrack()
         );
 
         ensureInvariants();

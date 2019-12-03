@@ -1,36 +1,32 @@
 package com.ralfhenze.railplan.domain.railnetwork.invariants;
 
+import com.ralfhenze.railplan.domain.common.validation.ErrorMessage;
+import com.ralfhenze.railplan.domain.common.validation.ValidationConstraint;
 import com.ralfhenze.railplan.domain.railnetwork.elements.RailwayTrack;
 import com.ralfhenze.railplan.domain.railnetwork.elements.TrainStationId;
 import com.ralfhenze.railplan.domain.railnetwork.elements.TrainStation;
 import org.eclipse.collections.api.list.ImmutableList;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
-import static com.ralfhenze.railplan.domain.common.Preconditions.ensureNotNull;
+public class HasNoUnconnectedSubGraphs
+    implements ValidationConstraint<ImmutableList<RailwayTrack>> {
 
-public class ContainsNoUnconnectedSubGraphs implements Invariant {
+    private final ImmutableList<TrainStation> stations;
 
-    @Override
-    public void ensureIsSatisfied(
-        final ImmutableList<TrainStation> stations,
-        final ImmutableList<RailwayTrack> tracks
-    ) {
-        ensureNotNull(stations, "Train Stations");
-        ensureNotNull(tracks, "Railway Tracks");
-
-        if (!stations.isEmpty() && !tracks.isEmpty()) {
-            ensureNoUnconnectedSubGraphs(stations, tracks);
-        }
+    public HasNoUnconnectedSubGraphs(final ImmutableList<TrainStation> stations) {
+        this.stations = stations;
     }
 
-    private void ensureNoUnconnectedSubGraphs(
-        final ImmutableList<TrainStation> stations,
-        final ImmutableList<RailwayTrack> tracks
+    @Override
+    public Optional<ErrorMessage> validate(
+        final ImmutableList<RailwayTrack> tracks,
+        final String fieldName
     ) {
+        if (stations.isEmpty() || tracks.isEmpty()) {
+            return Optional.empty();
+        }
+
         final Map<TrainStationId, Set<TrainStationId>> nodes = new HashMap<>();
 
         for (final var track : tracks) {
@@ -47,7 +43,9 @@ public class ContainsNoUnconnectedSubGraphs implements Invariant {
         }
 
         final var firstNode = nodes.keySet().stream().findFirst().get();
-        final Set<TrainStationId> visitedNodes = visitAdjacentNodes(firstNode, new HashSet<>(), nodes);
+        final Set<TrainStationId> visitedNodes = visitAdjacentNodes(
+            firstNode, new HashSet<>(), nodes
+        );
 
         for (final var station : stations) {
             nodes.putIfAbsent(station.getId(), new HashSet<>());
@@ -56,11 +54,13 @@ public class ContainsNoUnconnectedSubGraphs implements Invariant {
         final var unconnectedSubGraphExists = (visitedNodes.size() < nodes.size());
 
         if (unconnectedSubGraphExists) {
-            throw new IllegalArgumentException(
+            return Optional.of(new ErrorMessage(
                 "Unconnected sub-graphs are not allowed! Please make sure that the rail network"
                     + " is a single graph and all stations are reachable from each other."
-            );
+            ));
         }
+
+        return Optional.empty();
     }
 
     private Set<TrainStationId> visitAdjacentNodes(
