@@ -76,7 +76,7 @@ class ReleasedRailNetworkTest {
 
     @Test
     void should_ensure_minimum_station_distance() {
-        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
+        assertThatExceptionOfType(ValidationException.class).isThrownBy(() -> {
             new ReleasedRailNetwork(
                 defaultPeriod,
                 listOf(berlinHbf, berlinOst, hamburgHbf),

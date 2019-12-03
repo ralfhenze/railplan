@@ -27,7 +27,7 @@ class RailNetworkDraftTest {
             .withNewStation(berlinHbfName, berlinHbfPos)
             .withNewStation(potsdamHbfName, potsdamHbfPos);
 
-        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
+        assertThatExceptionOfType(ValidationException.class).isThrownBy(() -> {
             draft.withMovedStation(potsdamHbfName, berlinOstPos);
         });
     }

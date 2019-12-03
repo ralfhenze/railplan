@@ -1,6 +1,7 @@
 package com.ralfhenze.railplan.acceptance.stepdefs;
 
 import com.ralfhenze.railplan.domain.TestData;
+import com.ralfhenze.railplan.domain.common.validation.ValidationException;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraft;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
@@ -35,7 +36,7 @@ public class StationInvariantsSteps {
         exceptionWasThrown = false;
         try {
             draft = draft.withNewStation(stationToAdd.getName(), stationToAdd.getLocation());
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException | ValidationException e) {
             exceptionWasThrown = true;
         }
     }
