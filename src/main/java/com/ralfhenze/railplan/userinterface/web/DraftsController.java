@@ -101,7 +101,7 @@ public class DraftsController {
         } catch (ValidationException exception) {
             setModelAttributes(currentDraftId, model);
             model.addAttribute("newStation", new TrainStationDto());
-            model.addAttribute("trackError", exception.getMessage());
+            model.addAttribute("trackErrors", exception.getErrorMessages());
 
             return "drafts";
         }

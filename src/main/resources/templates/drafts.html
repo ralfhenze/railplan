@@ -93,9 +93,20 @@
                         </td>
                         <td><input type="submit" value="Add Track"></td>
                     </tr>
-                    <tr th:if="${trackError != null}">
+                    <tr th:if="${trackErrors != null}">
                         <td></td>
-                        <td colspan="4"><p th:text="${trackError}">Track Error</p></td>
+                        <td>
+                            <ul th:if="${trackErrors['First Station ID'] != null}">
+                                <li th:each="firstStationError : ${trackErrors['First Station ID']}" th:text="${firstStationError}">First Station Error</li>
+                            </ul>
+                        </td>
+                        <td></td>
+                        <td>
+                            <ul th:if="${trackErrors['Second Station ID'] != null}">
+                                <li th:each="secondStationError : ${trackErrors['Second Station ID']}" th:text="${secondStationError}">Second Station Error</li>
+                            </ul>
+                        </td>
+                        <td></td>
                     </tr>
                 </tbody>
             </table>

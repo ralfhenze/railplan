@@ -22,7 +22,7 @@ public class RailwayTrack implements ValueObject {
         final TrainStationId secondStationId
     ) throws ValidationException {
         new Validation()
-            .ensureThat(firstStationId, new IsNotEqualTo(secondStationId), "First Station ID")
+            .ensureThat(secondStationId, new IsNotEqualTo<>(firstStationId), "Second Station ID")
             .throwExceptionIfInvalid();
 
         this.firstStationId = firstStationId;
