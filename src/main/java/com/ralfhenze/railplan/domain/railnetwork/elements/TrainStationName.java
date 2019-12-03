@@ -3,6 +3,7 @@ package com.ralfhenze.railplan.domain.railnetwork.elements;
 import com.ralfhenze.railplan.domain.common.ValueObject;
 import com.ralfhenze.railplan.domain.common.validation.Validation;
 import com.ralfhenze.railplan.domain.common.validation.ValidationException;
+import com.ralfhenze.railplan.domain.common.validation.constraints.HasMinLength;
 import com.ralfhenze.railplan.domain.common.validation.constraints.MatchesRegex;
 
 /**
@@ -20,6 +21,7 @@ public class TrainStationName implements ValueObject {
     public TrainStationName(final String name) throws ValidationException {
         new Validation()
             .ensureThat(name, new MatchesRegex(VALID_NAME_REGEX), "Station name")
+            .ensureThat(name, new HasMinLength(4), "Station name")
             .throwExceptionIfInvalid();
 
         this.name = name;
