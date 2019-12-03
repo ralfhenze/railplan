@@ -44,9 +44,24 @@
                         <td><input type="text" th:field="*{longitude}"></td>
                         <td><input type="submit" value="Add Station"></td>
                     </tr>
-                    <tr th:if="${stationError != null}">
+                    <tr th:if="${stationErrors != null}">
                         <td></td>
-                        <td colspan="4"><p th:text="${stationError}">Station Error</p></td>
+                        <td>
+                            <ul th:if="${stationErrors['Station name'] != null}">
+                                <li th:each="stationNameError : ${stationErrors['Station name']}" th:text="${stationNameError}">Station Name Error</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <ul th:if="${stationErrors['Latitude'] != null}">
+                                <li th:each="latitudeError : ${stationErrors['Latitude']}" th:text="${latitudeError}">Latitude Error</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <ul th:if="${stationErrors['Longitude'] != null}">
+                                <li th:each="longitudeError : ${stationErrors['Longitude']}" th:text="${longitudeError}">Longitude Error</li>
+                            </ul>
+                        </td>
+                        <td></td>
                     </tr>
                 </tbody>
             </table>

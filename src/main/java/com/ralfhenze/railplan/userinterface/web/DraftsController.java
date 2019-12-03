@@ -3,6 +3,7 @@ package com.ralfhenze.railplan.userinterface.web;
 import com.ralfhenze.railplan.application.commands.AddRailNetworkDraftCommand;
 import com.ralfhenze.railplan.application.commands.AddRailwayTrackCommand;
 import com.ralfhenze.railplan.application.commands.AddTrainStationCommand;
+import com.ralfhenze.railplan.domain.common.validation.ValidationException;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftId;
 import com.ralfhenze.railplan.infrastructure.persistence.MongoDbQueries;
 import com.ralfhenze.railplan.infrastructure.persistence.RailNetworkDraftMongoDbRepository;
@@ -72,10 +73,10 @@ public class DraftsController {
                 stationDto.getLatitude(),
                 stationDto.getLongitude()
             );
-        } catch (IllegalArgumentException exception) {
+        } catch (ValidationException exception) {
             setModelAttributes(currentDraftId, model);
             model.addAttribute("newTrack", new RailwayTrackDto());
-            model.addAttribute("stationError", exception.getMessage());
+            model.addAttribute("stationErrors", exception.getErrorMessages());
 
             return "drafts";
         }
@@ -97,7 +98,7 @@ public class DraftsController {
                 String.valueOf(trackDto.getFirstStationId()),
                 String.valueOf(trackDto.getSecondStationId())
             );
-        } catch (IllegalArgumentException exception) {
+        } catch (ValidationException exception) {
             setModelAttributes(currentDraftId, model);
             model.addAttribute("newStation", new TrainStationDto());
             model.addAttribute("trackError", exception.getMessage());

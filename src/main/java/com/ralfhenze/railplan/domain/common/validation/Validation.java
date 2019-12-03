@@ -1,8 +1,10 @@
 package com.ralfhenze.railplan.domain.common.validation;
 
 import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.factory.Maps;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
+import org.eclipse.collections.api.map.MutableMap;
 
 import java.util.function.Supplier;
 
@@ -25,16 +27,16 @@ public class Validation {
     }
 
     private final ImmutableList<ValidationRule> rules;
-    private final MutableList<String> errorMessages;
+    private final MutableMap<String, MutableList<String>> errorMessages;
 
     public Validation() {
         this.rules = Lists.immutable.empty();
-        this.errorMessages = Lists.mutable.empty();
+        this.errorMessages = Maps.mutable.empty();
     }
 
     private Validation(
         final ImmutableList<ValidationRule> rules,
-        final MutableList<String> errorMessages
+        final MutableMap<String, MutableList<String>> errorMessages
     ) {
         this.rules = rules;
         this.errorMessages = errorMessages;
@@ -56,19 +58,32 @@ public class Validation {
             final var instance = supplier.get();
             return instance;
         } catch (ValidationException exception) {
-            errorMessages.addAll(exception.getErrorMessages());
+            exception.getErrorMessages().forEachKeyValue((fieldName, messages) ->
+                errorMessages
+                    .getIfAbsentPut(fieldName, Lists.mutable.empty())
+                    .addAll(messages)
+            );
             return null;
         }
     }
 
     public Validation throwExceptionIfInvalid() throws ValidationException {
-        final var errorMessages = rules
-            .select(rule -> !rule.constraint.isValid(rule.value))
-            .collect(rule -> rule.constraint.getErrorMessage(rule.fieldName, rule.value))
-            .newWithAll(this.errorMessages);
+        final MutableMap<String, MutableList<String>> errors = Maps.mutable.empty();
+        for (final var rule : rules) {
+            if (!rule.constraint.isValid(rule.value)) {
+                errors
+                    .getIfAbsentPut(rule.fieldName, Lists.mutable.empty())
+                    .add(rule.constraint.getErrorMessage(rule.fieldName, rule.value));
+            }
+        }
+        errorMessages.forEachKeyValue((fieldName, messages) ->
+            errors
+                .getIfAbsentPut(fieldName, Lists.mutable.empty())
+                .addAll(messages)
+        );
 
-        if (!errorMessages.isEmpty()) {
-            throw new ValidationException(errorMessages);
+        if (!errors.isEmpty()) {
+            throw new ValidationException(errors.toImmutable());
         }
 
         return this;
