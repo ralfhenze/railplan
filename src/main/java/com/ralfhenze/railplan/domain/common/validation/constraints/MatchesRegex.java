@@ -8,17 +8,17 @@ public class MatchesRegex implements ValidationConstraint<String> {
 
     private final String regexPattern;
 
-    public MatchesRegex(String regexPattern) {
+    public MatchesRegex(final String regexPattern) {
         this.regexPattern = regexPattern;
     }
 
     @Override
-    public boolean isValid(String value) {
+    public boolean isValid(final String value) {
         return Pattern.matches(regexPattern, value);
     }
 
     @Override
-    public String getErrorMessage(String fieldName, String value) {
+    public String getErrorMessage(final String fieldName, final String value) {
         return fieldName + " \"" + value
             + "\" doesn't match regular expression \"" + regexPattern + "\"";
     }

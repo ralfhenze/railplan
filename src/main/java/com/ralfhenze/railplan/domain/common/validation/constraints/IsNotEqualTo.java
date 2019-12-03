@@ -6,17 +6,17 @@ public class IsNotEqualTo<T> implements ValidationConstraint<T> {
 
     private final T comparedValue;
 
-    public IsNotEqualTo(T comparedValue) {
+    public IsNotEqualTo(final T comparedValue) {
         this.comparedValue = comparedValue;
     }
 
     @Override
-    public boolean isValid(T value) {
+    public boolean isValid(final T value) {
         return !value.equals(comparedValue);
     }
 
     @Override
-    public String getErrorMessage(String fieldName, T value) {
+    public String getErrorMessage(final String fieldName, final T value) {
         return fieldName + " must not be equal to \"" + value + "\"";
     }
 }

@@ -6,17 +6,17 @@ public class HasMinLength implements ValidationConstraint<String> {
 
     private final int minLength;
 
-    public HasMinLength(int minLength) {
+    public HasMinLength(final int minLength) {
         this.minLength = minLength;
     }
 
     @Override
-    public boolean isValid(String value) {
+    public boolean isValid(final String value) {
         return (value.length() >= minLength);
     }
 
     @Override
-    public String getErrorMessage(String fieldName, String value) {
+    public String getErrorMessage(final String fieldName, final String value) {
         return fieldName + " \"" + value
             + "\" must have a minimum length of " + minLength + " characters";
     }

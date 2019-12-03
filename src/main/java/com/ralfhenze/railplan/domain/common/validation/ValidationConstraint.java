@@ -1,6 +1,6 @@
 package com.ralfhenze.railplan.domain.common.validation;
 
 public interface ValidationConstraint<T> {
-    boolean isValid(T value);
-    String getErrorMessage(String fieldName, T value);
+    boolean isValid(final T value);
+    String getErrorMessage(final String fieldName, final T value);
 }
