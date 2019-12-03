@@ -15,16 +15,16 @@ class ReleasedRailNetworkTest {
 
     @Test
     void should_ensure_at_least_two_stations() {
-        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
-            new ReleasedRailNetwork(defaultPeriod, emptyList(), emptyList());
-        });
+        assertThatExceptionOfType(ValidationException.class).isThrownBy(() ->
+            new ReleasedRailNetwork(defaultPeriod, emptyList(), emptyList())
+        );
     }
 
     @Test
     void should_ensure_at_least_one_track() {
-        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
-            new ReleasedRailNetwork(defaultPeriod, listOf(berlinHbf, hamburgHbf), emptyList());
-        });
+        assertThatExceptionOfType(ValidationException.class).isThrownBy(() ->
+            new ReleasedRailNetwork(defaultPeriod, listOf(berlinHbf, hamburgHbf), emptyList())
+        );
     }
 
     @Test
