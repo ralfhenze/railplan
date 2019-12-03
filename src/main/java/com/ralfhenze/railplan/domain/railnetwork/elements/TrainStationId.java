@@ -1,18 +1,20 @@
 package com.ralfhenze.railplan.domain.railnetwork.elements;
 
 import com.ralfhenze.railplan.domain.common.Id;
+import com.ralfhenze.railplan.domain.common.validation.Validation;
+import com.ralfhenze.railplan.domain.common.validation.ValidationException;
+import com.ralfhenze.railplan.domain.common.validation.constraints.IsNotBlank;
 
-import static com.ralfhenze.railplan.domain.common.Preconditions.ensureNotBlank;
-
-/**
- * Local Id
- */
 public class TrainStationId implements Id {
 
     private final String id;
 
-    public TrainStationId(final String id) {
-        this.id = ensureNotBlank(id, "ID");
+    public TrainStationId(final String id) throws ValidationException {
+        new Validation()
+            .ensureThat(id, new IsNotBlank(), "Train Station ID")
+            .throwExceptionIfInvalid();
+
+        this.id = id;
     }
 
     @Override

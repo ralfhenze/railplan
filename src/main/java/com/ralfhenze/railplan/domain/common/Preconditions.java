@@ -11,16 +11,4 @@ public class Preconditions {
 
         return object;
     }
-
-    public static String ensureNotBlank(String string, String parameterName) {
-        ensureNotNull(string, parameterName);
-
-        if (string.isBlank()) {
-            throw new IllegalArgumentException(
-                parameterName + " must not be blank, but was \"" + string + "\""
-            );
-        }
-
-        return string;
-    }
 }
