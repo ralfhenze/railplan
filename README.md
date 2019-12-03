@@ -1,5 +1,7 @@
 # RailPlan
 
+[![Maintainability](https://api.codeclimate.com/v1/badges/4b9d0e226c22dcfb33b5/maintainability)](https://codeclimate.com/github/ralfhenze/railplan/maintainability)
+
 A domain-driven implementation of a railway network editor.
 
 ## Run
