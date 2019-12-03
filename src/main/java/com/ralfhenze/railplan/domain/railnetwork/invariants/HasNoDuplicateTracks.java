@@ -1,33 +1,36 @@
 package com.ralfhenze.railplan.domain.railnetwork.invariants;
 
 import com.ralfhenze.railplan.domain.common.Combinations;
+import com.ralfhenze.railplan.domain.common.validation.ErrorMessage;
+import com.ralfhenze.railplan.domain.common.validation.ValidationConstraint;
 import com.ralfhenze.railplan.domain.railnetwork.elements.RailwayTrack;
 import com.ralfhenze.railplan.domain.railnetwork.elements.TrainStation;
 import org.eclipse.collections.api.list.ImmutableList;
 
-import static com.ralfhenze.railplan.domain.common.Preconditions.ensureNotNull;
+import java.util.Optional;
 
-public class TwoStationsCanOnlyBeConnectedByOneTrack implements Invariant {
+public class HasNoDuplicateTracks
+    implements ValidationConstraint<ImmutableList<RailwayTrack>> {
 
     private final Combinations combinations = new Combinations();
 
-    @Override
-    public void ensureIsSatisfied(
-        final ImmutableList<TrainStation> stations,
-        final ImmutableList<RailwayTrack> tracks
-    ) {
-        ensureNotNull(stations, "Train Stations");
-        ensureNotNull(tracks, "Railway Tracks");
+    private final ImmutableList<TrainStation> stations;
 
-        if (tracks.size() >= 2) {
-            ensureNoDuplicateTracks(stations, tracks);
-        }
+    public HasNoDuplicateTracks(
+        final ImmutableList<TrainStation> stations
+    ) {
+        this.stations = stations;
     }
 
-    private void ensureNoDuplicateTracks(
-        final ImmutableList<TrainStation> stations,
-        final ImmutableList<RailwayTrack> tracks
+    @Override
+    public Optional<ErrorMessage> validate(
+        final ImmutableList<RailwayTrack> tracks,
+        final String fieldName
     ) {
+        if (tracks.size() < 2) {
+            return Optional.empty();
+        }
+
         final var equalTrackCombination = combinations
             .getUniqueCombinations(tracks)
             .detectOptional(stationCombination ->
@@ -43,11 +46,13 @@ public class TwoStationsCanOnlyBeConnectedByOneTrack implements Invariant {
             final var station2 = stations
                 .detect(s -> s.getId().equals(track.getSecondStationId()));
 
-            throw new IllegalArgumentException(
+            return Optional.of(new ErrorMessage(
                 "Track between \""
                     + station1.getName() + "\" and \""
                     + station2.getName() + "\" already exists"
-            );
+            ));
         }
+
+        return Optional.empty();
     }
 }

@@ -90,7 +90,7 @@ class ReleasedRailNetworkTest {
 
     @Test
     void should_ensure_no_duplicate_tracks() {
-        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
+        assertThatExceptionOfType(ValidationException.class).isThrownBy(() -> {
             new ReleasedRailNetwork(
                 defaultPeriod,
                 listOf(berlinHbf, hamburgHbf),

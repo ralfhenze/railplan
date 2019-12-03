@@ -24,7 +24,6 @@ public class RailNetworkDraft implements Aggregate {
     private final Optional<RailNetworkDraftId> id;
     private final ImmutableList<TrainStation> stations;
     private final ImmutableList<RailwayTrack> tracks;
-    private final ImmutableList<Invariant> invariants = DefaultRailNetworkInvariants.INVARIANTS;
     private final int stationId;
 
     public RailNetworkDraft() {
@@ -47,6 +46,7 @@ public class RailNetworkDraft implements Aggregate {
             .ensureThat(stations, new HasUniqueStationNames(), "Station Name")
             .ensureThat(stations, new HasNoStationsNearerThan10Km(), "Station Name")
             .ensureThat(tracks, new HasNoTracksLongerThan300Km(stations), "Railway Tracks")
+            .ensureThat(tracks, new HasNoDuplicateTracks(stations), "Railway Tracks")
             .throwExceptionIfInvalid();
 
         this.id = id;
@@ -66,8 +66,6 @@ public class RailNetworkDraft implements Aggregate {
         final var addedStation = new TrainStation(stationId, name, location);
         final var newStations = stations.newWith(addedStation);
 
-        ensureInvariants(newStations, tracks);
-
         return new RailNetworkDraft(this.id, newStations, this.tracks, this.stationId + 1);
     }
 
@@ -85,8 +83,6 @@ public class RailNetworkDraft implements Aggregate {
             .reject(ts -> ts.getId().equals(id))
             .newWith(renamedStation);
 
-        ensureInvariants(newStations, tracks);
-
         return new RailNetworkDraft(this.id, newStations, this.tracks, this.stationId);
     }
 
@@ -103,8 +99,6 @@ public class RailNetworkDraft implements Aggregate {
         final var updatedStations = stations
             .reject(station -> station.getId().equals(id))
             .newWith(movedStation);
-
-        ensureInvariants(updatedStations, tracks);
 
         return new RailNetworkDraft(this.id, updatedStations, this.tracks, this.stationId);
     }
@@ -131,8 +125,6 @@ public class RailNetworkDraft implements Aggregate {
         ensureStationIdExist(id2);
 
         final var updatedTracks = tracks.newWith(new RailwayTrack(id1, id2));
-
-        ensureInvariants(stations, updatedTracks);
 
         return new RailNetworkDraft(this.id, this.stations, updatedTracks, this.stationId);
     }
@@ -166,15 +158,6 @@ public class RailNetworkDraft implements Aggregate {
         return stations
             .detect(station -> station.getName().equals(name))
             .getId();
-    }
-
-    private void ensureInvariants(
-        final ImmutableList<TrainStation> stations,
-        final ImmutableList<RailwayTrack> tracks
-    ) {
-        for (final var invariant : invariants) {
-            invariant.ensureIsSatisfied(stations, tracks);
-        }
     }
 
     private void ensureStationIdExist(final TrainStationId stationId) {

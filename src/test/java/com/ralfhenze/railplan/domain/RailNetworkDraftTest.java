@@ -39,7 +39,7 @@ class RailNetworkDraftTest {
             .withNewStation(potsdamHbfName, potsdamHbfPos)
             .withNewTrack(berlinHbfName, potsdamHbfName);
 
-        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
+        assertThatExceptionOfType(ValidationException.class).isThrownBy(() -> {
             draft.withNewTrack(potsdamHbfName, berlinHbfName);
         });
     }

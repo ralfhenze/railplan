@@ -7,11 +7,10 @@ import com.ralfhenze.railplan.domain.common.validation.constraints.IsNotNull;
 import com.ralfhenze.railplan.domain.railnetwork.elements.RailwayTrack;
 import com.ralfhenze.railplan.domain.railnetwork.elements.TrainStation;
 import com.ralfhenze.railplan.domain.railnetwork.invariants.*;
+import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 
 import java.util.Optional;
-
-import static com.ralfhenze.railplan.domain.common.Preconditions.ensureNotNull;
 
 /**
  * [x] the Rail Network Plan contains at least two Stations and one Track
@@ -49,6 +48,7 @@ public class ReleasedRailNetwork implements Aggregate {
             .ensureThat(stations, new HasUniqueStationNames(), "Station Name")
             .ensureThat(stations, new HasNoStationsNearerThan10Km(), "Station Name")
             .ensureThat(tracks, new HasNoTracksLongerThan300Km(stations), "Railway Tracks")
+            .ensureThat(tracks, new HasNoDuplicateTracks(stations), "Railway Tracks")
             .throwExceptionIfInvalid();
 
         this.id = id;
@@ -56,9 +56,10 @@ public class ReleasedRailNetwork implements Aggregate {
         this.stations = stations;
         this.tracks = tracks;
 
-        this.invariants = DefaultRailNetworkInvariants.INVARIANTS
-            .newWith(new ContainsAtLeastTwoStationsAndOneTrack())
-            .newWith(new ContainsNoUnconnectedSubGraphs());
+        this.invariants = Lists.immutable.of(
+            new ContainsAtLeastTwoStationsAndOneTrack(),
+            new ContainsNoUnconnectedSubGraphs()
+        );
 
         ensureInvariants();
     }
