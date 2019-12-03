@@ -22,9 +22,9 @@ public class TrainStation implements LocalEntity {
         final GeoLocationInGermany location
     ) throws ValidationException {
         new Validation()
-            .ensureThat(id, new IsNotNull<>(), "Station ID")
-            .ensureThat(name, new IsNotNull<>(), "Station Name")
-            .ensureThat(location, new IsNotNull<>(), "Geo Location")
+            .ensureThat(id, new IsNotNull(), "Station ID")
+            .ensureThat(name, new IsNotNull(), "Station Name")
+            .ensureThat(location, new IsNotNull(), "Geo Location")
             .throwExceptionIfInvalid();
 
         this.id = id;

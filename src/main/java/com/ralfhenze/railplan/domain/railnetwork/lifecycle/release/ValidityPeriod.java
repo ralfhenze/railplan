@@ -17,8 +17,8 @@ public class ValidityPeriod implements ValueObject {
 
     public ValidityPeriod(final LocalDate startDate, final LocalDate endDate) {
         new Validation()
-            .ensureThat(startDate, new IsNotNull<>(), "Start Date")
-            .ensureThat(endDate, new IsNotNull<>(), "End Date")
+            .ensureThat(startDate, new IsNotNull(), "Start Date")
+            .ensureThat(endDate, new IsNotNull(), "End Date")
             .ensureThat(startDate, new IsBefore(endDate), "Start Date")
             .throwExceptionIfInvalid();
 

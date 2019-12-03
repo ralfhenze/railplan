@@ -40,8 +40,8 @@ public class ReleasedRailNetwork implements Aggregate {
         final ImmutableList<RailwayTrack> tracks
     ) throws ValidationException {
         new Validation()
-            .ensureThat(id, new IsNotNull<>(), "Rail Network ID")
-            .ensureThat(period, new IsNotNull<>(), "Validity Period")
+            .ensureThat(id, new IsNotNull(), "Rail Network ID")
+            .ensureThat(period, new IsNotNull(), "Validity Period")
             .ensureThat(stations, new HasMinSize(2), "Train Stations")
             .ensureThat(stations, new HasNoStationsNearerThan10Km(), "Train Stations")
             .ensureThat(stations, new HasUniqueStationNames(), "Station Name")

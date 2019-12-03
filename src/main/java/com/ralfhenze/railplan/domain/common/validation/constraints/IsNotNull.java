@@ -5,10 +5,10 @@ import com.ralfhenze.railplan.domain.common.validation.ValidationConstraint;
 
 import java.util.Optional;
 
-public class IsNotNull<T> implements ValidationConstraint<T> {
+public class IsNotNull implements ValidationConstraint<Object> {
 
     @Override
-    public Optional<ErrorMessage> validate(final T value, final String fieldName) {
+    public Optional<ErrorMessage> validate(final Object value, final String fieldName) {
         if (value == null) {
             return Optional.of(
                 new ErrorMessage(fieldName + " is required, but was null")

@@ -42,7 +42,7 @@ public class RailNetworkDraft implements Aggregate {
         final int stationId
     ) throws ValidationException {
         new Validation()
-            .ensureThat(id, new IsNotNull<>(), "Rail Network Draft ID")
+            .ensureThat(id, new IsNotNull(), "Rail Network Draft ID")
             .ensureThat(stations, new HasUniqueStationNames(), "Station Name")
             .ensureThat(stations, new HasNoStationsNearerThan10Km(), "Station Name")
             .ensureThat(tracks, new HasNoTracksLongerThan300Km(stations), "Railway Tracks")
