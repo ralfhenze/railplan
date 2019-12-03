@@ -4,10 +4,7 @@ import com.ralfhenze.railplan.domain.common.Aggregate;
 import com.ralfhenze.railplan.domain.common.validation.Validation;
 import com.ralfhenze.railplan.domain.common.validation.ValidationException;
 import com.ralfhenze.railplan.domain.common.validation.constraints.IsNotNull;
-import com.ralfhenze.railplan.domain.railnetwork.invariants.HasNoStationsNearerThan10Km;
-import com.ralfhenze.railplan.domain.railnetwork.invariants.HasUniqueStationNames;
-import com.ralfhenze.railplan.domain.railnetwork.invariants.Invariant;
-import com.ralfhenze.railplan.domain.railnetwork.invariants.DefaultRailNetworkInvariants;
+import com.ralfhenze.railplan.domain.railnetwork.invariants.*;
 import com.ralfhenze.railplan.domain.railnetwork.elements.*;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
@@ -49,6 +46,7 @@ public class RailNetworkDraft implements Aggregate {
             .ensureThat(id, new IsNotNull<>(), "Rail Network Draft ID")
             .ensureThat(stations, new HasUniqueStationNames(), "Station Name")
             .ensureThat(stations, new HasNoStationsNearerThan10Km(), "Station Name")
+            .ensureThat(tracks, new HasNoTracksLongerThan300Km(stations), "Railway Tracks")
             .throwExceptionIfInvalid();
 
         this.id = id;

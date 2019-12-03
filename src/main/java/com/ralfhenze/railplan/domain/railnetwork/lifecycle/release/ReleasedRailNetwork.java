@@ -48,6 +48,7 @@ public class ReleasedRailNetwork implements Aggregate {
             .ensureThat(tracks, new IsNotNull<>(), "Railway Tracks")
             .ensureThat(stations, new HasUniqueStationNames(), "Station Name")
             .ensureThat(stations, new HasNoStationsNearerThan10Km(), "Station Name")
+            .ensureThat(tracks, new HasNoTracksLongerThan300Km(stations), "Railway Tracks")
             .throwExceptionIfInvalid();
 
         this.id = id;

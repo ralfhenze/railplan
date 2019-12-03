@@ -1,6 +1,7 @@
 package com.ralfhenze.railplan.acceptance.stepdefs;
 
 import com.ralfhenze.railplan.domain.TestData;
+import com.ralfhenze.railplan.domain.common.validation.ValidationException;
 import com.ralfhenze.railplan.domain.railnetwork.elements.TrainStation;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraft;
 import cucumber.api.java.en.Given;
@@ -30,7 +31,7 @@ public class TrackMaximumLengthSteps {
         exceptionWasThrown = false;
         try {
             draft = draft.withNewTrack(station1.getName(), station2.getName());
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException | ValidationException e) {
             exceptionWasThrown = true;
         }
     }

@@ -54,7 +54,7 @@ class ReleasedRailNetworkTest {
 
     @Test
     void should_ensure_max_track_length() {
-        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
+        assertThatExceptionOfType(ValidationException.class).isThrownBy(() -> {
             new ReleasedRailNetwork(
                 defaultPeriod,
                 listOf(berlinHbf, stuttgartHbf),
