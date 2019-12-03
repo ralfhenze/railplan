@@ -1,8 +1,9 @@
 package com.ralfhenze.railplan.domain.railnetwork.elements;
 
 import com.ralfhenze.railplan.domain.common.LocalEntity;
-
-import static com.ralfhenze.railplan.domain.common.Preconditions.ensureNotNull;
+import com.ralfhenze.railplan.domain.common.validation.Validation;
+import com.ralfhenze.railplan.domain.common.validation.ValidationException;
+import com.ralfhenze.railplan.domain.common.validation.constraints.IsNotNull;
 
 /**
  * https://en.wikipedia.org/wiki/Train_station
@@ -15,10 +16,20 @@ public class TrainStation implements LocalEntity {
     private final TrainStationName name;
     private final GeoLocationInGermany location;
 
-    public TrainStation(final TrainStationId id, final TrainStationName name, final GeoLocationInGermany location) {
-        this.id = ensureNotNull(id, "Station ID");
-        this.name = ensureNotNull(name, "Station Name");
-        this.location = ensureNotNull(location, "Geo Location");
+    public TrainStation(
+        final TrainStationId id,
+        final TrainStationName name,
+        final GeoLocationInGermany location
+    ) throws ValidationException {
+        new Validation()
+            .ensureThat(id, new IsNotNull<>(), "Station ID")
+            .ensureThat(name, new IsNotNull<>(), "Station Name")
+            .ensureThat(location, new IsNotNull<>(), "Geo Location")
+            .throwExceptionIfInvalid();
+
+        this.id = id;
+        this.name = name;
+        this.location = location;
     }
 
     public TrainStationId getId() {
@@ -33,11 +44,13 @@ public class TrainStation implements LocalEntity {
         return location;
     }
 
-    public TrainStation withName(TrainStationName name) {
+    public TrainStation withName(final TrainStationName name) throws ValidationException {
         return new TrainStation(this.id, name, this.location);
     }
 
-    public TrainStation withLocation(GeoLocationInGermany location) {
+    public TrainStation withLocation(
+        final GeoLocationInGermany location
+    ) throws ValidationException {
         return new TrainStation(this.id, this.name, location);
     }
 
