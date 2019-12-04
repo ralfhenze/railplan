@@ -18,8 +18,17 @@ jobs:
     - name: Build with Maven
       run: mvn -B package --file pom.xml
 
-    - name: Unit Tests
+    - name: Run Unit Tests
       run: mvn surefire:test@unit-tests
 
-    - name: Acceptance Tests
+    - name: Run Acceptance Tests
       run: mvn surefire:test@acceptance-tests
+
+    - name: Start Docker Environment
+      run: docker-compose -f docker-compose.yml up -d
+
+    - name: Run Integration Tests
+      run: mvn surefire:test@integration-tests
+
+    - name: Destroy Docker Environment
+      run: docker-compose down

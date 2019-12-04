@@ -24,10 +24,19 @@ http://localhost:8080/swagger-ui.html
 ### Tests
 
 ```
-$ mvn test                            # Run all tests
-$ mvn surefire:test@unit-tests        # Run only unit tests
-$ mvn surefire:test@acceptance-tests  # Run only acceptance tests
+$ mvn test                             # Run unit and acceptance tests
+$ mvn surefire:test@unit-tests         # Run only unit tests
+$ mvn surefire:test@acceptance-tests   # Run only acceptance tests
 ```
+
+### Integration Tests
+```
+$ docker-compose up -d                 # Start testing environment
+$ mvn verify                           # Run all tests
+$ mvn surefire:test@integration-tests  # Run only integration tests
+$ docker-compose down                  # Destroy Docker containers
+```
+
 
 ## Railway Domain Links
 

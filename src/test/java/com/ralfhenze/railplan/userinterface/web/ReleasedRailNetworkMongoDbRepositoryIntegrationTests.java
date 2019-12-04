@@ -17,7 +17,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class ReleasedRailNetworkMongoDbRepositoryTest {
+public class ReleasedRailNetworkMongoDbRepositoryIntegrationTests {
 
     @Autowired
     private MongoTemplate mongoTemplate;
