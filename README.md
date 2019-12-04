@@ -1,8 +1,11 @@
 # RailPlan
 
-[![Maintainability](https://api.codeclimate.com/v1/badges/4b9d0e226c22dcfb33b5/maintainability)](https://codeclimate.com/github/ralfhenze/railplan/maintainability)
-
 A domain-driven implementation of a railway network editor.
+
+[![Maintainability](https://api.codeclimate.com/v1/badges/4b9d0e226c22dcfb33b5/maintainability)](https://codeclimate.com/github/ralfhenze/railplan/maintainability)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=ralfhenze_railplan&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=ralfhenze_railplan)
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=ralfhenze_railplan&metric=reliability_rating)](https://sonarcloud.io/dashboard?id=ralfhenze_railplan)
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=ralfhenze_railplan&metric=bugs)](https://sonarcloud.io/dashboard?id=ralfhenze_railplan)
 
 ## Run
 
