@@ -30,5 +30,11 @@ jobs:
     - name: Run Integration Tests
       run: mvn surefire:test@integration-tests
 
+    - name: Create Test Coverage Report
+      run: mvn verify jacoco:report
+
+    - name: Upload Coverage Report to Codacy
+      run: CODACY_PROJECT_TOKEN=534003747f564ae5b69ee679e4c063b4 bash <(curl -Ls https://coverage.codacy.com/get.sh)
+
     - name: Destroy Docker Environment
       run: docker-compose down
