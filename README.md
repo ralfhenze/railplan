@@ -2,7 +2,9 @@
 
 A domain-driven implementation of a railway network editor.
 
+[![GitHub](https://github.com/ralfhenze/railplan/workflows/Build%20%26%20Test/badge.svg)](https://github.com/ralfhenze/railplan/actions?query=workflow%3A%22Build+%26+Test%22)
 [![CodeFactor](https://www.codefactor.io/repository/github/ralfhenze/railplan/badge)](https://www.codefactor.io/repository/github/ralfhenze/railplan)
+[![Codacy Badge](https://api.codacy.com/project/badge/Coverage/d584008f1f9f4bb098fcff7253ca5565)](https://www.codacy.com/manual/ralfhenze/railplan?utm_source=github.com&utm_medium=referral&utm_content=ralfhenze/railplan&utm_campaign=Badge_Coverage)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/d584008f1f9f4bb098fcff7253ca5565)](https://www.codacy.com/manual/ralfhenze/railplan?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=ralfhenze/railplan&amp;utm_campaign=Badge_Grade)
 [![Maintainability](https://api.codeclimate.com/v1/badges/4b9d0e226c22dcfb33b5/maintainability)](https://codeclimate.com/github/ralfhenze/railplan/maintainability)
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=ralfhenze_railplan&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=ralfhenze_railplan)
