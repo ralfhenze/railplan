@@ -14,7 +14,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.*;
 
-class AddTrainStationCommandTest {
+class AddTrainStationCommandUnitTests {
 
     @Test
     void should_persist_added_station() {

@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
-class RailwayTrackTest {
+class RailwayTrackUnitTests {
 
     @Test
     void should_be_equal_when_connecting_the_same_stations() {

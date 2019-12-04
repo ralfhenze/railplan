@@ -9,7 +9,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
-class GeoLocationTest {
+class GeoLocationUnitTests {
 
     @Test
     void should_calculate_the_Distance_between_two_Locations() {

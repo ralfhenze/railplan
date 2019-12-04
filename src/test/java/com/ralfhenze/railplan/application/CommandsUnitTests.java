@@ -13,7 +13,7 @@ import java.util.Optional;
 import static com.ralfhenze.railplan.domain.TestData.*;
 import static org.mockito.Mockito.*;
 
-class CommandsTest {
+class CommandsUnitTests {
 
     @Test
     void should_persist_added_track() {
