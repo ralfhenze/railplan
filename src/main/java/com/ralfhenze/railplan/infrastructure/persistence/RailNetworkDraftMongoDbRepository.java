@@ -7,12 +7,14 @@ import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraf
 import com.ralfhenze.railplan.infrastructure.persistence.dto.RailNetworkDraftDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
 /**
- * A Mongo DB persistence implementation to store and retrieve Rail Network Drafts
+ * A Mongo DB persistence implementation to store and retrieve RailNetworkDrafts.
  */
 @Repository
 public class RailNetworkDraftMongoDbRepository implements RailNetworkDraftRepository {
@@ -27,9 +29,9 @@ public class RailNetworkDraftMongoDbRepository implements RailNetworkDraftReposi
     }
 
     /**
-     * Loads a Rail Network Draft from Mongo DB
+     * Loads a RailNetworkDraft from Mongo DB.
      *
-     * @throws EntityNotFoundException if Rail Network Draft with draftId does not exist
+     * @throws EntityNotFoundException if RailNetworkDraft with draftId does not exist
      */
     @Override
     public RailNetworkDraft getRailNetworkDraftOfId(final RailNetworkDraftId draftId) {
@@ -37,7 +39,7 @@ public class RailNetworkDraftMongoDbRepository implements RailNetworkDraftReposi
             .findById(draftId.toString(), RailNetworkDraftDto.class, COLLECTION_NAME);
 
         if (draftDto == null) {
-            throw new EntityNotFoundException("Rail Network Draft", draftId.toString());
+            throw new EntityNotFoundException("RailNetworkDraft", draftId.toString());
         }
 
         return draftDto.toRailNetworkDraft();
@@ -51,5 +53,23 @@ public class RailNetworkDraftMongoDbRepository implements RailNetworkDraftReposi
         return Optional.of(
             persistedDraftDto.toRailNetworkDraft()
         );
+    }
+
+    /**
+     * Deletes a RailNetworkDraft from Mongo DB.
+     *
+     * @throws EntityNotFoundException if RailNetworkDraft with draftId does not exist
+     */
+    @Override
+    public void deleteRailNetworkDraftOfId(final RailNetworkDraftId draftId) {
+        final var numberOfDeletedDrafts = mongoTemplate.remove(
+            new Query(Criteria.where("id").is(draftId.toString())),
+            RailNetworkDraftDto.class,
+            COLLECTION_NAME
+        ).getDeletedCount();
+
+        if (numberOfDeletedDrafts == 0) {
+            throw new EntityNotFoundException("RailNetworkDraft", draftId.toString());
+        }
     }
 }

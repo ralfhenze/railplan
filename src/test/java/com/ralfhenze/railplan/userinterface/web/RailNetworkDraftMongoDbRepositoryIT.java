@@ -79,6 +79,31 @@ public class RailNetworkDraftMongoDbRepositoryIT {
         assertThat(loadedDraft.getTracks()).hasSize(2);
     }
 
+    @Test
+    public void deletesPersistedDraft() {
+        final var draftRepository = new RailNetworkDraftMongoDbRepository(mongoTemplate);
+        final var draft = getExampleDraft();
+        final var persistedDraft = draftRepository.persist(draft).get();
+        final var draftId = persistedDraft.getId().get();
+
+        draftRepository.deleteRailNetworkDraftOfId(draftId);
+
+        final var numberOfPersistedDrafts = mongoTemplate
+            .findAll(RailNetworkDraftDto.class, RailNetworkDraftMongoDbRepository.COLLECTION_NAME)
+            .size();
+
+        assertThat(numberOfPersistedDrafts).isEqualTo(0);
+    }
+
+    @Test
+    public void throwsExceptionWhenDeletingNonExistentDraft() {
+        final var draftRepository = new RailNetworkDraftMongoDbRepository(mongoTemplate);
+
+        assertThatExceptionOfType(EntityNotFoundException.class).isThrownBy(() ->
+            draftRepository.deleteRailNetworkDraftOfId(new RailNetworkDraftId("123"))
+        );
+    }
+
     private RailNetworkDraft getExampleDraft() {
         return new RailNetworkDraft()
             .withNewStation(berlinHbfName, berlinHbfPos)
