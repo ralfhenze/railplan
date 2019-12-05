@@ -1,5 +1,6 @@
 package com.ralfhenze.railplan.application.commands;
 
+import com.ralfhenze.railplan.application.Command;
 import com.ralfhenze.railplan.domain.common.EntityNotFoundException;
 import com.ralfhenze.railplan.domain.railnetwork.elements.TrainStationId;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftId;
