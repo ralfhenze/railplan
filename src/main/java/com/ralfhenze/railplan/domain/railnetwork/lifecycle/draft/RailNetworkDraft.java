@@ -82,7 +82,7 @@ public class RailNetworkDraft implements Aggregate {
     }
 
     public RailNetworkDraft withRenamedStation(final TrainStationId id, final TrainStationName name) {
-        ensureStationIdExist(id);
+        ensureStationExists(id);
 
         final var renamedStation = stations
             .detect(ts -> ts.getId().equals(id))
@@ -99,7 +99,7 @@ public class RailNetworkDraft implements Aggregate {
     }
 
     public RailNetworkDraft withMovedStation(final TrainStationId id, final GeoLocationInGermany location) {
-        ensureStationIdExist(id);
+        ensureStationExists(id);
 
         final var movedStation = stations
             .detect(station -> station.getId().equals(id))
@@ -128,7 +128,7 @@ public class RailNetworkDraft implements Aggregate {
      * @throws EntityNotFoundException if TrainStation with stationId does not exist
      */
     public RailNetworkDraft withoutStation(final TrainStationId stationId) {
-        ensureStationIdExist(stationId);
+        ensureStationExists(stationId);
 
         return new RailNetworkDraft(
             this.id,
@@ -143,23 +143,45 @@ public class RailNetworkDraft implements Aggregate {
     }
 
     public RailNetworkDraft withNewTrack(final TrainStationId id1, final TrainStationId id2) {
-        ensureStationIdExist(id1);
-        ensureStationIdExist(id2);
+        ensureStationExists(id1);
+        ensureStationExists(id2);
 
         final var updatedTracks = tracks.newWith(new RailwayTrack(id1, id2));
 
         return new RailNetworkDraft(this.id, this.stations, updatedTracks, this.stationId);
     }
 
-    public RailNetworkDraft withoutTrack(final TrainStationName name1, final TrainStationName name2) {
-        return withoutTrack(getStationIdOf(name1), getStationIdOf(name2));
+    /**
+     * Returns a new Draft without the Track between the Stations of given names.
+     *
+     * @throws EntityNotFoundException if TrainStation of stationName or Track does not exist
+     */
+    public RailNetworkDraft withoutTrack(
+        final TrainStationName stationName1,
+        final TrainStationName stationName2
+    ) {
+        return withoutTrack(getStationIdOf(stationName1), getStationIdOf(stationName2));
     }
 
-    public RailNetworkDraft withoutTrack(final TrainStationId id1, final TrainStationId id2) {
+    /**
+     * Returns a new Draft without the Track between the Stations of given IDs.
+     *
+     * @throws EntityNotFoundException if TrainStation of stationId or Track does not exist
+     */
+    public RailNetworkDraft withoutTrack(
+        final TrainStationId stationId1,
+        final TrainStationId stationId2
+    ) {
+        ensureStationExists(stationId1);
+        ensureStationExists(stationId2);
+        ensureTrackExists(stationId1, stationId2);
+
+        final var trackToBeDeleted = new RailwayTrack(stationId1, stationId2);
+
         return new RailNetworkDraft(
             this.id,
             this.stations,
-            this.tracks.reject(track -> track.equals(new RailwayTrack(id1, id2))),
+            this.tracks.reject(track -> track.equals(trackToBeDeleted)),
             this.stationId
         );
     }
@@ -183,8 +205,22 @@ public class RailNetworkDraft implements Aggregate {
             .getId();
     }
 
-    private void ensureStationIdExist(final TrainStationId stationId) {
-        if (stations.noneSatisfy(ts -> ts.getId().equals(stationId))) {
+    private void ensureTrackExists(
+        final TrainStationId stationId1,
+        final TrainStationId stationId2
+    ) {
+        final var track = new RailwayTrack(stationId1, stationId2);
+        if (tracks.noneSatisfy(t -> t.equals(track))) {
+            throw new EntityNotFoundException(
+                "Couldn't find Track of Station ID \""
+                    + stationId1.toString() + "\" and \""
+                    + stationId2.toString() + "\""
+            );
+        }
+    }
+
+    private void ensureStationExists(final TrainStationId stationId) {
+        if (stations.noneSatisfy(s -> s.getId().equals(stationId))) {
             throw new EntityNotFoundException("Station", stationId.toString());
         }
     }

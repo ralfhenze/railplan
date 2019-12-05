@@ -14,6 +14,10 @@ public class EntityNotFoundException extends RuntimeException {
         final String field,
         final String value
     ) {
-        super("Couldn't find " + entityType + " of " + field + " \"" + value + "\"");
+        this("Couldn't find " + entityType + " of " + field + " \"" + value + "\"");
+    }
+
+    public EntityNotFoundException(final String message) {
+        super(message);
     }
 }

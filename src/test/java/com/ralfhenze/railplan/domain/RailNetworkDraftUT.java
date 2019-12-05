@@ -1,5 +1,6 @@
 package com.ralfhenze.railplan.domain;
 
+import com.ralfhenze.railplan.domain.common.EntityNotFoundException;
 import com.ralfhenze.railplan.domain.common.validation.ValidationException;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraft;
 import org.junit.jupiter.api.Test;
@@ -7,6 +8,8 @@ import org.junit.jupiter.api.Test;
 import static com.ralfhenze.railplan.domain.TestData.berlinHbfName;
 import static com.ralfhenze.railplan.domain.TestData.berlinHbfPos;
 import static com.ralfhenze.railplan.domain.TestData.berlinOstPos;
+import static com.ralfhenze.railplan.domain.TestData.hamburgHbfName;
+import static com.ralfhenze.railplan.domain.TestData.hamburgHbfPos;
 import static com.ralfhenze.railplan.domain.TestData.potsdamHbfName;
 import static com.ralfhenze.railplan.domain.TestData.potsdamHbfPos;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -49,43 +52,40 @@ class RailNetworkDraftUT {
     }
 
     @Test
-    void stationsCanBeDeleted() {
-        var draft = new RailNetworkDraft()
-            .withNewStation(berlinHbfName, berlinHbfPos);
-        assertThat(draft.getStations()).hasSize(1);
-
-        draft = draft.withoutStation(berlinHbfName);
-
-        assertThat(draft.getStations()).isEmpty();
-    }
-
-    @Test
-    void tracksCanBeDeleted() {
-        var draft = new RailNetworkDraft()
-            .withNewStation(berlinHbfName, berlinHbfPos)
-            .withNewStation(potsdamHbfName, potsdamHbfPos)
-            .withNewTrack(berlinHbfName, potsdamHbfName);
-
-        assertThat(draft.getTracks()).hasSize(1);
-
-        draft = draft.withoutTrack(potsdamHbfName, berlinHbfName);
-
-        assertThat(draft.getTracks()).isEmpty();
-    }
-
-    @Test
     void deletesAssociatedTracksWhenStationIsDeleted() {
         var draft = new RailNetworkDraft()
             .withNewStation(berlinHbfName, berlinHbfPos)
             .withNewStation(potsdamHbfName, potsdamHbfPos)
             .withNewTrack(berlinHbfName, potsdamHbfName);
 
-        assertThat(draft.getStations()).hasSize(2);
-        assertThat(draft.getTracks()).hasSize(1);
-
         draft = draft.withoutStation(potsdamHbfName);
 
         assertThat(draft.getStations()).hasSize(1);
         assertThat(draft.getTracks()).isEmpty();
+    }
+
+    @Test
+    void providesPossibilityToDeleteTracks() {
+        var draft = new RailNetworkDraft()
+            .withNewStation(berlinHbfName, berlinHbfPos)
+            .withNewStation(hamburgHbfName, hamburgHbfPos)
+            .withNewTrack(berlinHbfName, hamburgHbfName);
+
+        draft = draft.withoutTrack(berlinHbfName, hamburgHbfName);
+
+        assertThat(draft.getTracks()).isEmpty();
+    }
+
+    @Test
+    void throwsExceptionWhenDeletingNonExistentTrack() {
+        final var draft = new RailNetworkDraft()
+            .withNewStation(berlinHbfName, berlinHbfPos)
+            .withNewStation(hamburgHbfName, hamburgHbfPos)
+            .withNewStation(potsdamHbfName, potsdamHbfPos)
+            .withNewTrack(berlinHbfName, potsdamHbfName);
+
+        assertThatExceptionOfType(EntityNotFoundException.class).isThrownBy(() ->
+            draft.withoutTrack(berlinHbfName, hamburgHbfName)
+        );
     }
 }
