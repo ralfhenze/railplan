@@ -65,7 +65,7 @@ public class RestApiController {
             stationDto.getLongitude()
         );
 
-        return new TrainStationDto(addedStation.get());
+        return new TrainStationDto(addedStation);
     }
 
     @GetMapping("/drafts/{draftId}/tracks")

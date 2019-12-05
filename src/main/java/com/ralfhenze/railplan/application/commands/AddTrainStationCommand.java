@@ -9,8 +9,6 @@ import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraf
 import com.ralfhenze.railplan.domain.railnetwork.elements.GeoLocationInGermany;
 import com.ralfhenze.railplan.domain.railnetwork.elements.TrainStationName;
 
-import java.util.Optional;
-
 import static com.ralfhenze.railplan.domain.common.Preconditions.ensureNotNull;
 
 /**
@@ -35,7 +33,7 @@ public class AddTrainStationCommand implements Command {
      * @throws EntityNotFoundException if Rail Network Draft with draftId does not exist
      * @throws ValidationException if stationName or latitude or longitude is invalid
      */
-    public Optional<TrainStation> addTrainStation(
+    public TrainStation addTrainStation(
         final String draftId,
         final String stationName,
         final double latitude,
@@ -56,6 +54,6 @@ public class AddTrainStationCommand implements Command {
 
         draftRepository.persist(updatedDraft);
 
-        return updatedDraft.getStations().getLastOptional();
+        return updatedDraft.getStations().getLast();
     }
 }
