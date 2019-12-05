@@ -113,28 +113,28 @@ public class DraftsController {
         final var queries = new MongoDbQueries(mongoTemplate);
         model.addAttribute("draftIds", queries.getAllDraftIds());
 
-        final var draftDto = new RailNetworkDraftMongoDbRepository(mongoTemplate)
-            .getRailNetworkDraftOfId(new RailNetworkDraftId(currentDraftId))
-            .map(RailNetworkDraftDto::new);
+        final var draft = new RailNetworkDraftMongoDbRepository(mongoTemplate)
+            .getRailNetworkDraftOfId(new RailNetworkDraftId(currentDraftId));
+        final var draftDto = new RailNetworkDraftDto(draft);
 
-        if (draftDto.isPresent()) {
-            model.addAttribute("currentDraftDto", draftDto.get());
+        model.addAttribute("currentDraftDto", draftDto);
 
-            final Map<Integer, String> stationNames = draftDto.get()
-                .getStations()
-                .stream()
-                .collect(Collectors.toMap(TrainStationDto::getId, TrainStationDto::getName));
-            model.addAttribute("stationNames", stationNames);
+        final Map<Integer, String> stationNames = draftDto
+            .getStations()
+            .stream()
+            .collect(Collectors.toMap(TrainStationDto::getId, TrainStationDto::getName));
 
-            final List<List<String>> tracksWithStationNames = draftDto.get()
-                .getTracks()
-                .stream()
-                .map(trackDto -> Arrays.asList(
-                    stationNames.get(trackDto.getFirstStationId()),
-                    stationNames.get(trackDto.getSecondStationId()))
-                )
-                .collect(Collectors.toList());
-            model.addAttribute("tracks", tracksWithStationNames);
-        }
+        model.addAttribute("stationNames", stationNames);
+
+        final List<List<String>> tracksWithStationNames = draftDto
+            .getTracks()
+            .stream()
+            .map(trackDto -> Arrays.asList(
+                stationNames.get(trackDto.getFirstStationId()),
+                stationNames.get(trackDto.getSecondStationId()))
+            )
+            .collect(Collectors.toList());
+
+        model.addAttribute("tracks", tracksWithStationNames);
     }
 }

@@ -1,6 +1,5 @@
 package com.ralfhenze.railplan.application.commands;
 
-import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraft;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftId;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftRepository;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.release.RailNetworkReleaseService;
@@ -30,21 +29,17 @@ public class ReleaseRailNetworkCommand implements Command {
         final LocalDate startDate,
         final LocalDate endDate
     ) {
-        final Optional<RailNetworkDraft> draft = railNetworkDraftRepository
+        final var draft = railNetworkDraftRepository
             .getRailNetworkDraftOfId(new RailNetworkDraftId(railNetworkDraftId));
 
-        if (draft.isPresent()) {
-            final Optional<ReleasedRailNetwork> releasedRailNetwork = railNetworkReleaseService
-                .release(
-                    draft.get(),
-                    new ValidityPeriod(startDate, endDate)
-                );
+        final Optional<ReleasedRailNetwork> releasedRailNetwork = railNetworkReleaseService
+            .release(
+                draft,
+                new ValidityPeriod(startDate, endDate)
+            );
 
-            if (releasedRailNetwork.isPresent()) {
-                // TODO: emit RailNetworkReleased event
-
-                return releasedRailNetwork.get().getId();
-            }
+        if (releasedRailNetwork.isPresent()) {
+            return releasedRailNetwork.get().getId();
         }
 
         return Optional.empty();

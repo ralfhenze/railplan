@@ -1,5 +1,6 @@
 package com.ralfhenze.railplan.application.commands;
 
+import com.ralfhenze.railplan.domain.common.EntityNotFoundException;
 import com.ralfhenze.railplan.domain.common.validation.Validation;
 import com.ralfhenze.railplan.domain.common.validation.ValidationException;
 import com.ralfhenze.railplan.domain.railnetwork.elements.TrainStation;
@@ -31,6 +32,7 @@ public class AddTrainStationCommand implements Command {
     /**
      * Adds a new Train Station to given Rail Network Draft
      *
+     * @throws EntityNotFoundException if Rail Network Draft with draftId does not exist
      * @throws ValidationException if stationName or latitude or longitude is invalid
      */
     public Optional<TrainStation> addTrainStation(
@@ -42,21 +44,18 @@ public class AddTrainStationCommand implements Command {
         final var draft = draftRepository
             .getRailNetworkDraftOfId(new RailNetworkDraftId(draftId));
 
-        if (draft.isPresent()) {
-            final var validation = new Validation();
-            final var name = validation.catchErrors(() -> new TrainStationName(stationName));
-            final var location = validation.catchErrors(
-                () -> new GeoLocationInGermany(latitude, longitude)
-            );
-            validation.throwExceptionIfInvalid();
+        final var validation = new Validation();
+        final var name = validation.catchErrors(() -> new TrainStationName(stationName));
+        final var location = validation.catchErrors(
+            () -> new GeoLocationInGermany(latitude, longitude)
+        );
+        validation.throwExceptionIfInvalid();
 
-            final var updatedDraft = draft.get().withNewStation(name, location);
+        final var updatedDraft = draft
+            .withNewStation(name, location);
 
-            draftRepository.persist(updatedDraft);
+        draftRepository.persist(updatedDraft);
 
-            return updatedDraft.getStations().getLastOptional();
-        }
-
-        return Optional.empty();
+        return updatedDraft.getStations().getLastOptional();
     }
 }

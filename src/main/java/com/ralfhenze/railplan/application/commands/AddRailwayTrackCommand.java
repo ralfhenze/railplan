@@ -24,17 +24,13 @@ public class AddRailwayTrackCommand implements Command {
         final var draft = draftRepository
             .getRailNetworkDraftOfId(new RailNetworkDraftId(railNetworkDraftId));
 
-        if (draft.isPresent()) {
-            final var updatedDraft = draft.get().withNewTrack(
-                new TrainStationId(firstStationId),
-                new TrainStationId(secondStationId)
-            );
+        final var updatedDraft = draft.withNewTrack(
+            new TrainStationId(firstStationId),
+            new TrainStationId(secondStationId)
+        );
 
-            draftRepository.persist(updatedDraft);
+        draftRepository.persist(updatedDraft);
 
-            return updatedDraft.getTracks().getLastOptional();
-        }
-
-        return Optional.empty();
+        return updatedDraft.getTracks().getLastOptional();
     }
 }

@@ -1,5 +1,6 @@
 package com.ralfhenze.railplan.infrastructure.persistence;
 
+import com.ralfhenze.railplan.domain.common.EntityNotFoundException;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraft;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftId;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftRepository;
@@ -10,6 +11,9 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
+/**
+ * A Mongo DB persistence implementation to store and retrieve Rail Network Drafts
+ */
 @Repository
 public class RailNetworkDraftMongoDbRepository implements RailNetworkDraftRepository {
 
@@ -18,17 +22,25 @@ public class RailNetworkDraftMongoDbRepository implements RailNetworkDraftReposi
     private final MongoTemplate mongoTemplate;
 
     @Autowired
-    public RailNetworkDraftMongoDbRepository(MongoTemplate mongoTemplate) {
+    public RailNetworkDraftMongoDbRepository(final MongoTemplate mongoTemplate) {
         this.mongoTemplate = mongoTemplate;
     }
 
+    /**
+     * Loads a Rail Network Draft from Mongo DB
+     *
+     * @throws EntityNotFoundException if Rail Network Draft with draftId does not exist
+     */
     @Override
-    public Optional<RailNetworkDraft> getRailNetworkDraftOfId(final RailNetworkDraftId id) {
+    public RailNetworkDraft getRailNetworkDraftOfId(final RailNetworkDraftId draftId) {
         final var draftDto = mongoTemplate
-            .findById(id.toString(), RailNetworkDraftDto.class, COLLECTION_NAME);
+            .findById(draftId.toString(), RailNetworkDraftDto.class, COLLECTION_NAME);
 
-        return Optional.ofNullable(draftDto)
-            .map(RailNetworkDraftDto::toRailNetworkDraft);
+        if (draftDto == null) {
+            throw new EntityNotFoundException("Rail Network Draft", draftId.toString());
+        }
+
+        return draftDto.toRailNetworkDraft();
     }
 
     @Override

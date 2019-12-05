@@ -30,7 +30,7 @@ class CommandsUT {
             .withNewStation(berlinHbfName, berlinHbfPos)
             .withNewStation(hamburgHbfName, hamburgHbfPos);
         when(draftRepository.getRailNetworkDraftOfId(any()))
-            .thenReturn(Optional.of(draft));
+            .thenReturn(draft);
 
         command.addRailwayTrack("1", "1", "2");
 
@@ -57,7 +57,7 @@ class CommandsUT {
             .withNewStation(hamburgHbfName, hamburgHbfPos)
             .withNewTrack(berlinHbfName, hamburgHbfName);
         when(draftRepository.getRailNetworkDraftOfId(any()))
-            .thenReturn(Optional.of(draft));
+            .thenReturn(draft);
 
         command.releaseRailNetworkDraft(
             "1",

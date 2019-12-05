@@ -23,7 +23,7 @@ class AddTrainStationCommandUT {
         final var draftRepository = mock(RailNetworkDraftRepository.class);
         final var command = new AddTrainStationCommand(draftRepository);
         given(draftRepository.getRailNetworkDraftOfId(any()))
-            .willReturn(Optional.of(new RailNetworkDraft()));
+            .willReturn(new RailNetworkDraft());
 
         command.addTrainStation(
             "1",
@@ -40,7 +40,7 @@ class AddTrainStationCommandUT {
         final var draftRepository = mock(RailNetworkDraftRepository.class);
         final var command = new AddTrainStationCommand(draftRepository);
         given(draftRepository.getRailNetworkDraftOfId(any()))
-            .willReturn(Optional.of(new RailNetworkDraft()));
+            .willReturn(new RailNetworkDraft());
 
         var numberOfErrorMessages = 0;
         try {
