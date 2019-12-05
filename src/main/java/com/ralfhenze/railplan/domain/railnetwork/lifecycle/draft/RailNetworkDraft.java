@@ -1,6 +1,7 @@
 package com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft;
 
 import com.ralfhenze.railplan.domain.common.Aggregate;
+import com.ralfhenze.railplan.domain.common.EntityNotFoundException;
 import com.ralfhenze.railplan.domain.common.validation.Validation;
 import com.ralfhenze.railplan.domain.common.validation.ValidationException;
 import com.ralfhenze.railplan.domain.common.validation.constraints.IsNotNull;
@@ -110,15 +111,29 @@ public class RailNetworkDraft implements Aggregate {
         return new RailNetworkDraft(this.id, updatedStations, this.tracks, this.stationId);
     }
 
-    public RailNetworkDraft withoutStation(final TrainStationName name) {
-        return withoutStation(getStationIdOf(name));
+    /**
+     * Returns a new Draft without the Station of given name. The Tracks connected to this
+     * Station will also be removed.
+     *
+     * @throws EntityNotFoundException if TrainStation with stationName does not exist
+     */
+    public RailNetworkDraft withoutStation(final TrainStationName stationName) {
+        return withoutStation(getStationIdOf(stationName));
     }
 
-    public RailNetworkDraft withoutStation(final TrainStationId id) {
+    /**
+     * Returns a new Draft without the Station of given ID. The Tracks connected to this
+     * Station will also be removed.
+     *
+     * @throws EntityNotFoundException if TrainStation with stationId does not exist
+     */
+    public RailNetworkDraft withoutStation(final TrainStationId stationId) {
+        ensureStationIdExist(stationId);
+
         return new RailNetworkDraft(
             this.id,
-            this.stations.reject(station -> station.getId().equals(id)),
-            this.tracks.reject(track -> track.connectsStation(id)),
+            this.stations.reject(station -> station.getId().equals(stationId)),
+            this.tracks.reject(track -> track.connectsStation(stationId)),
             this.stationId
         );
     }
@@ -163,15 +178,14 @@ public class RailNetworkDraft implements Aggregate {
 
     private TrainStationId getStationIdOf(final TrainStationName name) {
         return stations
-            .detect(station -> station.getName().equals(name))
+            .detectOptional(station -> station.getName().equals(name))
+            .orElseThrow(() -> new EntityNotFoundException("Station", "name", name.getName()))
             .getId();
     }
 
     private void ensureStationIdExist(final TrainStationId stationId) {
         if (stations.noneSatisfy(ts -> ts.getId().equals(stationId))) {
-            throw new IllegalArgumentException(
-                "Station ID \"" + stationId + "\" does not exist"
-            );
+            throw new EntityNotFoundException("Station", stationId.toString());
         }
     }
 }
