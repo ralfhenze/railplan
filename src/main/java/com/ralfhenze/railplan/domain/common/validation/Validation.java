@@ -11,10 +11,13 @@ import java.util.function.Supplier;
 
 public class Validation {
 
+    private final ImmutableList<ValidationRule> rules;
+    private final MutableMap<String, MutableList<String>> errorMessages;
+
     private static class ValidationRule {
-        final Object value;
-        final ValidationConstraint constraint;
-        final String fieldName;
+        private final Object value;
+        private final ValidationConstraint constraint;
+        private final String fieldName;
 
         ValidationRule(
             final Object value,
@@ -26,9 +29,6 @@ public class Validation {
             this.fieldName = fieldName;
         }
     }
-
-    private final ImmutableList<ValidationRule> rules;
-    private final MutableMap<String, MutableList<String>> errorMessages;
 
     public Validation() {
         this.rules = Lists.immutable.empty();
