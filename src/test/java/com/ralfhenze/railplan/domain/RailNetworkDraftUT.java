@@ -2,12 +2,15 @@ package com.ralfhenze.railplan.domain;
 
 import com.ralfhenze.railplan.domain.common.EntityNotFoundException;
 import com.ralfhenze.railplan.domain.common.validation.ValidationException;
+import com.ralfhenze.railplan.domain.railnetwork.elements.TrainStation;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraft;
 import org.junit.jupiter.api.Test;
 
 import static com.ralfhenze.railplan.domain.TestData.berlinHbfName;
 import static com.ralfhenze.railplan.domain.TestData.berlinHbfPos;
 import static com.ralfhenze.railplan.domain.TestData.berlinOstPos;
+import static com.ralfhenze.railplan.domain.TestData.frankfurtHbfName;
+import static com.ralfhenze.railplan.domain.TestData.frankfurtHbfPos;
 import static com.ralfhenze.railplan.domain.TestData.hamburgHbfName;
 import static com.ralfhenze.railplan.domain.TestData.hamburgHbfPos;
 import static com.ralfhenze.railplan.domain.TestData.potsdamHbfName;
@@ -18,14 +21,28 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 class RailNetworkDraftUT {
 
     @Test
+    void keepsStationOrderWhenUpdatingStation() {
+        final var draft = new RailNetworkDraft()
+            .withNewStation(berlinHbfName, berlinHbfPos)
+            .withNewStation(potsdamHbfName, potsdamHbfPos)
+            .withNewStation(frankfurtHbfName, frankfurtHbfPos);
+
+        final var updatedDraft = draft
+            .withUpdatedStation(potsdamHbfName, hamburgHbfName, hamburgHbfPos);
+
+        final var stationNames = updatedDraft.getStations().collect(TrainStation::getName);
+        assertThat(stationNames).containsExactly(berlinHbfName, hamburgHbfName, frankfurtHbfName);
+    }
+
+    @Test
     void ensuresUniqueStationNamesWhenRenaming() {
         final var draft = new RailNetworkDraft()
             .withNewStation(berlinHbfName, berlinHbfPos)
             .withNewStation(potsdamHbfName, potsdamHbfPos);
 
-        assertThatExceptionOfType(ValidationException.class).isThrownBy(() -> {
-            draft.withRenamedStation(potsdamHbfName, berlinHbfName);
-        });
+        assertThatExceptionOfType(ValidationException.class).isThrownBy(() ->
+            draft.withUpdatedStation(potsdamHbfName, berlinHbfName, potsdamHbfPos)
+        );
     }
 
     @Test
@@ -34,9 +51,9 @@ class RailNetworkDraftUT {
             .withNewStation(berlinHbfName, berlinHbfPos)
             .withNewStation(potsdamHbfName, potsdamHbfPos);
 
-        assertThatExceptionOfType(ValidationException.class).isThrownBy(() -> {
-            draft.withMovedStation(potsdamHbfName, berlinOstPos);
-        });
+        assertThatExceptionOfType(ValidationException.class).isThrownBy(() ->
+            draft.withUpdatedStation(potsdamHbfName, potsdamHbfName, berlinOstPos)
+        );
     }
 
     @Test

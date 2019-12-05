@@ -71,4 +71,13 @@ public class GeoLocationInGermany implements ValueObject {
     public double getLongitude() {
         return longitude;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        return (
+            o != null
+            && ((GeoLocationInGermany)o).latitude == this.latitude
+            && ((GeoLocationInGermany)o).longitude == this.longitude
+        );
+    }
 }

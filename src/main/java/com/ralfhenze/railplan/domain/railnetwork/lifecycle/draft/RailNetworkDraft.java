@@ -77,38 +77,42 @@ public class RailNetworkDraft implements Aggregate {
         return new RailNetworkDraft(this.id, newStations, this.tracks, this.stationId + 1);
     }
 
-    public RailNetworkDraft withRenamedStation(final TrainStationName currentName, final TrainStationName newName) {
-        return withRenamedStation(getStationIdOf(currentName), newName);
+    /**
+     * Returns a new Draft with updated Station name and location.
+     *
+     * @throws EntityNotFoundException if TrainStation with currentStationName does not exist
+     * @throws ValidationException if any Draft invariant is violated
+     */
+    public RailNetworkDraft withUpdatedStation(
+        final TrainStationName currentStationName,
+        final TrainStationName newStationName,
+        final GeoLocationInGermany newLocation
+    ) {
+        return withUpdatedStation(getStationIdOf(currentStationName), newStationName, newLocation);
     }
 
-    public RailNetworkDraft withRenamedStation(final TrainStationId id, final TrainStationName name) {
-        ensureStationExists(id);
+    /**
+     * Returns a new Draft with updated Station name and location.
+     *
+     * @throws EntityNotFoundException if TrainStation with stationId does not exist
+     * @throws ValidationException if any Draft invariant is violated
+     */
+    public RailNetworkDraft withUpdatedStation(
+        final TrainStationId stationId,
+        final TrainStationName newStationName,
+        final GeoLocationInGermany newLocation
+    ) {
+        ensureStationExists(stationId);
 
-        final var renamedStation = stations
-            .detect(ts -> ts.getId().equals(id))
-            .withName(name);
-        final var newStations = stations
-            .reject(ts -> ts.getId().equals(id))
-            .newWith(renamedStation);
+        final var stationIndex = stations.detectIndex(s -> s.getId().equals(stationId));
+        final var mutableStations = Lists.mutable.ofAll(stations);
+        mutableStations.set(stationIndex, stations.get(stationIndex)
+            .withName(newStationName)
+            .withLocation(newLocation)
+        );
+        final var newStations = mutableStations.toImmutable();
 
         return new RailNetworkDraft(this.id, newStations, this.tracks, this.stationId);
-    }
-
-    public RailNetworkDraft withMovedStation(final TrainStationName name, final GeoLocationInGermany location) {
-        return withMovedStation(getStationIdOf(name), location);
-    }
-
-    public RailNetworkDraft withMovedStation(final TrainStationId id, final GeoLocationInGermany location) {
-        ensureStationExists(id);
-
-        final var movedStation = stations
-            .detect(station -> station.getId().equals(id))
-            .withLocation(location);
-        final var updatedStations = stations
-            .reject(station -> station.getId().equals(id))
-            .newWith(movedStation);
-
-        return new RailNetworkDraft(this.id, updatedStations, this.tracks, this.stationId);
     }
 
     /**

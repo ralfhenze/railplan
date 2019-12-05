@@ -41,7 +41,7 @@ public class MongoDbQueriesIT {
         final var draftId1 = draftRepository
             .persist(draft).get().getId().get().toString();
         final var draftId2 = draftRepository
-            .persist(draft.withRenamedStation(hamburgHbfName, frankfurtHbfName))
+            .persist(draft.withUpdatedStation(hamburgHbfName, frankfurtHbfName, hamburgHbfPos))
             .get().getId().get().toString();
 
         final var draftIds = queries.getAllDraftIds();
