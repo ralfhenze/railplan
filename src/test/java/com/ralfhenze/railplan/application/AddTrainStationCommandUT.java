@@ -8,11 +8,13 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
 
-import static com.ralfhenze.railplan.domain.TestData.*;
+import static com.ralfhenze.railplan.domain.TestData.berlinHbfName;
+import static com.ralfhenze.railplan.domain.TestData.berlinHbfPos;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
 
 class AddTrainStationCommandUT {
 

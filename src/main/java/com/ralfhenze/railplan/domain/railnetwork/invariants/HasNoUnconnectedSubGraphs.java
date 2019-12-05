@@ -7,7 +7,11 @@ import com.ralfhenze.railplan.domain.railnetwork.elements.TrainStationId;
 import com.ralfhenze.railplan.domain.railnetwork.elements.TrainStation;
 import org.eclipse.collections.api.list.ImmutableList;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 
 public class HasNoUnconnectedSubGraphs
     implements ValidationConstraint<ImmutableList<RailwayTrack>> {

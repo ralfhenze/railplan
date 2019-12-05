@@ -11,7 +11,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import static com.ralfhenze.railplan.domain.TestData.*;
+import static com.ralfhenze.railplan.domain.TestData.berlinHbfName;
+import static com.ralfhenze.railplan.domain.TestData.berlinHbfPos;
+import static com.ralfhenze.railplan.domain.TestData.frankfurtHbfName;
+import static com.ralfhenze.railplan.domain.TestData.hamburgHbfName;
+import static com.ralfhenze.railplan.domain.TestData.hamburgHbfPos;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)

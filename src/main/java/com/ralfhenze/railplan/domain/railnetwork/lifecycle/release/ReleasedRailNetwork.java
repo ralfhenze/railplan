@@ -7,7 +7,11 @@ import com.ralfhenze.railplan.domain.common.validation.constraints.HasMinSize;
 import com.ralfhenze.railplan.domain.common.validation.constraints.IsNotNull;
 import com.ralfhenze.railplan.domain.railnetwork.elements.RailwayTrack;
 import com.ralfhenze.railplan.domain.railnetwork.elements.TrainStation;
-import com.ralfhenze.railplan.domain.railnetwork.invariants.*;
+import com.ralfhenze.railplan.domain.railnetwork.invariants.HasNoDuplicateTracks;
+import com.ralfhenze.railplan.domain.railnetwork.invariants.HasNoStationsNearerThan10Km;
+import com.ralfhenze.railplan.domain.railnetwork.invariants.HasNoTracksLongerThan300Km;
+import com.ralfhenze.railplan.domain.railnetwork.invariants.HasNoUnconnectedSubGraphs;
+import com.ralfhenze.railplan.domain.railnetwork.invariants.HasUniqueStationNames;
 import org.eclipse.collections.api.list.ImmutableList;
 
 import java.util.Optional;

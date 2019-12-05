@@ -10,8 +10,15 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
 
-import static com.ralfhenze.railplan.domain.TestData.*;
-import static org.mockito.Mockito.*;
+import static com.ralfhenze.railplan.domain.TestData.berlinHbfName;
+import static com.ralfhenze.railplan.domain.TestData.berlinHbfPos;
+import static com.ralfhenze.railplan.domain.TestData.defaultPeriod;
+import static com.ralfhenze.railplan.domain.TestData.hamburgHbfName;
+import static com.ralfhenze.railplan.domain.TestData.hamburgHbfPos;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 class CommandsUT {
 

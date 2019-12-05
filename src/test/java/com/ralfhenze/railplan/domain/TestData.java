@@ -1,6 +1,9 @@
 package com.ralfhenze.railplan.domain;
 
-import com.ralfhenze.railplan.domain.railnetwork.elements.*;
+import com.ralfhenze.railplan.domain.railnetwork.elements.GeoLocationInGermany;
+import com.ralfhenze.railplan.domain.railnetwork.elements.TrainStation;
+import com.ralfhenze.railplan.domain.railnetwork.elements.TrainStationId;
+import com.ralfhenze.railplan.domain.railnetwork.elements.TrainStationName;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.release.ValidityPeriod;
 import org.eclipse.collections.api.factory.Sets;
 import org.eclipse.collections.api.map.ImmutableMap;

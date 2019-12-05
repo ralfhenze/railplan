@@ -4,8 +4,15 @@ import com.ralfhenze.railplan.domain.common.Aggregate;
 import com.ralfhenze.railplan.domain.common.validation.Validation;
 import com.ralfhenze.railplan.domain.common.validation.ValidationException;
 import com.ralfhenze.railplan.domain.common.validation.constraints.IsNotNull;
-import com.ralfhenze.railplan.domain.railnetwork.invariants.*;
-import com.ralfhenze.railplan.domain.railnetwork.elements.*;
+import com.ralfhenze.railplan.domain.railnetwork.elements.GeoLocationInGermany;
+import com.ralfhenze.railplan.domain.railnetwork.elements.RailwayTrack;
+import com.ralfhenze.railplan.domain.railnetwork.elements.TrainStation;
+import com.ralfhenze.railplan.domain.railnetwork.elements.TrainStationId;
+import com.ralfhenze.railplan.domain.railnetwork.elements.TrainStationName;
+import com.ralfhenze.railplan.domain.railnetwork.invariants.HasNoDuplicateTracks;
+import com.ralfhenze.railplan.domain.railnetwork.invariants.HasNoStationsNearerThan10Km;
+import com.ralfhenze.railplan.domain.railnetwork.invariants.HasNoTracksLongerThan300Km;
+import com.ralfhenze.railplan.domain.railnetwork.invariants.HasUniqueStationNames;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 

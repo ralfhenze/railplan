@@ -4,7 +4,11 @@ import com.ralfhenze.railplan.domain.common.validation.ValidationException;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraft;
 import org.junit.jupiter.api.Test;
 
-import static com.ralfhenze.railplan.domain.TestData.*;
+import static com.ralfhenze.railplan.domain.TestData.berlinHbfName;
+import static com.ralfhenze.railplan.domain.TestData.berlinHbfPos;
+import static com.ralfhenze.railplan.domain.TestData.berlinOstPos;
+import static com.ralfhenze.railplan.domain.TestData.potsdamHbfName;
+import static com.ralfhenze.railplan.domain.TestData.potsdamHbfPos;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
