@@ -38,10 +38,10 @@ public class TrackMaximumLengthSteps {
 
     @Then("^the new Track should be (.*)$")
     public void assertAdded(String addedOrRejected) {
-        if (addedOrRejected.equals("added")) {
+        if ("added".equals(addedOrRejected)) {
             assertThat(exceptionWasThrown).isFalse();
             assertThat(draft.getTracks()).hasSize(1);
-        } else if (addedOrRejected.equals("rejected")) {
+        } else if ("rejected".equals(addedOrRejected)) {
             assertThat(exceptionWasThrown).isTrue();
         }
     }

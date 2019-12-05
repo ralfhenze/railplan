@@ -43,10 +43,10 @@ public class StationInvariantsSteps {
 
     @Then("^the new Station should be (.*)$")
     public void assertAdded(final String addedOrRejected) {
-        if (addedOrRejected.equals("added")) {
+        if ("added".equals(addedOrRejected)) {
             assertThat(exceptionWasThrown).isFalse();
             assertThat(draft.getStations()).hasSize(2);
-        } else if (addedOrRejected.equals("rejected")) {
+        } else if ("rejected".equals(addedOrRejected)) {
             assertThat(exceptionWasThrown).isTrue();
         }
     }
