@@ -6,17 +6,23 @@ import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraf
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftRepository;
 import org.junit.jupiter.api.Test;
 
-import java.util.Optional;
-
 import static com.ralfhenze.railplan.domain.TestData.berlinHbfName;
 import static com.ralfhenze.railplan.domain.TestData.berlinHbfPos;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.mock;
 
 class AddTrainStationCommandUT {
+
+    @Test
+    void cannotBeConstructedWithNullArgument() {
+        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() ->
+            new AddTrainStationCommand(null)
+        );
+    }
 
     @Test
     void persistsAddedStation() {
