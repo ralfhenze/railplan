@@ -16,7 +16,7 @@ import static org.mockito.Mockito.*;
 class CommandsUT {
 
     @Test
-    void should_persist_added_track() {
+    void persistsAddedTrack() {
         final var draftRepository = mock(RailNetworkDraftRepository.class);
         final var command = new AddRailwayTrackCommand(draftRepository);
         final var draft = new RailNetworkDraft()
@@ -31,7 +31,7 @@ class CommandsUT {
     }
 
     @Test
-    void should_persist_created_draft() {
+    void persistsCreatedDraft() {
         final var draftRepository = mock(RailNetworkDraftRepository.class);
         final var command = new AddRailNetworkDraftCommand(draftRepository);
 
@@ -41,7 +41,7 @@ class CommandsUT {
     }
 
     @Test
-    void should_persist_released_network() {
+    void persistsReleasedNetwork() {
         final var draftRepository = mock(RailNetworkDraftRepository.class);
         final var networkRepository = mock(ReleasedRailNetworkRepository.class);
         final var command = new ReleaseRailNetworkCommand(draftRepository, networkRepository);

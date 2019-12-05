@@ -27,7 +27,7 @@ public class RailNetworkDraftMongoDbRepositoryIT {
     }
 
     @Test
-    public void should_persist_given_draft() {
+    public void persistsGivenDraft() {
         final var draftRepository = new RailNetworkDraftMongoDbRepository(mongoTemplate);
         final var draft = new RailNetworkDraft()
             .withNewStation(berlinHbfName, berlinHbfPos)
@@ -43,7 +43,7 @@ public class RailNetworkDraftMongoDbRepositoryIT {
     }
 
     @Test
-    public void should_update_persisted_draft() {
+    public void updatesPersistedDraft() {
         final var draftRepository = new RailNetworkDraftMongoDbRepository(mongoTemplate);
         final var draft = new RailNetworkDraft()
             .withNewStation(berlinHbfName, berlinHbfPos)

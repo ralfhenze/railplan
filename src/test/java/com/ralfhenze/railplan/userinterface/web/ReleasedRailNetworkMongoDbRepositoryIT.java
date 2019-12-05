@@ -28,7 +28,7 @@ public class ReleasedRailNetworkMongoDbRepositoryIT {
     }
 
     @Test
-    public void should_persist_given_network() {
+    public void persistsGivenNetwork() {
         final var networkRepository = new ReleasedRailNetworkMongoDbRepository(mongoTemplate);
         final var network = new ReleasedRailNetwork(
             defaultPeriod,

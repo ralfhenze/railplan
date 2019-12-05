@@ -9,7 +9,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 class TrainStationUT {
 
     @Test
-    void should_fail_on_construction_with_null_arguments() {
+    void cannotBeConstructedWithNullArguments() {
         assertThatExceptionOfType(ValidationException.class).isThrownBy(() ->
             new TrainStation(null, null, null)
         );

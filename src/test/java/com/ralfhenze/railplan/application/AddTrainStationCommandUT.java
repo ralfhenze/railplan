@@ -17,7 +17,7 @@ import static org.mockito.Mockito.*;
 class AddTrainStationCommandUT {
 
     @Test
-    void should_persist_added_station() {
+    void persistsAddedStation() {
         final var draftRepository = mock(RailNetworkDraftRepository.class);
         final var command = new AddTrainStationCommand(draftRepository);
         given(draftRepository.getRailNetworkDraftOfId(any()))
@@ -34,7 +34,7 @@ class AddTrainStationCommandUT {
     }
 
     @Test
-    void should_collect_validation_errors() {
+    void returnsStationValidationErrorsIfInvalid() {
         final var draftRepository = mock(RailNetworkDraftRepository.class);
         final var command = new AddTrainStationCommand(draftRepository);
         given(draftRepository.getRailNetworkDraftOfId(any()))

@@ -18,7 +18,7 @@ class TrainStationNameUT {
         "Ber", // too short
         "This is a very very very very very long station name", // too long
     })
-    void should_fail_on_invalid_station_names(String stationName) {
+    void cannotBeConstructedWithAnInvalidStationName(String stationName) {
         assertThatExceptionOfType(ValidationException.class).isThrownBy(() ->
             new TrainStationName(stationName)
         );
@@ -33,7 +33,7 @@ class TrainStationNameUT {
         "Halle (Saale) Hbf",
         "Kassel-Wilhelmshöhe",
     })
-    void should_provide_station_name(String stationName) {
+    void providesStationName(String stationName) {
         final var name = new TrainStationName(stationName);
 
         assertThat(name.getName()).isEqualTo(stationName);

@@ -27,7 +27,7 @@ public class MongoDbQueriesIT {
     }
 
     @Test
-    public void should_provide_all_draft_ids() {
+    public void providesAllDraftIds() {
         final var draftRepository = new RailNetworkDraftMongoDbRepository(mongoTemplate);
         final var queries = new MongoDbQueries(mongoTemplate);
         final var draft = new RailNetworkDraft()

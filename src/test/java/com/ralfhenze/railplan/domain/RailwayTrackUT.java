@@ -11,7 +11,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 class RailwayTrackUT {
 
     @Test
-    void should_be_equal_when_connecting_the_same_stations() {
+    void isEqualWhenConnectingTheSameStations() {
         final var stationId1 = new TrainStationId("1");
         final var stationId2 = new TrainStationId("2");
         final var track1 = new RailwayTrack(stationId1, stationId2);
@@ -23,7 +23,7 @@ class RailwayTrackUT {
     }
 
     @Test
-    void should_not_allow_to_connect_a_station_with_itself() {
+    void cannotBeConstructedWithTheSameStationIds() {
         final var stationId = new TrainStationId("1");
 
         assertThatExceptionOfType(ValidationException.class).isThrownBy(() ->

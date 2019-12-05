@@ -28,7 +28,7 @@ public class RestApiIT {
     private MongoTemplate mongoTemplate;
 
     @Test
-    public void should_provide_all_drafts() throws Exception {
+    public void providesAllDrafts() throws Exception {
         // Given an existing Draft
         given(mongoTemplate.findAll(any(), any()))
             .willReturn(List.of(getDraftDto()));

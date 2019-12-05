@@ -14,21 +14,21 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 class ReleasedRailNetworkUT {
 
     @Test
-    void should_ensure_at_least_two_stations() {
+    void ensuresAtLeastTwoStations() {
         assertThatExceptionOfType(ValidationException.class).isThrownBy(() ->
             new ReleasedRailNetwork(defaultPeriod, emptyList(), emptyList())
         );
     }
 
     @Test
-    void should_ensure_at_least_one_track() {
+    void ensuresAtLeastOneTrack() {
         assertThatExceptionOfType(ValidationException.class).isThrownBy(() ->
             new ReleasedRailNetwork(defaultPeriod, listOf(berlinHbf, hamburgHbf), emptyList())
         );
     }
 
     @Test
-    void should_ensure_no_unconnected_sub_graphs() {
+    void ensuresNoUnconnectedSubGraphs() {
         assertThatExceptionOfType(ValidationException.class).isThrownBy(() ->
             new ReleasedRailNetwork(
                 defaultPeriod,
@@ -42,7 +42,7 @@ class ReleasedRailNetworkUT {
     }
 
     @Test
-    void should_ensure_no_standalone_stations() {
+    void ensuresNoStandaloneStations() {
         assertThatExceptionOfType(ValidationException.class).isThrownBy(() ->
             new ReleasedRailNetwork(
                 defaultPeriod,
@@ -53,7 +53,7 @@ class ReleasedRailNetworkUT {
     }
 
     @Test
-    void should_ensure_max_track_length() {
+    void ensuresMaxTrackLength() {
         assertThatExceptionOfType(ValidationException.class).isThrownBy(() -> {
             new ReleasedRailNetwork(
                 defaultPeriod,
@@ -64,7 +64,7 @@ class ReleasedRailNetworkUT {
     }
 
     @Test
-    void should_ensure_unique_station_names() {
+    void ensuresUniqueStationNames() {
         assertThatExceptionOfType(ValidationException.class).isThrownBy(() -> {
             new ReleasedRailNetwork(
                 defaultPeriod,
@@ -75,7 +75,7 @@ class ReleasedRailNetworkUT {
     }
 
     @Test
-    void should_ensure_minimum_station_distance() {
+    void ensuresMinimumStationDistance() {
         assertThatExceptionOfType(ValidationException.class).isThrownBy(() -> {
             new ReleasedRailNetwork(
                 defaultPeriod,
@@ -89,7 +89,7 @@ class ReleasedRailNetworkUT {
     }
 
     @Test
-    void should_ensure_no_duplicate_tracks() {
+    void ensureNoDuplicateTracks() {
         assertThatExceptionOfType(ValidationException.class).isThrownBy(() -> {
             new ReleasedRailNetwork(
                 defaultPeriod,

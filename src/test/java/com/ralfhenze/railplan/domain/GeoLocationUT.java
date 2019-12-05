@@ -12,7 +12,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 class GeoLocationUT {
 
     @Test
-    void should_calculate_the_Distance_between_two_Locations() {
+    void providesDistanceBetweenTwoLocations() {
         final var berlin = new GeoLocationInGermany(52.518611, 13.408333);
         final var hamburg = new GeoLocationInGermany(53.550556, 9.993333);
 
@@ -29,7 +29,7 @@ class GeoLocationUT {
         "40.709212, -74.007229", // New York
         "-33.863272, 151.211579", // Sydney
     })
-    void should_fail_on_Coordinates_outside_of_Germany(Double latitude, Double longitude) {
+    void cannotBeConstructedWithCoordinatesOutsideOfGermany(Double latitude, Double longitude) {
         assertThatExceptionOfType(ValidationException.class).isThrownBy(() ->
             new GeoLocationInGermany(latitude, longitude)
         );

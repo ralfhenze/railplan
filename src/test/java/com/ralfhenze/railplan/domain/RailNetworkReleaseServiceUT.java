@@ -24,7 +24,7 @@ class RailNetworkReleaseServiceUT {
         "2019-11-20", // the only valid date is 2019-11-21
         "2019-11-22",
     })
-    void should_ensure_consecutive_periods(LocalDate invalidStartDate) {
+    void ensuresConsecutiveValidityPeriods(LocalDate invalidStartDate) {
         final var railNetworkRepository = mock(ReleasedRailNetworkRepository.class);
         final var lastRailNetwork = mock(ReleasedRailNetwork.class);
 

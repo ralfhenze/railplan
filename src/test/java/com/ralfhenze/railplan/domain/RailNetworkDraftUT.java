@@ -11,7 +11,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 class RailNetworkDraftUT {
 
     @Test
-    void should_ensure_unique_station_names_when_renaming() {
+    void ensuresUniqueStationNamesWhenRenaming() {
         final var draft = new RailNetworkDraft()
             .withNewStation(berlinHbfName, berlinHbfPos)
             .withNewStation(potsdamHbfName, potsdamHbfPos);
@@ -22,7 +22,7 @@ class RailNetworkDraftUT {
     }
 
     @Test
-    void should_ensure_minimum_distance_between_stations_when_relocating() {
+    void ensuresMinimumStationDistanceWhenRelocating() {
         final var draft = new RailNetworkDraft()
             .withNewStation(berlinHbfName, berlinHbfPos)
             .withNewStation(potsdamHbfName, potsdamHbfPos);
@@ -33,7 +33,7 @@ class RailNetworkDraftUT {
     }
 
     @Test
-    void should_ensure_no_duplicate_tracks() {
+    void ensuresNoDuplicateTracks() {
         final var draft = new RailNetworkDraft()
             .withNewStation(berlinHbfName, berlinHbfPos)
             .withNewStation(potsdamHbfName, potsdamHbfPos)
@@ -45,7 +45,7 @@ class RailNetworkDraftUT {
     }
 
     @Test
-    void should_be_able_to_delete_stations() {
+    void stationsCanBeDeleted() {
         var draft = new RailNetworkDraft()
             .withNewStation(berlinHbfName, berlinHbfPos);
         assertThat(draft.getStations()).hasSize(1);
@@ -56,7 +56,7 @@ class RailNetworkDraftUT {
     }
 
     @Test
-    void should_be_able_to_delete_tracks() {
+    void tracksCanBeDeleted() {
         var draft = new RailNetworkDraft()
             .withNewStation(berlinHbfName, berlinHbfPos)
             .withNewStation(potsdamHbfName, potsdamHbfPos)
@@ -70,7 +70,7 @@ class RailNetworkDraftUT {
     }
 
     @Test
-    void should_delete_associated_tracks_on_station_delete() {
+    void deletesAssociatedTracksWhenStationIsDeleted() {
         var draft = new RailNetworkDraft()
             .withNewStation(berlinHbfName, berlinHbfPos)
             .withNewStation(potsdamHbfName, potsdamHbfPos)
