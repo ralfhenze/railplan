@@ -10,22 +10,37 @@ import com.ralfhenze.railplan.domain.railnetwork.elements.TrainStationName;
 
 import java.util.Optional;
 
+import static com.ralfhenze.railplan.domain.common.Preconditions.ensureNotNull;
+
+/**
+ * A command to add a new Train Station to a Rail Network Draft
+ */
 public class AddTrainStationCommand implements Command {
 
     private final RailNetworkDraftRepository draftRepository;
 
+    /**
+     * Constructs the command
+     *
+     * @throws IllegalArgumentException if draftRepository is null
+     */
     public AddTrainStationCommand(final RailNetworkDraftRepository draftRepository) {
-        this.draftRepository = draftRepository;
+        this.draftRepository = ensureNotNull(draftRepository, "Draft Repository");
     }
 
+    /**
+     * Adds a new Train Station to given Rail Network Draft
+     *
+     * @throws ValidationException if stationName or latitude or longitude is invalid
+     */
     public Optional<TrainStation> addTrainStation(
-        final String railNetworkDraftId,
+        final String draftId,
         final String stationName,
         final double latitude,
         final double longitude
-    ) throws ValidationException {
+    ) {
         final var draft = draftRepository
-            .getRailNetworkDraftOfId(new RailNetworkDraftId(railNetworkDraftId));
+            .getRailNetworkDraftOfId(new RailNetworkDraftId(draftId));
 
         if (draft.isPresent()) {
             final var validation = new Validation();
