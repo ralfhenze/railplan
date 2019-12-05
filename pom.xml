@@ -50,7 +50,7 @@
                         <configuration>
                             <skipTests>false</skipTests>
                             <includes>
-                                <include>**/*UnitTests.java</include>
+                                <include>**/*UT.java</include>
                             </includes>
                         </configuration>
                     </execution>
@@ -63,7 +63,7 @@
                         <configuration>
                             <skipTests>false</skipTests>
                             <includes>
-                                <include>**/*AcceptanceTest.java</include>
+                                <include>**/CucumberTest.java</include>
                             </includes>
                         </configuration>
                     </execution>
@@ -76,7 +76,7 @@
                         <configuration>
                             <skipTests>false</skipTests>
                             <includes>
-                                <include>**/*IntegrationTests.java</include>
+                                <include>**/*IT.java</include>
                             </includes>
                         </configuration>
                     </execution>

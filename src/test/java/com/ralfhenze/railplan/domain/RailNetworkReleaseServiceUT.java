@@ -15,7 +15,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-class ReleaseServiceUnitTests {
+class RailNetworkReleaseServiceUT {
 
     @ParameterizedTest
     @CsvSource({

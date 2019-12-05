@@ -25,13 +25,20 @@ http://localhost:8080/swagger-ui.html
 
 ### Tests
 
+Naming scheme / test class suffixes:
+
+* UT = Unit Tests
+* IT = Integration Tests
+
+Run tests:
+
 ```
 $ mvn test                             # Run unit and acceptance tests
 $ mvn surefire:test@unit-tests         # Run only unit tests
 $ mvn surefire:test@acceptance-tests   # Run only acceptance tests
 ```
 
-### Integration Tests
+Run integration tests:
 ```
 $ docker-compose up -d                 # Start testing environment
 $ mvn verify                           # Run all tests

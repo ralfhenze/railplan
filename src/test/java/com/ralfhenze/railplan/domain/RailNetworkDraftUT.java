@@ -8,7 +8,7 @@ import static com.ralfhenze.railplan.domain.TestData.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
-class RailNetworkDraftUnitTests {
+class RailNetworkDraftUT {
 
     @Test
     void should_ensure_unique_station_names_when_renaming() {

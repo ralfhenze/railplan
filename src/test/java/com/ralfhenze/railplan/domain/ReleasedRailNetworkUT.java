@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 import static com.ralfhenze.railplan.domain.TestData.*;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
-class ReleasedRailNetworkUnitTests {
+class ReleasedRailNetworkUT {
 
     @Test
     void should_ensure_at_least_two_stations() {

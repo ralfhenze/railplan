@@ -9,7 +9,7 @@ import java.time.LocalDate;
 
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
-class ValidityPeriodUnitTests {
+class ValidityPeriodUT {
 
     @ParameterizedTest
     @CsvSource({"2019-11-15", "2019-11-16"})

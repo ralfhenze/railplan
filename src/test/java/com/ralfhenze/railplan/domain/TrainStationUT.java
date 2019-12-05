@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
-class TrainStationUnitTests {
+class TrainStationUT {
 
     @Test
     void should_fail_on_construction_with_null_arguments() {

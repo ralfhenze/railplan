@@ -19,7 +19,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 
 @RunWith(SpringRunner.class)
 @WebMvcTest
-public class RestApiIntegrationTests {
+public class RestApiIT {
 
     @Autowired
     private MockMvc mockMvc;

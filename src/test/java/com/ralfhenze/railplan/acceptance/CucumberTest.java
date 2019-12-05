@@ -10,4 +10,4 @@ import org.junit.runner.RunWith;
     features = {"src/test/resources/com/ralfhenze/railplan/features/"},
     glue = {"com.ralfhenze.railplan.acceptance.stepdefs"}
 )
-public class CucumberAcceptanceTest {}
+public class CucumberTest {}
