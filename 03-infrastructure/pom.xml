@@ -5,11 +5,43 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.ralfhenze</groupId>
-        <artifactId>railplan</artifactId>
+        <groupId>com.ralfhenze.railplan</groupId>
+        <artifactId>parent</artifactId>
         <version>0.0.1</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
     <artifactId>03-infrastructure</artifactId>
 
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>2.2.1.RELEASE</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.ralfhenze.railplan</groupId>
+            <artifactId>01-domain</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.ralfhenze.railplan</groupId>
+            <artifactId>02-application</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-mongodb</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.mongodb</groupId>
+            <artifactId>mongo-java-driver</artifactId>
+        </dependency>
+    </dependencies>
 </project>

@@ -5,11 +5,57 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.ralfhenze</groupId>
-        <artifactId>railplan</artifactId>
+        <groupId>com.ralfhenze.railplan</groupId>
+        <artifactId>parent</artifactId>
         <version>0.0.1</version>
     </parent>
 
     <artifactId>04-userinterface</artifactId>
 
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>2.2.1.RELEASE</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.ralfhenze.railplan</groupId>
+            <artifactId>01-domain</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.ralfhenze.railplan</groupId>
+            <artifactId>02-application</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.ralfhenze.railplan</groupId>
+            <artifactId>03-infrastructure</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mongodb</groupId>
+            <artifactId>mongo-java-driver</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-thymeleaf</artifactId>
+        </dependency>
+
+        <!-- Test Dependencies -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 </project>

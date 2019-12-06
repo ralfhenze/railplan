@@ -5,11 +5,17 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.ralfhenze</groupId>
-        <artifactId>railplan</artifactId>
+        <groupId>com.ralfhenze.railplan</groupId>
+        <artifactId>parent</artifactId>
         <version>0.0.1</version>
     </parent>
 
     <artifactId>02-application</artifactId>
 
+    <dependencies>
+        <dependency>
+            <groupId>com.ralfhenze.railplan</groupId>
+            <artifactId>01-domain</artifactId>
+        </dependency>
+    </dependencies>
 </project>
