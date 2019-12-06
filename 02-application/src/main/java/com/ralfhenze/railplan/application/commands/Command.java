@@ -1,4 +1,4 @@
-package com.ralfhenze.railplan.application;
+package com.ralfhenze.railplan.application.commands;
 
 /**
  * A marker interface for a command to the domain model. A command actually changes

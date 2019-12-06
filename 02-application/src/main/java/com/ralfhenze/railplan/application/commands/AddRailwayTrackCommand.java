@@ -1,6 +1,5 @@
 package com.ralfhenze.railplan.application.commands;
 
-import com.ralfhenze.railplan.application.Command;
 import com.ralfhenze.railplan.domain.common.validation.ValidationException;
 import com.ralfhenze.railplan.domain.railnetwork.elements.RailwayTrack;
 import com.ralfhenze.railplan.domain.railnetwork.elements.TrainStationId;

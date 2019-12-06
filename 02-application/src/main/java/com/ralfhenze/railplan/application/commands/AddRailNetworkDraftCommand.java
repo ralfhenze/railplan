@@ -1,6 +1,5 @@
 package com.ralfhenze.railplan.application.commands;
 
-import com.ralfhenze.railplan.application.Command;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraft;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftRepository;
 

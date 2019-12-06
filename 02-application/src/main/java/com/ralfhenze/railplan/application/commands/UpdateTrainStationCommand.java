@@ -1,6 +1,5 @@
 package com.ralfhenze.railplan.application.commands;
 
-import com.ralfhenze.railplan.application.Command;
 import com.ralfhenze.railplan.domain.common.EntityNotFoundException;
 import com.ralfhenze.railplan.domain.common.validation.Validation;
 import com.ralfhenze.railplan.domain.common.validation.ValidationException;
