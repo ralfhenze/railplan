@@ -3,15 +3,15 @@ package com.ralfhenze.railplan.domain;
 import com.ralfhenze.railplan.domain.common.validation.ValidationException;
 import com.ralfhenze.railplan.domain.railnetwork.elements.RailwayTrack;
 import com.ralfhenze.railplan.domain.railnetwork.elements.TrainStationId;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
-class RailwayTrackUT {
+public class RailwayTrackUT {
 
     @Test
-    void isEqualWhenConnectingTheSameStations() {
+    public void isEqualWhenConnectingTheSameStations() {
         final var stationId1 = new TrainStationId("1");
         final var stationId2 = new TrainStationId("2");
         final var track1 = new RailwayTrack(stationId1, stationId2);
@@ -23,7 +23,7 @@ class RailwayTrackUT {
     }
 
     @Test
-    void cannotBeConstructedWithTheSameStationIds() {
+    public void cannotBeConstructedWithTheSameStationIds() {
         final var stationId = new TrainStationId("1");
 
         assertThatExceptionOfType(ValidationException.class).isThrownBy(() ->

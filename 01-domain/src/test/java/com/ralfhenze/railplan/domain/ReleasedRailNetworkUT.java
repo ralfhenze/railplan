@@ -6,7 +6,7 @@ import com.ralfhenze.railplan.domain.railnetwork.elements.TrainStationName;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.release.ReleasedRailNetwork;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 import static com.ralfhenze.railplan.domain.TestData.berlinHbf;
 import static com.ralfhenze.railplan.domain.TestData.berlinOst;
@@ -16,24 +16,24 @@ import static com.ralfhenze.railplan.domain.TestData.hamburgHbf;
 import static com.ralfhenze.railplan.domain.TestData.stuttgartHbf;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
-class ReleasedRailNetworkUT {
+public class ReleasedRailNetworkUT {
 
     @Test
-    void ensuresAtLeastTwoStations() {
+    public void ensuresAtLeastTwoStations() {
         assertThatExceptionOfType(ValidationException.class).isThrownBy(() ->
             new ReleasedRailNetwork(defaultPeriod, emptyList(), emptyList())
         );
     }
 
     @Test
-    void ensuresAtLeastOneTrack() {
+    public void ensuresAtLeastOneTrack() {
         assertThatExceptionOfType(ValidationException.class).isThrownBy(() ->
             new ReleasedRailNetwork(defaultPeriod, listOf(berlinHbf, hamburgHbf), emptyList())
         );
     }
 
     @Test
-    void ensuresNoUnconnectedSubGraphs() {
+    public void ensuresNoUnconnectedSubGraphs() {
         assertThatExceptionOfType(ValidationException.class).isThrownBy(() ->
             new ReleasedRailNetwork(
                 defaultPeriod,
@@ -47,7 +47,7 @@ class ReleasedRailNetworkUT {
     }
 
     @Test
-    void ensuresNoStandaloneStations() {
+    public void ensuresNoStandaloneStations() {
         assertThatExceptionOfType(ValidationException.class).isThrownBy(() ->
             new ReleasedRailNetwork(
                 defaultPeriod,
@@ -58,7 +58,7 @@ class ReleasedRailNetworkUT {
     }
 
     @Test
-    void ensuresMaxTrackLength() {
+    public void ensuresMaxTrackLength() {
         assertThatExceptionOfType(ValidationException.class).isThrownBy(() -> {
             new ReleasedRailNetwork(
                 defaultPeriod,
@@ -69,7 +69,7 @@ class ReleasedRailNetworkUT {
     }
 
     @Test
-    void ensuresUniqueStationNames() {
+    public void ensuresUniqueStationNames() {
         assertThatExceptionOfType(ValidationException.class).isThrownBy(() -> {
             new ReleasedRailNetwork(
                 defaultPeriod,
@@ -80,7 +80,7 @@ class ReleasedRailNetworkUT {
     }
 
     @Test
-    void ensuresMinimumStationDistance() {
+    public void ensuresMinimumStationDistance() {
         assertThatExceptionOfType(ValidationException.class).isThrownBy(() -> {
             new ReleasedRailNetwork(
                 defaultPeriod,
@@ -94,7 +94,7 @@ class ReleasedRailNetworkUT {
     }
 
     @Test
-    void ensureNoDuplicateTracks() {
+    public void ensureNoDuplicateTracks() {
         assertThatExceptionOfType(ValidationException.class).isThrownBy(() -> {
             new ReleasedRailNetwork(
                 defaultPeriod,

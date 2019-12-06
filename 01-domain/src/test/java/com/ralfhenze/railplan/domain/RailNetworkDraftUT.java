@@ -4,7 +4,7 @@ import com.ralfhenze.railplan.domain.common.EntityNotFoundException;
 import com.ralfhenze.railplan.domain.common.validation.ValidationException;
 import com.ralfhenze.railplan.domain.railnetwork.elements.TrainStation;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraft;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 import static com.ralfhenze.railplan.domain.TestData.berlinHbfName;
 import static com.ralfhenze.railplan.domain.TestData.berlinHbfPos;
@@ -18,10 +18,10 @@ import static com.ralfhenze.railplan.domain.TestData.potsdamHbfPos;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
-class RailNetworkDraftUT {
+public class RailNetworkDraftUT {
 
     @Test
-    void keepsStationOrderWhenUpdatingStation() {
+    public void keepsStationOrderWhenUpdatingStation() {
         final var draft = new RailNetworkDraft()
             .withNewStation(berlinHbfName, berlinHbfPos)
             .withNewStation(potsdamHbfName, potsdamHbfPos)
@@ -35,7 +35,7 @@ class RailNetworkDraftUT {
     }
 
     @Test
-    void ensuresUniqueStationNamesWhenRenaming() {
+    public void ensuresUniqueStationNamesWhenRenaming() {
         final var draft = new RailNetworkDraft()
             .withNewStation(berlinHbfName, berlinHbfPos)
             .withNewStation(potsdamHbfName, potsdamHbfPos);
@@ -46,7 +46,7 @@ class RailNetworkDraftUT {
     }
 
     @Test
-    void ensuresMinimumStationDistanceWhenRelocating() {
+    public void ensuresMinimumStationDistanceWhenRelocating() {
         final var draft = new RailNetworkDraft()
             .withNewStation(berlinHbfName, berlinHbfPos)
             .withNewStation(potsdamHbfName, potsdamHbfPos);
@@ -57,7 +57,7 @@ class RailNetworkDraftUT {
     }
 
     @Test
-    void ensuresNoDuplicateTracks() {
+    public void ensuresNoDuplicateTracks() {
         final var draft = new RailNetworkDraft()
             .withNewStation(berlinHbfName, berlinHbfPos)
             .withNewStation(potsdamHbfName, potsdamHbfPos)
@@ -69,7 +69,7 @@ class RailNetworkDraftUT {
     }
 
     @Test
-    void deletesAssociatedTracksWhenStationIsDeleted() {
+    public void deletesAssociatedTracksWhenStationIsDeleted() {
         var draft = new RailNetworkDraft()
             .withNewStation(berlinHbfName, berlinHbfPos)
             .withNewStation(potsdamHbfName, potsdamHbfPos)
@@ -82,7 +82,7 @@ class RailNetworkDraftUT {
     }
 
     @Test
-    void providesPossibilityToDeleteTracks() {
+    public void providesPossibilityToDeleteTracks() {
         var draft = new RailNetworkDraft()
             .withNewStation(berlinHbfName, berlinHbfPos)
             .withNewStation(hamburgHbfName, hamburgHbfPos)
@@ -94,7 +94,7 @@ class RailNetworkDraftUT {
     }
 
     @Test
-    void throwsExceptionWhenDeletingNonExistentTrack() {
+    public void throwsExceptionWhenDeletingNonExistentTrack() {
         final var draft = new RailNetworkDraft()
             .withNewStation(berlinHbfName, berlinHbfPos)
             .withNewStation(hamburgHbfName, hamburgHbfPos)
