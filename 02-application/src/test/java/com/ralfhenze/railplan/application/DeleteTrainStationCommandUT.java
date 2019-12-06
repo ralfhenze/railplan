@@ -3,11 +3,11 @@ package com.ralfhenze.railplan.application;
 import com.ralfhenze.railplan.application.commands.DeleteTrainStationCommand;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraft;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftRepository;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
-import static com.ralfhenze.railplan.domain.TestData.berlinHbfName;
-import static com.ralfhenze.railplan.domain.TestData.berlinHbfPos;
+import static com.ralfhenze.railplan.application.TestData.berlinHbfName;
+import static com.ralfhenze.railplan.application.TestData.berlinHbfPos;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
@@ -15,17 +15,17 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.mock;
 
-class DeleteTrainStationCommandUT {
+public class DeleteTrainStationCommandUT {
 
     @Test
-    void cannotBeConstructedWithNullArgument() {
+    public void cannotBeConstructedWithNullArgument() {
         assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() ->
             new DeleteTrainStationCommand(null)
         );
     }
 
     @Test
-    void deletesStationAndPersistsUpdatedDraft() {
+    public void deletesStationAndPersistsUpdatedDraft() {
         final var draftRepository = mock(RailNetworkDraftRepository.class);
         final var command = new DeleteTrainStationCommand(draftRepository);
         final var draft = new RailNetworkDraft().withNewStation(berlinHbfName, berlinHbfPos);

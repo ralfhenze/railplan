@@ -4,10 +4,10 @@ import com.ralfhenze.railplan.application.commands.AddTrainStationCommand;
 import com.ralfhenze.railplan.domain.common.validation.ValidationException;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraft;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftRepository;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
-import static com.ralfhenze.railplan.domain.TestData.berlinHbfName;
-import static com.ralfhenze.railplan.domain.TestData.berlinHbfPos;
+import static com.ralfhenze.railplan.application.TestData.berlinHbfName;
+import static com.ralfhenze.railplan.application.TestData.berlinHbfPos;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
@@ -15,17 +15,17 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.mock;
 
-class AddTrainStationCommandUT {
+public class AddTrainStationCommandUT {
 
     @Test
-    void cannotBeConstructedWithNullArgument() {
+    public void cannotBeConstructedWithNullArgument() {
         assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() ->
             new AddTrainStationCommand(null)
         );
     }
 
     @Test
-    void persistsAddedStation() {
+    public void persistsAddedStation() {
         final var draftRepository = mock(RailNetworkDraftRepository.class);
         final var command = new AddTrainStationCommand(draftRepository);
         given(draftRepository.getRailNetworkDraftOfId(any()))
@@ -42,7 +42,7 @@ class AddTrainStationCommandUT {
     }
 
     @Test
-    void returnsStationValidationErrorsIfInvalid() {
+    public void returnsStationValidationErrorsIfInvalid() {
         final var draftRepository = mock(RailNetworkDraftRepository.class);
         final var command = new AddTrainStationCommand(draftRepository);
         given(draftRepository.getRailNetworkDraftOfId(any()))
