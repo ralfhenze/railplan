@@ -19,10 +19,6 @@ $ mvn spring-boot:run
 ```
 The UI should now be accessible at http://localhost:8080/
 
-### REST API Documentation
-
-http://localhost:8080/swagger-ui.html
-
 ### Tests
 
 Naming scheme / test class suffixes:
