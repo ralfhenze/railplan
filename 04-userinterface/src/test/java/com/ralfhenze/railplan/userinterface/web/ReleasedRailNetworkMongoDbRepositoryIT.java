@@ -12,9 +12,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import static com.ralfhenze.railplan.domain.TestData.berlinHbf;
-import static com.ralfhenze.railplan.domain.TestData.defaultPeriod;
-import static com.ralfhenze.railplan.domain.TestData.hamburgHbf;
+import static com.ralfhenze.railplan.userinterface.web.TestData.berlinHbf;
+import static com.ralfhenze.railplan.userinterface.web.TestData.defaultPeriod;
+import static com.ralfhenze.railplan.userinterface.web.TestData.hamburgHbf;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)

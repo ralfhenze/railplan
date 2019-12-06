@@ -11,11 +11,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import static com.ralfhenze.railplan.domain.TestData.berlinHbfName;
-import static com.ralfhenze.railplan.domain.TestData.berlinHbfPos;
-import static com.ralfhenze.railplan.domain.TestData.frankfurtHbfName;
-import static com.ralfhenze.railplan.domain.TestData.hamburgHbfName;
-import static com.ralfhenze.railplan.domain.TestData.hamburgHbfPos;
+import static com.ralfhenze.railplan.userinterface.web.TestData.berlinHbfName;
+import static com.ralfhenze.railplan.userinterface.web.TestData.berlinHbfPos;
+import static com.ralfhenze.railplan.userinterface.web.TestData.hamburgHbfName;
+import static com.ralfhenze.railplan.userinterface.web.TestData.hamburgHbfPos;
+import static com.ralfhenze.railplan.userinterface.web.TestData.potsdamHbfName;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)
@@ -41,7 +41,7 @@ public class MongoDbQueriesIT {
         final var draftId1 = draftRepository
             .persist(draft).get().getId().get().toString();
         final var draftId2 = draftRepository
-            .persist(draft.withUpdatedStation(hamburgHbfName, frankfurtHbfName, hamburgHbfPos))
+            .persist(draft.withUpdatedStation(hamburgHbfName, potsdamHbfName, hamburgHbfPos))
             .get().getId().get().toString();
 
         final var draftIds = queries.getAllDraftIds();
