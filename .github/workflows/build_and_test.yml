@@ -18,17 +18,17 @@ jobs:
     - name: Build with Maven
       run: mvn -B package --file pom.xml
 
-    - name: Run Unit Tests
-      run: mvn surefire:test@unit-tests
+#    - name: Run Unit Tests
+#      run: mvn surefire:test@unit-tests
 
-    - name: Run Acceptance Tests
-      run: mvn surefire:test@acceptance-tests
+#    - name: Run Acceptance Tests
+#      run: mvn surefire:test@acceptance-tests
 
     - name: Start Docker Environment
       run: docker-compose -f docker-compose.yml up -d
 
-    - name: Run Integration Tests
-      run: mvn surefire:test@integration-tests
+#    - name: Run Integration Tests
+#      run: mvn surefire:test@integration-tests
 
     - name: Create Test Coverage Report
       run: mvn verify jacoco:report
