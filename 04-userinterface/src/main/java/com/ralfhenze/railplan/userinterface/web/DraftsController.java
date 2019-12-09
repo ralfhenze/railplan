@@ -4,6 +4,7 @@ import com.ralfhenze.railplan.application.commands.AddRailNetworkDraftCommand;
 import com.ralfhenze.railplan.application.commands.AddRailwayTrackCommand;
 import com.ralfhenze.railplan.application.commands.AddTrainStationCommand;
 import com.ralfhenze.railplan.application.commands.DeleteRailNetworkDraftCommand;
+import com.ralfhenze.railplan.application.commands.DeleteTrainStationCommand;
 import com.ralfhenze.railplan.domain.common.validation.ValidationException;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftId;
 import com.ralfhenze.railplan.infrastructure.persistence.MongoDbQueries;
@@ -89,6 +90,19 @@ public class DraftsController {
 
             return "drafts";
         }
+
+        return "redirect:/drafts/{currentDraftId}";
+    }
+
+    @GetMapping("/drafts/{currentDraftId}/stations/{stationId}/delete")
+    public String deleteStation(
+        @PathVariable String currentDraftId,
+        @PathVariable String stationId
+    ) {
+        final var draftRepository = new RailNetworkDraftMongoDbRepository(mongoTemplate);
+
+        new DeleteTrainStationCommand(draftRepository)
+            .deleteTrainStation(stationId, currentDraftId);
 
         return "redirect:/drafts/{currentDraftId}";
     }

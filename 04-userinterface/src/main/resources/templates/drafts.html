@@ -36,7 +36,7 @@
                         <td th:text="${station.getName()}">Berlin Hbf</td>
                         <td th:text="${station.getLatitude()}">52.524927</td>
                         <td th:text="${station.getLongitude()}">13.369348</td>
-                        <td></td>
+                        <td><a th:href="@{|/drafts/${currentDraftId}/stations/${station.getId()}/delete|}">delete</a></td>
                     </tr>
                     <tr>
                         <td>+</td>
