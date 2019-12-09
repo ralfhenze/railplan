@@ -1,3 +1,5 @@
+// Spring Boot doesn't work
+
 module com.ralfhenze.railplan.userinterface {
 	requires com.ralfhenze.railplan.domain;
 	requires com.ralfhenze.railplan.application;
