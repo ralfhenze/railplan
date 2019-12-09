@@ -3,6 +3,7 @@ package com.ralfhenze.railplan.userinterface.web;
 import com.ralfhenze.railplan.application.commands.AddRailNetworkDraftCommand;
 import com.ralfhenze.railplan.application.commands.AddRailwayTrackCommand;
 import com.ralfhenze.railplan.application.commands.AddTrainStationCommand;
+import com.ralfhenze.railplan.application.commands.DeleteRailNetworkDraftCommand;
 import com.ralfhenze.railplan.domain.common.validation.ValidationException;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftId;
 import com.ralfhenze.railplan.infrastructure.persistence.MongoDbQueries;
@@ -56,6 +57,14 @@ public class DraftsController {
         model.addAttribute("newTrack", new RailwayTrackDto());
 
         return "drafts";
+    }
+
+    @GetMapping("/drafts/{currentDraftId}/delete")
+    public String deleteDraft(@PathVariable String currentDraftId) {
+        new DeleteRailNetworkDraftCommand(new RailNetworkDraftMongoDbRepository(mongoTemplate))
+            .deleteRailNetworkDraft(currentDraftId);
+
+        return "redirect:/drafts";
     }
 
     @PostMapping("/drafts/{currentDraftId}/stations/new")
