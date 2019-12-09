@@ -74,10 +74,10 @@
                 <tbody>
                     <tr th:each="track,status : ${tracks}">
                         <td th:text="${status.count}">1</td>
-                        <td th:text="${track.get(0)}">Berlin Hbf</td>
+                        <td th:text="${track.get(0).getValue1()}">Berlin Hbf</td>
                         <td>&lt;&equals;&gt;</td>
-                        <td th:text="${track.get(1)}">Hamburg Hbf</td>
-                        <td></td>
+                        <td th:text="${track.get(1).getValue1()}">Hamburg Hbf</td>
+                        <td><a th:href="@{|/drafts/${currentDraftId}/tracks/${track.get(0).getValue0()}/${track.get(1).getValue0()}/delete|}">delete</a></td>
                     </tr>
                     <tr>
                         <td>+</td>

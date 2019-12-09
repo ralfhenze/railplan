@@ -4,6 +4,7 @@ import com.ralfhenze.railplan.application.commands.AddRailNetworkDraftCommand;
 import com.ralfhenze.railplan.application.commands.AddRailwayTrackCommand;
 import com.ralfhenze.railplan.application.commands.AddTrainStationCommand;
 import com.ralfhenze.railplan.application.commands.DeleteRailNetworkDraftCommand;
+import com.ralfhenze.railplan.application.commands.DeleteRailwayTrackCommand;
 import com.ralfhenze.railplan.application.commands.DeleteTrainStationCommand;
 import com.ralfhenze.railplan.domain.common.validation.ValidationException;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftId;
@@ -12,6 +13,7 @@ import com.ralfhenze.railplan.infrastructure.persistence.RailNetworkDraftMongoDb
 import com.ralfhenze.railplan.infrastructure.persistence.dto.RailNetworkDraftDto;
 import com.ralfhenze.railplan.infrastructure.persistence.dto.RailwayTrackDto;
 import com.ralfhenze.railplan.infrastructure.persistence.dto.TrainStationDto;
+import org.javatuples.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Controller;
@@ -132,6 +134,20 @@ public class DraftsController {
         return "redirect:/drafts/{currentDraftId}";
     }
 
+    @GetMapping("/drafts/{currentDraftId}/tracks/{firstStationId}/{secondStationId}/delete")
+    public String deleteStation(
+        @PathVariable String currentDraftId,
+        @PathVariable String firstStationId,
+        @PathVariable String secondStationId
+    ) {
+        final var draftRepository = new RailNetworkDraftMongoDbRepository(mongoTemplate);
+
+        new DeleteRailwayTrackCommand(draftRepository)
+            .deleteRailwayTrack(firstStationId, secondStationId, currentDraftId);
+
+        return "redirect:/drafts/{currentDraftId}";
+    }
+
     private void setModelAttributes(String currentDraftId, Model model) {
         final var queries = new MongoDbQueries(mongoTemplate);
         model.addAttribute("draftIds", queries.getAllDraftIds());
@@ -149,13 +165,19 @@ public class DraftsController {
 
         model.addAttribute("stationNames", stationNames);
 
-        final List<List<String>> tracksWithStationNames = draftDto
+        final List<List<Pair<String, String>>> tracksWithStationNames = draftDto
             .getTracks()
             .stream()
-            .map(trackDto -> Arrays.asList(
-                stationNames.get(trackDto.getFirstStationId()),
-                stationNames.get(trackDto.getSecondStationId()))
-            )
+            .map(trackDto -> List.of(
+                Pair.with(
+                    String.valueOf(trackDto.getFirstStationId()),
+                    stationNames.get(trackDto.getFirstStationId())
+                ),
+                Pair.with(
+                    String.valueOf(trackDto.getSecondStationId()),
+                    stationNames.get(trackDto.getSecondStationId())
+                )
+            ))
             .collect(Collectors.toList());
 
         model.addAttribute("tracks", tracksWithStationNames);
