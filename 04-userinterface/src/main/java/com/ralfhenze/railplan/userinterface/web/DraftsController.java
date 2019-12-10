@@ -142,7 +142,7 @@ public class DraftsController {
 
     @GetMapping("/drafts/{currentDraftId}")
     public String draft(@PathVariable String currentDraftId, Model model) {
-        setModelAttributes(currentDraftId, model, null, null, false);
+        setModelAttributes(currentDraftId, model, null, null, false, false);
 
         model.addAttribute("newTrack", new RailwayTrackDto());
 
@@ -159,7 +159,7 @@ public class DraftsController {
 
     @GetMapping("/drafts/{currentDraftId}/stations/new")
     public String showNewStationForm(@PathVariable String currentDraftId, Model model) {
-        setModelAttributes(currentDraftId, model, null, null, true);
+        setModelAttributes(currentDraftId, model, null, null, true, false);
 
         model.addAttribute("newTrack", new RailwayTrackDto());
 
@@ -182,7 +182,7 @@ public class DraftsController {
                 Double.parseDouble(stationRow.longitude)
             );
         } catch (ValidationException exception) {
-            setModelAttributes(currentDraftId, model, null, exception.getErrorMessagesAsHashMap(), true);
+            setModelAttributes(currentDraftId, model, null, exception.getErrorMessagesAsHashMap(), true, false);
             model.addAttribute("newTrack", new RailwayTrackDto());
 
             return "drafts";
@@ -197,7 +197,7 @@ public class DraftsController {
         @PathVariable String stationId,
         Model model
     ) {
-        setModelAttributes(currentDraftId, model, stationId, null, false);
+        setModelAttributes(currentDraftId, model, stationId, null, false, false);
 
         model.addAttribute("newTrack", new RailwayTrackDto());
 
@@ -222,7 +222,7 @@ public class DraftsController {
                 Double.parseDouble(stationRow.longitude)
             );
         } catch (ValidationException exception) {
-            setModelAttributes(currentDraftId, model, stationId, exception.getErrorMessagesAsHashMap(), false);
+            setModelAttributes(currentDraftId, model, stationId, exception.getErrorMessagesAsHashMap(), false, false);
             model.addAttribute("newTrack", new RailwayTrackDto());
 
             return "drafts";
@@ -244,6 +244,17 @@ public class DraftsController {
         return "redirect:/drafts/{currentDraftId}";
     }
 
+    @GetMapping("/drafts/{currentDraftId}/tracks/new")
+    public String showNewTrackForm(
+        @PathVariable String currentDraftId,
+        Model model
+    ) {
+        setModelAttributes(currentDraftId, model, null, null, false, true);
+        model.addAttribute("newTrack", new RailwayTrackDto());
+
+        return "drafts";
+    }
+
     @PostMapping("/drafts/{currentDraftId}/tracks/new")
     public String createNewTrack(
         @PathVariable String currentDraftId,
@@ -259,7 +270,7 @@ public class DraftsController {
                 String.valueOf(trackDto.getSecondStationId())
             );
         } catch (ValidationException exception) {
-            setModelAttributes(currentDraftId, model, null, null, false);
+            setModelAttributes(currentDraftId, model, null, null, false, true);
             model.addAttribute("trackErrors", exception.getErrorMessagesAsHashMap());
 
             return "drafts";
@@ -287,7 +298,8 @@ public class DraftsController {
         final Model model,
         final String stationIdToEdit,
         final Map<String, List<String>> errorMessages,
-        final boolean showNewStationForm
+        final boolean showNewStationForm,
+        final boolean showNewTrackForm
     ) {
         final var queries = new MongoDbQueries(mongoTemplate);
         model.addAttribute("draftIds", queries.getAllDraftIds());
@@ -322,6 +334,7 @@ public class DraftsController {
 
         model.addAttribute("tracks", tracksWithStationNames);
         model.addAttribute("trackErrors", new HashMap<String, List<String>>());
+        model.addAttribute("showNewTrackForm", showNewTrackForm);
 
         final List<StationTableRow> stationTableRows = draftDto
             .getStations()

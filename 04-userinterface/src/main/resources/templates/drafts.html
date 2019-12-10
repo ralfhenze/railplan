@@ -56,10 +56,8 @@
                         <td th:insert="::stationTableCell('latitude', ${newStationTableRow.latitude}, ${newStationTableRow.showInputField}, ${newStationTableRow.latitudeErrors})"></td>
                         <td th:insert="::stationTableCell('longitude', ${newStationTableRow.longitude}, ${newStationTableRow.showInputField}, ${newStationTableRow.longitudeErrors})"></td>
                         <td>
-                            <div>
-                                <input type="submit" value="Add Station"> |
-                                <a th:href="@{|/drafts/${currentDraftId}|}">Cancel</a>
-                            </div>
+                            <input type="submit" value="Add Station"> |
+                            <a th:href="@{|/drafts/${currentDraftId}|}">Cancel</a>
                         </td>
                     </tr>
                 </tbody>
@@ -84,12 +82,18 @@
                         <td th:text="${track.get(1).getValue1()}">Hamburg Hbf</td>
                         <td><a th:href="@{|/drafts/${currentDraftId}/tracks/${track.get(0).getValue0()}/${track.get(1).getValue0()}/delete|}">Delete</a></td>
                     </tr>
-                    <tr>
+                    <tr th:unless="${showNewTrackForm}">
+                        <td colspan="4"><a th:href="@{|/drafts/${currentDraftId}/tracks/new|}">+ Add Track</a></td>
+                    </tr>
+                    <tr th:if="${showNewTrackForm}">
                         <td>+</td>
                         <td th:insert="::trackSelector('firstStationId', *{firstStationId}, ${trackErrors['First Station ID']})"></td>
                         <td>&lt;&equals;&gt;</td>
                         <td th:insert="::trackSelector('secondStationId', *{secondStationId}, ${trackErrors['Second Station ID']})"></td>
-                        <td><input type="submit" value="Add Track"></td>
+                        <td>
+                            <input type="submit" value="Add Track"> |
+                            <a th:href="@{|/drafts/${currentDraftId}|}">Cancel</a>
+                        </td>
                     </tr>
                 </tbody>
             </table>
