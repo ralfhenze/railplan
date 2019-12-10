@@ -107,7 +107,6 @@
                     </dependency>
                 </dependencies>
                 <configuration>
-                    <!--<argLine>-illegal-access=permit</argLine>-->
                     <skipTests>true</skipTests>
                 </configuration>
                 <executions>
@@ -147,6 +146,19 @@
                             <skipTests>false</skipTests>
                             <includes>
                                 <include>**/*IT.java</include>
+                            </includes>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>end-to-end-tests</id>
+                        <phase>integration-test</phase>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                        <configuration>
+                            <skipTests>false</skipTests>
+                            <includes>
+                                <include>**/*ET.java</include>
                             </includes>
                         </configuration>
                     </execution>
