@@ -19,7 +19,7 @@
     </div>
     <div th:if="${currentDraftDto != null}">
         <h3>Stations</h3>
-        <form action="#" th:action="${stationFormActionUrl}" method="post">
+        <form method="post">
             <table>
                 <thead>
                     <tr>
@@ -46,6 +46,9 @@
                                 <a th:href="@{|/drafts/${currentDraftId}|}">Cancel</a>
                             </div>
                         </td>
+                    </tr>
+                    <tr th:unless="${showNewStationForm}">
+                        <td colspan="4"><a th:href="@{|/drafts/${currentDraftId}/stations/new|}">+ Add Station</a></td>
                     </tr>
                     <tr th:if="${showNewStationForm}">
                         <td>+</td>
