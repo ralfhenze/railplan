@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en-US" xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>RailPlan - Draft</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -18,16 +18,16 @@
         <a href="/drafts/new">New Draft</a>
     </div>
     <div th:if="${currentDraftDto != null}">
-        <h3>Stations</h3>
         <form method="post">
             <table>
+                <caption><h3>Stations</h3></caption>
                 <thead>
                     <tr>
-                        <th>#</th>
-                        <th>Name</th>
-                        <th>Latitude</th>
-                        <th>Longitude</th>
-                        <th></th>
+                        <th scope="col">#</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Latitude</th>
+                        <th scope="col">Longitude</th>
+                        <th scope="col">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -71,9 +71,18 @@
             </th:block>
         </form>
 
-        <h3>Tracks</h3>
         <form action="#" th:action="@{|/drafts/${currentDraftId}/tracks/new|}" th:object="${newTrack}" method="post">
             <table>
+                <caption><h3>Tracks</h3></caption>
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Station 1</th>
+                        <th></th>
+                        <th scope="col">Station 2</th>
+                        <th scope="col">Actions</th>
+                    </tr>
+                </thead>
                 <tbody>
                     <tr th:each="track,status : ${tracks}">
                         <td th:text="${status.count}">1</td>
