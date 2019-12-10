@@ -11,7 +11,7 @@
         <li th:each="draftId,status : ${draftIds}">
             <span th:if="${currentDraftId == draftId}">*</span>
             <a th:href="@{|/drafts/${draftId}|}" th:text="'Draft ' + ${status.count}">Draft 1</a>
-            (<a th:href="@{|/drafts/${draftId}/delete|}">delete</a>)
+            (<a th:href="@{|/drafts/${draftId}/delete|}">Delete</a>)
         </li>
     </ul>
     <div>
@@ -19,7 +19,7 @@
     </div>
     <div th:if="${currentDraftDto != null}">
         <h3>Stations</h3>
-        <form action="#" th:action="@{|/drafts/${currentDraftId}/stations/new|}" th:object="${newStation}" method="post">
+        <form action="#" th:action="${stationFormActionUrl}" method="post">
             <table>
                 <thead>
                     <tr>
@@ -31,41 +31,43 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr th:each="station,status : ${currentDraftDto.getStations()}">
+                    <tr th:each="row, status : ${stationTableRows}">
                         <td th:text="${status.count}">1</td>
-                        <td th:text="${station.getName()}">Berlin Hbf</td>
-                        <td th:text="${station.getLatitude()}">52.524927</td>
-                        <td th:text="${station.getLongitude()}">13.369348</td>
-                        <td><a th:href="@{|/drafts/${currentDraftId}/stations/${station.getId()}/delete|}">delete</a></td>
+                        <td th:insert="::stationTableCell('stationName', ${row.stationName}, ${row.showInputField}, ${row.stationNameErrors})"></td>
+                        <td th:insert="::stationTableCell('latitude', ${row.latitude}, ${row.showInputField}, ${row.latitudeErrors})"></td>
+                        <td th:insert="::stationTableCell('longitude', ${row.longitude}, ${row.showInputField}, ${row.longitudeErrors})"></td>
+                        <td>
+                            <div th:unless="${row.showInputField}">
+                                <a th:href="@{|/drafts/${currentDraftId}/stations/${row.stationId}/edit|}">Edit</a> |
+                                <a th:href="@{|/drafts/${currentDraftId}/stations/${row.stationId}/delete|}">Delete</a>
+                            </div>
+                            <div th:if="${row.showInputField}">
+                                <input type="submit" value="Update"> |
+                                <a th:href="@{|/drafts/${currentDraftId}|}">Cancel</a>
+                            </div>
+                        </td>
                     </tr>
-                    <tr>
+                    <tr th:if="${showNewStationForm}">
                         <td>+</td>
-                        <td><input type="text" th:field="*{name}"></td>
-                        <td><input type="text" th:field="*{latitude}"></td>
-                        <td><input type="text" th:field="*{longitude}"></td>
-                        <td><input type="submit" value="Add Station"></td>
-                    </tr>
-                    <tr th:if="${stationErrors != null}">
-                        <td></td>
+                        <td th:insert="::stationTableCell('stationName', ${newStationTableRow.stationName}, ${newStationTableRow.showInputField}, ${newStationTableRow.stationNameErrors})"></td>
+                        <td th:insert="::stationTableCell('latitude', ${newStationTableRow.latitude}, ${newStationTableRow.showInputField}, ${newStationTableRow.latitudeErrors})"></td>
+                        <td th:insert="::stationTableCell('longitude', ${newStationTableRow.longitude}, ${newStationTableRow.showInputField}, ${newStationTableRow.longitudeErrors})"></td>
                         <td>
-                            <ul th:if="${stationErrors['Station name'] != null}">
-                                <li th:each="stationNameError : ${stationErrors['Station name']}" th:text="${stationNameError}">Station Name Error</li>
-                            </ul>
+                            <div>
+                                <input type="submit" value="Add Station"> |
+                                <a th:href="@{|/drafts/${currentDraftId}|}">Cancel</a>
+                            </div>
                         </td>
-                        <td>
-                            <ul th:if="${stationErrors['Latitude'] != null}">
-                                <li th:each="latitudeError : ${stationErrors['Latitude']}" th:text="${latitudeError}">Latitude Error</li>
-                            </ul>
-                        </td>
-                        <td>
-                            <ul th:if="${stationErrors['Longitude'] != null}">
-                                <li th:each="longitudeError : ${stationErrors['Longitude']}" th:text="${longitudeError}">Longitude Error</li>
-                            </ul>
-                        </td>
-                        <td></td>
                     </tr>
                 </tbody>
             </table>
+            <div th:fragment="stationTableCell(name, value, showInputField, errors)">
+                <span th:if="not ${showInputField}" th:text="${value}"></span>
+                <input th:if="${showInputField}" type="text" th:name="${name}" th:value="${value}">
+                <ul th:if="${showInputField == true and not #lists.isEmpty(errors)}">
+                    <li th:each="error : ${errors}" th:text="${error}">Error</li>
+                </ul>
+            </div>
         </form>
 
         <h3>Tracks</h3>
@@ -77,7 +79,7 @@
                         <td th:text="${track.get(0).getValue1()}">Berlin Hbf</td>
                         <td>&lt;&equals;&gt;</td>
                         <td th:text="${track.get(1).getValue1()}">Hamburg Hbf</td>
-                        <td><a th:href="@{|/drafts/${currentDraftId}/tracks/${track.get(0).getValue0()}/${track.get(1).getValue0()}/delete|}">delete</a></td>
+                        <td><a th:href="@{|/drafts/${currentDraftId}/tracks/${track.get(0).getValue0()}/${track.get(1).getValue0()}/delete|}">Delete</a></td>
                     </tr>
                     <tr>
                         <td>+</td>

@@ -6,6 +6,7 @@ import com.ralfhenze.railplan.application.commands.AddTrainStationCommand;
 import com.ralfhenze.railplan.application.commands.DeleteRailNetworkDraftCommand;
 import com.ralfhenze.railplan.application.commands.DeleteRailwayTrackCommand;
 import com.ralfhenze.railplan.application.commands.DeleteTrainStationCommand;
+import com.ralfhenze.railplan.application.commands.UpdateTrainStationCommand;
 import com.ralfhenze.railplan.domain.common.validation.ValidationException;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftId;
 import com.ralfhenze.railplan.infrastructure.persistence.MongoDbQueries;
@@ -23,7 +24,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -33,6 +34,92 @@ public class DraftsController {
 
     @Autowired
     private MongoTemplate mongoTemplate;
+
+    class StationTableRow {
+        public boolean showInputField = false;
+        public boolean disabled = false;
+        public String stationId = "";
+        public String stationName = "";
+        public List<String> stationNameErrors = new ArrayList<>();
+        public String latitude = "0.0";
+        public List<String> latitudeErrors = new ArrayList<>();
+        public String longitude = "0.0";
+        public List<String> longitudeErrors = new ArrayList<>();
+
+        public StationTableRow() {}
+
+        public boolean isShowInputField() {
+            return showInputField;
+        }
+
+        public void setShowInputField(boolean showInputField) {
+            this.showInputField = showInputField;
+        }
+
+        public boolean isDisabled() {
+            return disabled;
+        }
+
+        public void setDisabled(boolean disabled) {
+            this.disabled = disabled;
+        }
+
+        public String getStationId() {
+            return stationId;
+        }
+
+        public void setStationId(String stationId) {
+            this.stationId = stationId;
+        }
+
+        public String getStationName() {
+            return stationName;
+        }
+
+        public void setStationName(String stationName) {
+            this.stationName = stationName;
+        }
+
+        public List<String> getStationNameErrors() {
+            return stationNameErrors;
+        }
+
+        public void setStationNameErrors(List<String> stationNameErrors) {
+            this.stationNameErrors = stationNameErrors;
+        }
+
+        public String getLatitude() {
+            return latitude;
+        }
+
+        public void setLatitude(String latitude) {
+            this.latitude = latitude;
+        }
+
+        public List<String> getLatitudeErrors() {
+            return latitudeErrors;
+        }
+
+        public void setLatitudeErrors(List<String> latitudeErrors) {
+            this.latitudeErrors = latitudeErrors;
+        }
+
+        public String getLongitude() {
+            return longitude;
+        }
+
+        public void setLongitude(String longitude) {
+            this.longitude = longitude;
+        }
+
+        public List<String> getLongitudeErrors() {
+            return longitudeErrors;
+        }
+
+        public void setLongitudeErrors(List<String> longitudeErrors) {
+            this.longitudeErrors = longitudeErrors;
+        }
+    }
 
     @GetMapping("/drafts")
     public String drafts(Model model) {
@@ -54,9 +141,8 @@ public class DraftsController {
 
     @GetMapping("/drafts/{currentDraftId}")
     public String draft(@PathVariable String currentDraftId, Model model) {
-        setModelAttributes(currentDraftId, model);
+        setModelAttributes(currentDraftId, model, null, null);
 
-        model.addAttribute("newStation", new TrainStationDto());
         model.addAttribute("newTrack", new RailwayTrackDto());
 
         return "drafts";
@@ -73,7 +159,7 @@ public class DraftsController {
     @PostMapping("/drafts/{currentDraftId}/stations/new")
     public String createNewStation(
         @PathVariable String currentDraftId,
-        @ModelAttribute(name = "newStation") TrainStationDto stationDto,
+        @ModelAttribute(name = "newStationTableRow") StationTableRow stationRow,
         Model model
     ) {
         final var draftRepository = new RailNetworkDraftMongoDbRepository(mongoTemplate);
@@ -81,14 +167,53 @@ public class DraftsController {
         try {
             new AddTrainStationCommand(draftRepository).addTrainStation(
                 currentDraftId,
-                stationDto.getName(),
-                stationDto.getLatitude(),
-                stationDto.getLongitude()
+                stationRow.stationName,
+                Double.parseDouble(stationRow.latitude),
+                Double.parseDouble(stationRow.longitude)
             );
         } catch (ValidationException exception) {
-            setModelAttributes(currentDraftId, model);
+            setModelAttributes(currentDraftId, model, null, exception.getErrorMessagesAsHashMap());
             model.addAttribute("newTrack", new RailwayTrackDto());
-            model.addAttribute("stationErrors", exception.getErrorMessages());
+
+            return "drafts";
+        }
+
+        return "redirect:/drafts/{currentDraftId}";
+    }
+
+    @GetMapping("/drafts/{currentDraftId}/stations/{stationId}/edit")
+    public String editStation(
+        @PathVariable String currentDraftId,
+        @PathVariable String stationId,
+        Model model
+    ) {
+        setModelAttributes(currentDraftId, model, stationId, null);
+
+        model.addAttribute("newTrack", new RailwayTrackDto());
+
+        return "drafts";
+    }
+
+    @PostMapping("/drafts/{currentDraftId}/stations/{stationId}/edit")
+    public String updateStation(
+        @PathVariable String currentDraftId,
+        @PathVariable String stationId,
+        @ModelAttribute(name = "updatedStationTableRow") StationTableRow stationRow,
+        Model model
+    ) {
+        final var draftRepository = new RailNetworkDraftMongoDbRepository(mongoTemplate);
+
+        try {
+            new UpdateTrainStationCommand(draftRepository).updateTrainStation(
+                currentDraftId,
+                stationId,
+                stationRow.stationName,
+                Double.parseDouble(stationRow.latitude),
+                Double.parseDouble(stationRow.longitude)
+            );
+        } catch (ValidationException exception) {
+            setModelAttributes(currentDraftId, model, stationId, exception.getErrorMessagesAsHashMap());
+            model.addAttribute("newTrack", new RailwayTrackDto());
 
             return "drafts";
         }
@@ -124,8 +249,7 @@ public class DraftsController {
                 String.valueOf(trackDto.getSecondStationId())
             );
         } catch (ValidationException exception) {
-            setModelAttributes(currentDraftId, model);
-            model.addAttribute("newStation", new TrainStationDto());
+            setModelAttributes(currentDraftId, model, null, null);
             model.addAttribute("trackErrors", exception.getErrorMessages());
 
             return "drafts";
@@ -148,7 +272,12 @@ public class DraftsController {
         return "redirect:/drafts/{currentDraftId}";
     }
 
-    private void setModelAttributes(String currentDraftId, Model model) {
+    private void setModelAttributes(
+        final String currentDraftId,
+        final Model model,
+        final String stationIdToEdit,
+        final Map<String, List<String>> errorMessages
+    ) {
         final var queries = new MongoDbQueries(mongoTemplate);
         model.addAttribute("draftIds", queries.getAllDraftIds());
 
@@ -181,5 +310,53 @@ public class DraftsController {
             .collect(Collectors.toList());
 
         model.addAttribute("tracks", tracksWithStationNames);
+
+        final List<StationTableRow> stationTableRows = draftDto
+            .getStations()
+            .stream()
+            .map(stationDto -> {
+                final var row = new StationTableRow();
+                row.stationId = String.valueOf(stationDto.getId());
+                row.stationName = stationDto.getName();
+                row.latitude = String.valueOf(stationDto.getLatitude());
+                row.longitude = String.valueOf(stationDto.getLongitude());
+                row.showInputField = (row.stationId.equals(stationIdToEdit));
+
+                if (row.stationId.equals(stationIdToEdit)) {
+                    if (errorMessages != null) {
+                        row.stationNameErrors = errorMessages.getOrDefault("Station name", List.of());
+                        row.latitudeErrors = errorMessages.getOrDefault("Latitude", List.of());
+                        row.longitudeErrors = errorMessages.getOrDefault("Longitude", List.of());
+                    }
+
+                    if (model.containsAttribute("updatedStationTableRow")) {
+                        final var updatedStationTableRow = (StationTableRow) model
+                            .getAttribute("updatedStationTableRow");
+                        row.stationName = updatedStationTableRow.getStationName();
+                        row.latitude = updatedStationTableRow.getLatitude();
+                        row.longitude = updatedStationTableRow.getLongitude();
+                    }
+                }
+
+                return row;
+            })
+            .collect(Collectors.toList());
+
+        model.addAttribute("stationTableRows", stationTableRows);
+        model.addAttribute("showNewStationForm", (stationIdToEdit == null));
+        model.addAttribute("stationFormActionUrl", (stationIdToEdit == null) ?
+            "/drafts/" + currentDraftId + "/stations/new" :
+            "/drafts/" + currentDraftId + "/stations/" + stationIdToEdit + "/edit"
+        );
+
+        final var newStationTableRow = new StationTableRow();
+        newStationTableRow.showInputField = true;
+        newStationTableRow.disabled = (stationIdToEdit != null);
+        if (stationIdToEdit == null && errorMessages != null) {
+            newStationTableRow.stationNameErrors = errorMessages.getOrDefault("Station name", List.of());
+            newStationTableRow.latitudeErrors = errorMessages.getOrDefault("Latitude", List.of());
+            newStationTableRow.longitudeErrors = errorMessages.getOrDefault("Longitude", List.of());
+        }
+        model.addAttribute("newStationTableRow", newStationTableRow);
     }
 }
