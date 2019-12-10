@@ -7,7 +7,7 @@
 <body>
     <h1>RailPlan</h1>
     <h2>Rail Network Drafts</h2>
-    <ul>
+    <ul id="draft-navigation">
         <li th:each="draftId,status : ${draftIds}">
             <span th:if="${currentDraftId == draftId}">*</span>
             <a th:href="@{|/drafts/${draftId}|}" th:text="'Draft ' + ${status.count}">Draft 1</a>
@@ -15,7 +15,7 @@
         </li>
     </ul>
     <div>
-        <a href="/drafts/new">New Draft</a>
+        <a id="add-draft-button" href="/drafts/new">+ Add Draft</a>
     </div>
     <div th:if="${currentDraftDto != null}">
         <form method="post">
@@ -78,7 +78,7 @@
                     <tr>
                         <th scope="col">#</th>
                         <th scope="col">Station 1</th>
-                        <th></th>
+                        <th scope="col"></th>
                         <th scope="col">Station 2</th>
                         <th scope="col">Actions</th>
                     </tr>

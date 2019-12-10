@@ -18,7 +18,7 @@ import static com.ralfhenze.railplan.userinterface.web.TestData.hamburgHbf;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class ReleasedRailNetworkMongoDbRepositoryIT {
 
     @Autowired
