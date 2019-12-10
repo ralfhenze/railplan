@@ -64,13 +64,13 @@
                     </tr>
                 </tbody>
             </table>
-            <div th:fragment="stationTableCell(name, value, showInputField, errors)">
-                <span th:if="not ${showInputField}" th:text="${value}"></span>
+            <th:block th:fragment="stationTableCell(name, value, showInputField, errors)">
+                <span th:unless="${showInputField}" th:text="${value}"></span>
                 <input th:if="${showInputField}" type="text" th:name="${name}" th:value="${value}">
                 <ul th:if="${showInputField == true and not #lists.isEmpty(errors)}">
                     <li th:each="error : ${errors}" th:text="${error}">Error</li>
                 </ul>
-            </div>
+            </th:block>
         </form>
 
         <h3>Tracks</h3>
@@ -86,36 +86,21 @@
                     </tr>
                     <tr>
                         <td>+</td>
-                        <td>
-                            <select th:field="*{firstStationId}">
-                                <option th:each="name : ${stationNames}" th:value="${name.getKey()}" th:text="${name.getValue()}">Berlin Hbf</option>
-                            </select>
-                        </td>
+                        <td th:insert="::trackSelector('firstStationId', *{firstStationId}, ${trackErrors['First Station ID']})"></td>
                         <td>&lt;&equals;&gt;</td>
-                        <td>
-                            <select th:field="*{secondStationId}">
-                                <option th:each="name : ${stationNames}" th:value="${name.getKey()}" th:text="${name.getValue()}">Hamburg Hbf</option>
-                            </select>
-                        </td>
+                        <td th:insert="::trackSelector('secondStationId', *{secondStationId}, ${trackErrors['Second Station ID']})"></td>
                         <td><input type="submit" value="Add Track"></td>
-                    </tr>
-                    <tr th:if="${trackErrors != null}">
-                        <td></td>
-                        <td>
-                            <ul th:if="${trackErrors['First Station ID'] != null}">
-                                <li th:each="firstStationError : ${trackErrors['First Station ID']}" th:text="${firstStationError}">First Station Error</li>
-                            </ul>
-                        </td>
-                        <td></td>
-                        <td>
-                            <ul th:if="${trackErrors['Second Station ID'] != null}">
-                                <li th:each="secondStationError : ${trackErrors['Second Station ID']}" th:text="${secondStationError}">Second Station Error</li>
-                            </ul>
-                        </td>
-                        <td></td>
                     </tr>
                 </tbody>
             </table>
+            <th:block th:fragment="trackSelector(fieldName, fieldValue, errors)">
+                <select th:if="${fieldName != null}" th:name="${fieldName}" th:value="${fieldValue}">
+                    <option th:each="name : ${stationNames}" th:value="${name.getKey()}" th:text="${name.getValue()}">Berlin Hbf</option>
+                </select>
+                <ul th:if="${errors != null}">
+                    <li th:each="error : ${errors}" th:text="${error}">Error</li>
+                </ul>
+            </th:block>
         </form>
     </div>
 

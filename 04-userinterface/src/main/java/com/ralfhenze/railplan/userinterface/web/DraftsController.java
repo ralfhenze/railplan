@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -259,7 +260,7 @@ public class DraftsController {
             );
         } catch (ValidationException exception) {
             setModelAttributes(currentDraftId, model, null, null, false);
-            model.addAttribute("trackErrors", exception.getErrorMessages());
+            model.addAttribute("trackErrors", exception.getErrorMessagesAsHashMap());
 
             return "drafts";
         }
@@ -320,6 +321,7 @@ public class DraftsController {
             .collect(Collectors.toList());
 
         model.addAttribute("tracks", tracksWithStationNames);
+        model.addAttribute("trackErrors", new HashMap<String, List<String>>());
 
         final List<StationTableRow> stationTableRows = draftDto
             .getStations()
