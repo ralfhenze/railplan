@@ -25,20 +25,21 @@ Naming scheme / test class suffixes:
 
 * UT = Unit Tests
 * IT = Integration Tests
+* ET = End-to-End Tests
 
 Run tests:
-
 ```
 $ mvn test                             # Run unit and acceptance tests
 $ mvn surefire:test@unit-tests         # Run only unit tests
 $ mvn surefire:test@acceptance-tests   # Run only acceptance tests
 ```
 
-Run integration tests:
+Run integration / end-to-end tests:
 ```
 $ docker-compose up -d                 # Start testing environment
 $ mvn verify                           # Run all tests
 $ mvn surefire:test@integration-tests  # Run only integration tests
+$ mvn surefire:test@end-to-end-tests   # Run only end-to-end tests
 $ docker-compose down                  # Destroy Docker containers
 ```
 
