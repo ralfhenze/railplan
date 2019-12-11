@@ -7,16 +7,15 @@ import com.ralfhenze.railplan.application.commands.DeleteRailNetworkDraftCommand
 import com.ralfhenze.railplan.application.commands.DeleteRailwayTrackCommand;
 import com.ralfhenze.railplan.application.commands.DeleteTrainStationCommand;
 import com.ralfhenze.railplan.application.commands.UpdateTrainStationCommand;
+import com.ralfhenze.railplan.application.queries.Queries;
 import com.ralfhenze.railplan.domain.common.validation.ValidationException;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftId;
-import com.ralfhenze.railplan.infrastructure.persistence.MongoDbQueries;
-import com.ralfhenze.railplan.infrastructure.persistence.RailNetworkDraftMongoDbRepository;
+import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftRepository;
 import com.ralfhenze.railplan.infrastructure.persistence.dto.RailNetworkDraftDto;
 import com.ralfhenze.railplan.infrastructure.persistence.dto.RailwayTrackDto;
 import com.ralfhenze.railplan.infrastructure.persistence.dto.TrainStationDto;
 import org.javatuples.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,7 +23,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,12 +31,41 @@ import java.util.stream.Collectors;
 @Controller
 public class DraftsController {
 
+    private final Queries queries;
+    private final RailNetworkDraftRepository railNetworkDraftRepository;
+    private final AddRailNetworkDraftCommand addRailNetworkDraftCommand;
+    private final AddRailwayTrackCommand addRailwayTrackCommand;
+    private final AddTrainStationCommand addTrainStationCommand;
+    private final DeleteRailNetworkDraftCommand deleteRailNetworkDraftCommand;
+    private final DeleteRailwayTrackCommand deleteRailwayTrackCommand;
+    private final DeleteTrainStationCommand deleteTrainStationCommand;
+    private final UpdateTrainStationCommand updateTrainStationCommand;
+
     @Autowired
-    private MongoTemplate mongoTemplate;
+    public DraftsController(
+        final Queries queries,
+        final RailNetworkDraftRepository railNetworkDraftRepository,
+        final AddRailNetworkDraftCommand addRailNetworkDraftCommand,
+        final AddRailwayTrackCommand addRailwayTrackCommand,
+        final AddTrainStationCommand addTrainStationCommand,
+        final DeleteRailNetworkDraftCommand deleteRailNetworkDraftCommand,
+        final DeleteRailwayTrackCommand deleteRailwayTrackCommand,
+        final DeleteTrainStationCommand deleteTrainStationCommand,
+        final UpdateTrainStationCommand updateTrainStationCommand
+    ) {
+        this.queries = queries;
+        this.railNetworkDraftRepository = railNetworkDraftRepository;
+        this.addRailNetworkDraftCommand = addRailNetworkDraftCommand;
+        this.addRailwayTrackCommand = addRailwayTrackCommand;
+        this.addTrainStationCommand = addTrainStationCommand;
+        this.deleteRailNetworkDraftCommand = deleteRailNetworkDraftCommand;
+        this.deleteRailwayTrackCommand = deleteRailwayTrackCommand;
+        this.deleteTrainStationCommand = deleteTrainStationCommand;
+        this.updateTrainStationCommand = updateTrainStationCommand;
+    }
 
     @GetMapping("/drafts")
     public String drafts(Model model) {
-        final var queries = new MongoDbQueries(mongoTemplate);
         model.addAttribute("draftIds", queries.getAllDraftIds());
 
         return "drafts";
@@ -46,10 +73,9 @@ public class DraftsController {
 
     @GetMapping("/drafts/new")
     public String addDraft() {
-        final var draftId =
-            new AddRailNetworkDraftCommand(new RailNetworkDraftMongoDbRepository(mongoTemplate))
-                .addRailNetworkDraft().get()
-                .getId().get().toString();
+        final var draftId = addRailNetworkDraftCommand
+            .addRailNetworkDraft().get()
+            .getId().get().toString();
 
         return "redirect:/drafts/" + draftId;
     }
@@ -65,7 +91,7 @@ public class DraftsController {
 
     @GetMapping("/drafts/{currentDraftId}/delete")
     public String deleteDraft(@PathVariable String currentDraftId) {
-        new DeleteRailNetworkDraftCommand(new RailNetworkDraftMongoDbRepository(mongoTemplate))
+        deleteRailNetworkDraftCommand
             .deleteRailNetworkDraft(currentDraftId);
 
         return "redirect:/drafts";
@@ -86,10 +112,8 @@ public class DraftsController {
         @ModelAttribute(name = "newStationTableRow") StationTableRow stationRow,
         Model model
     ) {
-        final var draftRepository = new RailNetworkDraftMongoDbRepository(mongoTemplate);
-
         try {
-            new AddTrainStationCommand(draftRepository).addTrainStation(
+            addTrainStationCommand.addTrainStation(
                 currentDraftId,
                 stationRow.stationName,
                 Double.parseDouble(stationRow.latitude),
@@ -125,10 +149,8 @@ public class DraftsController {
         @ModelAttribute(name = "updatedStationTableRow") StationTableRow stationRow,
         Model model
     ) {
-        final var draftRepository = new RailNetworkDraftMongoDbRepository(mongoTemplate);
-
         try {
-            new UpdateTrainStationCommand(draftRepository).updateTrainStation(
+            updateTrainStationCommand.updateTrainStation(
                 currentDraftId,
                 stationId,
                 stationRow.stationName,
@@ -150,9 +172,7 @@ public class DraftsController {
         @PathVariable String currentDraftId,
         @PathVariable String stationId
     ) {
-        final var draftRepository = new RailNetworkDraftMongoDbRepository(mongoTemplate);
-
-        new DeleteTrainStationCommand(draftRepository)
+        deleteTrainStationCommand
             .deleteTrainStation(stationId, currentDraftId);
 
         return "redirect:/drafts/{currentDraftId}";
@@ -175,10 +195,8 @@ public class DraftsController {
         @ModelAttribute(name = "newTrack") RailwayTrackDto trackDto,
         Model model
     ) {
-        final var draftRepository = new RailNetworkDraftMongoDbRepository(mongoTemplate);
-
         try {
-            new AddRailwayTrackCommand(draftRepository).addRailwayTrack(
+            addRailwayTrackCommand.addRailwayTrack(
                 currentDraftId,
                 String.valueOf(trackDto.getFirstStationId()),
                 String.valueOf(trackDto.getSecondStationId())
@@ -199,9 +217,7 @@ public class DraftsController {
         @PathVariable String firstStationId,
         @PathVariable String secondStationId
     ) {
-        final var draftRepository = new RailNetworkDraftMongoDbRepository(mongoTemplate);
-
-        new DeleteRailwayTrackCommand(draftRepository)
+        deleteRailwayTrackCommand
             .deleteRailwayTrack(firstStationId, secondStationId, currentDraftId);
 
         return "redirect:/drafts/{currentDraftId}";
@@ -215,10 +231,9 @@ public class DraftsController {
         final boolean showNewStationForm,
         final boolean showNewTrackForm
     ) {
-        final var queries = new MongoDbQueries(mongoTemplate);
         model.addAttribute("draftIds", queries.getAllDraftIds());
 
-        final var draft = new RailNetworkDraftMongoDbRepository(mongoTemplate)
+        final var draft = railNetworkDraftRepository
             .getRailNetworkDraftOfId(new RailNetworkDraftId(currentDraftId));
         final var draftDto = new RailNetworkDraftDto(draft);
 
