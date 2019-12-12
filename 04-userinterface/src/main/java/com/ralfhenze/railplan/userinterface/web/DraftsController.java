@@ -109,6 +109,9 @@ public class DraftsController {
         return "redirect:/drafts";
     }
 
+    /**
+     * Shows a form to create a new Station.
+     */
     @GetMapping("/drafts/{currentDraftId}/stations/new")
     public String showNewStationForm(@PathVariable String currentDraftId, Model model) {
         setModelAttributes(currentDraftId, model, null, null, true, false);

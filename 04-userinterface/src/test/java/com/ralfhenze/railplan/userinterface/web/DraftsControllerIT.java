@@ -95,8 +95,7 @@ public class DraftsControllerIT {
     @Test
     public void userGetsAListOfAllStationsAndTracksOfADraft() throws Exception {
         // Given an existing Draft
-        given(draftRepository.getRailNetworkDraftOfId(any()))
-            .willReturn(getBerlinHamburgDraft());
+        given(draftRepository.getRailNetworkDraftOfId(any())).willReturn(getBerlinHamburgDraft());
 
         // When we call GET /drafts/123
         final var response = getGetResponse("/drafts/123");
@@ -150,6 +149,22 @@ public class DraftsControllerIT {
         // And we will be redirected to the Drafts overview
         assertThat(response.getStatus()).isEqualTo(HTTP_MOVED_TEMPORARILY);
         assertThat(response.getRedirectedUrl()).isEqualTo("/drafts");
+    }
+
+    @Test
+    public void userGetsAFormToAddANewStation() throws Exception {
+        // Given an existing Draft
+        given(draftRepository.getRailNetworkDraftOfId(any())).willReturn(getBerlinHamburgDraft());
+
+        // When we call GET /drafts/123/stations/new
+        final var response = getGetResponse("/drafts/123/stations/new");
+
+        // Then we get a form with input fields for Station name and coordinates
+        final var document = Jsoup.parse(response.getContentAsString());
+        assertThat(response.getStatus()).isEqualTo(HTTP_OK);
+        assertThat(document.select("input[name='stationName']")).hasSize(1);
+        assertThat(document.select("input[name='latitude']")).hasSize(1);
+        assertThat(document.select("input[name='longitude']")).hasSize(1);
     }
 
     private RailNetworkDraft getBerlinHamburgDraft() {
