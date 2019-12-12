@@ -1,6 +1,7 @@
 package com.ralfhenze.railplan.userinterface.web;
 
 import com.ralfhenze.railplan.application.commands.AddRailNetworkDraftCommand;
+import com.ralfhenze.railplan.application.commands.DeleteRailNetworkDraftCommand;
 import com.ralfhenze.railplan.application.queries.Queries;
 import com.ralfhenze.railplan.domain.railnetwork.elements.GeoLocationInGermany;
 import com.ralfhenze.railplan.domain.railnetwork.elements.TrainStationName;
@@ -54,6 +55,9 @@ public class DraftsControllerIT {
     @MockBean
     private AddRailNetworkDraftCommand addRailNetworkDraftCommand;
 
+    @MockBean
+    private DeleteRailNetworkDraftCommand deleteRailNetworkDraftCommand;
+
     @Test
     public void userCanNavigateToExistingDrafts() throws Exception {
         // Given an existing Draft ID "123"
@@ -80,7 +84,7 @@ public class DraftsControllerIT {
         // When we call GET /drafts/new
         final var response = getGetResponse("/drafts/new");
 
-        // Then AddRailNetworkDraftCommand is issued
+        // Then an AddRailNetworkDraftCommand is issued
         verify(addRailNetworkDraftCommand).addRailNetworkDraft();
 
         // And we will be redirected to the new Draft
@@ -133,6 +137,19 @@ public class DraftsControllerIT {
             .isEqualTo(stationName1.getName());
         assertThat(row.selectFirst(".station-2").text())
             .isEqualTo(stationName2.getName());
+    }
+
+    @Test
+    public void userCanDeleteAnExistingDraft() throws Exception {
+        // When we call GET /drafts/123/delete
+        final var response = getGetResponse("/drafts/123/delete");
+
+        // Then a DeleteRailNetworkDraftCommand is issued
+        verify(deleteRailNetworkDraftCommand).deleteRailNetworkDraft("123");
+
+        // And we will be redirected to the Drafts overview
+        assertThat(response.getStatus()).isEqualTo(HTTP_MOVED_TEMPORARILY);
+        assertThat(response.getRedirectedUrl()).isEqualTo("/drafts");
     }
 
     private RailNetworkDraft getBerlinHamburgDraft() {

@@ -98,6 +98,9 @@ public class DraftsController {
         return "drafts";
     }
 
+    /**
+     * Deletes an existing Draft and redirects to /drafts.
+     */
     @GetMapping("/drafts/{currentDraftId}/delete")
     public String deleteDraft(@PathVariable String currentDraftId) {
         deleteRailNetworkDraftCommand
