@@ -41,9 +41,9 @@ public class DeleteRailwayTrackCommandUT {
             .willReturn(draft);
 
         command.deleteRailwayTrack(
+            "1",
             track.getFirstStationId().toString(),
-            track.getSecondStationId().toString(),
-            "1"
+            track.getSecondStationId().toString()
         );
 
         then(draftRepository).should().persist(updatedDraftCaptor.capture());

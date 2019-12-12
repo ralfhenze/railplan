@@ -26,10 +26,10 @@ public class DeleteTrainStationCommand implements Command {
     /**
      * Deletes given TrainStation from given RailNetworkDraft.
      *
-     * @throws EntityNotFoundException if TrainStation with stationId or RailNetworkDraft
-     *                                 with draftId does not exist
+     * @throws EntityNotFoundException if RailNetworkDraft with draftId or TrainStation
+     *                                 with stationId does not exist
      */
-    public void deleteTrainStation(final String stationId, final String draftId) {
+    public void deleteTrainStation(final String draftId, final String stationId) {
         final var draft = draftRepository
             .getRailNetworkDraftOfId(new RailNetworkDraftId(draftId));
 

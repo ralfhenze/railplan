@@ -26,13 +26,13 @@ public class DeleteRailwayTrackCommand implements Command {
     /**
      * Deletes RailwayTrack between Stations of given stationIds from given RailNetworkDraft.
      *
-     * @throws EntityNotFoundException if TrainStation with stationId or Track or RailNetworkDraft
-     *                                 with draftId does not exist
+     * @throws EntityNotFoundException if RailNetworkDraft with draftId or TrainStation
+     *                                 with stationId1 or stationId2 does not exist
      */
     public void deleteRailwayTrack(
+        final String draftId,
         final String stationId1,
-        final String stationId2,
-        final String draftId
+        final String stationId2
     ) {
         final var draft = draftRepository
             .getRailNetworkDraftOfId(new RailNetworkDraftId(draftId));

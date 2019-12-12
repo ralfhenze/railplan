@@ -191,13 +191,16 @@ public class DraftsController {
         return "redirect:/drafts/{currentDraftId}";
     }
 
+    /**
+     * Deletes an existing Station and redirects to Draft page.
+     */
     @GetMapping("/drafts/{currentDraftId}/stations/{stationId}/delete")
     public String deleteStation(
         @PathVariable String currentDraftId,
         @PathVariable String stationId
     ) {
         deleteTrainStationCommand
-            .deleteTrainStation(stationId, currentDraftId);
+            .deleteTrainStation(currentDraftId, stationId);
 
         return "redirect:/drafts/{currentDraftId}";
     }
@@ -242,7 +245,7 @@ public class DraftsController {
         @PathVariable String secondStationId
     ) {
         deleteRailwayTrackCommand
-            .deleteRailwayTrack(firstStationId, secondStationId, currentDraftId);
+            .deleteRailwayTrack(currentDraftId, firstStationId, secondStationId);
 
         return "redirect:/drafts/{currentDraftId}";
     }
