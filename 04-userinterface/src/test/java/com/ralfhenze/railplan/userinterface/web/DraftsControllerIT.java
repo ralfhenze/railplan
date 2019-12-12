@@ -225,12 +225,17 @@ public class DraftsControllerIT {
         // When we call POST /drafts/123/stations/new with invalid Station parameters
         final var response = getPostResponse(
             "/drafts/123/stations/new",
-            Map.of("stationName", "", "latitude", "0.0", "longitude", "0.0")
+            Map.of("stationName", "ab", "latitude", "1.0", "longitude", "1.0")
         );
 
-        // Then each input field shows it's error messages
+        // Then each input field has the invalid value
         final var document = Jsoup.parse(response.getContentAsString());
         assertThat(response.getStatus()).isEqualTo(HTTP_OK);
+        assertThat(document.select("input[name='stationName']").val()).isEqualTo("ab");
+        assertThat(document.select("input[name='latitude']").val()).isEqualTo("1.0");
+        assertThat(document.select("input[name='longitude']").val()).isEqualTo("1.0");
+
+        // And each input field shows it's error messages
         assertThat(document.select(".errors.stationName li").eachText()).isEqualTo(nameErrors);
         assertThat(document.select(".errors.latitude li").eachText()).isEqualTo(latErrors);
         assertThat(document.select(".errors.longitude li").eachText()).isEqualTo(lngErrors);
