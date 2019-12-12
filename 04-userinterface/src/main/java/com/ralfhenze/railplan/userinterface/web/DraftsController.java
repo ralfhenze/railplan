@@ -74,6 +74,9 @@ public class DraftsController {
         return "drafts";
     }
 
+    /**
+     * Creates a new Draft and redirects to it.
+     */
     @GetMapping("/drafts/new")
     public String addDraft() {
         final var draftId = addRailNetworkDraftCommand
