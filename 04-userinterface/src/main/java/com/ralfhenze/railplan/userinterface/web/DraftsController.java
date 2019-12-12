@@ -147,6 +147,9 @@ public class DraftsController {
         return "redirect:/drafts/{currentDraftId}";
     }
 
+    /**
+     * Shows a form to edit an existing Station.
+     */
     @GetMapping("/drafts/{currentDraftId}/stations/{stationId}/edit")
     public String editStation(
         @PathVariable String currentDraftId,

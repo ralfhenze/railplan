@@ -163,7 +163,7 @@ public class DraftsControllerIT {
     }
 
     @Test
-    public void userGetsAFormToAddANewStation() throws Exception {
+    public void userCanAccessAFormToAddANewStation() throws Exception {
         // Given an existing Draft
         given(draftRepository.getRailNetworkDraftOfId(any())).willReturn(getBerlinHamburgDraft());
 
@@ -231,14 +231,33 @@ public class DraftsControllerIT {
         // Then each input field has the invalid value
         final var document = Jsoup.parse(response.getContentAsString());
         assertThat(response.getStatus()).isEqualTo(HTTP_OK);
-        assertThat(document.select("input[name='stationName']").val()).isEqualTo("ab");
-        assertThat(document.select("input[name='latitude']").val()).isEqualTo("1.0");
-        assertThat(document.select("input[name='longitude']").val()).isEqualTo("1.0");
+        assertThat(document.selectFirst("input[name='stationName']").val()).isEqualTo("ab");
+        assertThat(document.selectFirst("input[name='latitude']").val()).isEqualTo("1.0");
+        assertThat(document.selectFirst("input[name='longitude']").val()).isEqualTo("1.0");
 
         // And each input field shows it's error messages
         assertThat(document.select(".errors.stationName li").eachText()).isEqualTo(nameErrors);
         assertThat(document.select(".errors.latitude li").eachText()).isEqualTo(latErrors);
         assertThat(document.select(".errors.longitude li").eachText()).isEqualTo(lngErrors);
+    }
+
+    @Test
+    public void userCanAccessAFormToEditAnExistingStation() throws Exception {
+        // Given an existing Draft
+        given(draftRepository.getRailNetworkDraftOfId(any())).willReturn(getBerlinHamburgDraft());
+
+        // When we call GET /drafts/123/stations/1/edit
+        final var response = getGetResponse("/drafts/123/stations/1/edit");
+
+        // Then we get a form with pre-filled input fields for Station name and coordinates
+        final var document = Jsoup.parse(response.getContentAsString());
+        assertThat(response.getStatus()).isEqualTo(HTTP_OK);
+        assertThat(document.selectFirst("input[name='stationName']").val())
+            .isEqualTo(berlinHbfName.getName());
+        assertThat(document.selectFirst("input[name='latitude']").val())
+            .isEqualTo(berlinHbfPos.getLatitudeAsString());
+        assertThat(document.selectFirst("input[name='longitude']").val())
+            .isEqualTo(berlinHbfPos.getLongitudeAsString());
     }
 
     private RailNetworkDraft getBerlinHamburgDraft() {
