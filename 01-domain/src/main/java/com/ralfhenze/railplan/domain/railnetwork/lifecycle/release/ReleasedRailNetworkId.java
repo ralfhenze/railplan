@@ -18,6 +18,16 @@ public class ReleasedRailNetworkId implements Id {
     }
 
     @Override
+    public boolean equals(Object o) {
+        return (o != null && ((ReleasedRailNetworkId)o).id.equals(this.id));
+    }
+
+    @Override
+    public int hashCode() {
+        return id.hashCode();
+    }
+
+    @Override
     public String toString() {
         return id;
     }

@@ -18,13 +18,13 @@ public class TrainStationId implements Id {
     }
 
     @Override
-    public int hashCode() {
-        return id.hashCode();
+    public boolean equals(Object o) {
+        return (o != null && ((TrainStationId)o).id.equals(this.id));
     }
 
     @Override
-    public boolean equals(Object o) {
-        return (o != null && ((TrainStationId)o).id.equals(this.id));
+    public int hashCode() {
+        return id.hashCode();
     }
 
     @Override
