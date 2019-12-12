@@ -64,6 +64,9 @@ public class DraftsController {
         this.updateTrainStationCommand = updateTrainStationCommand;
     }
 
+    /**
+     * Provides a list of all Drafts.
+     */
     @GetMapping("/drafts")
     public String drafts(Model model) {
         model.addAttribute("draftIds", queries.getAllDraftIds());
