@@ -205,6 +205,9 @@ public class DraftsController {
         return "redirect:/drafts/{currentDraftId}";
     }
 
+    /**
+     * Shows a form to create a new Track.
+     */
     @GetMapping("/drafts/{currentDraftId}/tracks/new")
     public String showNewTrackForm(
         @PathVariable String currentDraftId,

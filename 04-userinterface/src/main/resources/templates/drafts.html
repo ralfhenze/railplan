@@ -71,7 +71,7 @@
             </th:block>
         </form>
 
-        <form action="#" th:action="@{|/drafts/${currentDraftId}/tracks/new|}" th:object="${newTrack}" method="post">
+        <form id="track-form" method="post" th:action="@{|/drafts/${currentDraftId}/tracks/new|}" th:object="${newTrack}">
             <table id="tracks">
                 <caption><h3>Tracks</h3></caption>
                 <thead>

@@ -293,6 +293,22 @@ public class DraftsControllerIT {
         assertThat(response.getRedirectedUrl()).isEqualTo("/drafts/123");
     }
 
+    @Test
+    public void userCanAccessAFormToAddANewTrack() throws Exception {
+        // Given an existing Draft
+        given(draftRepository.getRailNetworkDraftOfId(any())).willReturn(getBerlinHamburgDraft());
+
+        // When we call GET /drafts/123/tracks/new
+        final var response = getGetResponse("/drafts/123/tracks/new");
+
+        // Then we get a form with input fields for Station name and coordinates
+        final var trackForm = getElement("#track-form", response);
+        assertThat(response.getStatus()).isEqualTo(HTTP_OK);
+        assertThat(trackForm.select("select[name='firstStationId']")).hasSize(1);
+        assertThat(trackForm.select("select[name='secondStationId']")).hasSize(1);
+        assertThat(trackForm.select("input[type='submit']")).hasSize(1);
+    }
+
     private RailNetworkDraft getBerlinHamburgDraft() {
         return new RailNetworkDraft()
             .withId(new RailNetworkDraftId("123"))
@@ -316,6 +332,13 @@ public class DraftsControllerIT {
             .perform(post(url).params(multiValueMapParameters))
             .andReturn()
             .getResponse();
+    }
+
+    private Element getElement(
+        final String cssSelector,
+        final MockHttpServletResponse response
+    ) throws Exception {
+        return Jsoup.parse(response.getContentAsString()).selectFirst(cssSelector);
     }
 
     private void verifyPostRequestWithInvalidStationData(
