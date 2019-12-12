@@ -2,9 +2,13 @@ package com.ralfhenze.railplan.userinterface.web;
 
 import com.ralfhenze.railplan.application.commands.AddRailNetworkDraftCommand;
 import com.ralfhenze.railplan.application.queries.Queries;
+import com.ralfhenze.railplan.domain.railnetwork.elements.GeoLocationInGermany;
+import com.ralfhenze.railplan.domain.railnetwork.elements.TrainStationName;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraft;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftId;
+import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftRepository;
 import org.jsoup.Jsoup;
+import org.jsoup.nodes.Element;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +22,12 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.List;
 import java.util.Optional;
 
+import static com.ralfhenze.railplan.userinterface.web.TestData.berlinHbfName;
+import static com.ralfhenze.railplan.userinterface.web.TestData.berlinHbfPos;
+import static com.ralfhenze.railplan.userinterface.web.TestData.hamburgHbfName;
+import static com.ralfhenze.railplan.userinterface.web.TestData.hamburgHbfPos;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -38,6 +47,9 @@ public class DraftsControllerIT {
 
     @MockBean
     private Queries queries;
+
+    @MockBean
+    private RailNetworkDraftRepository draftRepository;
 
     @MockBean
     private AddRailNetworkDraftCommand addRailNetworkDraftCommand;
@@ -74,6 +86,61 @@ public class DraftsControllerIT {
         // And we will be redirected to the new Draft
         assertThat(response.getStatus()).isEqualTo(HTTP_MOVED_TEMPORARILY);
         assertThat(response.getRedirectedUrl()).isEqualTo("/drafts/123");
+    }
+
+    @Test
+    public void userGetsAListOfAllStationsAndTracksOfADraft() throws Exception {
+        // Given an existing Draft
+        given(draftRepository.getRailNetworkDraftOfId(any()))
+            .willReturn(getBerlinHamburgDraft());
+
+        // When we call GET /drafts/123
+        final var response = getGetResponse("/drafts/123");
+
+        // Then we get a table with all Stations
+        final var document = Jsoup.parse(response.getContentAsString());
+        final var stationRows = document.select("table#stations .station-row");
+        assertThat(response.getStatus()).isEqualTo(HTTP_OK);
+        assertThat(stationRows).hasSize(2);
+        assertThatRowShowsNameAndLocation(stationRows.get(0), berlinHbfName, berlinHbfPos);
+        assertThatRowShowsNameAndLocation(stationRows.get(1), hamburgHbfName, hamburgHbfPos);
+
+        // And we get a table with all Tracks
+        final var trackRows = document.select("table#tracks .track-row");
+        assertThat(trackRows).hasSize(1);
+        assertThatRowShowsStationNames(trackRows.get(0), berlinHbfName, hamburgHbfName);
+    }
+
+    private void assertThatRowShowsNameAndLocation(
+        final Element row,
+        final TrainStationName stationName,
+        final GeoLocationInGermany location
+    ) {
+        assertThat(row.selectFirst(".stationName").text())
+            .isEqualTo(stationName.getName());
+        assertThat(row.selectFirst(".latitude").text())
+            .isEqualTo(String.valueOf(location.getLatitude()));
+        assertThat(row.selectFirst(".longitude").text())
+            .isEqualTo(String.valueOf(location.getLongitude()));
+    }
+
+    private void assertThatRowShowsStationNames(
+        final Element row,
+        final TrainStationName stationName1,
+        final TrainStationName stationName2
+    ) {
+        assertThat(row.selectFirst(".station-1").text())
+            .isEqualTo(stationName1.getName());
+        assertThat(row.selectFirst(".station-2").text())
+            .isEqualTo(stationName2.getName());
+    }
+
+    private RailNetworkDraft getBerlinHamburgDraft() {
+        return new RailNetworkDraft()
+            .withId(new RailNetworkDraftId("123"))
+            .withNewStation(berlinHbfName, berlinHbfPos)
+            .withNewStation(hamburgHbfName, hamburgHbfPos)
+            .withNewTrack(berlinHbfName, hamburgHbfName);
     }
 
     private MockHttpServletResponse getGetResponse(final String url) throws Exception {

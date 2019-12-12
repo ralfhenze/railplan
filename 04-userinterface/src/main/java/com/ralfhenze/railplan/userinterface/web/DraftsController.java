@@ -86,6 +86,9 @@ public class DraftsController {
         return "redirect:/drafts/" + draftId;
     }
 
+    /**
+     * Provides a Draft page with a list of Stations and Tracks.
+     */
     @GetMapping("/drafts/{currentDraftId}")
     public String draft(@PathVariable String currentDraftId, Model model) {
         setModelAttributes(currentDraftId, model, null, null, false, false);
