@@ -4,6 +4,7 @@ import com.ralfhenze.railplan.application.commands.AddRailNetworkDraftCommand;
 import com.ralfhenze.railplan.application.commands.AddTrainStationCommand;
 import com.ralfhenze.railplan.application.commands.DeleteRailNetworkDraftCommand;
 import com.ralfhenze.railplan.application.queries.Queries;
+import com.ralfhenze.railplan.domain.common.validation.ValidationException;
 import com.ralfhenze.railplan.domain.railnetwork.elements.GeoLocationInGermany;
 import com.ralfhenze.railplan.domain.railnetwork.elements.TrainStationName;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraft;
@@ -34,6 +35,7 @@ import static com.ralfhenze.railplan.userinterface.web.TestData.potsdamHbfName;
 import static com.ralfhenze.railplan.userinterface.web.TestData.potsdamHbfPos;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyDouble;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -202,6 +204,36 @@ public class DraftsControllerIT {
         // And we will be redirected to the Draft page
         assertThat(response.getStatus()).isEqualTo(HTTP_MOVED_TEMPORARILY);
         assertThat(response.getRedirectedUrl()).isEqualTo("/drafts/123");
+    }
+
+    @Test
+    public void userSeesValidationErrorsWhenAddingAnInvalidStation() throws Exception {
+        final var nameErrors = List.of("name error 1", "name error 2");
+        final var latErrors = List.of("lat error 1");
+        final var lngErrors = List.of("lng error 1");
+        final var validationException = new ValidationException(Map.of(
+            "Station name", nameErrors,
+            "Latitude", latErrors,
+            "Longitude", lngErrors
+        ));
+        given(addTrainStationCommand.addTrainStation(any(), any(), anyDouble(), anyDouble()))
+            .willThrow(validationException);
+
+        // Given an existing Draft
+        given(draftRepository.getRailNetworkDraftOfId(any())).willReturn(getBerlinHamburgDraft());
+
+        // When we call POST /drafts/123/stations/new with invalid Station parameters
+        final var response = getPostResponse(
+            "/drafts/123/stations/new",
+            Map.of("stationName", "", "latitude", "0.0", "longitude", "0.0")
+        );
+
+        // Then each input field shows it's error messages
+        final var document = Jsoup.parse(response.getContentAsString());
+        assertThat(response.getStatus()).isEqualTo(HTTP_OK);
+        assertThat(document.select(".errors.stationName li").eachText()).isEqualTo(nameErrors);
+        assertThat(document.select(".errors.latitude li").eachText()).isEqualTo(latErrors);
+        assertThat(document.select(".errors.longitude li").eachText()).isEqualTo(lngErrors);
     }
 
     private RailNetworkDraft getBerlinHamburgDraft() {

@@ -65,7 +65,7 @@
             <th:block th:fragment="stationTableCell(name, value, showInputField, errors)">
                 <span th:class="${name}" th:unless="${showInputField}" th:text="${value}"></span>
                 <input th:if="${showInputField}" type="text" th:name="${name}" th:value="${value}">
-                <ul th:if="${showInputField == true and not #lists.isEmpty(errors)}">
+                <ul th:class="'errors ' + ${name}" th:if="${showInputField == true and not #lists.isEmpty(errors)}">
                     <li th:each="error : ${errors}" th:text="${error}">Error</li>
                 </ul>
             </th:block>
