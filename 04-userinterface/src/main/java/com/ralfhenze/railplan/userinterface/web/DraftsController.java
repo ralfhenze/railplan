@@ -241,6 +241,9 @@ public class DraftsController {
         return "redirect:/drafts/{currentDraftId}";
     }
 
+    /**
+     * Deletes an existing Track and redirects to Draft page.
+     */
     @GetMapping("/drafts/{currentDraftId}/tracks/{firstStationId}/{secondStationId}/delete")
     public String deleteStation(
         @PathVariable String currentDraftId,

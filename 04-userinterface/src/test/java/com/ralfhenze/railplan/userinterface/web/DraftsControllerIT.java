@@ -4,6 +4,7 @@ import com.ralfhenze.railplan.application.commands.AddRailNetworkDraftCommand;
 import com.ralfhenze.railplan.application.commands.AddTrainStationCommand;
 import com.ralfhenze.railplan.application.commands.Command;
 import com.ralfhenze.railplan.application.commands.DeleteRailNetworkDraftCommand;
+import com.ralfhenze.railplan.application.commands.DeleteRailwayTrackCommand;
 import com.ralfhenze.railplan.application.commands.DeleteTrainStationCommand;
 import com.ralfhenze.railplan.application.commands.UpdateTrainStationCommand;
 import com.ralfhenze.railplan.application.queries.Queries;
@@ -78,6 +79,9 @@ public class DraftsControllerIT {
 
     @MockBean
     private DeleteTrainStationCommand deleteTrainStationCommand;
+
+    @MockBean
+    private DeleteRailwayTrackCommand deleteRailwayTrackCommand;
 
     @Test
     public void userCanNavigateToExistingDrafts() throws Exception {
@@ -307,6 +311,22 @@ public class DraftsControllerIT {
         assertThat(trackForm.select("select[name='firstStationId']")).hasSize(1);
         assertThat(trackForm.select("select[name='secondStationId']")).hasSize(1);
         assertThat(trackForm.select("input[type='submit']")).hasSize(1);
+    }
+
+    @Test
+    public void userCanDeleteAnExistingTrack() throws Exception {
+        // Given an existing Draft
+        given(draftRepository.getRailNetworkDraftOfId(any())).willReturn(getBerlinHamburgDraft());
+
+        // When we call GET /drafts/123/tracks/1/2/delete
+        final var response = getGetResponse("/drafts/123/tracks/1/2/delete");
+
+        // Then a DeleteRailwayTrackCommand is issued
+        verify(deleteRailwayTrackCommand).deleteRailwayTrack("123", "1", "2");
+
+        // And we will be redirected to the Draft page
+        assertThat(response.getStatus()).isEqualTo(HTTP_MOVED_TEMPORARILY);
+        assertThat(response.getRedirectedUrl()).isEqualTo("/drafts/123");
     }
 
     private RailNetworkDraft getBerlinHamburgDraft() {
