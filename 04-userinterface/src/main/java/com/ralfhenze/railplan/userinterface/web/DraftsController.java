@@ -163,6 +163,9 @@ public class DraftsController {
         return "drafts";
     }
 
+    /**
+     * Updates an existing Station or shows validation errors.
+     */
     @PostMapping("/drafts/{currentDraftId}/stations/{stationId}/edit")
     public String updateStation(
         @PathVariable String currentDraftId,
