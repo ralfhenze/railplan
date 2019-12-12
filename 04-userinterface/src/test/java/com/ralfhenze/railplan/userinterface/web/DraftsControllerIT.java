@@ -1,6 +1,7 @@
 package com.ralfhenze.railplan.userinterface.web;
 
 import com.ralfhenze.railplan.application.commands.AddRailNetworkDraftCommand;
+import com.ralfhenze.railplan.application.commands.AddTrainStationCommand;
 import com.ralfhenze.railplan.application.commands.DeleteRailNetworkDraftCommand;
 import com.ralfhenze.railplan.application.queries.Queries;
 import com.ralfhenze.railplan.domain.railnetwork.elements.GeoLocationInGermany;
@@ -19,19 +20,24 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.util.LinkedMultiValueMap;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static com.ralfhenze.railplan.userinterface.web.TestData.berlinHbfName;
 import static com.ralfhenze.railplan.userinterface.web.TestData.berlinHbfPos;
 import static com.ralfhenze.railplan.userinterface.web.TestData.hamburgHbfName;
 import static com.ralfhenze.railplan.userinterface.web.TestData.hamburgHbfPos;
+import static com.ralfhenze.railplan.userinterface.web.TestData.potsdamHbfName;
+import static com.ralfhenze.railplan.userinterface.web.TestData.potsdamHbfPos;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest
@@ -57,6 +63,9 @@ public class DraftsControllerIT {
 
     @MockBean
     private DeleteRailNetworkDraftCommand deleteRailNetworkDraftCommand;
+
+    @MockBean
+    private AddTrainStationCommand addTrainStationCommand;
 
     @Test
     public void userCanNavigateToExistingDrafts() throws Exception {
@@ -122,9 +131,9 @@ public class DraftsControllerIT {
         assertThat(row.selectFirst(".stationName").text())
             .isEqualTo(stationName.getName());
         assertThat(row.selectFirst(".latitude").text())
-            .isEqualTo(String.valueOf(location.getLatitude()));
+            .isEqualTo(location.getLatitudeAsString());
         assertThat(row.selectFirst(".longitude").text())
-            .isEqualTo(String.valueOf(location.getLongitude()));
+            .isEqualTo(location.getLongitudeAsString());
     }
 
     private void assertThatRowShowsStationNames(
@@ -167,6 +176,34 @@ public class DraftsControllerIT {
         assertThat(document.select("input[name='longitude']")).hasSize(1);
     }
 
+    @Test
+    public void userCanAddANewStation() throws Exception {
+        // Given an existing Draft
+        given(draftRepository.getRailNetworkDraftOfId(any())).willReturn(getBerlinHamburgDraft());
+
+        // When we call POST /drafts/123/stations/new with valid Station parameters
+        final var response = getPostResponse(
+            "/drafts/123/stations/new",
+            Map.of(
+                "stationName", potsdamHbfName.getName(),
+                "latitude", potsdamHbfPos.getLatitudeAsString(),
+                "longitude", potsdamHbfPos.getLongitudeAsString()
+            )
+        );
+
+        // Then an AddTrainStationCommand is issued with given Station parameters
+        verify(addTrainStationCommand).addTrainStation(
+            "123",
+            potsdamHbfName.getName(),
+            potsdamHbfPos.getLatitude(),
+            potsdamHbfPos.getLongitude()
+        );
+
+        // And we will be redirected to the Draft page
+        assertThat(response.getStatus()).isEqualTo(HTTP_MOVED_TEMPORARILY);
+        assertThat(response.getRedirectedUrl()).isEqualTo("/drafts/123");
+    }
+
     private RailNetworkDraft getBerlinHamburgDraft() {
         return new RailNetworkDraft()
             .withId(new RailNetworkDraftId("123"))
@@ -177,5 +214,18 @@ public class DraftsControllerIT {
 
     private MockHttpServletResponse getGetResponse(final String url) throws Exception {
         return mockMvc.perform(get(url)).andReturn().getResponse();
+    }
+
+    private MockHttpServletResponse getPostResponse(
+        final String url,
+        final Map<String, String> parameters
+    ) throws Exception {
+        final var multiValueMapParameters = new LinkedMultiValueMap<String, String>();
+        parameters.forEach((key, value) -> multiValueMapParameters.put(key, List.of(value)));
+
+        return mockMvc
+            .perform(post(url).params(multiValueMapParameters))
+            .andReturn()
+            .getResponse();
     }
 }

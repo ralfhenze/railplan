@@ -121,6 +121,9 @@ public class DraftsController {
         return "drafts";
     }
 
+    /**
+     * Creates a new Station or shows validation errors.
+     */
     @PostMapping("/drafts/{currentDraftId}/stations/new")
     public String createNewStation(
         @PathVariable String currentDraftId,
