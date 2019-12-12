@@ -1,6 +1,7 @@
 package com.ralfhenze.railplan.userinterface.web;
 
 import com.ralfhenze.railplan.application.commands.AddRailNetworkDraftCommand;
+import com.ralfhenze.railplan.application.commands.AddRailwayTrackCommand;
 import com.ralfhenze.railplan.application.commands.AddTrainStationCommand;
 import com.ralfhenze.railplan.application.commands.Command;
 import com.ralfhenze.railplan.application.commands.DeleteRailNetworkDraftCommand;
@@ -79,6 +80,9 @@ public class DraftsControllerIT {
 
     @MockBean
     private DeleteTrainStationCommand deleteTrainStationCommand;
+
+    @MockBean
+    private AddRailwayTrackCommand addRailwayTrackCommand;
 
     @MockBean
     private DeleteRailwayTrackCommand deleteRailwayTrackCommand;
@@ -194,9 +198,6 @@ public class DraftsControllerIT {
 
     @Test
     public void userCanAddANewStation() throws Exception {
-        // Given an existing Draft
-        given(draftRepository.getRailNetworkDraftOfId(any())).willReturn(getBerlinHamburgDraft());
-
         // When we call POST /drafts/123/stations/new with valid Station parameters
         final var response = getPostResponse(
             "/drafts/123/stations/new",
@@ -246,9 +247,6 @@ public class DraftsControllerIT {
 
     @Test
     public void userCanUpdateAnExistingStation() throws Exception {
-        // Given an existing Draft
-        given(draftRepository.getRailNetworkDraftOfId(any())).willReturn(getBerlinHamburgDraft());
-
         // When we call POST /drafts/123/stations/1/edit with valid Station parameters
         final var response = getPostResponse(
             "/drafts/123/stations/1/edit",
@@ -283,9 +281,6 @@ public class DraftsControllerIT {
 
     @Test
     public void userCanDeleteAnExistingStation() throws Exception {
-        // Given an existing Draft
-        given(draftRepository.getRailNetworkDraftOfId(any())).willReturn(getBerlinHamburgDraft());
-
         // When we call GET /drafts/123/stations/1/delete
         final var response = getGetResponse("/drafts/123/stations/1/delete");
 
@@ -314,10 +309,56 @@ public class DraftsControllerIT {
     }
 
     @Test
-    public void userCanDeleteAnExistingTrack() throws Exception {
+    public void userCanAddANewTrack() throws Exception {
+        // When we call POST /drafts/123/tracks/new with valid Track parameters
+        final var response = getPostResponse(
+            "/drafts/123/tracks/new",
+            Map.of("firstStationId", "1", "secondStationId", "2")
+        );
+
+        // Then an AddRailwayTrackCommand is issued with given Track parameters
+        verify(addRailwayTrackCommand).addRailwayTrack("123", "1", "2");
+
+        // And we will be redirected to the Draft page
+        assertThat(response.getStatus()).isEqualTo(HTTP_MOVED_TEMPORARILY);
+        assertThat(response.getRedirectedUrl()).isEqualTo("/drafts/123");
+    }
+
+    @Test
+    public void userSeesValidationErrorsWhenAddingAnInvalidTrack() throws Exception {
+        final var firstStationErrors = List.of("Station 1 error");
+        final var secondStationErrors = List.of("Station 2 error");
+        final var validationException = new ValidationException(Map.of(
+            "First Station ID", firstStationErrors,
+            "Second Station ID", secondStationErrors
+        ));
+        given(addRailwayTrackCommand.addRailwayTrack(any(), any(), any()))
+            .willThrow(validationException);
+
         // Given an existing Draft
         given(draftRepository.getRailNetworkDraftOfId(any())).willReturn(getBerlinHamburgDraft());
 
+        // When we call POST /drafts/123/tracks/new with invalid Track parameters
+        final var response = getPostResponse(
+            "/drafts/123/tracks/new",
+            Map.of("firstStationId", "2", "secondStationId", "2")
+        );
+
+        // Then each Station selector has the invalid value
+        final var trackForm = getElement("#track-form", response);
+        assertThat(response.getStatus()).isEqualTo(HTTP_OK);
+        assertThat(trackForm.select("select[name='firstStationId']").val()).isEqualTo("2");
+        assertThat(trackForm.select("select[name='secondStationId']").val()).isEqualTo("2");
+
+        // And each Station selector shows it's error messages
+        assertThat(trackForm.select(".errors.firstStationId li").eachText())
+            .isEqualTo(firstStationErrors);
+        assertThat(trackForm.select(".errors.secondStationId li").eachText())
+            .isEqualTo(secondStationErrors);
+    }
+
+    @Test
+    public void userCanDeleteAnExistingTrack() throws Exception {
         // When we call GET /drafts/123/tracks/1/2/delete
         final var response = getGetResponse("/drafts/123/tracks/1/2/delete");
 
@@ -327,38 +368,6 @@ public class DraftsControllerIT {
         // And we will be redirected to the Draft page
         assertThat(response.getStatus()).isEqualTo(HTTP_MOVED_TEMPORARILY);
         assertThat(response.getRedirectedUrl()).isEqualTo("/drafts/123");
-    }
-
-    private RailNetworkDraft getBerlinHamburgDraft() {
-        return new RailNetworkDraft()
-            .withId(new RailNetworkDraftId("123"))
-            .withNewStation(berlinHbfName, berlinHbfPos)
-            .withNewStation(hamburgHbfName, hamburgHbfPos)
-            .withNewTrack(berlinHbfName, hamburgHbfName);
-    }
-
-    private MockHttpServletResponse getGetResponse(final String url) throws Exception {
-        return mockMvc.perform(get(url)).andReturn().getResponse();
-    }
-
-    private MockHttpServletResponse getPostResponse(
-        final String url,
-        final Map<String, String> parameters
-    ) throws Exception {
-        final var multiValueMapParameters = new LinkedMultiValueMap<String, String>();
-        parameters.forEach((key, value) -> multiValueMapParameters.put(key, List.of(value)));
-
-        return mockMvc
-            .perform(post(url).params(multiValueMapParameters))
-            .andReturn()
-            .getResponse();
-    }
-
-    private Element getElement(
-        final String cssSelector,
-        final MockHttpServletResponse response
-    ) throws Exception {
-        return Jsoup.parse(response.getContentAsString()).selectFirst(cssSelector);
     }
 
     private void verifyPostRequestWithInvalidStationData(
@@ -403,5 +412,37 @@ public class DraftsControllerIT {
         assertThat(document.select(".errors.stationName li").eachText()).isEqualTo(nameErrors);
         assertThat(document.select(".errors.latitude li").eachText()).isEqualTo(latErrors);
         assertThat(document.select(".errors.longitude li").eachText()).isEqualTo(lngErrors);
+    }
+
+    private RailNetworkDraft getBerlinHamburgDraft() {
+        return new RailNetworkDraft()
+            .withId(new RailNetworkDraftId("123"))
+            .withNewStation(berlinHbfName, berlinHbfPos)
+            .withNewStation(hamburgHbfName, hamburgHbfPos)
+            .withNewTrack(berlinHbfName, hamburgHbfName);
+    }
+
+    private MockHttpServletResponse getGetResponse(final String url) throws Exception {
+        return mockMvc.perform(get(url)).andReturn().getResponse();
+    }
+
+    private MockHttpServletResponse getPostResponse(
+        final String url,
+        final Map<String, String> parameters
+    ) throws Exception {
+        final var multiValueMapParameters = new LinkedMultiValueMap<String, String>();
+        parameters.forEach((key, value) -> multiValueMapParameters.put(key, List.of(value)));
+
+        return mockMvc
+            .perform(post(url).params(multiValueMapParameters))
+            .andReturn()
+            .getResponse();
+    }
+
+    private Element getElement(
+        final String cssSelector,
+        final MockHttpServletResponse response
+    ) throws Exception {
+        return Jsoup.parse(response.getContentAsString()).selectFirst(cssSelector);
     }
 }

@@ -219,6 +219,9 @@ public class DraftsController {
         return "drafts";
     }
 
+    /**
+     * Creates a new Track or shows validation errors.
+     */
     @PostMapping("/drafts/{currentDraftId}/tracks/new")
     public String createNewTrack(
         @PathVariable String currentDraftId,

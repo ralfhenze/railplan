@@ -110,7 +110,7 @@
                 <select th:if="${fieldName != null}" th:name="${fieldName}" th:value="${fieldValue}">
                     <option th:each="name : ${stationNames}" th:value="${name.getKey()}" th:text="${name.getValue()}">Berlin Hbf</option>
                 </select>
-                <ul th:if="${errors != null}">
+                <ul th:class="'errors ' + ${fieldName}" th:if="${errors != null}">
                     <li th:each="error : ${errors}" th:text="${error}">Error</li>
                 </ul>
             </th:block>
