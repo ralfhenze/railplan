@@ -68,8 +68,16 @@ public class GeoLocationInGermany implements ValueObject {
         return latitude;
     }
 
+    public String getLatitudeAsString() {
+        return String.valueOf(latitude);
+    }
+
     public double getLongitude() {
         return longitude;
+    }
+
+    public String getLongitudeAsString() {
+        return String.valueOf(longitude);
     }
 
     @Override

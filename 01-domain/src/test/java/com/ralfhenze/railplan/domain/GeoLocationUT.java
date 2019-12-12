@@ -34,4 +34,12 @@ public class GeoLocationUT {
             new GeoLocationInGermany(latitude, longitude)
         );
     }
+
+    @Test
+    public void providesLatitudeAndLongitudeAsString() {
+        final var berlin = new GeoLocationInGermany(52.518611, 13.408333);
+
+        assertThat(berlin.getLatitudeAsString()).isEqualTo("52.518611");
+        assertThat(berlin.getLongitudeAsString()).isEqualTo("13.408333");
+    }
 }
