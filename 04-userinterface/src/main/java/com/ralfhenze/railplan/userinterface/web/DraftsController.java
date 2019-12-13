@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 public class DraftsController {
 
     private final Queries queries;
-    private final RailNetworkDraftRepository railNetworkDraftRepository;
+    private final RailNetworkDraftRepository draftRepository;
     private final AddRailNetworkDraftCommand addRailNetworkDraftCommand;
     private final AddRailwayTrackCommand addRailwayTrackCommand;
     private final AddTrainStationCommand addTrainStationCommand;
@@ -35,7 +35,7 @@ public class DraftsController {
     @Autowired
     public DraftsController(
         final Queries queries,
-        final RailNetworkDraftRepository railNetworkDraftRepository,
+        final RailNetworkDraftRepository draftRepository,
         final AddRailNetworkDraftCommand addRailNetworkDraftCommand,
         final AddRailwayTrackCommand addRailwayTrackCommand,
         final AddTrainStationCommand addTrainStationCommand,
@@ -45,7 +45,7 @@ public class DraftsController {
         final UpdateTrainStationCommand updateTrainStationCommand
     ) {
         this.queries = queries;
-        this.railNetworkDraftRepository = railNetworkDraftRepository;
+        this.draftRepository = draftRepository;
         this.addRailNetworkDraftCommand = addRailNetworkDraftCommand;
         this.addRailwayTrackCommand = addRailwayTrackCommand;
         this.addTrainStationCommand = addTrainStationCommand;
@@ -82,10 +82,9 @@ public class DraftsController {
      */
     @GetMapping("/drafts/{currentDraftId}")
     public String draft(@PathVariable String currentDraftId, Model model) {
-        new DraftsViewModel(currentDraftId, railNetworkDraftRepository, queries)
-            .writeTo(model);
-
-        return "drafts";
+        return new DraftsView(currentDraftId, draftRepository, queries)
+            .addRequiredAttributesTo(model)
+            .getViewName();
     }
 
     /**
@@ -104,11 +103,10 @@ public class DraftsController {
      */
     @GetMapping("/drafts/{currentDraftId}/stations/new")
     public String showNewStationForm(@PathVariable String currentDraftId, Model model) {
-        new DraftsViewModel(currentDraftId, railNetworkDraftRepository, queries)
+        return new DraftsView(currentDraftId, draftRepository, queries)
             .withShowNewStationForm(true)
-            .writeTo(model);
-
-        return "drafts";
+            .addRequiredAttributesTo(model)
+            .getViewName();
     }
 
     /**
@@ -128,12 +126,11 @@ public class DraftsController {
                 Double.parseDouble(stationRow.longitude)
             );
         } catch (ValidationException exception) {
-            new DraftsViewModel(currentDraftId, railNetworkDraftRepository, queries)
+            return new DraftsView(currentDraftId, draftRepository, queries)
                 .withShowNewStationForm(true)
-                .withStationErrorsFrom(exception)
-                .writeTo(model);
-
-            return "drafts";
+                .withStationErrorsProvidedBy(exception)
+                .addRequiredAttributesTo(model)
+                .getViewName();
         }
 
         return "redirect:/drafts/{currentDraftId}";
@@ -148,11 +145,10 @@ public class DraftsController {
         @PathVariable String stationId,
         Model model
     ) {
-        new DraftsViewModel(currentDraftId, railNetworkDraftRepository, queries)
+        return new DraftsView(currentDraftId, draftRepository, queries)
             .withStationIdToEdit(stationId)
-            .writeTo(model);
-
-        return "drafts";
+            .addRequiredAttributesTo(model)
+            .getViewName();
     }
 
     /**
@@ -174,12 +170,11 @@ public class DraftsController {
                 Double.parseDouble(stationRow.longitude)
             );
         } catch (ValidationException exception) {
-            new DraftsViewModel(currentDraftId, railNetworkDraftRepository, queries)
+            return new DraftsView(currentDraftId, draftRepository, queries)
                 .withStationIdToEdit(stationId)
-                .withStationErrorsFrom(exception)
-                .writeTo(model);
-
-            return "drafts";
+                .withStationErrorsProvidedBy(exception)
+                .addRequiredAttributesTo(model)
+                .getViewName();
         }
 
         return "redirect:/drafts/{currentDraftId}";
@@ -207,11 +202,10 @@ public class DraftsController {
         @PathVariable String currentDraftId,
         Model model
     ) {
-        new DraftsViewModel(currentDraftId, railNetworkDraftRepository, queries)
+        return new DraftsView(currentDraftId, draftRepository, queries)
             .withShowNewTrackForm(true)
-            .writeTo(model);
-
-        return "drafts";
+            .addRequiredAttributesTo(model)
+            .getViewName();
     }
 
     /**
@@ -230,12 +224,11 @@ public class DraftsController {
                 String.valueOf(trackDto.getSecondStationId())
             );
         } catch (ValidationException exception) {
-            new DraftsViewModel(currentDraftId, railNetworkDraftRepository, queries)
+            return new DraftsView(currentDraftId, draftRepository, queries)
                 .withShowNewTrackForm(true)
-                .withTrackErrorsFrom(exception)
-                .writeTo(model);
-
-            return "drafts";
+                .withTrackErrorsProvidedBy(exception)
+                .addRequiredAttributesTo(model)
+                .getViewName();
         }
 
         return "redirect:/drafts/{currentDraftId}";

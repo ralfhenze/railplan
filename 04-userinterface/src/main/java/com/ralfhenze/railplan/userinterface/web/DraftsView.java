@@ -15,9 +15,9 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
- * A view model that prepares the necessary data for resources/templates/drafts.html.
+ * Prepares the necessary data for resources/templates/drafts.html.
  */
-public class DraftsViewModel {
+public class DraftsView {
 
     private final String currentDraftId;
     private final RailNetworkDraftRepository draftRepository;
@@ -28,7 +28,7 @@ public class DraftsViewModel {
     private Map<String, List<String>> stationErrors;
     private Map<String, List<String>> trackErrors = Map.of();
 
-    public DraftsViewModel(
+    public DraftsView(
         final String currentDraftId,
         final RailNetworkDraftRepository draftRepository,
         final Queries queries
@@ -38,32 +38,32 @@ public class DraftsViewModel {
         this.draftRepository = draftRepository;
     }
 
-    public DraftsViewModel withStationIdToEdit(final String stationIdToEdit) {
+    public DraftsView withStationIdToEdit(final String stationIdToEdit) {
         this.stationIdToEdit = stationIdToEdit;
         return this;
     }
 
-    public DraftsViewModel withShowNewStationForm(final boolean showNewStationForm) {
+    public DraftsView withShowNewStationForm(final boolean showNewStationForm) {
         this.showNewStationForm = showNewStationForm;
         return this;
     }
 
-    public DraftsViewModel withShowNewTrackForm(final boolean showNewTrackForm) {
+    public DraftsView withShowNewTrackForm(final boolean showNewTrackForm) {
         this.showNewTrackForm = showNewTrackForm;
         return this;
     }
 
-    public DraftsViewModel withStationErrorsFrom(final ValidationException exception) {
+    public DraftsView withStationErrorsProvidedBy(final ValidationException exception) {
         this.stationErrors = exception.getErrorMessagesAsHashMap();
         return this;
     }
 
-    public DraftsViewModel withTrackErrorsFrom(final ValidationException exception) {
+    public DraftsView withTrackErrorsProvidedBy(final ValidationException exception) {
         this.trackErrors = exception.getErrorMessagesAsHashMap();
         return this;
     }
 
-    public void writeTo(final Model model) {
+    public DraftsView addRequiredAttributesTo(final Model model) {
         model.addAttribute("draftIds", queries.getAllDraftIds());
 
         final var draft = draftRepository
@@ -145,5 +145,11 @@ public class DraftsViewModel {
         }
 
         model.addAttribute("newStationTableRow", newStationTableRow);
+
+        return this;
+    }
+
+    public String getViewName() {
+        return "drafts";
     }
 }
