@@ -38,6 +38,10 @@ public class DraftsView {
         this.draftRepository = draftRepository;
     }
 
+    public String getViewName() {
+        return "drafts";
+    }
+
     public DraftsView withStationIdToEdit(final String stationIdToEdit) {
         this.stationIdToEdit = stationIdToEdit;
         return this;
@@ -64,22 +68,45 @@ public class DraftsView {
     }
 
     public DraftsView addRequiredAttributesTo(final Model model) {
-        model.addAttribute("draftIds", queries.getAllDraftIds());
+        final var draftDto = getDraftDto();
+        final var stationNames = getStationNames(draftDto);
 
+        model.addAttribute("draftIds", queries.getAllDraftIds());
+        model.addAttribute("currentDraftDto", draftDto);
+        model.addAttribute("stationNames", stationNames);
+        model.addAttribute("tracks", getTracksWithStationNames(draftDto, stationNames));
+        model.addAttribute("showNewTrackForm", showNewTrackForm);
+        model.addAttribute("trackErrors", trackErrors);
+        if (trackErrors.isEmpty()) {
+            model.addAttribute("newTrack", new RailwayTrackDto());
+        }
+
+        model.addAttribute("stationTableRows", getStationTableRows(model, draftDto));
+        model.addAttribute("showNewStationForm", showNewStationForm);
+        model.addAttribute("newStationTableRow", getNewStationTableRow());
+
+        return this;
+    }
+
+    private RailNetworkDraftDto getDraftDto() {
         final var draft = draftRepository
             .getRailNetworkDraftOfId(new RailNetworkDraftId(currentDraftId));
-        final var draftDto = new RailNetworkDraftDto(draft);
 
-        model.addAttribute("currentDraftDto", draftDto);
+        return new RailNetworkDraftDto(draft);
+    }
 
-        final Map<Integer, String> stationNames = draftDto
+    private Map<Integer, String> getStationNames(final RailNetworkDraftDto draftDto) {
+        return draftDto
             .getStations()
             .stream()
             .collect(Collectors.toMap(TrainStationDto::getId, TrainStationDto::getName));
+    }
 
-        model.addAttribute("stationNames", stationNames);
-
-        final List<List<Pair<String, String>>> tracksWithStationNames = draftDto
+    private List<List<Pair<String, String>>> getTracksWithStationNames(
+        final RailNetworkDraftDto draftDto,
+        final Map<Integer, String> stationNames
+    ) {
+        return draftDto
             .getTracks()
             .stream()
             .map(trackDto -> List.of(
@@ -93,15 +120,13 @@ public class DraftsView {
                 )
             ))
             .collect(Collectors.toList());
+    }
 
-        model.addAttribute("tracks", tracksWithStationNames);
-        model.addAttribute("showNewTrackForm", showNewTrackForm);
-        model.addAttribute("trackErrors", trackErrors);
-        if (trackErrors.isEmpty()) {
-            model.addAttribute("newTrack", new RailwayTrackDto());
-        }
-
-        final List<StationTableRow> stationTableRows = draftDto
+    private List<StationTableRow> getStationTableRows(
+        final Model model,
+        final RailNetworkDraftDto draftDto
+    ) {
+        return draftDto
             .getStations()
             .stream()
             .map(stationDto -> {
@@ -131,25 +156,20 @@ public class DraftsView {
                 return row;
             })
             .collect(Collectors.toList());
+    }
 
-        model.addAttribute("stationTableRows", stationTableRows);
-        model.addAttribute("showNewStationForm", showNewStationForm);
-
+    private StationTableRow getNewStationTableRow() {
         final var newStationTableRow = new StationTableRow();
+
         newStationTableRow.showInputField = true;
         newStationTableRow.disabled = (stationIdToEdit != null);
+
         if (stationIdToEdit == null && stationErrors != null) {
             newStationTableRow.stationNameErrors = stationErrors.getOrDefault("Station name", List.of());
             newStationTableRow.latitudeErrors = stationErrors.getOrDefault("Latitude", List.of());
             newStationTableRow.longitudeErrors = stationErrors.getOrDefault("Longitude", List.of());
         }
 
-        model.addAttribute("newStationTableRow", newStationTableRow);
-
-        return this;
-    }
-
-    public String getViewName() {
-        return "drafts";
+        return newStationTableRow;
     }
 }
