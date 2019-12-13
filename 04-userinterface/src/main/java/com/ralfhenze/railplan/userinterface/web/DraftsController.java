@@ -6,6 +6,7 @@ import com.ralfhenze.railplan.application.commands.AddTrainStationCommand;
 import com.ralfhenze.railplan.application.commands.DeleteRailNetworkDraftCommand;
 import com.ralfhenze.railplan.application.commands.DeleteRailwayTrackCommand;
 import com.ralfhenze.railplan.application.commands.DeleteTrainStationCommand;
+import com.ralfhenze.railplan.application.commands.ReleaseRailNetworkCommand;
 import com.ralfhenze.railplan.application.commands.UpdateTrainStationCommand;
 import com.ralfhenze.railplan.application.queries.Queries;
 import com.ralfhenze.railplan.domain.common.validation.ValidationException;
@@ -19,6 +20,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import java.time.LocalDate;
+
 @Controller
 public class DraftsController {
 
@@ -31,6 +34,7 @@ public class DraftsController {
     private final DeleteRailwayTrackCommand deleteRailwayTrackCommand;
     private final DeleteTrainStationCommand deleteTrainStationCommand;
     private final UpdateTrainStationCommand updateTrainStationCommand;
+    private final ReleaseRailNetworkCommand releaseRailNetworkCommand;
 
     @Autowired
     public DraftsController(
@@ -42,7 +46,8 @@ public class DraftsController {
         final DeleteRailNetworkDraftCommand deleteRailNetworkDraftCommand,
         final DeleteRailwayTrackCommand deleteRailwayTrackCommand,
         final DeleteTrainStationCommand deleteTrainStationCommand,
-        final UpdateTrainStationCommand updateTrainStationCommand
+        final UpdateTrainStationCommand updateTrainStationCommand,
+        final ReleaseRailNetworkCommand releaseRailNetworkCommand
     ) {
         this.queries = queries;
         this.draftRepository = draftRepository;
@@ -53,6 +58,7 @@ public class DraftsController {
         this.deleteRailwayTrackCommand = deleteRailwayTrackCommand;
         this.deleteTrainStationCommand = deleteTrainStationCommand;
         this.updateTrainStationCommand = updateTrainStationCommand;
+        this.releaseRailNetworkCommand = releaseRailNetworkCommand;
     }
 
     /**
@@ -261,5 +267,23 @@ public class DraftsController {
             .withShowReleaseForm(true)
             .addRequiredAttributesTo(model)
             .getViewName();
+    }
+
+    /**
+     * Releases a Draft or shows validation errors.
+     */
+    @PostMapping("/drafts/{currentDraftId}/release")
+    public String releaseDraft(
+        @PathVariable String currentDraftId,
+        @ModelAttribute(name = "period") ValidityPeriodDto periodDto,
+        Model model
+    ) {
+        final var networkId = releaseRailNetworkCommand.releaseRailNetworkDraft(
+            currentDraftId,
+            LocalDate.parse(periodDto.getStartDate()),
+            LocalDate.parse(periodDto.getEndDate())
+        );
+
+        return "redirect:/networks/" + networkId.get();
     }
 }

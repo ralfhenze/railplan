@@ -7,6 +7,7 @@ import com.ralfhenze.railplan.application.commands.Command;
 import com.ralfhenze.railplan.application.commands.DeleteRailNetworkDraftCommand;
 import com.ralfhenze.railplan.application.commands.DeleteRailwayTrackCommand;
 import com.ralfhenze.railplan.application.commands.DeleteTrainStationCommand;
+import com.ralfhenze.railplan.application.commands.ReleaseRailNetworkCommand;
 import com.ralfhenze.railplan.application.commands.UpdateTrainStationCommand;
 import com.ralfhenze.railplan.application.queries.Queries;
 import com.ralfhenze.railplan.domain.common.validation.ValidationException;
@@ -15,6 +16,7 @@ import com.ralfhenze.railplan.domain.railnetwork.elements.TrainStationName;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraft;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftId;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftRepository;
+import com.ralfhenze.railplan.domain.railnetwork.lifecycle.release.ReleasedRailNetworkId;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
 import org.junit.Test;
@@ -28,6 +30,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.LinkedMultiValueMap;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -86,6 +89,9 @@ public class DraftsControllerIT {
 
     @MockBean
     private DeleteRailwayTrackCommand deleteRailwayTrackCommand;
+
+    @MockBean
+    private ReleaseRailNetworkCommand releaseRailNetworkCommand;
 
     @Test
     public void userCanNavigateToExistingDrafts() throws Exception {
@@ -384,6 +390,28 @@ public class DraftsControllerIT {
         assertThat(releaseForm.select("input[name='startDate']")).hasSize(1);
         assertThat(releaseForm.select("input[name='endDate']")).hasSize(1);
         assertThat(releaseForm.select("input[type='submit']")).hasSize(1);
+    }
+
+    @Test
+    public void userCanReleaseAnExistingDraft() throws Exception {
+        // Given we will get an ID for our Released Rail Network
+        given(releaseRailNetworkCommand.releaseRailNetworkDraft(any(), any(), any()))
+            .willReturn(Optional.of(new ReleasedRailNetworkId("1")));
+
+        // When we call POST /drafts/123/release with valid parameters
+        final var response = getPostResponse(
+            "/drafts/123/release",
+            Map.of("startDate", "2020-01-01", "endDate", "2020-01-31")
+        );
+
+        // Then a ReleaseRailNetworkCommand is issued with those parameters
+        verify(releaseRailNetworkCommand).releaseRailNetworkDraft(
+            "123", LocalDate.parse("2020-01-01"), LocalDate.parse("2020-01-31")
+        );
+
+        // And we will be redirected to the Released Rail Network page
+        assertThat(response.getStatus()).isEqualTo(HTTP_MOVED_TEMPORARILY);
+        assertThat(response.getRedirectedUrl()).isEqualTo("/networks/1");
     }
 
     private void verifyPostRequestWithInvalidStationData(

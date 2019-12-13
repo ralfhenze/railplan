@@ -6,11 +6,14 @@ import com.ralfhenze.railplan.application.commands.AddTrainStationCommand;
 import com.ralfhenze.railplan.application.commands.DeleteRailNetworkDraftCommand;
 import com.ralfhenze.railplan.application.commands.DeleteRailwayTrackCommand;
 import com.ralfhenze.railplan.application.commands.DeleteTrainStationCommand;
+import com.ralfhenze.railplan.application.commands.ReleaseRailNetworkCommand;
 import com.ralfhenze.railplan.application.commands.UpdateTrainStationCommand;
 import com.ralfhenze.railplan.application.queries.Queries;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftRepository;
+import com.ralfhenze.railplan.domain.railnetwork.lifecycle.release.ReleasedRailNetworkRepository;
 import com.ralfhenze.railplan.infrastructure.persistence.MongoDbQueries;
 import com.ralfhenze.railplan.infrastructure.persistence.RailNetworkDraftMongoDbRepository;
+import com.ralfhenze.railplan.infrastructure.persistence.ReleasedRailNetworkMongoDbRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -26,6 +29,9 @@ public class RailPlanApplication {
     @Autowired
     private RailNetworkDraftRepository railNetworkDraftRepository;
 
+    @Autowired
+    private ReleasedRailNetworkRepository releasedRailNetworkRepository;
+
     public static void main(String[] args) {
         SpringApplication.run(RailPlanApplication.class, args);
     }
@@ -38,6 +44,11 @@ public class RailPlanApplication {
     @Bean
     public RailNetworkDraftRepository getRailNetworkDraftRepository() {
         return new RailNetworkDraftMongoDbRepository(mongoTemplate);
+    }
+
+    @Bean
+    public ReleasedRailNetworkRepository getReleasedRailNetworkRepository() {
+        return new ReleasedRailNetworkMongoDbRepository(mongoTemplate);
     }
 
     @Bean
@@ -73,5 +84,13 @@ public class RailPlanApplication {
     @Bean
     public UpdateTrainStationCommand getUpdateTrainStationCommand() {
         return new UpdateTrainStationCommand(railNetworkDraftRepository);
+    }
+
+    @Bean
+    public ReleaseRailNetworkCommand getReleaseRailNetworkCommand() {
+        return new ReleaseRailNetworkCommand(
+            railNetworkDraftRepository,
+            releasedRailNetworkRepository
+        );
     }
 }

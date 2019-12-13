@@ -118,7 +118,7 @@
 
         <h3>Release</h3>
         <a th:unless="${showReleaseForm}" th:href="@{|/drafts/${currentDraftId}/release|}">Release this Draft</a>
-        <form id="release-form" th:if="${showReleaseForm}">
+        <form id="release-form" method="post" th:if="${showReleaseForm}">
             <h4>Validity Period</h4>
             <p>
                 <label for="start-date">From:</label>
