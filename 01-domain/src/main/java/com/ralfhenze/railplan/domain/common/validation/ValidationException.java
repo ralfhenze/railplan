@@ -21,7 +21,7 @@ public class ValidationException extends RuntimeException {
         this.errorMessages = map.toImmutable();
     }
 
-    ValidationException(final ImmutableMap<String, MutableList<String>> errorMessages) {
+    public ValidationException(final ImmutableMap<String, MutableList<String>> errorMessages) {
         super(errorMessages.collect(m -> "\n* " + m).toString());
         this.errorMessages = errorMessages;
     }

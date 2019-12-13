@@ -1,9 +1,10 @@
 package com.ralfhenze.railplan.domain.railnetwork.lifecycle.release;
 
 import com.ralfhenze.railplan.domain.common.DomainService;
+import com.ralfhenze.railplan.domain.common.validation.ValidationException;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraft;
-
-import java.util.Optional;
+import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.factory.Maps;
 
 import static com.ralfhenze.railplan.domain.common.Preconditions.ensureNotNull;
 
@@ -12,26 +13,33 @@ import static com.ralfhenze.railplan.domain.common.Preconditions.ensureNotNull;
  */
 public class RailNetworkReleaseService implements DomainService {
 
-    private final ReleasedRailNetworkRepository railNetworkRepository;
+    private final ReleasedRailNetworkRepository networkRepository;
 
-    public RailNetworkReleaseService(final ReleasedRailNetworkRepository railNetworkRepository) {
-        this.railNetworkRepository = ensureNotNull(railNetworkRepository, "Rail Network Repository");
+    public RailNetworkReleaseService(final ReleasedRailNetworkRepository networkRepository) {
+        this.networkRepository = ensureNotNull(
+            networkRepository, "Rail Network Repository"
+        );
     }
 
-    public Optional<ReleasedRailNetwork> release(final RailNetworkDraft draft, final ValidityPeriod period) {
-        ensureValidPeriod(period);
+    /**
+     * Releases given Draft for given Period.
+     *
+     * @throws ValidationException if Period is invalid or Draft violates Network invariants
+     */
+    public ReleasedRailNetwork release(final RailNetworkDraft draft, final ValidityPeriod period) {
+        validatePeriod(period);
 
-        final var railNetwork = new ReleasedRailNetwork(
+        final var network = new ReleasedRailNetwork(
             period,
             draft.getStations(),
             draft.getTracks()
         );
 
-        return railNetworkRepository.add(railNetwork);
+        return networkRepository.add(network);
     }
 
-    private void ensureValidPeriod(final ValidityPeriod period) {
-        final var lastReleasedRailNetwork = railNetworkRepository.getLastReleasedRailNetwork();
+    private void validatePeriod(final ValidityPeriod period) {
+        final var lastReleasedRailNetwork = networkRepository.getLastReleasedRailNetwork();
 
         if (lastReleasedRailNetwork.isPresent()) {
             final var lastEndDate = lastReleasedRailNetwork.get().getPeriod().getEndDate();
@@ -40,8 +48,14 @@ public class RailNetworkReleaseService implements DomainService {
 
             // ensure no gaps and no overlapping
             if (!periodStartDate.equals(validStartDate)) {
-                throw new IllegalArgumentException(
-                    "Period start date should be " + validStartDate + ", but was " + periodStartDate
+                throw new ValidationException(
+                    Maps.immutable.of(
+                        "Start Date",
+                        Lists.mutable.of(
+                            "Start Date should be " + validStartDate
+                                + ", but was " + periodStartDate
+                        )
+                    )
                 );
             }
         }

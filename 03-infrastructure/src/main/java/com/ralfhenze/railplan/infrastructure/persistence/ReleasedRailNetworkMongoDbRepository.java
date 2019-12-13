@@ -36,13 +36,11 @@ public class ReleasedRailNetworkMongoDbRepository implements ReleasedRailNetwork
     }
 
     @Override
-    public Optional<ReleasedRailNetwork> add(ReleasedRailNetwork railNetwork) {
+    public ReleasedRailNetwork add(ReleasedRailNetwork railNetwork) {
         // TODO: only accept networks without ID
         final var networkDto = new ReleasedRailNetworkDto(railNetwork);
         final var persistedNetworkDto = mongoTemplate.insert(networkDto, COLLECTION_NAME);
 
-        return Optional.of(
-            persistedNetworkDto.toReleasedRailNetwork()
-        );
+        return persistedNetworkDto.toReleasedRailNetwork();
     }
 }

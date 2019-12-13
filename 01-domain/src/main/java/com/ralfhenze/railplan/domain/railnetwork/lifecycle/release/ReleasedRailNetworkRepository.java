@@ -6,5 +6,5 @@ import java.util.Optional;
 
 public interface ReleasedRailNetworkRepository extends Repository {
     Optional<ReleasedRailNetwork> getLastReleasedRailNetwork();
-    Optional<ReleasedRailNetwork> add(ReleasedRailNetwork railNetwork);
+    ReleasedRailNetwork add(ReleasedRailNetwork railNetwork);
 }

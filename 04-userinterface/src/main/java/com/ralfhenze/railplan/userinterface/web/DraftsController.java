@@ -284,6 +284,6 @@ public class DraftsController {
             LocalDate.parse(periodDto.getEndDate())
         );
 
-        return "redirect:/networks/" + networkId.get();
+        return "redirect:/networks/" + networkId;
     }
 }

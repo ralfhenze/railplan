@@ -3,20 +3,32 @@ package com.ralfhenze.railplan.application;
 import com.ralfhenze.railplan.application.commands.ReleaseRailNetworkCommand;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraft;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftRepository;
+import com.ralfhenze.railplan.domain.railnetwork.lifecycle.release.ReleasedRailNetwork;
+import com.ralfhenze.railplan.domain.railnetwork.lifecycle.release.ReleasedRailNetworkId;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.release.ReleasedRailNetworkRepository;
 import org.junit.Test;
+
+import java.util.Optional;
 
 import static com.ralfhenze.railplan.application.TestData.berlinHbfName;
 import static com.ralfhenze.railplan.application.TestData.berlinHbfPos;
 import static com.ralfhenze.railplan.application.TestData.defaultPeriod;
 import static com.ralfhenze.railplan.application.TestData.hamburgHbfName;
 import static com.ralfhenze.railplan.application.TestData.hamburgHbfPos;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 public class ReleaseRailNetworkCommandUT {
+
+    @Test
+    public void cannotBeConstructedWithNullArguments() {
+        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() ->
+            new ReleaseRailNetworkCommand(null, null)
+        );
+    }
 
     @Test
     public void persistsReleasedNetwork() {
@@ -27,8 +39,13 @@ public class ReleaseRailNetworkCommandUT {
             .withNewStation(berlinHbfName, berlinHbfPos)
             .withNewStation(hamburgHbfName, hamburgHbfPos)
             .withNewTrack(berlinHbfName, hamburgHbfName);
-        when(draftRepository.getRailNetworkDraftOfId(any()))
-            .thenReturn(draft);
+        given(draftRepository.getRailNetworkDraftOfId(any()))
+            .willReturn(draft);
+        final var network = mock(ReleasedRailNetwork.class);
+        given(network.getId())
+            .willReturn(Optional.of(new ReleasedRailNetworkId("1")));
+        given(networkRepository.add(any()))
+            .willReturn(network);
 
         command.releaseRailNetworkDraft(
             "1",

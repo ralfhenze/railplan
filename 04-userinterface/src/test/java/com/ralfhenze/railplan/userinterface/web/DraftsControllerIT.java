@@ -396,7 +396,7 @@ public class DraftsControllerIT {
     public void userCanReleaseAnExistingDraft() throws Exception {
         // Given we will get an ID for our Released Rail Network
         given(releaseRailNetworkCommand.releaseRailNetworkDraft(any(), any(), any()))
-            .willReturn(Optional.of(new ReleasedRailNetworkId("1")));
+            .willReturn(new ReleasedRailNetworkId("1"));
 
         // When we call POST /drafts/123/release with valid parameters
         final var response = getPostResponse(
