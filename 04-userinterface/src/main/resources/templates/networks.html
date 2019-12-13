@@ -1,0 +1,31 @@
+<!DOCTYPE HTML>
+<html lang="en-US" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>RailPlan - Network</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+    <h2>RailPlan</h2>
+
+    <nav id="main-navigation">
+        <ul>
+            <li><a th:href="@{|/drafts|}">Drafts</a></li>
+            <li>Networks</li>
+        </ul>
+    </nav>
+
+    <h3>Released Rail Networks</h3>
+    <nav id="network-navigation">
+        <ul>
+            <li th:each="networkId,status : ${networkIds}">
+                <span th:if="${currentDraftId == networkId}">*</span>
+                <a th:href="@{|/networks/${networkId}|}" th:text="'Network ' + ${status.count}">Network 1</a>
+            </li>
+        </ul>
+    </nav>
+    <div th:if="${currentNetworkDto != null}">
+        <h1>Network</h1>
+    </div>
+
+</body>
+</html>

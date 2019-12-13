@@ -5,19 +5,30 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 </head>
 <body>
-    <h1>RailPlan</h1>
-    <h2>Rail Network Drafts</h2>
-    <ul id="draft-navigation">
-        <li th:each="draftId,status : ${draftIds}">
-            <span th:if="${currentDraftId == draftId}">*</span>
-            <a th:href="@{|/drafts/${draftId}|}" th:text="'Draft ' + ${status.count}">Draft 1</a>
-            (<a th:href="@{|/drafts/${draftId}/delete|}">Delete</a>)
-        </li>
-    </ul>
+    <h2>RailPlan</h2>
+
+    <nav id="main-navigation">
+        <ul>
+            <li>Drafts</li>
+            <li><a th:href="@{|/networks|}">Networks</a></li>
+        </ul>
+    </nav>
+
+    <h3>Rail Network Drafts</h3>
+    <nav id="draft-navigation">
+        <ul>
+            <li th:each="draftId,status : ${draftIds}">
+                <span th:if="${currentDraftId == draftId}">*</span>
+                <a th:href="@{|/drafts/${draftId}|}" th:text="'Draft ' + ${status.count}">Draft 1</a>
+                (<a th:href="@{|/drafts/${draftId}/delete|}">Delete</a>)
+            </li>
+        </ul>
+    </nav>
     <div>
         <a id="add-draft-button" href="/drafts/new">+ Add Draft</a>
     </div>
     <div th:if="${currentDraftDto != null}">
+        <h1>Draft</h1>
         <form method="post">
             <table id="stations">
                 <caption><h3>Stations</h3></caption>
