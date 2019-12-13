@@ -115,6 +115,24 @@
                 </ul>
             </th:block>
         </form>
+
+        <h3>Release</h3>
+        <a th:unless="${showReleaseForm}" th:href="@{|/drafts/${currentDraftId}/release|}">Release this Draft</a>
+        <form id="release-form" th:if="${showReleaseForm}">
+            <h4>Validity Period</h4>
+            <p>
+                <label for="start-date">From:</label>
+                <input id="start-date" name="startDate" type="date">
+            </p>
+            <p>
+                <label for="end-date">Until:</label>
+                <input id="end-date" name="endDate" type="date">
+            </p>
+            <p>
+                <input type="submit" value="Release Draft"> |
+                <a th:href="@{|/drafts/${currentDraftId}|}">Cancel</a>
+            </p>
+        </form>
     </div>
 
 </body>

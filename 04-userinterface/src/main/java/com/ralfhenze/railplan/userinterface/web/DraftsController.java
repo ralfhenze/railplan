@@ -238,7 +238,7 @@ public class DraftsController {
      * Deletes an existing Track and redirects to Draft page.
      */
     @GetMapping("/drafts/{currentDraftId}/tracks/{firstStationId}/{secondStationId}/delete")
-    public String deleteStation(
+    public String deleteTrack(
         @PathVariable String currentDraftId,
         @PathVariable String firstStationId,
         @PathVariable String secondStationId
@@ -247,5 +247,19 @@ public class DraftsController {
             .deleteRailwayTrack(currentDraftId, firstStationId, secondStationId);
 
         return "redirect:/drafts/{currentDraftId}";
+    }
+
+    /**
+     * Shows a form to release a Draft.
+     */
+    @GetMapping("/drafts/{currentDraftId}/release")
+    public String showDraftReleaseForm(
+        @PathVariable String currentDraftId,
+        Model model
+    ) {
+        return new DraftsView(currentDraftId, draftRepository, queries)
+            .withShowReleaseForm(true)
+            .addRequiredAttributesTo(model)
+            .getViewName();
     }
 }

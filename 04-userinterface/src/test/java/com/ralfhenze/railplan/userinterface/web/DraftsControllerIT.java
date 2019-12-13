@@ -370,6 +370,22 @@ public class DraftsControllerIT {
         assertThat(response.getRedirectedUrl()).isEqualTo("/drafts/123");
     }
 
+    @Test
+    public void userCanAccessAFormToReleaseAnExistingDraft() throws Exception {
+        // Given an existing Draft
+        given(draftRepository.getRailNetworkDraftOfId(any())).willReturn(getBerlinHamburgDraft());
+
+        // When we call GET /drafts/123/release
+        final var response = getGetResponse("/drafts/123/release");
+
+        // Then we get a form with input fields for start- and end-date
+        final var releaseForm = getElement("#release-form", response);
+        assertThat(response.getStatus()).isEqualTo(HTTP_OK);
+        assertThat(releaseForm.select("input[name='startDate']")).hasSize(1);
+        assertThat(releaseForm.select("input[name='endDate']")).hasSize(1);
+        assertThat(releaseForm.select("input[type='submit']")).hasSize(1);
+    }
+
     private void verifyPostRequestWithInvalidStationData(
         final String url,
         final Command command

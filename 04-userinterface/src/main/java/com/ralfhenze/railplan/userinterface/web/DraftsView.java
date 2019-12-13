@@ -25,6 +25,7 @@ public class DraftsView {
     private String stationIdToEdit;
     private boolean showNewTrackForm = false;
     private boolean showNewStationForm = false;
+    private boolean showReleaseForm = false;
     private Map<String, List<String>> stationErrors;
     private Map<String, List<String>> trackErrors = Map.of();
 
@@ -57,6 +58,11 @@ public class DraftsView {
         return this;
     }
 
+    public DraftsView withShowReleaseForm(final boolean showReleaseForm) {
+        this.showReleaseForm = showReleaseForm;
+        return this;
+    }
+
     public DraftsView withStationErrorsProvidedBy(final ValidationException exception) {
         this.stationErrors = exception.getErrorMessagesAsHashMap();
         return this;
@@ -84,6 +90,8 @@ public class DraftsView {
         model.addAttribute("stationTableRows", getStationTableRows(model, draftDto));
         model.addAttribute("showNewStationForm", showNewStationForm);
         model.addAttribute("newStationTableRow", getNewStationTableRow(model));
+
+        model.addAttribute("showReleaseForm", showReleaseForm);
 
         return this;
     }
