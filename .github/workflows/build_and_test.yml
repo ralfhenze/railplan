@@ -43,11 +43,19 @@ jobs:
 #    - name: Run Integration Tests
 #      run: mvn surefire:test@integration-tests
 
-    - name: Create Test Coverage Report
+    - name: Run Tests
       run: mvn verify jacoco:report
 
     - name: Upload Coverage Report to Codacy
-      run: CODACY_PROJECT_TOKEN=534003747f564ae5b69ee679e4c063b4 bash <(curl -Ls https://coverage.codacy.com/get.sh)
+      # taken from https://github.com/codacy/codacy-coverage-reporter
+      run: export CODACY_PROJECT_TOKEN=534003747f564ae5b69ee679e4c063b4
+        && curl -Ls -o codacy-coverage-reporter "$(curl -Ls https://api.github.com/repos/codacy/codacy-coverage-reporter/releases/latest | jq -r '.assets | map({name, browser_download_url} | select(.name | contains("codacy-coverage-reporter-linux"))) | .[0].browser_download_url')"
+        && chmod +x codacy-coverage-reporter
+        && ./codacy-coverage-reporter report -l Java -r 01-domain/target/site/jacoco/jacoco.xml --partial
+        && ./codacy-coverage-reporter report -l Java -r 02-application/target/site/jacoco/jacoco.xml --partial
+        && ./codacy-coverage-reporter report -l Java -r 03-infrastructure/target/site/jacoco/jacoco.xml --partial
+        && ./codacy-coverage-reporter report -l Java -r 04-userinterface/target/site/jacoco/jacoco.xml --partial
+        && ./codacy-coverage-reporter final
 
     - name: Destroy Docker Environment
       run: docker-compose down
