@@ -2,6 +2,7 @@ package com.ralfhenze.railplan.infrastructure.persistence;
 
 import com.ralfhenze.railplan.application.queries.Queries;
 import com.ralfhenze.railplan.infrastructure.persistence.dto.RailNetworkDraftDto;
+import com.ralfhenze.railplan.infrastructure.persistence.dto.ReleasedRailNetworkDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Repository;
@@ -39,5 +40,17 @@ public class MongoDbQueries implements Queries {
             RailNetworkDraftDto.class,
             RailNetworkDraftMongoDbRepository.COLLECTION_NAME
         );
+    }
+
+    @Override
+    public List<String> getAllNetworkIds() {
+        return mongoTemplate
+            .findAll(
+                ReleasedRailNetworkDto.class,
+                ReleasedRailNetworkMongoDbRepository.COLLECTION_NAME
+            )
+            .stream()
+            .map(ReleasedRailNetworkDto::getId)
+            .collect(Collectors.toList());
     }
 }
