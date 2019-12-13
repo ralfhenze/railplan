@@ -414,6 +414,40 @@ public class DraftsControllerIT {
         assertThat(response.getRedirectedUrl()).isEqualTo("/networks/1");
     }
 
+    @Test
+    public void userSeesValidationErrorsWhenReleasingADraftWithAnInvalidPeriod() throws Exception {
+        // Given an existing Draft
+        given(draftRepository.getRailNetworkDraftOfId(any())).willReturn(getBerlinHamburgDraft());
+
+        // And we will get validation errors when attempting to release the Draft
+        final var startDateErrors = List.of("Start Date error");
+        final var endDateErrors = List.of("End Date error");
+        final var validationException = new ValidationException(Map.of(
+            "Start Date", startDateErrors,
+            "End Date", endDateErrors
+        ));
+        given(releaseRailNetworkCommand.releaseRailNetworkDraft(any(), any(), any()))
+            .willThrow(validationException);
+
+        // When we call POST /drafts/123/release with invalid Date parameters
+        final var response = getPostResponse(
+            "/drafts/123/release",
+            Map.of("startDate", "2020-01-01", "endDate", "2019-12-01")
+        );
+
+        // Then each Date field has the invalid value
+        final var releaseForm = getElement("#release-form", response);
+        assertThat(response.getStatus()).isEqualTo(HTTP_OK);
+        assertThat(releaseForm.select("input[name='startDate']").val()).isEqualTo("2020-01-01");
+        assertThat(releaseForm.select("input[name='endDate']").val()).isEqualTo("2019-12-01");
+
+        // And each Date field shows it's error messages
+        assertThat(releaseForm.select(".errors.startDate li").eachText())
+            .isEqualTo(startDateErrors);
+        assertThat(releaseForm.select(".errors.endDate li").eachText())
+            .isEqualTo(endDateErrors);
+    }
+
     private void verifyPostRequestWithInvalidStationData(
         final String url,
         final Command command

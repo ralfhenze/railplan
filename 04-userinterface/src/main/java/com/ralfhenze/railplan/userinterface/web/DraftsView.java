@@ -10,6 +10,7 @@ import com.ralfhenze.railplan.infrastructure.persistence.dto.TrainStationDto;
 import org.javatuples.Pair;
 import org.springframework.ui.Model;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -28,6 +29,7 @@ public class DraftsView {
     private boolean showReleaseForm = false;
     private Map<String, List<String>> stationErrors;
     private Map<String, List<String>> trackErrors = Map.of();
+    private Map<String, List<String>> releaseErrors = Map.of();
 
     public DraftsView(
         final String currentDraftId,
@@ -73,6 +75,11 @@ public class DraftsView {
         return this;
     }
 
+    public DraftsView withReleaseErrorsProvidedBy(final ValidationException exception) {
+        this.releaseErrors = exception.getErrorMessagesAsHashMap();
+        return this;
+    }
+
     public DraftsView addRequiredAttributesTo(final Model model) {
         final var draftDto = getDraftDto();
         final var stationNames = getStationNames(draftDto);
@@ -92,6 +99,13 @@ public class DraftsView {
         model.addAttribute("newStationTableRow", getNewStationTableRow(model));
 
         model.addAttribute("showReleaseForm", showReleaseForm);
+        model.addAttribute("releaseErrors", releaseErrors);
+        if (releaseErrors.isEmpty()) {
+            model.addAttribute("validityPeriod", new ValidityPeriodDto(
+                LocalDate.now().plusDays(1).toString(),
+                LocalDate.now().plusDays(1).plusMonths(1).toString()
+            ));
+        }
 
         return this;
     }

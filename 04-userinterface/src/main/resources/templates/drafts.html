@@ -118,15 +118,21 @@
 
         <h3>Release</h3>
         <a th:unless="${showReleaseForm}" th:href="@{|/drafts/${currentDraftId}/release|}">Release this Draft</a>
-        <form id="release-form" method="post" th:if="${showReleaseForm}">
+        <form id="release-form" method="post" th:if="${showReleaseForm}" th:object="${validityPeriod}">
             <h4>Validity Period</h4>
             <p>
                 <label for="start-date">From:</label>
-                <input id="start-date" name="startDate" type="date">
+                <input id="start-date" name="startDate" type="date" th:field="*{startDate}">
+                <ul th:class="'errors startDate'" th:if="${releaseErrors['Start Date'] != null}">
+                    <li th:each="error : ${releaseErrors['Start Date']}" th:text="${error}">Error</li>
+                </ul>
             </p>
             <p>
                 <label for="end-date">Until:</label>
-                <input id="end-date" name="endDate" type="date">
+                <input id="end-date" name="endDate" type="date" th:field="*{endDate}">
+                <ul th:class="'errors endDate'" th:if="${releaseErrors['End Date'] != null}">
+                    <li th:each="error : ${releaseErrors['End Date']}" th:text="${error}">Error</li>
+                </ul>
             </p>
             <p>
                 <input type="submit" value="Release Draft"> |

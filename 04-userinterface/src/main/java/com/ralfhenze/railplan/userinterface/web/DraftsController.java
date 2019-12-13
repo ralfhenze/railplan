@@ -275,15 +275,25 @@ public class DraftsController {
     @PostMapping("/drafts/{currentDraftId}/release")
     public String releaseDraft(
         @PathVariable String currentDraftId,
-        @ModelAttribute(name = "period") ValidityPeriodDto periodDto,
+        @ModelAttribute(name = "validityPeriod") ValidityPeriodDto periodDto,
         Model model
     ) {
-        final var networkId = releaseRailNetworkCommand.releaseRailNetworkDraft(
-            currentDraftId,
-            LocalDate.parse(periodDto.getStartDate()),
-            LocalDate.parse(periodDto.getEndDate())
-        );
+        try {
+            final var networkId = releaseRailNetworkCommand.releaseRailNetworkDraft(
+                currentDraftId,
+                LocalDate.parse(periodDto.getStartDate()),
+                LocalDate.parse(periodDto.getEndDate())
+            );
 
-        return "redirect:/networks/" + networkId;
+            return "redirect:/networks/" + networkId;
+
+        } catch (ValidationException exception) {
+
+            return new DraftsView(currentDraftId, draftRepository, queries)
+                .withShowReleaseForm(true)
+                .withReleaseErrorsProvidedBy(exception)
+                .addRequiredAttributesTo(model)
+                .getViewName();
+        }
     }
 }
