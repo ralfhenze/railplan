@@ -9,12 +9,8 @@ import com.ralfhenze.railplan.application.commands.DeleteTrainStationCommand;
 import com.ralfhenze.railplan.application.commands.UpdateTrainStationCommand;
 import com.ralfhenze.railplan.application.queries.Queries;
 import com.ralfhenze.railplan.domain.common.validation.ValidationException;
-import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftId;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftRepository;
-import com.ralfhenze.railplan.infrastructure.persistence.dto.RailNetworkDraftDto;
 import com.ralfhenze.railplan.infrastructure.persistence.dto.RailwayTrackDto;
-import com.ralfhenze.railplan.infrastructure.persistence.dto.TrainStationDto;
-import org.javatuples.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,11 +18,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @Controller
 public class DraftsController {
@@ -91,9 +82,8 @@ public class DraftsController {
      */
     @GetMapping("/drafts/{currentDraftId}")
     public String draft(@PathVariable String currentDraftId, Model model) {
-        setModelAttributes(currentDraftId, model, null, null, false, false);
-
-        model.addAttribute("newTrack", new RailwayTrackDto());
+        new DraftsViewModel(currentDraftId, railNetworkDraftRepository, queries)
+            .writeTo(model);
 
         return "drafts";
     }
@@ -114,9 +104,9 @@ public class DraftsController {
      */
     @GetMapping("/drafts/{currentDraftId}/stations/new")
     public String showNewStationForm(@PathVariable String currentDraftId, Model model) {
-        setModelAttributes(currentDraftId, model, null, null, true, false);
-
-        model.addAttribute("newTrack", new RailwayTrackDto());
+        new DraftsViewModel(currentDraftId, railNetworkDraftRepository, queries)
+            .withShowNewStationForm(true)
+            .writeTo(model);
 
         return "drafts";
     }
@@ -138,8 +128,10 @@ public class DraftsController {
                 Double.parseDouble(stationRow.longitude)
             );
         } catch (ValidationException exception) {
-            setModelAttributes(currentDraftId, model, null, exception.getErrorMessagesAsHashMap(), true, false);
-            model.addAttribute("newTrack", new RailwayTrackDto());
+            new DraftsViewModel(currentDraftId, railNetworkDraftRepository, queries)
+                .withShowNewStationForm(true)
+                .withStationErrorsFrom(exception)
+                .writeTo(model);
 
             return "drafts";
         }
@@ -156,9 +148,9 @@ public class DraftsController {
         @PathVariable String stationId,
         Model model
     ) {
-        setModelAttributes(currentDraftId, model, stationId, null, false, false);
-
-        model.addAttribute("newTrack", new RailwayTrackDto());
+        new DraftsViewModel(currentDraftId, railNetworkDraftRepository, queries)
+            .withStationIdToEdit(stationId)
+            .writeTo(model);
 
         return "drafts";
     }
@@ -182,8 +174,10 @@ public class DraftsController {
                 Double.parseDouble(stationRow.longitude)
             );
         } catch (ValidationException exception) {
-            setModelAttributes(currentDraftId, model, stationId, exception.getErrorMessagesAsHashMap(), false, false);
-            model.addAttribute("newTrack", new RailwayTrackDto());
+            new DraftsViewModel(currentDraftId, railNetworkDraftRepository, queries)
+                .withStationIdToEdit(stationId)
+                .withStationErrorsFrom(exception)
+                .writeTo(model);
 
             return "drafts";
         }
@@ -213,8 +207,9 @@ public class DraftsController {
         @PathVariable String currentDraftId,
         Model model
     ) {
-        setModelAttributes(currentDraftId, model, null, null, false, true);
-        model.addAttribute("newTrack", new RailwayTrackDto());
+        new DraftsViewModel(currentDraftId, railNetworkDraftRepository, queries)
+            .withShowNewTrackForm(true)
+            .writeTo(model);
 
         return "drafts";
     }
@@ -235,8 +230,10 @@ public class DraftsController {
                 String.valueOf(trackDto.getSecondStationId())
             );
         } catch (ValidationException exception) {
-            setModelAttributes(currentDraftId, model, null, null, false, true);
-            model.addAttribute("trackErrors", exception.getErrorMessagesAsHashMap());
+            new DraftsViewModel(currentDraftId, railNetworkDraftRepository, queries)
+                .withShowNewTrackForm(true)
+                .withTrackErrorsFrom(exception)
+                .writeTo(model);
 
             return "drafts";
         }
@@ -257,92 +254,5 @@ public class DraftsController {
             .deleteRailwayTrack(currentDraftId, firstStationId, secondStationId);
 
         return "redirect:/drafts/{currentDraftId}";
-    }
-
-    private void setModelAttributes(
-        final String currentDraftId,
-        final Model model,
-        final String stationIdToEdit,
-        final Map<String, List<String>> errorMessages,
-        final boolean showNewStationForm,
-        final boolean showNewTrackForm
-    ) {
-        model.addAttribute("draftIds", queries.getAllDraftIds());
-
-        final var draft = railNetworkDraftRepository
-            .getRailNetworkDraftOfId(new RailNetworkDraftId(currentDraftId));
-        final var draftDto = new RailNetworkDraftDto(draft);
-
-        model.addAttribute("currentDraftDto", draftDto);
-
-        final Map<Integer, String> stationNames = draftDto
-            .getStations()
-            .stream()
-            .collect(Collectors.toMap(TrainStationDto::getId, TrainStationDto::getName));
-
-        model.addAttribute("stationNames", stationNames);
-
-        final List<List<Pair<String, String>>> tracksWithStationNames = draftDto
-            .getTracks()
-            .stream()
-            .map(trackDto -> List.of(
-                Pair.with(
-                    String.valueOf(trackDto.getFirstStationId()),
-                    stationNames.get(trackDto.getFirstStationId())
-                ),
-                Pair.with(
-                    String.valueOf(trackDto.getSecondStationId()),
-                    stationNames.get(trackDto.getSecondStationId())
-                )
-            ))
-            .collect(Collectors.toList());
-
-        model.addAttribute("tracks", tracksWithStationNames);
-        model.addAttribute("trackErrors", new HashMap<String, List<String>>());
-        model.addAttribute("showNewTrackForm", showNewTrackForm);
-
-        final List<StationTableRow> stationTableRows = draftDto
-            .getStations()
-            .stream()
-            .map(stationDto -> {
-                final var row = new StationTableRow();
-                row.stationId = String.valueOf(stationDto.getId());
-                row.stationName = stationDto.getName();
-                row.latitude = String.valueOf(stationDto.getLatitude());
-                row.longitude = String.valueOf(stationDto.getLongitude());
-                row.showInputField = (row.stationId.equals(stationIdToEdit));
-
-                if (row.stationId.equals(stationIdToEdit)) {
-                    if (errorMessages != null) {
-                        row.stationNameErrors = errorMessages.getOrDefault("Station name", List.of());
-                        row.latitudeErrors = errorMessages.getOrDefault("Latitude", List.of());
-                        row.longitudeErrors = errorMessages.getOrDefault("Longitude", List.of());
-                    }
-
-                    if (model.containsAttribute("updatedStationTableRow")) {
-                        final var updatedStationTableRow = (StationTableRow) model
-                            .getAttribute("updatedStationTableRow");
-                        row.stationName = updatedStationTableRow.getStationName();
-                        row.latitude = updatedStationTableRow.getLatitude();
-                        row.longitude = updatedStationTableRow.getLongitude();
-                    }
-                }
-
-                return row;
-            })
-            .collect(Collectors.toList());
-
-        model.addAttribute("stationTableRows", stationTableRows);
-        model.addAttribute("showNewStationForm", showNewStationForm);
-
-        final var newStationTableRow = new StationTableRow();
-        newStationTableRow.showInputField = true;
-        newStationTableRow.disabled = (stationIdToEdit != null);
-        if (stationIdToEdit == null && errorMessages != null) {
-            newStationTableRow.stationNameErrors = errorMessages.getOrDefault("Station name", List.of());
-            newStationTableRow.latitudeErrors = errorMessages.getOrDefault("Latitude", List.of());
-            newStationTableRow.longitudeErrors = errorMessages.getOrDefault("Longitude", List.of());
-        }
-        model.addAttribute("newStationTableRow", newStationTableRow);
     }
 }
