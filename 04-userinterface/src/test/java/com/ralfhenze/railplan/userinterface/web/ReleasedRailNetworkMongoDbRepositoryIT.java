@@ -30,18 +30,35 @@ public class ReleasedRailNetworkMongoDbRepositoryIT {
     }
 
     @Test
-    public void persistsGivenNetwork() {
+    public void persistsAndLoadsNetwork() {
         final var networkRepository = new ReleasedRailNetworkMongoDbRepository(mongoTemplate);
-        final var network = new ReleasedRailNetwork(
-            defaultPeriod,
-            Lists.immutable.of(berlinHbf, hamburgHbf),
-            Lists.immutable.of(new RailwayTrack(berlinHbf.getId(), hamburgHbf.getId()))
-        );
+        final var network = getBerlinHamburgNetwork();
+        final var persistedNetwork = networkRepository.add(network);
+
+        final var loadedNetwork = networkRepository
+            .getReleasedRailNetworkOfId(persistedNetwork.getId().get());
+
+        assertThat(loadedNetwork.getStations()).hasSize(2);
+        assertThat(loadedNetwork.getTracks()).hasSize(1);
+    }
+
+    @Test
+    public void providesLastReleasedNetwork() {
+        final var networkRepository = new ReleasedRailNetworkMongoDbRepository(mongoTemplate);
+        final var network = getBerlinHamburgNetwork();
         networkRepository.add(network);
 
         final var loadedNetwork = networkRepository.getLastReleasedRailNetwork().get();
 
         assertThat(loadedNetwork.getStations()).hasSize(2);
         assertThat(loadedNetwork.getTracks()).hasSize(1);
+    }
+
+    private ReleasedRailNetwork getBerlinHamburgNetwork() {
+        return new ReleasedRailNetwork(
+            defaultPeriod,
+            Lists.immutable.of(berlinHbf, hamburgHbf),
+            Lists.immutable.of(new RailwayTrack(berlinHbf.getId(), hamburgHbf.getId()))
+        );
     }
 }
