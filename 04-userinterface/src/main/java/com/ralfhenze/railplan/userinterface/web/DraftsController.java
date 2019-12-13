@@ -115,7 +115,7 @@ public class DraftsController {
     @PostMapping("/drafts/{currentDraftId}/stations/new")
     public String createNewStation(
         @PathVariable String currentDraftId,
-        @ModelAttribute(name = "newStationTableRow") StationTableRow stationRow,
+        @ModelAttribute(name = "updatedStationTableRow") StationTableRow stationRow,
         Model model
     ) {
         try {

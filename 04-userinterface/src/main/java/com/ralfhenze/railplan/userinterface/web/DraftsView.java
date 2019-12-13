@@ -83,7 +83,7 @@ public class DraftsView {
 
         model.addAttribute("stationTableRows", getStationTableRows(model, draftDto));
         model.addAttribute("showNewStationForm", showNewStationForm);
-        model.addAttribute("newStationTableRow", getNewStationTableRow());
+        model.addAttribute("newStationTableRow", getNewStationTableRow(model));
 
         return this;
     }
@@ -144,13 +144,7 @@ public class DraftsView {
                         row.longitudeErrors = stationErrors.getOrDefault("Longitude", List.of());
                     }
 
-                    if (model.containsAttribute("updatedStationTableRow")) {
-                        final var updatedStationTableRow = (StationTableRow) model
-                            .getAttribute("updatedStationTableRow");
-                        row.stationName = updatedStationTableRow.getStationName();
-                        row.latitude = updatedStationTableRow.getLatitude();
-                        row.longitude = updatedStationTableRow.getLongitude();
-                    }
+                    setStationRowPropertiesIfModelContainsThem(row, model);
                 }
 
                 return row;
@@ -158,8 +152,10 @@ public class DraftsView {
             .collect(Collectors.toList());
     }
 
-    private StationTableRow getNewStationTableRow() {
+    private StationTableRow getNewStationTableRow(final Model model) {
         final var newStationTableRow = new StationTableRow();
+
+        setStationRowPropertiesIfModelContainsThem(newStationTableRow, model);
 
         newStationTableRow.showInputField = true;
         newStationTableRow.disabled = (stationIdToEdit != null);
@@ -171,5 +167,18 @@ public class DraftsView {
         }
 
         return newStationTableRow;
+    }
+
+    private void setStationRowPropertiesIfModelContainsThem(
+        final StationTableRow row,
+        final Model model
+    ) {
+        if (model.containsAttribute("updatedStationTableRow")) {
+            final var updatedStationTableRow = (StationTableRow) model
+                .getAttribute("updatedStationTableRow");
+            row.stationName = updatedStationTableRow.getStationName();
+            row.latitude = updatedStationTableRow.getLatitude();
+            row.longitude = updatedStationTableRow.getLongitude();
+        }
     }
 }
