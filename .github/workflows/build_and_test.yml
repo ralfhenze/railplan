@@ -53,7 +53,6 @@ jobs:
         && chmod +x codacy-coverage-reporter
         && ./codacy-coverage-reporter report -l Java -r 01-domain/target/site/jacoco/jacoco.xml --partial
         && ./codacy-coverage-reporter report -l Java -r 02-application/target/site/jacoco/jacoco.xml --partial
-        && ./codacy-coverage-reporter report -l Java -r 03-infrastructure/target/site/jacoco/jacoco.xml --partial
         && ./codacy-coverage-reporter report -l Java -r 04-userinterface/target/site/jacoco/jacoco.xml --partial
         && ./codacy-coverage-reporter final
 
