@@ -114,6 +114,9 @@ public class DraftsView {
         model.addAttribute("germanySvgStations", germanySvg.getStationCoordinates(
             draftDto.getStations())
         );
+        model.addAttribute("germanySvgTracks", germanySvg.getTrackCoordinates(
+            draftDto.getStations(), draftDto.getTracks())
+        );
 
         return this;
     }

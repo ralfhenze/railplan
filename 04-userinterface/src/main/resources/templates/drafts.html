@@ -155,7 +155,8 @@
     <div>
         <svg width="100%" height="100%" th:attr="viewBox='0 0 ' + ${germanyWidth} + ' ' + ${germanyHeight}, style='width: ' + ${germanyWidth} + 'px; height: ' + ${germanyHeight} + 'px;'">
             <path th:attr="d=${germanySvgPath}" />
-            <circle th:each="station : ${germanySvgStations}" th:attr="cx=${station.get(0)}, cy=${station.get(1)}" r="4" style="fill: #888888;" />
+            <line th:each="track : ${germanySvgTracks}" th:attr="x1=${track.get(0)}, y1=${track.get(1)}, x2=${track.get(2)}, y2=${track.get(3)}" stroke="#444444" stroke-width="3" />
+            <circle th:each="station : ${germanySvgStations}" th:attr="cx=${station.get(0)}, cy=${station.get(1)}" r="4" fill="#888888" />
         </svg>
     </div>
 

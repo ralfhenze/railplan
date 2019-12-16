@@ -2,10 +2,12 @@ package com.ralfhenze.railplan.userinterface.web;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ralfhenze.railplan.infrastructure.persistence.dto.RailwayTrackDto;
 import com.ralfhenze.railplan.infrastructure.persistence.dto.TrainStationDto;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class GermanySvg {
@@ -48,6 +50,26 @@ public class GermanySvg {
             .map(stationDto ->
                 getPixelCoordinates(stationDto.getLatitude(), stationDto.getLongitude())
             )
+            .collect(Collectors.toList());
+    }
+
+    public List<List<Long>> getTrackCoordinates(
+        final List<TrainStationDto> stationDtos,
+        final List<RailwayTrackDto> trackDtos
+    ) {
+        final Map<Integer, List<Long>> stationPixelCoordinates = stationDtos.stream()
+            .collect(Collectors.toMap(
+                TrainStationDto::getId,
+                station -> getPixelCoordinates(station.getLatitude(), station.getLongitude())
+            ));
+
+        return trackDtos.stream()
+            .map(trackDto -> {
+                final var station1 = stationPixelCoordinates.get(trackDto.getFirstStationId());
+                final var station2 = stationPixelCoordinates.get(trackDto.getSecondStationId());
+
+                return List.of(station1.get(0), station1.get(1), station2.get(0), station2.get(1));
+            })
             .collect(Collectors.toList());
     }
 
