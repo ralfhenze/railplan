@@ -107,9 +107,13 @@ public class DraftsView {
             ));
         }
 
+        final var germanySvg = new GermanySvg();
         model.addAttribute("germanyWidth", GermanySvg.MAP_WIDTH);
         model.addAttribute("germanyHeight", GermanySvg.MAP_HEIGHT);
-        model.addAttribute("germanySvgPath", new GermanySvg().getPath());
+        model.addAttribute("germanySvgPath", germanySvg.getPath());
+        model.addAttribute("germanySvgStations", germanySvg.getStationCoordinates(
+            draftDto.getStations())
+        );
 
         return this;
     }

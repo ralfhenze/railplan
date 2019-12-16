@@ -2,6 +2,7 @@ package com.ralfhenze.railplan.userinterface.web;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ralfhenze.railplan.infrastructure.persistence.dto.TrainStationDto;
 
 import java.io.IOException;
 import java.util.List;
@@ -15,6 +16,9 @@ public class GermanySvg {
     private static final double ZOOM = 5.0;
     private static final double MAX_LATITUDE = 85.0511287798;
     private static final double PI = 3.1415926535898;
+    private static final double SCALE = 256.0 * Math.pow(2, ZOOM) / EARTH_RADIUS;
+
+    private final List<Double> center = getPointFromLatLng(50.0, 10.5, SCALE);
 
     public String getPath() {
         final var mapper = new ObjectMapper();
@@ -25,17 +29,8 @@ public class GermanySvg {
         try {
             final var geoPoints = mapper.readValue(inputStream, geoTypeReference);
 
-            final double scale = 256.0 * Math.pow(2, ZOOM) / EARTH_RADIUS;
-            final var center = getPointFromLatLng(50.0, 10.5, scale);
-
             final var pixelCoordinates = geoPoints.stream()
-                .map(point -> {
-                    final var pixel = getPointFromLatLng(point.get(1), point.get(0), scale);
-                    return List.of(
-                        Math.round(pixel.get(0) - center.get(0) + MAP_WIDTH / 2.0),
-                        Math.round(pixel.get(1) - center.get(1) + MAP_HEIGHT / 2.0)
-                    );
-                })
+                .map(point -> getPixelCoordinates(point.get(1), point.get(0)))
                 .collect(Collectors.toList());
 
             return pixelCoordinates.stream()
@@ -48,7 +43,23 @@ public class GermanySvg {
         }
     }
 
-    private List<Double> getPointFromLatLng(double lat, double lng, double scale) {
+    public List<List<Long>> getStationCoordinates(final List<TrainStationDto> stationDtos) {
+        return stationDtos.stream()
+            .map(stationDto ->
+                getPixelCoordinates(stationDto.getLatitude(), stationDto.getLongitude())
+            )
+            .collect(Collectors.toList());
+    }
+
+    private List<Long> getPixelCoordinates(final double lat, final double lng) {
+        final var pixel = getPointFromLatLng(lat, lng, SCALE);
+        return List.of(
+            Math.round(pixel.get(0) - center.get(0) + MAP_WIDTH / 2.0),
+            Math.round(pixel.get(1) - center.get(1) + MAP_HEIGHT / 2.0)
+        );
+    }
+
+    private List<Double> getPointFromLatLng(double lat, final double lng, final double scale) {
         // Spherical Mercator map projection
         // inspired by Leaflet JavaScript code (functions project, _transform, scale)
         lat = Math.max(Math.min(MAX_LATITUDE, lat), -MAX_LATITUDE);
