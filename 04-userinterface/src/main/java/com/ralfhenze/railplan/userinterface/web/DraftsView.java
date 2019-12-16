@@ -107,6 +107,10 @@ public class DraftsView {
             ));
         }
 
+        model.addAttribute("germanyWidth", GermanySvg.MAP_WIDTH);
+        model.addAttribute("germanyHeight", GermanySvg.MAP_HEIGHT);
+        model.addAttribute("germanySvgPath", new GermanySvg().getPath());
+
         return this;
     }
 
