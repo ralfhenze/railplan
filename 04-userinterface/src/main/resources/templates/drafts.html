@@ -6,158 +6,171 @@
     <link rel="stylesheet" type="text/css" href="/css/railplan.css" />
 </head>
 <body>
-    <h2>RailPlan</h2>
+    <header>
+        <h2 id="logo">RailPlan</h2>
 
-    <nav id="main-navigation">
-        <ul>
-            <li>Drafts</li>
-            <li><a th:href="@{|/networks|}">Networks</a></li>
-        </ul>
-    </nav>
+        <nav id="main-navigation">
+            <ul>
+                <li><a class="selected" th:href="@{|/drafts|}">Drafts</a></li>
+                <li><a th:href="@{|/networks|}">Networks</a></li>
+            </ul>
+        </nav>
+    </header>
 
-    <h3>Rail Network Drafts</h3>
-    <nav id="draft-navigation">
-        <ul>
-            <li th:each="draftId,status : ${draftIds}">
-                <span th:if="${currentDraftId == draftId}">*</span>
-                <a th:href="@{|/drafts/${draftId}|}" th:text="'Draft ' + ${status.count}">Draft 1</a>
-                (<a th:href="@{|/drafts/${draftId}/delete|}">Delete</a>)
-            </li>
-        </ul>
-    </nav>
-    <div>
-        <a id="add-draft-button" href="/drafts/new">+ Add Draft</a>
+    <div id="draft-selector">
+        <h3>Rail Network Drafts</h3>
+        <nav id="draft-navigation">
+            <ul>
+                <li th:each="draftId,status : ${draftIds}">
+                    <span th:if="${currentDraftId == draftId}">*</span>
+                    <a th:href="@{|/drafts/${draftId}|}" th:text="'Draft ' + ${status.count}">Draft 1</a>
+                    (<a th:href="@{|/drafts/${draftId}/delete|}">Delete</a>)
+                </li>
+            </ul>
+        </nav>
+        <div>
+            <a id="add-draft-button" href="/drafts/new">+ Add Draft</a>
+        </div>
     </div>
-    <div th:if="${currentDraftDto != null}">
-        <h1>Draft</h1>
-        <form method="post">
-            <table id="stations">
-                <caption><h3>Stations</h3></caption>
-                <thead>
-                    <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Name</th>
-                        <th scope="col">Latitude</th>
-                        <th scope="col">Longitude</th>
-                        <th scope="col">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr th:class="station-row" th:each="row, status : ${stationTableRows}">
-                        <td th:text="${status.count}">1</td>
-                        <td th:insert="::stationTableCell('stationName', ${row.stationName}, ${row.showInputField}, ${row.stationNameErrors})"></td>
-                        <td th:insert="::stationTableCell('latitude', ${row.latitude}, ${row.showInputField}, ${row.latitudeErrors})"></td>
-                        <td th:insert="::stationTableCell('longitude', ${row.longitude}, ${row.showInputField}, ${row.longitudeErrors})"></td>
-                        <td>
-                            <div th:unless="${row.showInputField}">
-                                <a th:href="@{|/drafts/${currentDraftId}/stations/${row.stationId}/edit|}">Edit</a> |
-                                <a th:href="@{|/drafts/${currentDraftId}/stations/${row.stationId}/delete|}">Delete</a>
-                            </div>
-                            <div th:if="${row.showInputField}">
-                                <input type="submit" value="Update"> |
+
+    <div id="data-panel" th:if="${currentDraftDto != null}">
+
+        <div class="box">
+            <h1>Draft</h1>
+            <form method="post">
+                <table id="stations">
+                    <caption><h3>Stations</h3></caption>
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Latitude</th>
+                            <th scope="col">Longitude</th>
+                            <th scope="col">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:class="station-row" th:each="row, status : ${stationTableRows}">
+                            <td th:text="${status.count}">1</td>
+                            <td th:insert="::stationTableCell('stationName', ${row.stationName}, ${row.showInputField}, ${row.stationNameErrors})"></td>
+                            <td th:insert="::stationTableCell('latitude', ${row.latitude}, ${row.showInputField}, ${row.latitudeErrors})"></td>
+                            <td th:insert="::stationTableCell('longitude', ${row.longitude}, ${row.showInputField}, ${row.longitudeErrors})"></td>
+                            <td>
+                                <div th:unless="${row.showInputField}">
+                                    <a th:href="@{|/drafts/${currentDraftId}/stations/${row.stationId}/edit|}">Edit</a> |
+                                    <a th:href="@{|/drafts/${currentDraftId}/stations/${row.stationId}/delete|}">Delete</a>
+                                </div>
+                                <div th:if="${row.showInputField}">
+                                    <input type="submit" value="Update"> |
+                                    <a th:href="@{|/drafts/${currentDraftId}|}">Cancel</a>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr th:unless="${showNewStationForm}">
+                            <td colspan="5"><a th:href="@{|/drafts/${currentDraftId}/stations/new|}">+ Add Station</a></td>
+                        </tr>
+                        <tr th:if="${showNewStationForm}">
+                            <td>+</td>
+                            <td th:insert="::stationTableCell('stationName', ${newStationTableRow.stationName}, ${newStationTableRow.showInputField}, ${newStationTableRow.stationNameErrors})"></td>
+                            <td th:insert="::stationTableCell('latitude', ${newStationTableRow.latitude}, ${newStationTableRow.showInputField}, ${newStationTableRow.latitudeErrors})"></td>
+                            <td th:insert="::stationTableCell('longitude', ${newStationTableRow.longitude}, ${newStationTableRow.showInputField}, ${newStationTableRow.longitudeErrors})"></td>
+                            <td>
+                                <input type="submit" value="Add Station"> |
                                 <a th:href="@{|/drafts/${currentDraftId}|}">Cancel</a>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr th:unless="${showNewStationForm}">
-                        <td colspan="4"><a th:href="@{|/drafts/${currentDraftId}/stations/new|}">+ Add Station</a></td>
-                    </tr>
-                    <tr th:if="${showNewStationForm}">
-                        <td>+</td>
-                        <td th:insert="::stationTableCell('stationName', ${newStationTableRow.stationName}, ${newStationTableRow.showInputField}, ${newStationTableRow.stationNameErrors})"></td>
-                        <td th:insert="::stationTableCell('latitude', ${newStationTableRow.latitude}, ${newStationTableRow.showInputField}, ${newStationTableRow.latitudeErrors})"></td>
-                        <td th:insert="::stationTableCell('longitude', ${newStationTableRow.longitude}, ${newStationTableRow.showInputField}, ${newStationTableRow.longitudeErrors})"></td>
-                        <td>
-                            <input type="submit" value="Add Station"> |
-                            <a th:href="@{|/drafts/${currentDraftId}|}">Cancel</a>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-            <th:block th:fragment="stationTableCell(name, value, showInputField, errors)">
-                <span th:class="${name}" th:unless="${showInputField}" th:text="${value}"></span>
-                <input th:if="${showInputField}" type="text" th:name="${name}" th:value="${value}">
-                <ul th:class="'errors ' + ${name}" th:if="${showInputField == true and not #lists.isEmpty(errors)}">
-                    <li th:each="error : ${errors}" th:text="${error}">Error</li>
-                </ul>
-            </th:block>
-        </form>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <th:block th:fragment="stationTableCell(name, value, showInputField, errors)">
+                    <span th:class="${name}" th:unless="${showInputField}" th:text="${value}"></span>
+                    <input th:if="${showInputField}" type="text" th:name="${name}" th:value="${value}">
+                    <ul th:class="'errors ' + ${name}" th:if="${showInputField == true and not #lists.isEmpty(errors)}">
+                        <li th:each="error : ${errors}" th:text="${error}">Error</li>
+                    </ul>
+                </th:block>
+            </form>
+        </div>
 
-        <form id="track-form" method="post" th:action="@{|/drafts/${currentDraftId}/tracks/new|}" th:object="${newTrack}">
-            <table id="tracks">
-                <caption><h3>Tracks</h3></caption>
-                <thead>
-                    <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Station 1</th>
-                        <th scope="col"></th>
-                        <th scope="col">Station 2</th>
-                        <th scope="col">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr th:class="track-row" th:each="track,status : ${tracks}">
-                        <td th:text="${status.count}">1</td>
-                        <td th:class="station-1" th:text="${track.get(0).getValue1()}">Berlin Hbf</td>
-                        <td>&lt;&equals;&gt;</td>
-                        <td th:class="station-2" th:text="${track.get(1).getValue1()}">Hamburg Hbf</td>
-                        <td><a th:href="@{|/drafts/${currentDraftId}/tracks/${track.get(0).getValue0()}/${track.get(1).getValue0()}/delete|}">Delete</a></td>
-                    </tr>
-                    <tr th:unless="${showNewTrackForm}">
-                        <td colspan="4"><a th:href="@{|/drafts/${currentDraftId}/tracks/new|}">+ Add Track</a></td>
-                    </tr>
-                    <tr th:if="${showNewTrackForm}">
-                        <td>+</td>
-                        <td th:insert="::trackSelector('firstStationId', *{firstStationId}, ${trackErrors['First Station ID']})"></td>
-                        <td>&lt;&equals;&gt;</td>
-                        <td th:insert="::trackSelector('secondStationId', *{secondStationId}, ${trackErrors['Second Station ID']})"></td>
-                        <td>
-                            <input type="submit" value="Add Track"> |
-                            <a th:href="@{|/drafts/${currentDraftId}|}">Cancel</a>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-            <th:block th:fragment="trackSelector(fieldName, fieldValue, errors)">
-                <select th:if="${fieldName != null}" th:name="${fieldName}" th:value="${fieldValue}">
-                    <option th:each="name : ${stationNames}" th:value="${name.getKey()}" th:text="${name.getValue()}">Berlin Hbf</option>
-                </select>
-                <ul th:class="'errors ' + ${fieldName}" th:if="${errors != null}">
-                    <li th:each="error : ${errors}" th:text="${error}">Error</li>
-                </ul>
-            </th:block>
-        </form>
+        <div class="box">
+            <form id="track-form" method="post" th:action="@{|/drafts/${currentDraftId}/tracks/new|}" th:object="${newTrack}">
+                <table id="tracks">
+                    <caption><h3>Tracks</h3></caption>
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Station 1</th>
+                            <th scope="col"></th>
+                            <th scope="col">Station 2</th>
+                            <th scope="col">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:class="track-row" th:each="track,status : ${tracks}">
+                            <td th:text="${status.count}">1</td>
+                            <td th:class="station-1" th:text="${track.get(0).getValue1()}">Berlin Hbf</td>
+                            <td>&lt;&equals;&gt;</td>
+                            <td th:class="station-2" th:text="${track.get(1).getValue1()}">Hamburg Hbf</td>
+                            <td><a th:href="@{|/drafts/${currentDraftId}/tracks/${track.get(0).getValue0()}/${track.get(1).getValue0()}/delete|}">Delete</a></td>
+                        </tr>
+                        <tr th:unless="${showNewTrackForm}">
+                            <td colspan="5"><a th:href="@{|/drafts/${currentDraftId}/tracks/new|}">+ Add Track</a></td>
+                        </tr>
+                        <tr th:if="${showNewTrackForm}">
+                            <td>+</td>
+                            <td th:insert="::trackSelector('firstStationId', *{firstStationId}, ${trackErrors['First Station ID']})"></td>
+                            <td>&lt;&equals;&gt;</td>
+                            <td th:insert="::trackSelector('secondStationId', *{secondStationId}, ${trackErrors['Second Station ID']})"></td>
+                            <td>
+                                <input type="submit" value="Add Track"> |
+                                <a th:href="@{|/drafts/${currentDraftId}|}">Cancel</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <th:block th:fragment="trackSelector(fieldName, fieldValue, errors)">
+                    <select th:if="${fieldName != null}" th:name="${fieldName}" th:value="${fieldValue}">
+                        <option th:each="name : ${stationNames}" th:value="${name.getKey()}" th:text="${name.getValue()}">Berlin Hbf</option>
+                    </select>
+                    <ul th:class="'errors ' + ${fieldName}" th:if="${errors != null}">
+                        <li th:each="error : ${errors}" th:text="${error}">Error</li>
+                    </ul>
+                </th:block>
+            </form>
+        </div>
 
-        <h3>Release</h3>
-        <a th:unless="${showReleaseForm}" th:href="@{|/drafts/${currentDraftId}/release|}">Release this Draft</a>
-        <form id="release-form" method="post" th:if="${showReleaseForm}" th:object="${validityPeriod}">
-            <h4>Validity Period</h4>
-            <p>
-                <label for="start-date">From:</label>
-                <input id="start-date" name="startDate" type="date" th:field="*{startDate}">
-                <ul th:class="'errors startDate'" th:if="${releaseErrors['Start Date'] != null}">
-                    <li th:each="error : ${releaseErrors['Start Date']}" th:text="${error}">Error</li>
-                </ul>
-            </p>
-            <p>
-                <label for="end-date">Until:</label>
-                <input id="end-date" name="endDate" type="date" th:field="*{endDate}">
-                <ul th:class="'errors endDate'" th:if="${releaseErrors['End Date'] != null}">
-                    <li th:each="error : ${releaseErrors['End Date']}" th:text="${error}">Error</li>
-                </ul>
-            </p>
-            <p>
-                <input type="submit" value="Release Draft"> |
-                <a th:href="@{|/drafts/${currentDraftId}|}">Cancel</a>
-            </p>
-        </form>
+        <div class="box">
+            <h3>Release</h3>
+            <a th:unless="${showReleaseForm}" th:href="@{|/drafts/${currentDraftId}/release|}">Release this Draft</a>
+            <form id="release-form" method="post" th:if="${showReleaseForm}" th:object="${validityPeriod}">
+                <h4>Validity Period</h4>
+                <p>
+                    <label for="start-date">From:</label>
+                    <input id="start-date" name="startDate" type="date" th:field="*{startDate}">
+                    <ul th:class="'errors startDate'" th:if="${releaseErrors['Start Date'] != null}">
+                        <li th:each="error : ${releaseErrors['Start Date']}" th:text="${error}">Error</li>
+                    </ul>
+                </p>
+                <p>
+                    <label for="end-date">Until:</label>
+                    <input id="end-date" name="endDate" type="date" th:field="*{endDate}">
+                    <ul th:class="'errors endDate'" th:if="${releaseErrors['End Date'] != null}">
+                        <li th:each="error : ${releaseErrors['End Date']}" th:text="${error}">Error</li>
+                    </ul>
+                </p>
+                <p>
+                    <input type="submit" value="Release Draft"> |
+                    <a th:href="@{|/drafts/${currentDraftId}|}">Cancel</a>
+                </p>
+            </form>
+        </div>
+
     </div>
 
-    <div>
-        <svg width="100%" height="100%" th:attr="viewBox='0 0 ' + ${germanyWidth} + ' ' + ${germanyHeight}, style='width: ' + ${germanyWidth} + 'px; height: ' + ${germanyHeight} + 'px;'">
+    <div id="germany-map">
+        <svg width="100%" height="100%" th:attr="viewBox='0 0 ' + ${germanyWidth} + ' ' + ${germanyHeight}">
             <path th:attr="d=${germanySvgPath}" />
-            <line th:each="track : ${germanySvgTracks}" th:attr="x1=${track.get(0)}, y1=${track.get(1)}, x2=${track.get(2)}, y2=${track.get(3)}" stroke="#444444" stroke-width="3" />
-            <circle th:each="station : ${germanySvgStations}" th:attr="cx=${station.get(0)}, cy=${station.get(1)}" r="4" fill="#888888" />
+            <line th:each="track : ${germanySvgTracks}" th:attr="x1=${track.get(0)}, y1=${track.get(1)}, x2=${track.get(2)}, y2=${track.get(3)}" />
+            <circle th:each="station : ${germanySvgStations}" th:attr="cx=${station.get(0)}, cy=${station.get(1)}" r="4" />
         </svg>
     </div>
 

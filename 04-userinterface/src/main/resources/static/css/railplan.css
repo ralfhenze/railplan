@@ -42,15 +42,12 @@
 
 * {
     font-family: 'Open Sans', sans-serif;
-}
-
-html {
     margin: 0;
     padding: 0;
 }
 
 body {
-    background-color: #ffffff;
+    background-color: #efefef;
     font-weight: 400;
     font-size: 15px;
     color: #000000;
@@ -61,4 +58,103 @@ body {
 
 h1, h2, h3 {
     font-family: 'Montserrat', sans-serif;
+}
+
+h1 {
+    display: none;
+}
+
+header {
+    border-bottom: 1px solid #dddddd;
+    background-color: #ffffff;
+}
+
+#logo {
+    color: #f01414;
+    border: 4px solid #f01414;
+    border-radius: 6px;
+    display: inline-block;
+    padding: 0px 6px;
+    margin: 10px;
+    margin-right: 40px;
+}
+
+#main-navigation {
+    display: inline-block;
+}
+
+#main-navigation ul {
+    list-style: none;
+}
+
+#main-navigation ul li {
+    display: inline-block;
+    float: left;
+}
+
+#main-navigation ul li a {
+    padding: 10px 20px;
+    text-decoration: none;
+}
+
+#draft-selector {
+    display: none;
+}
+
+.box {
+    border: 1px solid #dddddd;
+    background-color: #ffffff;
+    padding: 40px;
+    margin: 10px;
+}
+
+#data-panel {
+    float: right;
+    width: 38%;
+}
+
+a {
+    color: #888888;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+    margin-bottom: 40px;
+}
+
+table caption {
+    text-align: left;
+}
+
+table th, td {
+    padding: 10px 20px;
+    border-bottom: 1px solid #bbbbbb;
+    text-align: left;
+}
+
+#germany-map {
+    width: 27%;
+    margin-left: 300px;
+}
+
+#germany-map svg {
+    width: 100%;
+    height: 100%;
+}
+
+#germany-map svg path {
+    fill: #bbbbbb;
+}
+
+#germany-map svg circle {
+    fill: #0a1e6e;
+    stroke: #ffffff;
+    stroke-width: 0.5;
+}
+
+#germany-map svg line {
+    fill: #bbbbbb;
+    stroke: #444444;
+    stroke-width: 3;
 }
