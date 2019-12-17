@@ -128,12 +128,12 @@ public class DraftsControllerIT {
     }
 
     @Test
-    public void userGetsAListOfAllStationsAndTracksOfADraft() throws Exception {
+    public void userGetsAListOfAllStationsOfADraft() throws Exception {
         // Given an existing Draft
         given(draftRepository.getRailNetworkDraftOfId(any())).willReturn(getBerlinHamburgDraft());
 
-        // When we call GET /drafts/123
-        final var response = getGetResponse("/drafts/123");
+        // When we call GET /drafts/123/stations
+        final var response = getGetResponse("/drafts/123/stations");
 
         // Then we get a table with all Stations
         final var document = Jsoup.parse(response.getContentAsString());
@@ -142,11 +142,6 @@ public class DraftsControllerIT {
         assertThat(stationRows).hasSize(2);
         assertThatRowShowsNameAndLocation(stationRows.get(0), berlinHbfName, berlinHbfPos);
         assertThatRowShowsNameAndLocation(stationRows.get(1), hamburgHbfName, hamburgHbfPos);
-
-        // And we get a table with all Tracks
-        final var trackRows = document.select("#tracks .track-row");
-        assertThat(trackRows).hasSize(1);
-        assertThatRowShowsStationNames(trackRows.get(0), berlinHbfName, hamburgHbfName);
     }
 
     private void assertThatRowShowsNameAndLocation(
@@ -162,15 +157,23 @@ public class DraftsControllerIT {
             .isEqualTo(location.getLongitudeAsString());
     }
 
-    private void assertThatRowShowsStationNames(
-        final Element row,
-        final TrainStationName stationName1,
-        final TrainStationName stationName2
-    ) {
-        assertThat(row.selectFirst(".station-1").text())
-            .isEqualTo(stationName1.getName());
-        assertThat(row.selectFirst(".station-2").text())
-            .isEqualTo(stationName2.getName());
+    @Test
+    public void userGetsAListOfAllTracksOfADraft() throws Exception {
+        // Given an existing Draft
+        given(draftRepository.getRailNetworkDraftOfId(any())).willReturn(getBerlinHamburgDraft());
+
+        // When we call GET /drafts/123/tracks
+        final var response = getGetResponse("/drafts/123/tracks");
+
+        // Then we get a table with all Tracks
+        final var document = Jsoup.parse(response.getContentAsString());
+        final var trackRows = document.select("#tracks .track-row");
+        assertThat(response.getStatus()).isEqualTo(HTTP_OK);
+        assertThat(trackRows).hasSize(1);
+        assertThat(trackRows.get(0).selectFirst(".station-1").text())
+            .isEqualTo(berlinHbfName.getName());
+        assertThat(trackRows.get(0).selectFirst(".station-2").text())
+            .isEqualTo(hamburgHbfName.getName());
     }
 
     @Test
@@ -222,9 +225,9 @@ public class DraftsControllerIT {
             potsdamHbfPos.getLongitude()
         );
 
-        // And we will be redirected to the Draft page
+        // And we will be redirected to the Stations page
         assertThat(response.getStatus()).isEqualTo(HTTP_MOVED_TEMPORARILY);
-        assertThat(response.getRedirectedUrl()).isEqualTo("/drafts/123");
+        assertThat(response.getRedirectedUrl()).isEqualTo("/drafts/123/stations");
     }
 
     @Test
@@ -272,9 +275,9 @@ public class DraftsControllerIT {
             potsdamHbfPos.getLongitude()
         );
 
-        // And we will be redirected to the Draft page
+        // And we will be redirected to the Stations page
         assertThat(response.getStatus()).isEqualTo(HTTP_MOVED_TEMPORARILY);
-        assertThat(response.getRedirectedUrl()).isEqualTo("/drafts/123");
+        assertThat(response.getRedirectedUrl()).isEqualTo("/drafts/123/stations");
     }
 
     @Test
@@ -293,9 +296,9 @@ public class DraftsControllerIT {
         // Then a DeleteTrainStationCommand is issued
         verify(deleteTrainStationCommand).deleteTrainStation("123", "1");
 
-        // And we will be redirected to the Draft page
+        // And we will be redirected to the Stations page
         assertThat(response.getStatus()).isEqualTo(HTTP_MOVED_TEMPORARILY);
-        assertThat(response.getRedirectedUrl()).isEqualTo("/drafts/123");
+        assertThat(response.getRedirectedUrl()).isEqualTo("/drafts/123/stations");
     }
 
     @Test
@@ -325,9 +328,9 @@ public class DraftsControllerIT {
         // Then an AddRailwayTrackCommand is issued with given Track parameters
         verify(addRailwayTrackCommand).addRailwayTrack("123", "1", "2");
 
-        // And we will be redirected to the Draft page
+        // And we will be redirected to the Tracks page
         assertThat(response.getStatus()).isEqualTo(HTTP_MOVED_TEMPORARILY);
-        assertThat(response.getRedirectedUrl()).isEqualTo("/drafts/123");
+        assertThat(response.getRedirectedUrl()).isEqualTo("/drafts/123/tracks");
     }
 
     @Test
@@ -371,9 +374,9 @@ public class DraftsControllerIT {
         // Then a DeleteRailwayTrackCommand is issued
         verify(deleteRailwayTrackCommand).deleteRailwayTrack("123", "1", "2");
 
-        // And we will be redirected to the Draft page
+        // And we will be redirected to the Tracks page
         assertThat(response.getStatus()).isEqualTo(HTTP_MOVED_TEMPORARILY);
-        assertThat(response.getRedirectedUrl()).isEqualTo("/drafts/123");
+        assertThat(response.getRedirectedUrl()).isEqualTo("/drafts/123/tracks");
     }
 
     @Test
