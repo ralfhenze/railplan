@@ -137,14 +137,14 @@ public class DraftsControllerIT {
 
         // Then we get a table with all Stations
         final var document = Jsoup.parse(response.getContentAsString());
-        final var stationRows = document.select("table#stations .station-row");
+        final var stationRows = document.select("#stations .station-row");
         assertThat(response.getStatus()).isEqualTo(HTTP_OK);
         assertThat(stationRows).hasSize(2);
         assertThatRowShowsNameAndLocation(stationRows.get(0), berlinHbfName, berlinHbfPos);
         assertThatRowShowsNameAndLocation(stationRows.get(1), hamburgHbfName, hamburgHbfPos);
 
         // And we get a table with all Tracks
-        final var trackRows = document.select("table#tracks .track-row");
+        final var trackRows = document.select("#tracks .track-row");
         assertThat(trackRows).hasSize(1);
         assertThatRowShowsStationNames(trackRows.get(0), berlinHbfName, hamburgHbfName);
     }

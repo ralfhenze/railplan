@@ -53,7 +53,6 @@ body {
     color: #000000;
     padding: 0;
     margin: 0;
-    overflow-y: scroll;
 }
 
 h1, h2, h3 {
@@ -110,7 +109,16 @@ header {
 
 #data-panel {
     float: right;
-    width: 38%;
+    width: 60%;
+    box-sizing: border-box;
+}
+
+#stations {
+    height: 678px;
+}
+
+#tracks {
+    display: none;
 }
 
 a {
@@ -134,8 +142,9 @@ table th, td {
 }
 
 #germany-map {
-    width: 27%;
-    margin-left: 300px;
+    width: 39.4%;
+    box-sizing: border-box;
+    height: 894px;
 }
 
 #germany-map svg {

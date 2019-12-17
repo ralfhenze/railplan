@@ -35,10 +35,10 @@
 
     <div id="data-panel" th:if="${currentDraftDto != null}">
 
-        <div class="box">
+        <div id="stations" class="box">
             <h1>Draft</h1>
             <form method="post">
-                <table id="stations">
+                <table>
                     <caption><h3>Stations</h3></caption>
                     <thead>
                         <tr>
@@ -91,9 +91,9 @@
             </form>
         </div>
 
-        <div class="box">
+        <div id="tracks" class="box">
             <form id="track-form" method="post" th:action="@{|/drafts/${currentDraftId}/tracks/new|}" th:object="${newTrack}">
-                <table id="tracks">
+                <table>
                     <caption><h3>Tracks</h3></caption>
                     <thead>
                         <tr>
@@ -166,8 +166,8 @@
 
     </div>
 
-    <div id="germany-map">
-        <svg width="100%" height="100%" th:attr="viewBox='0 0 ' + ${germanyWidth} + ' ' + ${germanyHeight}">
+    <div id="germany-map" class="box">
+        <svg th:attr="viewBox='0 0 ' + ${germanyWidth} + ' ' + ${germanyHeight}">
             <path th:attr="d=${germanySvgPath}" />
             <line th:each="track : ${germanySvgTracks}" th:attr="x1=${track.get(0)}, y1=${track.get(1)}, x2=${track.get(2)}, y2=${track.get(3)}" />
             <circle th:each="station : ${germanySvgStations}" th:attr="cx=${station.get(0)}, cy=${station.get(1)}" r="4" />
