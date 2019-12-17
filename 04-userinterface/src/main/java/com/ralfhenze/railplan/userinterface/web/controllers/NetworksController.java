@@ -1,4 +1,4 @@
-package com.ralfhenze.railplan.userinterface.web;
+package com.ralfhenze.railplan.userinterface.web.controllers;
 
 import com.ralfhenze.railplan.application.queries.Queries;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.release.ReleasedRailNetworkId;

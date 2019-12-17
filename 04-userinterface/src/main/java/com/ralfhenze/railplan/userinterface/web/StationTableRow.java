@@ -3,7 +3,7 @@ package com.ralfhenze.railplan.userinterface.web;
 import java.util.ArrayList;
 import java.util.List;
 
-class StationTableRow {
+public class StationTableRow {
 
     public boolean showInputField = false;
     public boolean disabled = false;
