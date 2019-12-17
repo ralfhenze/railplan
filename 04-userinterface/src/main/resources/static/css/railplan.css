@@ -96,10 +96,6 @@ nav ul {
     text-decoration: none;
 }
 
-#draft-selector {
-    display: none;
-}
-
 .box {
     border: 1px solid #dddddd;
     background-color: #ffffff;

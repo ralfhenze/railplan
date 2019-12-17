@@ -83,10 +83,11 @@ public class DraftsController {
         @PathVariable String currentDraftId,
         Model model
     ) {
-        return new DraftsView(currentDraftId, draftRepository, queries)
+        new DraftsView(currentDraftId, draftRepository, queries)
             .withShowReleaseForm(true)
-            .addRequiredAttributesTo(model)
-            .getViewName();
+            .addRequiredAttributesTo(model);
+
+        return "stations";
     }
 
     /**
@@ -109,11 +110,12 @@ public class DraftsController {
 
         } catch (ValidationException exception) {
 
-            return new DraftsView(currentDraftId, draftRepository, queries)
+            new DraftsView(currentDraftId, draftRepository, queries)
                 .withShowReleaseForm(true)
                 .withReleaseErrorsProvidedBy(exception)
-                .addRequiredAttributesTo(model)
-                .getViewName();
+                .addRequiredAttributesTo(model);
+
+            return "stations";
         }
     }
 }

@@ -1,0 +1,64 @@
+<!DOCTYPE HTML>
+<html lang="en-US" xmlns:th="http://www.thymeleaf.org">
+    <head th:fragment="head">
+        <title>RailPlan</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <link rel="stylesheet" type="text/css" href="/css/railplan.css" />
+    </head>
+    <body>
+        <header th:fragment="header">
+            <h2 id="logo">RailPlan</h2>
+            <nav id="main-navigation">
+                <ul>
+                    <li><a class="selected" th:href="@{|/drafts|}">Drafts</a></li>
+                    <li><a th:href="@{|/networks|}">Networks</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <nav th:fragment="tabs" aria-label="Network Element Tabs">
+            <ul>
+                <li>
+                    <a th:class="${showTracksTab} ? '' : selected" th:href="@{|/drafts/${currentDraftId}/stations|}">Train Stations</a>
+                </li>
+                <li>
+                    <a th:class="${showTracksTab} ? selected : ''" th:href="@{|/drafts/${currentDraftId}/tracks|}">Railway Tracks</a>
+                </li>
+            </ul>
+        </nav>
+
+        <div th:fragment="release-box" class="box">
+            <h3>Release</h3>
+            <a th:unless="${showReleaseForm}" th:href="@{|/drafts/${currentDraftId}/release|}">Release this Draft</a>
+            <form id="release-form" method="post" th:if="${showReleaseForm}" th:object="${validityPeriod}">
+                <h4>Validity Period</h4>
+                <p>
+                    <label for="start-date">From:</label>
+                    <input id="start-date" name="startDate" type="date" th:field="*{startDate}">
+                <ul th:class="'errors startDate'" th:if="${releaseErrors['Start Date'] != null}">
+                    <li th:each="error : ${releaseErrors['Start Date']}" th:text="${error}">Error</li>
+                </ul>
+                </p>
+                <p>
+                    <label for="end-date">Until:</label>
+                    <input id="end-date" name="endDate" type="date" th:field="*{endDate}">
+                <ul th:class="'errors endDate'" th:if="${releaseErrors['End Date'] != null}">
+                    <li th:each="error : ${releaseErrors['End Date']}" th:text="${error}">Error</li>
+                </ul>
+                </p>
+                <p>
+                    <input type="submit" value="Release Draft"> |
+                    <a th:href="@{|/drafts/${currentDraftId}|}">Cancel</a>
+                </p>
+            </form>
+        </div>
+
+        <div th:fragment="germany-map" id="germany-map" class="box">
+            <svg th:attr="viewBox='0 0 ' + ${germanyWidth} + ' ' + ${germanyHeight}">
+                <path th:attr="d=${germanySvgPath}" />
+                <line th:each="track : ${germanySvgTracks}" th:attr="x1=${track.get(0)}, y1=${track.get(1)}, x2=${track.get(2)}, y2=${track.get(3)}" />
+                <circle th:each="station : ${germanySvgStations}" th:attr="cx=${station.get(0)}, cy=${station.get(1)}" r="4" />
+            </svg>
+        </div>
+    </body>
+</html>

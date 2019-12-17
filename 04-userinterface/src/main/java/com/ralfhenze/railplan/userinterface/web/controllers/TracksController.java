@@ -41,10 +41,11 @@ public class TracksController {
      */
     @GetMapping("/drafts/{currentDraftId}/tracks")
     public String showTracks(@PathVariable String currentDraftId, Model model) {
-        return new DraftsView(currentDraftId, draftRepository, queries)
+        new DraftsView(currentDraftId, draftRepository, queries)
             .withShowTracksTab(true)
-            .addRequiredAttributesTo(model)
-            .getViewName();
+            .addRequiredAttributesTo(model);
+
+        return "tracks";
     }
 
     /**
@@ -55,11 +56,12 @@ public class TracksController {
         @PathVariable String currentDraftId,
         Model model
     ) {
-        return new DraftsView(currentDraftId, draftRepository, queries)
+        new DraftsView(currentDraftId, draftRepository, queries)
             .withShowTracksTab(true)
             .withShowNewTrackForm(true)
-            .addRequiredAttributesTo(model)
-            .getViewName();
+            .addRequiredAttributesTo(model);
+
+        return "tracks";
     }
 
     /**
@@ -78,12 +80,13 @@ public class TracksController {
                 String.valueOf(trackDto.getSecondStationId())
             );
         } catch (ValidationException exception) {
-            return new DraftsView(currentDraftId, draftRepository, queries)
+            new DraftsView(currentDraftId, draftRepository, queries)
                 .withShowTracksTab(true)
                 .withShowNewTrackForm(true)
                 .withTrackErrorsProvidedBy(exception)
-                .addRequiredAttributesTo(model)
-                .getViewName();
+                .addRequiredAttributesTo(model);
+
+            return "tracks";
         }
 
         return "redirect:/drafts/{currentDraftId}/tracks";

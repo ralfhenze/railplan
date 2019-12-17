@@ -45,9 +45,10 @@ public class StationsController {
      */
     @GetMapping({"/drafts/{currentDraftId}", "/drafts/{currentDraftId}/stations"})
     public String showDraftPage(@PathVariable String currentDraftId, Model model) {
-        return new DraftsView(currentDraftId, draftRepository, queries)
-            .addRequiredAttributesTo(model)
-            .getViewName();
+        new DraftsView(currentDraftId, draftRepository, queries)
+            .addRequiredAttributesTo(model);
+
+        return "stations";
     }
 
     /**
@@ -55,10 +56,11 @@ public class StationsController {
      */
     @GetMapping("/drafts/{currentDraftId}/stations/new")
     public String showNewStationForm(@PathVariable String currentDraftId, Model model) {
-        return new DraftsView(currentDraftId, draftRepository, queries)
+        new DraftsView(currentDraftId, draftRepository, queries)
             .withShowNewStationForm(true)
-            .addRequiredAttributesTo(model)
-            .getViewName();
+            .addRequiredAttributesTo(model);
+
+        return "stations";
     }
 
     /**
@@ -78,11 +80,12 @@ public class StationsController {
                 Double.parseDouble(stationRow.longitude)
             );
         } catch (ValidationException exception) {
-            return new DraftsView(currentDraftId, draftRepository, queries)
+            new DraftsView(currentDraftId, draftRepository, queries)
                 .withShowNewStationForm(true)
                 .withStationErrorsProvidedBy(exception)
-                .addRequiredAttributesTo(model)
-                .getViewName();
+                .addRequiredAttributesTo(model);
+
+            return "stations";
         }
 
         return "redirect:/drafts/{currentDraftId}/stations";
@@ -97,10 +100,11 @@ public class StationsController {
         @PathVariable String stationId,
         Model model
     ) {
-        return new DraftsView(currentDraftId, draftRepository, queries)
+        new DraftsView(currentDraftId, draftRepository, queries)
             .withStationIdToEdit(stationId)
-            .addRequiredAttributesTo(model)
-            .getViewName();
+            .addRequiredAttributesTo(model);
+
+        return "stations";
     }
 
     /**
@@ -122,11 +126,12 @@ public class StationsController {
                 Double.parseDouble(stationRow.longitude)
             );
         } catch (ValidationException exception) {
-            return new DraftsView(currentDraftId, draftRepository, queries)
+            new DraftsView(currentDraftId, draftRepository, queries)
                 .withStationIdToEdit(stationId)
                 .withStationErrorsProvidedBy(exception)
-                .addRequiredAttributesTo(model)
-                .getViewName();
+                .addRequiredAttributesTo(model);
+
+            return "stations";
         }
 
         return "redirect:/drafts/{currentDraftId}/stations";

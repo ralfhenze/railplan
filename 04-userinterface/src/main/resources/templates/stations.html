@@ -1,0 +1,76 @@
+<!DOCTYPE HTML>
+<html lang="en-US" xmlns:th="http://www.thymeleaf.org">
+    <th:block th:insert="~{fragments :: head}"></th:block>
+    <body>
+        <th:block th:insert="~{fragments :: header}"></th:block>
+
+        <div id="data-panel" th:if="${currentDraftDto != null}">
+
+            <div id="network-elements-box" class="box">
+                <th:block th:insert="~{fragments :: tabs}"></th:block>
+
+                <div id="stations" th:unless="${showTracksTab}">
+                    <h1>Draft</h1>
+                    <form method="post">
+                        <table>
+                            <caption><h3>Train Stations</h3></caption>
+                            <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Latitude</th>
+                                    <th scope="col">Longitude</th>
+                                    <th scope="col">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:class="station-row" th:each="row, status : ${stationTableRows}">
+                                    <td th:text="${status.count}">1</td>
+                                    <td th:insert="::stationTableCell('stationName', ${row.stationName}, ${row.showInputField}, ${row.stationNameErrors})"></td>
+                                    <td th:insert="::stationTableCell('latitude', ${row.latitude}, ${row.showInputField}, ${row.latitudeErrors})"></td>
+                                    <td th:insert="::stationTableCell('longitude', ${row.longitude}, ${row.showInputField}, ${row.longitudeErrors})"></td>
+                                    <td>
+                                        <div th:unless="${row.showInputField}">
+                                            <a th:href="@{|/drafts/${currentDraftId}/stations/${row.stationId}/edit|}">Edit</a> |
+                                            <a th:href="@{|/drafts/${currentDraftId}/stations/${row.stationId}/delete|}">Delete</a>
+                                        </div>
+                                        <div th:if="${row.showInputField}">
+                                            <input type="submit" value="Update"> |
+                                            <a th:href="@{|/drafts/${currentDraftId}/stations|}">Cancel</a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr th:unless="${showNewStationForm}">
+                                    <td colspan="5"><a th:href="@{|/drafts/${currentDraftId}/stations/new|}">+ Add Station</a></td>
+                                </tr>
+                                <tr th:if="${showNewStationForm}">
+                                    <td>+</td>
+                                    <td th:insert="::stationTableCell('stationName', ${newStationTableRow.stationName}, ${newStationTableRow.showInputField}, ${newStationTableRow.stationNameErrors})"></td>
+                                    <td th:insert="::stationTableCell('latitude', ${newStationTableRow.latitude}, ${newStationTableRow.showInputField}, ${newStationTableRow.latitudeErrors})"></td>
+                                    <td th:insert="::stationTableCell('longitude', ${newStationTableRow.longitude}, ${newStationTableRow.showInputField}, ${newStationTableRow.longitudeErrors})"></td>
+                                    <td>
+                                        <input type="submit" value="Add Station"> |
+                                        <a th:href="@{|/drafts/${currentDraftId}/stations|}">Cancel</a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <th:block th:fragment="stationTableCell(name, value, showInputField, errors)">
+                            <span th:class="${name}" th:unless="${showInputField}" th:text="${value}"></span>
+                            <input th:if="${showInputField}" type="text" th:name="${name}" th:value="${value}">
+                            <ul th:class="'errors ' + ${name}" th:if="${showInputField == true and not #lists.isEmpty(errors)}">
+                                <li th:each="error : ${errors}" th:text="${error}">Error</li>
+                            </ul>
+                        </th:block>
+                    </form>
+                </div>
+            </div>
+
+            <th:block th:insert="~{fragments :: release-box}"></th:block>
+
+        </div>
+
+        <th:block th:insert="~{fragments :: germany-map}"></th:block>
+
+    </body>
+</html>
