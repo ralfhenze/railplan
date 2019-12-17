@@ -84,10 +84,10 @@ public class DraftsController {
     }
 
     /**
-     * Provides a Draft page with a list of Stations and Tracks.
+     * Provides a Draft page with a list of Stations.
      */
-    @GetMapping("/drafts/{currentDraftId}")
-    public String draft(@PathVariable String currentDraftId, Model model) {
+    @GetMapping({"/drafts/{currentDraftId}", "/drafts/{currentDraftId}/stations"})
+    public String showDraftPage(@PathVariable String currentDraftId, Model model) {
         return new DraftsView(currentDraftId, draftRepository, queries)
             .addRequiredAttributesTo(model)
             .getViewName();
@@ -139,7 +139,7 @@ public class DraftsController {
                 .getViewName();
         }
 
-        return "redirect:/drafts/{currentDraftId}";
+        return "redirect:/drafts/{currentDraftId}/stations";
     }
 
     /**
@@ -183,11 +183,11 @@ public class DraftsController {
                 .getViewName();
         }
 
-        return "redirect:/drafts/{currentDraftId}";
+        return "redirect:/drafts/{currentDraftId}/stations";
     }
 
     /**
-     * Deletes an existing Station and redirects to Draft page.
+     * Deletes an existing Station and redirects to Stations page.
      */
     @GetMapping("/drafts/{currentDraftId}/stations/{stationId}/delete")
     public String deleteStation(
@@ -197,7 +197,18 @@ public class DraftsController {
         deleteTrainStationCommand
             .deleteTrainStation(currentDraftId, stationId);
 
-        return "redirect:/drafts/{currentDraftId}";
+        return "redirect:/drafts/{currentDraftId}/stations";
+    }
+
+    /**
+     * Provides a Draft page with a list of Tracks.
+     */
+    @GetMapping("/drafts/{currentDraftId}/tracks")
+    public String showTracks(@PathVariable String currentDraftId, Model model) {
+        return new DraftsView(currentDraftId, draftRepository, queries)
+            .withShowTracksTab(true)
+            .addRequiredAttributesTo(model)
+            .getViewName();
     }
 
     /**
@@ -209,6 +220,7 @@ public class DraftsController {
         Model model
     ) {
         return new DraftsView(currentDraftId, draftRepository, queries)
+            .withShowTracksTab(true)
             .withShowNewTrackForm(true)
             .addRequiredAttributesTo(model)
             .getViewName();
@@ -231,17 +243,18 @@ public class DraftsController {
             );
         } catch (ValidationException exception) {
             return new DraftsView(currentDraftId, draftRepository, queries)
+                .withShowTracksTab(true)
                 .withShowNewTrackForm(true)
                 .withTrackErrorsProvidedBy(exception)
                 .addRequiredAttributesTo(model)
                 .getViewName();
         }
 
-        return "redirect:/drafts/{currentDraftId}";
+        return "redirect:/drafts/{currentDraftId}/tracks";
     }
 
     /**
-     * Deletes an existing Track and redirects to Draft page.
+     * Deletes an existing Track and redirects to Tracks page.
      */
     @GetMapping("/drafts/{currentDraftId}/tracks/{firstStationId}/{secondStationId}/delete")
     public String deleteTrack(
@@ -252,7 +265,7 @@ public class DraftsController {
         deleteRailwayTrackCommand
             .deleteRailwayTrack(currentDraftId, firstStationId, secondStationId);
 
-        return "redirect:/drafts/{currentDraftId}";
+        return "redirect:/drafts/{currentDraftId}/tracks";
     }
 
     /**

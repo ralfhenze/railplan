@@ -82,7 +82,7 @@ header {
     display: inline-block;
 }
 
-#main-navigation ul {
+nav ul {
     list-style: none;
 }
 
@@ -113,12 +113,30 @@ header {
     box-sizing: border-box;
 }
 
-#stations {
+#network-elements-box {
     height: 678px;
 }
 
-#tracks {
-    display: none;
+#network-elements-box nav {
+    margin-bottom: 40px;
+    background-color: #eeeeee;
+}
+
+#network-elements-box nav li {
+    display: inline-block;
+    float: left;
+}
+
+#network-elements-box nav li a {
+    padding: 10px 20px;
+    text-decoration: none;
+    color: #000000;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 20px;
+}
+
+#network-elements-box nav li .selected {
+    background-color: #ffffff;
 }
 
 a {
@@ -132,7 +150,7 @@ table {
 }
 
 table caption {
-    text-align: left;
+    display: none;
 }
 
 table th, td {
