@@ -109,9 +109,11 @@ public class DraftsView {
 
         model.addAttribute("stationTableRows", getStationTableRows(model, draftDto));
         model.addAttribute("showNewStationForm", showNewStationForm);
+        model.addAttribute("newStationTableRow", getNewStationTableRow(model));
+
         model.addAttribute("showNewDefaultStationsForm", showNewDefaultStationsForm);
         model.addAttribute("defaultStations", new DefaultStations().getStationNames());
-        model.addAttribute("newStationTableRow", getNewStationTableRow(model));
+        model.addAttribute("stations", new Stations());
 
         model.addAttribute("showReleaseForm", showReleaseForm);
         model.addAttribute("releaseErrors", releaseErrors);

@@ -6,7 +6,9 @@ import com.ralfhenze.railplan.application.commands.UpdateTrainStationCommand;
 import com.ralfhenze.railplan.application.queries.Queries;
 import com.ralfhenze.railplan.domain.common.validation.ValidationException;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftRepository;
+import com.ralfhenze.railplan.userinterface.web.DefaultStations;
 import com.ralfhenze.railplan.userinterface.web.DraftsView;
+import com.ralfhenze.railplan.userinterface.web.Stations;
 import com.ralfhenze.railplan.userinterface.web.StationTableRow;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -15,6 +17,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+
+import java.util.List;
+import java.util.Map;
 
 @Controller
 public class StationsController {
@@ -147,6 +152,34 @@ public class StationsController {
             .addRequiredAttributesTo(model);
 
         return "stations";
+    }
+
+    /**
+     * Creates a new default Station or shows validation errors.
+     */
+    @PostMapping("/drafts/{currentDraftId}/stations/new-default")
+    public String createNewDefaultStations(
+        @PathVariable String currentDraftId,
+        @ModelAttribute(name = "stations") Stations stations,
+        Model model
+    ) {
+        for (final var stationName : stations.getStations()) {
+            final var coordinates = new DefaultStations().getCoordinatesOf(stationName);
+            if (!coordinates.isEmpty()) {
+                addTrainStationCommand.addTrainStation(
+                    currentDraftId,
+                    stationName,
+                    coordinates.get(0),
+                    coordinates.get(1)
+                );
+            } else {
+                throw new ValidationException(
+                    Map.of("Station Name", List.of(stationName + " does not exist"))
+                );
+            }
+        }
+
+        return "redirect:/drafts/{currentDraftId}/stations";
     }
 
     /**

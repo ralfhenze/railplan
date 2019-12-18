@@ -46,18 +46,6 @@
                                         <a th:href="@{|/drafts/${currentDraftId}/stations/new|}">+ Add Custom Station</a>
                                     </td>
                                 </tr>
-                                <tr th:if="${showNewDefaultStationsForm}">
-                                    <td>+</td>
-                                    <td colspan="3">
-                                        <select name="stations" multiple size="10">
-                                            <option th:each="station : ${defaultStations}" th:text="${station}">Berlin Hbf</option>
-                                        </select>
-                                    </td>
-                                    <td>
-                                        <input type="submit" value="Add Stations"> |
-                                        <a th:href="@{|/drafts/${currentDraftId}/stations|}">Cancel</a>
-                                    </td>
-                                </tr>
                                 <tr th:if="${showNewStationForm}">
                                     <td>+</td>
                                     <td th:insert="::stationTableCell('stationName', ${newStationTableRow.stationName}, ${newStationTableRow.showInputField}, ${newStationTableRow.stationNameErrors})"></td>
@@ -77,6 +65,14 @@
                                 <li th:each="error : ${errors}" th:text="${error}">Error</li>
                             </ul>
                         </th:block>
+                    </form>
+
+                    <form method="post" th:if="${showNewDefaultStationsForm}" th:object="${stations}">
+                        <select name="stations" multiple size="10" th:field="*{stations}">
+                            <option th:each="station : ${defaultStations}" th:text="${station}" th:value="${station}">Berlin Hbf</option>
+                        </select>
+                        <input type="submit" value="Add Stations"> |
+                        <a th:href="@{|/drafts/${currentDraftId}/stations|}">Cancel</a>
                     </form>
                 </div>
             </div>

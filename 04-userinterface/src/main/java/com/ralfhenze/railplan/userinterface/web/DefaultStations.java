@@ -1,6 +1,7 @@
 package com.ralfhenze.railplan.userinterface.web;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class DefaultStations {
@@ -56,5 +57,12 @@ public class DefaultStations {
             .map(station -> station.name)
             .sorted()
             .collect(Collectors.toList());
+    }
+
+    public List<Double> getCoordinatesOf(final String stationName) {
+        final Map<String, List<Double>> lut = stations.stream()
+            .collect(Collectors.toMap(s -> s.name, s -> List.of(s.latitude, s.longitude)));
+
+        return lut.getOrDefault(stationName, List.of());
     }
 }
