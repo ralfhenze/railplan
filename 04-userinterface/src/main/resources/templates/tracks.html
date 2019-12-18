@@ -58,9 +58,9 @@
                         </th:block>
                     </form>
 
-                    <form method="post" th:if="${showNewDefaultTracksForm}">
-                        <select name="tracks" multiple size="10">
-                            <option th:each="track, status : ${defaultTracks}" th:text="${track.station1.name} + ' <=> ' + ${track.station2.name}" th:value="${status.index}">Berlin Hbf &lt;&equals;&gt; Hamburg Hbf</option>
+                    <form method="post" th:if="${showNewDefaultTracksForm}" th:object="${trackIds}">
+                        <select name="tracks" multiple size="10" th:field="*{trackIds}">
+                            <option th:each="track : ${defaultTracks}" th:text="${track.get('text')}" th:value="${track.get('value')}">Berlin Hbf &lt;&equals;&gt; Hamburg Hbf</option>
                         </select>
                         <p>
                             <input type="submit" value="Add Tracks"> |

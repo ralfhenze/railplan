@@ -6,7 +6,9 @@ import com.ralfhenze.railplan.application.queries.Queries;
 import com.ralfhenze.railplan.domain.common.validation.ValidationException;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftRepository;
 import com.ralfhenze.railplan.infrastructure.persistence.dto.RailwayTrackDto;
+import com.ralfhenze.railplan.userinterface.web.DefaultTracks;
 import com.ralfhenze.railplan.userinterface.web.DraftsView;
+import com.ralfhenze.railplan.userinterface.web.TrackIds;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,6 +16,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+
+import java.util.List;
+import java.util.Map;
 
 @Controller
 public class TracksController {
@@ -106,6 +111,34 @@ public class TracksController {
             .addRequiredAttributesTo(model);
 
         return "tracks";
+    }
+
+    /**
+     * Creates new default Tracks or shows validation errors.
+     */
+    @PostMapping("/drafts/{currentDraftId}/tracks/new-default")
+    public String createNewDefaultTracks(
+        @PathVariable String currentDraftId,
+        @ModelAttribute(name = "trackIds") TrackIds trackIds,
+        Model model
+    ) {
+        for (final var trackId : trackIds.getTrackIds()) {
+            final var track = new DefaultTracks().getTrackOfId(trackId);
+
+            if (track.isPresent()) {
+                addRailwayTrackCommand.addRailwayTrackByStationName(
+                    currentDraftId,
+                    track.get().station1.name,
+                    track.get().station2.name
+                );
+            } else {
+                throw new ValidationException(
+                    Map.of("Default Track ID", List.of(trackId + " does not exist"))
+                );
+            }
+        }
+
+        return "redirect:/drafts/{currentDraftId}/tracks";
     }
 
     /**

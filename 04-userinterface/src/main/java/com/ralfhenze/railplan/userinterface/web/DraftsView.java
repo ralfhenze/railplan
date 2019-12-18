@@ -14,6 +14,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * Prepares the necessary data for resources/templates/drafts.html.
@@ -112,8 +113,18 @@ public class DraftsView {
         if (trackErrors.isEmpty()) {
             model.addAttribute("newTrack", new RailwayTrackDto());
         }
+
         model.addAttribute("showNewDefaultTracksForm", showNewDefaultTracksForm);
-        model.addAttribute("defaultTracks", new DefaultTracks().getTracks());
+        model.addAttribute("trackIds", new TrackIds());
+
+        final var defaultTracks = new DefaultTracks().getTracks();
+        model.addAttribute("defaultTracks", IntStream
+            .range(0, defaultTracks.size())
+            .mapToObj(i -> Map.of(
+                "value", i,
+                "text", defaultTracks.get(i).station1.name + " <=> " + defaultTracks.get(i).station2.name
+            ))
+            .collect(Collectors.toList()));
 
         model.addAttribute("stationTableRows", getStationTableRows(model, draftDto));
         model.addAttribute("showNewStationForm", showNewStationForm);

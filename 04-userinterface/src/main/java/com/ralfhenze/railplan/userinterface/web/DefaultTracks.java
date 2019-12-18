@@ -2,6 +2,7 @@ package com.ralfhenze.railplan.userinterface.web;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class DefaultTracks {
@@ -70,5 +71,9 @@ public class DefaultTracks {
         return tracks.stream()
             .sorted(Comparator.comparing(track -> track.station1.name + track.station2.name))
             .collect(Collectors.toList());
+    }
+
+    public Optional<Track> getTrackOfId(int trackId) {
+        return Optional.ofNullable(getTracks().get(trackId));
     }
 }
