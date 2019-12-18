@@ -138,6 +138,18 @@ public class StationsController {
     }
 
     /**
+     * Shows a form to create new default Stations.
+     */
+    @GetMapping("/drafts/{currentDraftId}/stations/new-default")
+    public String showNewDefaultStationsForm(@PathVariable String currentDraftId, Model model) {
+        new DraftsView(currentDraftId, draftRepository, queries)
+            .withShowNewDefaultStationsForm(true)
+            .addRequiredAttributesTo(model);
+
+        return "stations";
+    }
+
+    /**
      * Deletes an existing Station and redirects to Stations page.
      */
     @GetMapping("/drafts/{currentDraftId}/stations/{stationId}/delete")

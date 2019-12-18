@@ -40,8 +40,23 @@
                                         </div>
                                     </td>
                                 </tr>
-                                <tr th:unless="${showNewStationForm}">
-                                    <td colspan="5"><a th:href="@{|/drafts/${currentDraftId}/stations/new|}">+ Add Station</a></td>
+                                <tr th:unless="${showNewStationForm} or ${showNewDefaultStationsForm}">
+                                    <td colspan="5">
+                                        <a th:href="@{|/drafts/${currentDraftId}/stations/new-default|}">+ Add Default Stations</a> |
+                                        <a th:href="@{|/drafts/${currentDraftId}/stations/new|}">+ Add Custom Station</a>
+                                    </td>
+                                </tr>
+                                <tr th:if="${showNewDefaultStationsForm}">
+                                    <td>+</td>
+                                    <td colspan="3">
+                                        <select name="stations" multiple size="10">
+                                            <option th:each="station : ${defaultStations}" th:text="${station}">Berlin Hbf</option>
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <input type="submit" value="Add Stations"> |
+                                        <a th:href="@{|/drafts/${currentDraftId}/stations|}">Cancel</a>
+                                    </td>
                                 </tr>
                                 <tr th:if="${showNewStationForm}">
                                     <td>+</td>
