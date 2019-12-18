@@ -23,15 +23,18 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr th:class="track-row" th:each="track,status : ${tracks}">
+                                <tr th:class="track-row" th:each="track, status : ${tracks}">
                                     <td th:text="${status.count}">1</td>
                                     <td th:class="station-1" th:text="${track.get(0).getValue1()}">Berlin Hbf</td>
                                     <td>&lt;&equals;&gt;</td>
                                     <td th:class="station-2" th:text="${track.get(1).getValue1()}">Hamburg Hbf</td>
                                     <td><a th:href="@{|/drafts/${currentDraftId}/tracks/${track.get(0).getValue0()}/${track.get(1).getValue0()}/delete|}">Delete</a></td>
                                 </tr>
-                                <tr th:unless="${showNewTrackForm}">
-                                    <td colspan="5"><a th:href="@{|/drafts/${currentDraftId}/tracks/new|}">+ Add Track</a></td>
+                                <tr th:unless="${showNewTrackForm} or ${showNewDefaultTracksForm}">
+                                    <td colspan="5">
+                                        <a th:href="@{|/drafts/${currentDraftId}/tracks/new-default|}">+ Add Default Tracks</a> |
+                                        <a th:href="@{|/drafts/${currentDraftId}/tracks/new|}">+ Add Custom Track</a>
+                                    </td>
                                 </tr>
                                 <tr th:if="${showNewTrackForm}">
                                     <td>+</td>
@@ -53,6 +56,16 @@
                                 <li th:each="error : ${errors}" th:text="${error}">Error</li>
                             </ul>
                         </th:block>
+                    </form>
+
+                    <form method="post" th:if="${showNewDefaultTracksForm}">
+                        <select name="tracks" multiple size="10">
+                            <option th:each="track, status : ${defaultTracks}" th:text="${track.station1.name} + ' <=> ' + ${track.station2.name}" th:value="${status.index}">Berlin Hbf &lt;&equals;&gt; Hamburg Hbf</option>
+                        </select>
+                        <p>
+                            <input type="submit" value="Add Tracks"> |
+                            <a th:href="@{|/drafts/${currentDraftId}/tracks|}">Cancel</a>
+                        </p>
                     </form>
                 </div>
             </div>

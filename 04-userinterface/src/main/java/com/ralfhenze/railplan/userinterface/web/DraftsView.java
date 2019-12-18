@@ -24,9 +24,10 @@ public class DraftsView {
     private final RailNetworkDraftRepository draftRepository;
     private final Queries queries;
     private String stationIdToEdit;
-    private boolean showNewTrackForm = false;
     private boolean showNewStationForm = false;
     private boolean showNewDefaultStationsForm = false;
+    private boolean showNewTrackForm = false;
+    private boolean showNewDefaultTracksForm = false;
     private boolean showReleaseForm = false;
     private boolean showTracksTab = false;
     private Map<String, List<String>> stationErrors;
@@ -64,6 +65,11 @@ public class DraftsView {
 
     public DraftsView withShowNewTrackForm(final boolean showNewTrackForm) {
         this.showNewTrackForm = showNewTrackForm;
+        return this;
+    }
+
+    public DraftsView withShowNewDefaultTracksForm(final boolean showNewDefaultTracksForm) {
+        this.showNewDefaultTracksForm = showNewDefaultTracksForm;
         return this;
     }
 
@@ -106,6 +112,8 @@ public class DraftsView {
         if (trackErrors.isEmpty()) {
             model.addAttribute("newTrack", new RailwayTrackDto());
         }
+        model.addAttribute("showNewDefaultTracksForm", showNewDefaultTracksForm);
+        model.addAttribute("defaultTracks", new DefaultTracks().getTracks());
 
         model.addAttribute("stationTableRows", getStationTableRows(model, draftDto));
         model.addAttribute("showNewStationForm", showNewStationForm);

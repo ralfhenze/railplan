@@ -33,9 +33,9 @@ public enum DefaultStation {
     WOLFSBURG_HBF("Wolfsburg Hbf", 52.429144, 10.787489),
     WUERZBURG_HBF("Würzburg Hbf", 49.801455, 9.935910);
 
-    String name;
-    double latitude;
-    double longitude;
+    public String name;
+    public double latitude;
+    public double longitude;
 
     DefaultStation(final String name, final double latitude, final double longitude) {
         this.name = name;

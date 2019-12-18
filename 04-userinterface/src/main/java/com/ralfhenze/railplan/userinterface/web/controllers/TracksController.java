@@ -93,6 +93,22 @@ public class TracksController {
     }
 
     /**
+     * Shows a form to create a new default Track.
+     */
+    @GetMapping("/drafts/{currentDraftId}/tracks/new-default")
+    public String showNewDefaultTracksForm(
+        @PathVariable String currentDraftId,
+        Model model
+    ) {
+        new DraftsView(currentDraftId, draftRepository, queries)
+            .withShowTracksTab(true)
+            .withShowNewDefaultTracksForm(true)
+            .addRequiredAttributesTo(model);
+
+        return "tracks";
+    }
+
+    /**
      * Deletes an existing Track and redirects to Tracks page.
      */
     @GetMapping("/drafts/{currentDraftId}/tracks/{firstStationId}/{secondStationId}/delete")
