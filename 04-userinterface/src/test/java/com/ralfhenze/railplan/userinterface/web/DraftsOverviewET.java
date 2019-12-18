@@ -48,6 +48,7 @@ public class DraftsOverviewET {
         driver.findElementById("add-draft-button").click();
 
         // Then I should see one Draft in the navigation
+        driver.get(baseUrl + "/drafts");
         final var draftNavEntries = driver.findElementsByCssSelector("#draft-navigation li");
         assertThat(draftNavEntries).hasSize(1);
     }
