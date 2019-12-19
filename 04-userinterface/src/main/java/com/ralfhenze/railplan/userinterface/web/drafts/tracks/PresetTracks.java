@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class DefaultTracks {
+public class PresetTracks {
 
     public class Track {
         public final PresetStation station1;
@@ -69,13 +69,13 @@ public class DefaultTracks {
         new Track(PresetStation.MUENCHEN_HBF, PresetStation.AUGSBURG_HBF)
     );
 
-    public List<Track> getTracks() {
+    public List<Track> getAllPresetTracks() {
         return tracks.stream()
             .sorted(Comparator.comparing(track -> track.station1.name + track.station2.name))
             .collect(Collectors.toList());
     }
 
     public Optional<Track> getTrackOfId(int trackId) {
-        return Optional.ofNullable(getTracks().get(trackId));
+        return Optional.ofNullable(getAllPresetTracks().get(trackId));
     }
 }

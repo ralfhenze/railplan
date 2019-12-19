@@ -22,8 +22,8 @@ public class TracksView {
 
     private final String currentDraftId;
     private final RailNetworkDraftRepository draftRepository;
-    private boolean showNewTrackForm = false;
-    private boolean showNewDefaultTracksForm = false;
+    private boolean showCustomTrackForm = false;
+    private boolean showPresetTrackForm = false;
     private Map<String, List<String>> trackErrors = Map.of();
 
     public TracksView(
@@ -38,13 +38,13 @@ public class TracksView {
         return "tracks";
     }
 
-    public TracksView withShowNewTrackForm(final boolean showNewTrackForm) {
-        this.showNewTrackForm = showNewTrackForm;
+    public TracksView withShowCustomTrackForm(final boolean showCustomTrackForm) {
+        this.showCustomTrackForm = showCustomTrackForm;
         return this;
     }
 
-    public TracksView withShowNewDefaultTracksForm(final boolean showNewDefaultTracksForm) {
-        this.showNewDefaultTracksForm = showNewDefaultTracksForm;
+    public TracksView withShowPresetTrackForm(final boolean showPresetTrackForm) {
+        this.showPresetTrackForm = showPresetTrackForm;
         return this;
     }
 
@@ -60,21 +60,21 @@ public class TracksView {
         model.addAttribute("currentDraftDto", draftDto);
         model.addAttribute("stationNames", stationNames);
         model.addAttribute("tracks", getTracksWithStationNames(draftDto, stationNames));
-        model.addAttribute("showNewTrackForm", showNewTrackForm);
+        model.addAttribute("showCustomTrackForm", showCustomTrackForm);
         model.addAttribute("trackErrors", trackErrors);
         if (trackErrors.isEmpty()) {
             model.addAttribute("newTrack", new RailwayTrackDto());
         }
 
-        model.addAttribute("showNewDefaultTracksForm", showNewDefaultTracksForm);
-        model.addAttribute("trackIds", new TrackIds());
+        model.addAttribute("showPresetTrackForm", showPresetTrackForm);
+        model.addAttribute("presetTrackFormModel", new PresetTrackFormModel());
 
-        final var defaultTracks = new DefaultTracks().getTracks();
-        model.addAttribute("defaultTracks", IntStream
-            .range(0, defaultTracks.size())
+        final var presetTracks = new PresetTracks().getAllPresetTracks();
+        model.addAttribute("allPresetTracks", IntStream
+            .range(0, presetTracks.size())
             .mapToObj(i -> Map.of(
                 "value", i,
-                "text", defaultTracks.get(i).station1.name + " <=> " + defaultTracks.get(i).station2.name
+                "text", presetTracks.get(i).station1.name + " <=> " + presetTracks.get(i).station2.name
             ))
             .collect(Collectors.toList()));
 

@@ -35,7 +35,7 @@ public class TracksController {
     }
 
     /**
-     * Provides a Draft page with a list of Tracks.
+     * Shows a list of Tracks.
      */
     @GetMapping("/drafts/{currentDraftId}/tracks")
     public String showTracks(@PathVariable String currentDraftId, Model model) {
@@ -45,70 +45,30 @@ public class TracksController {
     }
 
     /**
-     * Shows a form to create a new Track.
+     * Shows a form to create new Tracks from presets.
      */
-    @GetMapping("/drafts/{currentDraftId}/tracks/new")
-    public String showNewTrackForm(
+    @GetMapping("/drafts/{currentDraftId}/tracks/new-from-preset")
+    public String showPresetTrackForm(
         @PathVariable String currentDraftId,
         Model model
     ) {
         return new TracksView(currentDraftId, draftRepository)
-            .withShowNewTrackForm(true)
+            .withShowPresetTrackForm(true)
             .addRequiredAttributesTo(model)
             .getViewName();
     }
 
     /**
-     * Creates a new Track or shows validation errors.
+     * Creates new Tracks from presets or shows validation errors.
      */
-    @PostMapping("/drafts/{currentDraftId}/tracks/new")
-    public String createNewTrack(
+    @PostMapping("/drafts/{currentDraftId}/tracks/new-from-preset")
+    public String createNewTracksFromPresets(
         @PathVariable String currentDraftId,
-        @ModelAttribute(name = "newTrack") RailwayTrackDto trackDto,
+        @ModelAttribute(name = "trackIds") PresetTrackFormModel trackIds,
         Model model
     ) {
-        try {
-            addRailwayTrackCommand.addRailwayTrack(
-                currentDraftId,
-                String.valueOf(trackDto.getFirstStationId()),
-                String.valueOf(trackDto.getSecondStationId())
-            );
-        } catch (ValidationException exception) {
-            return new TracksView(currentDraftId, draftRepository)
-                .withShowNewTrackForm(true)
-                .withTrackErrorsProvidedBy(exception)
-                .addRequiredAttributesTo(model)
-                .getViewName();
-        }
-
-        return "redirect:/drafts/{currentDraftId}/tracks";
-    }
-
-    /**
-     * Shows a form to create a new default Track.
-     */
-    @GetMapping("/drafts/{currentDraftId}/tracks/new-default")
-    public String showNewDefaultTracksForm(
-        @PathVariable String currentDraftId,
-        Model model
-    ) {
-        return new TracksView(currentDraftId, draftRepository)
-            .withShowNewDefaultTracksForm(true)
-            .addRequiredAttributesTo(model)
-            .getViewName();
-    }
-
-    /**
-     * Creates new default Tracks or shows validation errors.
-     */
-    @PostMapping("/drafts/{currentDraftId}/tracks/new-default")
-    public String createNewDefaultTracks(
-        @PathVariable String currentDraftId,
-        @ModelAttribute(name = "trackIds") TrackIds trackIds,
-        Model model
-    ) {
-        for (final var trackId : trackIds.getTrackIds()) {
-            final var track = new DefaultTracks().getTrackOfId(trackId);
+        for (final var trackId : trackIds.getPresetTrackIdsToAdd()) {
+            final var track = new PresetTracks().getTrackOfId(trackId);
 
             if (track.isPresent()) {
                 addRailwayTrackCommand.addRailwayTrackByStationName(
@@ -121,6 +81,46 @@ public class TracksController {
                     Map.of("Default Track ID", List.of(trackId + " does not exist"))
                 );
             }
+        }
+
+        return "redirect:/drafts/{currentDraftId}/tracks";
+    }
+
+    /**
+     * Shows a form to create a new custom Track.
+     */
+    @GetMapping("/drafts/{currentDraftId}/tracks/new-custom")
+    public String showCustomTrackForm(
+        @PathVariable String currentDraftId,
+        Model model
+    ) {
+        return new TracksView(currentDraftId, draftRepository)
+            .withShowCustomTrackForm(true)
+            .addRequiredAttributesTo(model)
+            .getViewName();
+    }
+
+    /**
+     * Creates a new custom Track or shows validation errors.
+     */
+    @PostMapping("/drafts/{currentDraftId}/tracks/new-custom")
+    public String createNewCustomTrack(
+        @PathVariable String currentDraftId,
+        @ModelAttribute(name = "newTrack") RailwayTrackDto trackDto,
+        Model model
+    ) {
+        try {
+            addRailwayTrackCommand.addRailwayTrack(
+                currentDraftId,
+                String.valueOf(trackDto.getFirstStationId()),
+                String.valueOf(trackDto.getSecondStationId())
+            );
+        } catch (ValidationException exception) {
+            return new TracksView(currentDraftId, draftRepository)
+                .withShowCustomTrackForm(true)
+                .withTrackErrorsProvidedBy(exception)
+                .addRequiredAttributesTo(model)
+                .getViewName();
         }
 
         return "redirect:/drafts/{currentDraftId}/tracks";

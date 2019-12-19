@@ -32,13 +32,13 @@
                                     <td th:class="station-2" th:text="${track.get(1).getValue1()}">Hamburg Hbf</td>
                                     <td><a th:href="@{|/drafts/${currentDraftId}/tracks/${track.get(0).getValue0()}/${track.get(1).getValue0()}/delete|}">Delete</a></td>
                                 </tr>
-                                <tr th:unless="${showNewTrackForm} or ${showNewDefaultTracksForm}">
+                                <tr th:unless="${showCustomTrackForm} or ${showPresetTrackForm}">
                                     <td colspan="5">
-                                        <a th:href="@{|/drafts/${currentDraftId}/tracks/new-default|}">+ Add Default Tracks</a> |
-                                        <a th:href="@{|/drafts/${currentDraftId}/tracks/new|}">+ Add Custom Track</a>
+                                        <a th:href="@{|/drafts/${currentDraftId}/tracks/new-from-preset|}">+ Add Preset Tracks</a> |
+                                        <a th:href="@{|/drafts/${currentDraftId}/tracks/new-custom|}">+ Add Custom Track</a>
                                     </td>
                                 </tr>
-                                <tr th:if="${showNewTrackForm}">
+                                <tr th:if="${showCustomTrackForm}">
                                     <td>+</td>
                                     <td th:insert="::trackSelector('firstStationId', *{firstStationId}, ${trackErrors['First Station ID']})"></td>
                                     <td>&lt;&equals;&gt;</td>
@@ -60,9 +60,12 @@
                         </th:block>
                     </form>
 
-                    <form method="post" th:if="${showNewDefaultTracksForm}" th:object="${trackIds}">
-                        <select name="tracks" multiple size="10" th:field="*{trackIds}">
-                            <option th:each="track : ${defaultTracks}" th:text="${track.get('text')}" th:value="${track.get('value')}">Berlin Hbf &lt;&equals;&gt; Hamburg Hbf</option>
+                    <form method="post" th:if="${showPresetTrackForm}" th:object="${presetTrackFormModel}">
+                        <select name="tracks" multiple size="10" th:field="*{presetTrackIdsToAdd}">
+                            <option
+                                th:each="presetTrack : ${allPresetTracks}"
+                                th:text="${presetTrack.get('text')}"
+                                th:value="${presetTrack.get('value')}">Berlin Hbf &lt;&equals;&gt; Hamburg Hbf</option>
                         </select>
                         <p>
                             <input type="submit" value="Add Tracks"> |
