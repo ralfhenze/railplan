@@ -3,13 +3,12 @@ package com.ralfhenze.railplan.userinterface.web.controllers;
 import com.ralfhenze.railplan.application.commands.AddTrainStationCommand;
 import com.ralfhenze.railplan.application.commands.DeleteTrainStationCommand;
 import com.ralfhenze.railplan.application.commands.UpdateTrainStationCommand;
-import com.ralfhenze.railplan.application.queries.Queries;
 import com.ralfhenze.railplan.domain.common.validation.ValidationException;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftRepository;
 import com.ralfhenze.railplan.userinterface.web.DefaultStations;
-import com.ralfhenze.railplan.userinterface.web.DraftsView;
 import com.ralfhenze.railplan.userinterface.web.Stations;
 import com.ralfhenze.railplan.userinterface.web.StationTableRow;
+import com.ralfhenze.railplan.userinterface.web.StationsView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,7 +23,6 @@ import java.util.Map;
 @Controller
 public class StationsController {
 
-    private final Queries queries;
     private final RailNetworkDraftRepository draftRepository;
     private final AddTrainStationCommand addTrainStationCommand;
     private final DeleteTrainStationCommand deleteTrainStationCommand;
@@ -32,13 +30,11 @@ public class StationsController {
 
     @Autowired
     public StationsController(
-        final Queries queries,
         final RailNetworkDraftRepository draftRepository,
         final AddTrainStationCommand addTrainStationCommand,
         final DeleteTrainStationCommand deleteTrainStationCommand,
         final UpdateTrainStationCommand updateTrainStationCommand
     ) {
-        this.queries = queries;
         this.draftRepository = draftRepository;
         this.addTrainStationCommand = addTrainStationCommand;
         this.deleteTrainStationCommand = deleteTrainStationCommand;
@@ -50,10 +46,9 @@ public class StationsController {
      */
     @GetMapping({"/drafts/{currentDraftId}", "/drafts/{currentDraftId}/stations"})
     public String showDraftPage(@PathVariable String currentDraftId, Model model) {
-        new DraftsView(currentDraftId, draftRepository, queries)
-            .addRequiredAttributesTo(model);
-
-        return "stations";
+        return new StationsView(currentDraftId, draftRepository)
+            .addRequiredAttributesTo(model)
+            .getViewName();
     }
 
     /**
@@ -61,11 +56,10 @@ public class StationsController {
      */
     @GetMapping("/drafts/{currentDraftId}/stations/new")
     public String showNewStationForm(@PathVariable String currentDraftId, Model model) {
-        new DraftsView(currentDraftId, draftRepository, queries)
+        return new StationsView(currentDraftId, draftRepository)
             .withShowNewStationForm(true)
-            .addRequiredAttributesTo(model);
-
-        return "stations";
+            .addRequiredAttributesTo(model)
+            .getViewName();
     }
 
     /**
@@ -85,12 +79,11 @@ public class StationsController {
                 Double.parseDouble(stationRow.longitude)
             );
         } catch (ValidationException exception) {
-            new DraftsView(currentDraftId, draftRepository, queries)
+            return new StationsView(currentDraftId, draftRepository)
                 .withShowNewStationForm(true)
                 .withStationErrorsProvidedBy(exception)
-                .addRequiredAttributesTo(model);
-
-            return "stations";
+                .addRequiredAttributesTo(model)
+                .getViewName();
         }
 
         return "redirect:/drafts/{currentDraftId}/stations";
@@ -105,11 +98,10 @@ public class StationsController {
         @PathVariable String stationId,
         Model model
     ) {
-        new DraftsView(currentDraftId, draftRepository, queries)
+        return new StationsView(currentDraftId, draftRepository)
             .withStationIdToEdit(stationId)
-            .addRequiredAttributesTo(model);
-
-        return "stations";
+            .addRequiredAttributesTo(model)
+            .getViewName();
     }
 
     /**
@@ -131,12 +123,11 @@ public class StationsController {
                 Double.parseDouble(stationRow.longitude)
             );
         } catch (ValidationException exception) {
-            new DraftsView(currentDraftId, draftRepository, queries)
+            return new StationsView(currentDraftId, draftRepository)
                 .withStationIdToEdit(stationId)
                 .withStationErrorsProvidedBy(exception)
-                .addRequiredAttributesTo(model);
-
-            return "stations";
+                .addRequiredAttributesTo(model)
+                .getViewName();
         }
 
         return "redirect:/drafts/{currentDraftId}/stations";
@@ -147,11 +138,10 @@ public class StationsController {
      */
     @GetMapping("/drafts/{currentDraftId}/stations/new-default")
     public String showNewDefaultStationsForm(@PathVariable String currentDraftId, Model model) {
-        new DraftsView(currentDraftId, draftRepository, queries)
+        return new StationsView(currentDraftId, draftRepository)
             .withShowNewDefaultStationsForm(true)
-            .addRequiredAttributesTo(model);
-
-        return "stations";
+            .addRequiredAttributesTo(model)
+            .getViewName();
     }
 
     /**

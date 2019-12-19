@@ -11,7 +11,7 @@
             <div id="network-elements-box" class="box">
                 <th:block th:insert="~{fragments :: tabs('release')}"></th:block>
 
-                <form id="release-form" method="post" th:if="${showReleaseForm}" th:object="${validityPeriod}">
+                <form id="release-form" method="post" th:object="${validityPeriod}">
                     <h4>Validity Period</h4>
                     <p>
                         <label for="start-date">From:</label>

@@ -1,130 +1,66 @@
 package com.ralfhenze.railplan.userinterface.web;
 
-import com.ralfhenze.railplan.application.queries.Queries;
 import com.ralfhenze.railplan.domain.common.validation.ValidationException;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftId;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftRepository;
 import com.ralfhenze.railplan.infrastructure.persistence.dto.RailNetworkDraftDto;
-import com.ralfhenze.railplan.infrastructure.persistence.dto.RailwayTrackDto;
 import com.ralfhenze.railplan.infrastructure.persistence.dto.TrainStationDto;
-import org.javatuples.Pair;
 import org.springframework.ui.Model;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 /**
- * Prepares the necessary data for resources/templates/drafts.html.
+ * Prepares the necessary data for resources/templates/stations.html.
  */
-public class DraftsView {
+public class StationsView {
 
     private final String currentDraftId;
     private final RailNetworkDraftRepository draftRepository;
-    private final Queries queries;
     private String stationIdToEdit;
     private boolean showNewStationForm = false;
     private boolean showNewDefaultStationsForm = false;
-    private boolean showNewTrackForm = false;
-    private boolean showNewDefaultTracksForm = false;
-    private boolean showReleaseForm = false;
-    private boolean showTracksTab = false;
     private Map<String, List<String>> stationErrors;
-    private Map<String, List<String>> trackErrors = Map.of();
-    private Map<String, List<String>> releaseErrors = Map.of();
 
-    public DraftsView(
+    public StationsView(
         final String currentDraftId,
-        final RailNetworkDraftRepository draftRepository,
-        final Queries queries
+        final RailNetworkDraftRepository draftRepository
     ) {
         this.currentDraftId = currentDraftId;
-        this.queries = queries;
         this.draftRepository = draftRepository;
     }
 
     public String getViewName() {
-        return "drafts";
+        return "stations";
     }
 
-    public DraftsView withStationIdToEdit(final String stationIdToEdit) {
+    public StationsView withStationIdToEdit(final String stationIdToEdit) {
         this.stationIdToEdit = stationIdToEdit;
         return this;
     }
 
-    public DraftsView withShowNewStationForm(final boolean showNewStationForm) {
+    public StationsView withShowNewStationForm(final boolean showNewStationForm) {
         this.showNewStationForm = showNewStationForm;
         return this;
     }
 
-    public DraftsView withShowNewDefaultStationsForm(final boolean showNewDefaultStationsForm) {
+    public StationsView withShowNewDefaultStationsForm(final boolean showNewDefaultStationsForm) {
         this.showNewDefaultStationsForm = showNewDefaultStationsForm;
         return this;
     }
 
-    public DraftsView withShowNewTrackForm(final boolean showNewTrackForm) {
-        this.showNewTrackForm = showNewTrackForm;
-        return this;
-    }
-
-    public DraftsView withShowNewDefaultTracksForm(final boolean showNewDefaultTracksForm) {
-        this.showNewDefaultTracksForm = showNewDefaultTracksForm;
-        return this;
-    }
-
-    public DraftsView withShowReleaseForm(final boolean showReleaseForm) {
-        this.showReleaseForm = showReleaseForm;
-        return this;
-    }
-
-    public DraftsView withShowTracksTab(final boolean showTracksTab) {
-        this.showTracksTab = showTracksTab;
-        return this;
-    }
-
-    public DraftsView withStationErrorsProvidedBy(final ValidationException exception) {
+    public StationsView withStationErrorsProvidedBy(final ValidationException exception) {
         this.stationErrors = exception.getErrorMessagesAsHashMap();
         return this;
     }
 
-    public DraftsView withTrackErrorsProvidedBy(final ValidationException exception) {
-        this.trackErrors = exception.getErrorMessagesAsHashMap();
-        return this;
-    }
-
-    public DraftsView withReleaseErrorsProvidedBy(final ValidationException exception) {
-        this.releaseErrors = exception.getErrorMessagesAsHashMap();
-        return this;
-    }
-
-    public DraftsView addRequiredAttributesTo(final Model model) {
+    public StationsView addRequiredAttributesTo(final Model model) {
         final var draftDto = getDraftDto();
         final var stationNames = getStationNames(draftDto);
 
-        model.addAttribute("draftIds", queries.getAllDraftIds());
         model.addAttribute("currentDraftDto", draftDto);
         model.addAttribute("stationNames", stationNames);
-        model.addAttribute("tracks", getTracksWithStationNames(draftDto, stationNames));
-        model.addAttribute("showNewTrackForm", showNewTrackForm);
-        model.addAttribute("showTracksTab", showTracksTab);
-        model.addAttribute("trackErrors", trackErrors);
-        if (trackErrors.isEmpty()) {
-            model.addAttribute("newTrack", new RailwayTrackDto());
-        }
-
-        model.addAttribute("showNewDefaultTracksForm", showNewDefaultTracksForm);
-        model.addAttribute("trackIds", new TrackIds());
-
-        final var defaultTracks = new DefaultTracks().getTracks();
-        model.addAttribute("defaultTracks", IntStream
-            .range(0, defaultTracks.size())
-            .mapToObj(i -> Map.of(
-                "value", i,
-                "text", defaultTracks.get(i).station1.name + " <=> " + defaultTracks.get(i).station2.name
-            ))
-            .collect(Collectors.toList()));
 
         model.addAttribute("stationTableRows", getStationTableRows(model, draftDto));
         model.addAttribute("showNewStationForm", showNewStationForm);
@@ -133,15 +69,6 @@ public class DraftsView {
         model.addAttribute("showNewDefaultStationsForm", showNewDefaultStationsForm);
         model.addAttribute("defaultStations", new DefaultStations().getStationNames());
         model.addAttribute("stations", new Stations());
-
-        model.addAttribute("showReleaseForm", showReleaseForm);
-        model.addAttribute("releaseErrors", releaseErrors);
-        if (releaseErrors.isEmpty()) {
-            model.addAttribute("validityPeriod", new ValidityPeriodDto(
-                LocalDate.now().plusDays(1).toString(),
-                LocalDate.now().plusDays(1).plusMonths(1).toString()
-            ));
-        }
 
         final var germanySvg = new GermanySvg();
         model.addAttribute("germanyWidth", GermanySvg.MAP_WIDTH);
@@ -169,26 +96,6 @@ public class DraftsView {
             .getStations()
             .stream()
             .collect(Collectors.toMap(TrainStationDto::getId, TrainStationDto::getName));
-    }
-
-    private List<List<Pair<String, String>>> getTracksWithStationNames(
-        final RailNetworkDraftDto draftDto,
-        final Map<Integer, String> stationNames
-    ) {
-        return draftDto
-            .getTracks()
-            .stream()
-            .map(trackDto -> List.of(
-                Pair.with(
-                    String.valueOf(trackDto.getFirstStationId()),
-                    stationNames.get(trackDto.getFirstStationId())
-                ),
-                Pair.with(
-                    String.valueOf(trackDto.getSecondStationId()),
-                    stationNames.get(trackDto.getSecondStationId())
-                )
-            ))
-            .collect(Collectors.toList());
     }
 
     private List<StationTableRow> getStationTableRows(

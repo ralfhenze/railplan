@@ -2,13 +2,12 @@ package com.ralfhenze.railplan.userinterface.web.controllers;
 
 import com.ralfhenze.railplan.application.commands.AddRailwayTrackCommand;
 import com.ralfhenze.railplan.application.commands.DeleteRailwayTrackCommand;
-import com.ralfhenze.railplan.application.queries.Queries;
 import com.ralfhenze.railplan.domain.common.validation.ValidationException;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftRepository;
 import com.ralfhenze.railplan.infrastructure.persistence.dto.RailwayTrackDto;
 import com.ralfhenze.railplan.userinterface.web.DefaultTracks;
-import com.ralfhenze.railplan.userinterface.web.DraftsView;
 import com.ralfhenze.railplan.userinterface.web.TrackIds;
+import com.ralfhenze.railplan.userinterface.web.TracksView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -23,19 +22,16 @@ import java.util.Map;
 @Controller
 public class TracksController {
 
-    private final Queries queries;
     private final RailNetworkDraftRepository draftRepository;
     private final AddRailwayTrackCommand addRailwayTrackCommand;
     private final DeleteRailwayTrackCommand deleteRailwayTrackCommand;
 
     @Autowired
     public TracksController(
-        final Queries queries,
         final RailNetworkDraftRepository draftRepository,
         final AddRailwayTrackCommand addRailwayTrackCommand,
         final DeleteRailwayTrackCommand deleteRailwayTrackCommand
     ) {
-        this.queries = queries;
         this.draftRepository = draftRepository;
         this.addRailwayTrackCommand = addRailwayTrackCommand;
         this.deleteRailwayTrackCommand = deleteRailwayTrackCommand;
@@ -46,11 +42,9 @@ public class TracksController {
      */
     @GetMapping("/drafts/{currentDraftId}/tracks")
     public String showTracks(@PathVariable String currentDraftId, Model model) {
-        new DraftsView(currentDraftId, draftRepository, queries)
-            .withShowTracksTab(true)
-            .addRequiredAttributesTo(model);
-
-        return "tracks";
+        return new TracksView(currentDraftId, draftRepository)
+            .addRequiredAttributesTo(model)
+            .getViewName();
     }
 
     /**
@@ -61,12 +55,10 @@ public class TracksController {
         @PathVariable String currentDraftId,
         Model model
     ) {
-        new DraftsView(currentDraftId, draftRepository, queries)
-            .withShowTracksTab(true)
+        return new TracksView(currentDraftId, draftRepository)
             .withShowNewTrackForm(true)
-            .addRequiredAttributesTo(model);
-
-        return "tracks";
+            .addRequiredAttributesTo(model)
+            .getViewName();
     }
 
     /**
@@ -85,13 +77,11 @@ public class TracksController {
                 String.valueOf(trackDto.getSecondStationId())
             );
         } catch (ValidationException exception) {
-            new DraftsView(currentDraftId, draftRepository, queries)
-                .withShowTracksTab(true)
+            return new TracksView(currentDraftId, draftRepository)
                 .withShowNewTrackForm(true)
                 .withTrackErrorsProvidedBy(exception)
-                .addRequiredAttributesTo(model);
-
-            return "tracks";
+                .addRequiredAttributesTo(model)
+                .getViewName();
         }
 
         return "redirect:/drafts/{currentDraftId}/tracks";
@@ -105,12 +95,10 @@ public class TracksController {
         @PathVariable String currentDraftId,
         Model model
     ) {
-        new DraftsView(currentDraftId, draftRepository, queries)
-            .withShowTracksTab(true)
+        return new TracksView(currentDraftId, draftRepository)
             .withShowNewDefaultTracksForm(true)
-            .addRequiredAttributesTo(model);
-
-        return "tracks";
+            .addRequiredAttributesTo(model)
+            .getViewName();
     }
 
     /**

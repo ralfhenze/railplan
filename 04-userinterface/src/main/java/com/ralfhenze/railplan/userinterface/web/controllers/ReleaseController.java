@@ -1,10 +1,9 @@
 package com.ralfhenze.railplan.userinterface.web.controllers;
 
 import com.ralfhenze.railplan.application.commands.ReleaseRailNetworkCommand;
-import com.ralfhenze.railplan.application.queries.Queries;
 import com.ralfhenze.railplan.domain.common.validation.ValidationException;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftRepository;
-import com.ralfhenze.railplan.userinterface.web.DraftsView;
+import com.ralfhenze.railplan.userinterface.web.ReleaseView;
 import com.ralfhenze.railplan.userinterface.web.ValidityPeriodDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -19,17 +18,14 @@ import java.time.LocalDate;
 @Controller
 public class ReleaseController {
 
-    private final Queries queries;
     private final RailNetworkDraftRepository draftRepository;
     private final ReleaseRailNetworkCommand releaseRailNetworkCommand;
 
     @Autowired
     public ReleaseController(
-        final Queries queries,
         final RailNetworkDraftRepository draftRepository,
         final ReleaseRailNetworkCommand releaseRailNetworkCommand
     ) {
-        this.queries = queries;
         this.draftRepository = draftRepository;
         this.releaseRailNetworkCommand = releaseRailNetworkCommand;
     }
@@ -42,11 +38,9 @@ public class ReleaseController {
         @PathVariable String currentDraftId,
         Model model
     ) {
-        new DraftsView(currentDraftId, draftRepository, queries)
-            .withShowReleaseForm(true)
-            .addRequiredAttributesTo(model);
-
-        return "release";
+        return new ReleaseView(currentDraftId, draftRepository)
+            .addRequiredAttributesTo(model)
+            .getViewName();
     }
 
     /**
@@ -68,13 +62,10 @@ public class ReleaseController {
             return "redirect:/networks/" + networkId;
 
         } catch (ValidationException exception) {
-
-            new DraftsView(currentDraftId, draftRepository, queries)
-                .withShowReleaseForm(true)
+            return new ReleaseView(currentDraftId, draftRepository)
                 .withReleaseErrorsProvidedBy(exception)
-                .addRequiredAttributesTo(model);
-
-            return "release";
+                .addRequiredAttributesTo(model)
+                .getViewName();
         }
     }
 }
