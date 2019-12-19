@@ -46,7 +46,7 @@ public class ReleaseController {
             .withShowReleaseForm(true)
             .addRequiredAttributesTo(model);
 
-        return "stations";
+        return "release";
     }
 
     /**
@@ -74,7 +74,7 @@ public class ReleaseController {
                 .withReleaseErrorsProvidedBy(exception)
                 .addRequiredAttributesTo(model);
 
-            return "stations";
+            return "release";
         }
     }
 }

@@ -9,7 +9,7 @@
         <div id="data-panel" th:if="${currentDraftDto != null}">
 
             <div id="network-elements-box" class="box">
-                <th:block th:insert="~{fragments :: tabs}"></th:block>
+                <th:block th:insert="~{fragments :: tabs('tracks')}"></th:block>
 
                 <div id="tracks" th:if="${showTracksTab}">
                     <form id="track-form" method="post" th:action="@{|/drafts/${currentDraftId}/tracks/new|}" th:object="${newTrack}">
@@ -71,9 +71,6 @@
                     </form>
                 </div>
             </div>
-
-            <th:block th:insert="~{fragments :: release-box}"></th:block>
-
         </div>
 
         <th:block th:insert="~{fragments :: germany-map}"></th:block>

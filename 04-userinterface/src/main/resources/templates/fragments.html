@@ -10,48 +10,19 @@
             <h2 id="logo"><a href="/">RailPlan</a></h2>
             <nav id="main-navigation">
                 <ul>
-                    <li><a th:class="${selectedNavEntry} == 'drafts' ? 'selected' : ''" th:href="@{|/drafts|}">Drafts</a></li>
-                    <li><a th:class="${selectedNavEntry} == 'networks' ? 'selected' : ''" th:href="@{|/networks|}">Networks</a></li>
+                    <li><a th:class="${selectedNavEntry} == 'drafts' ? selected : ''" th:href="@{|/drafts|}">Drafts</a></li>
+                    <li><a th:class="${selectedNavEntry} == 'networks' ? selected : ''" th:href="@{|/networks|}">Networks</a></li>
                 </ul>
             </nav>
         </header>
 
-        <nav th:fragment="tabs" aria-label="Network Element Tabs">
+        <nav th:fragment="tabs(selectedTab)" aria-label="Network Element Tabs">
             <ul>
-                <li>
-                    <a th:class="${showTracksTab} ? '' : selected" th:href="@{|/drafts/${currentDraftId}/stations|}">Train Stations</a>
-                </li>
-                <li>
-                    <a th:class="${showTracksTab} ? selected : ''" th:href="@{|/drafts/${currentDraftId}/tracks|}">Railway Tracks</a>
-                </li>
+                <li><a th:class="${selectedTab} == 'stations' ? selected : ''" th:href="@{|/drafts/${currentDraftId}/stations|}">Train Stations</a></li>
+                <li><a th:class="${selectedTab} == 'tracks' ? selected : ''" th:href="@{|/drafts/${currentDraftId}/tracks|}">Railway Tracks</a></li>
+                <li><a th:class="${selectedTab} == 'release' ? selected : ''" th:href="@{|/drafts/${currentDraftId}/release|}">Release</a></li>
             </ul>
         </nav>
-
-        <div th:fragment="release-box" class="box">
-            <h3>Release</h3>
-            <a th:unless="${showReleaseForm}" th:href="@{|/drafts/${currentDraftId}/release|}">Release this Draft</a>
-            <form id="release-form" method="post" th:if="${showReleaseForm}" th:object="${validityPeriod}">
-                <h4>Validity Period</h4>
-                <p>
-                    <label for="start-date">From:</label>
-                    <input id="start-date" name="startDate" type="date" th:field="*{startDate}">
-                <ul th:class="'errors startDate'" th:if="${releaseErrors['Start Date'] != null}">
-                    <li th:each="error : ${releaseErrors['Start Date']}" th:text="${error}">Error</li>
-                </ul>
-                </p>
-                <p>
-                    <label for="end-date">Until:</label>
-                    <input id="end-date" name="endDate" type="date" th:field="*{endDate}">
-                <ul th:class="'errors endDate'" th:if="${releaseErrors['End Date'] != null}">
-                    <li th:each="error : ${releaseErrors['End Date']}" th:text="${error}">Error</li>
-                </ul>
-                </p>
-                <p>
-                    <input type="submit" value="Release Draft"> |
-                    <a th:href="@{|/drafts/${currentDraftId}|}">Cancel</a>
-                </p>
-            </form>
-        </div>
 
         <div th:fragment="germany-map" id="germany-map" class="box">
             <svg th:attr="viewBox='0 0 ' + ${germanyWidth} + ' ' + ${germanyHeight}">

@@ -9,7 +9,7 @@
         <div id="data-panel" th:if="${currentDraftDto != null}">
 
             <div id="network-elements-box" class="box">
-                <th:block th:insert="~{fragments :: tabs}"></th:block>
+                <th:block th:insert="~{fragments :: tabs('stations')}"></th:block>
 
                 <div id="stations" th:unless="${showTracksTab}">
                     <h1>Draft</h1>
@@ -78,9 +78,6 @@
                     </form>
                 </div>
             </div>
-
-            <th:block th:insert="~{fragments :: release-box}"></th:block>
-
         </div>
 
         <th:block th:insert="~{fragments :: germany-map}"></th:block>
