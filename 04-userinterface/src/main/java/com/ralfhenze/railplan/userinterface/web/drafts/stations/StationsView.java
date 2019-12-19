@@ -20,8 +20,8 @@ public class StationsView {
     private final String currentDraftId;
     private final RailNetworkDraftRepository draftRepository;
     private String stationIdToEdit;
-    private boolean showNewStationForm = false;
-    private boolean showNewDefaultStationsForm = false;
+    private boolean showCustomStationForm = false;
+    private boolean showPresetStationForm = false;
     private Map<String, List<String>> stationErrors;
 
     public StationsView(
@@ -41,13 +41,13 @@ public class StationsView {
         return this;
     }
 
-    public StationsView withShowNewStationForm(final boolean showNewStationForm) {
-        this.showNewStationForm = showNewStationForm;
+    public StationsView withShowCustomStationForm(final boolean showCustomStationForm) {
+        this.showCustomStationForm = showCustomStationForm;
         return this;
     }
 
-    public StationsView withShowNewDefaultStationsForm(final boolean showNewDefaultStationsForm) {
-        this.showNewDefaultStationsForm = showNewDefaultStationsForm;
+    public StationsView withShowPresetStationForm(final boolean showPresetStationForm) {
+        this.showPresetStationForm = showPresetStationForm;
         return this;
     }
 
@@ -64,12 +64,12 @@ public class StationsView {
         model.addAttribute("stationNames", stationNames);
 
         model.addAttribute("stationTableRows", getStationTableRows(model, draftDto));
-        model.addAttribute("showNewStationForm", showNewStationForm);
+        model.addAttribute("showCustomStationForm", showCustomStationForm);
         model.addAttribute("newStationTableRow", getNewStationTableRow(model));
 
-        model.addAttribute("showNewDefaultStationsForm", showNewDefaultStationsForm);
-        model.addAttribute("defaultStations", new DefaultStations().getStationNames());
-        model.addAttribute("stations", new Stations());
+        model.addAttribute("showPresetStationForm", showPresetStationForm);
+        model.addAttribute("allPresetStations", PresetStation.values());
+        model.addAttribute("presetStationFormModel", new PresetStationFormModel());
 
         new GermanySvgViewFragment(draftDto.getStations(), draftDto.getTracks())
             .addRequiredAttributesTo(model);

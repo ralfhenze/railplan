@@ -1,6 +1,8 @@
 package com.ralfhenze.railplan.userinterface.web.drafts.stations;
 
-public enum DefaultStation {
+import java.util.Optional;
+
+public enum PresetStation {
     AACHEN_HBF("Aachen Hbf", 50.767802, 6.091262),
     AUGSBURG_HBF("Augsburg Hbf", 48.365662, 10.886304),
     BERLIN_HBF("Berlin Hbf", 52.524927, 13.369348),
@@ -33,13 +35,22 @@ public enum DefaultStation {
     WOLFSBURG_HBF("Wolfsburg Hbf", 52.429144, 10.787489),
     WUERZBURG_HBF("Würzburg Hbf", 49.801455, 9.935910);
 
-    public String name;
-    public double latitude;
-    public double longitude;
+    public final String name;
+    public final double latitude;
+    public final double longitude;
 
-    DefaultStation(final String name, final double latitude, final double longitude) {
+    PresetStation(final String name, final double latitude, final double longitude) {
         this.name = name;
         this.latitude = latitude;
         this.longitude = longitude;
+    }
+
+    public static Optional<PresetStation> getOptionalOf(final String name) {
+        try {
+            final var presetStation = PresetStation.valueOf(name);
+            return Optional.of(presetStation);
+        } catch (IllegalArgumentException exception) {
+            return Optional.empty();
+        }
     }
 }

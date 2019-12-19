@@ -38,7 +38,7 @@ public class StationsController {
     }
 
     /**
-     * Provides a page with a list of Stations.
+     * Shows a list of Stations.
      */
     @GetMapping({"/drafts/{currentDraftId}", "/drafts/{currentDraftId}/stations"})
     public String showDraftPage(@PathVariable String currentDraftId, Model model) {
@@ -48,20 +48,59 @@ public class StationsController {
     }
 
     /**
-     * Shows a form to create a new Station.
+     * Shows a form to create new Stations from presets.
      */
-    @GetMapping("/drafts/{currentDraftId}/stations/new")
-    public String showNewStationForm(@PathVariable String currentDraftId, Model model) {
+    @GetMapping("/drafts/{currentDraftId}/stations/new-from-preset")
+    public String showPresetStationForm(@PathVariable String currentDraftId, Model model) {
         return new StationsView(currentDraftId, draftRepository)
-            .withShowNewStationForm(true)
+            .withShowPresetStationForm(true)
             .addRequiredAttributesTo(model)
             .getViewName();
     }
 
     /**
-     * Creates a new Station or shows validation errors.
+     * Creates new Stations from presets or shows validation errors.
      */
-    @PostMapping("/drafts/{currentDraftId}/stations/new")
+    @PostMapping("/drafts/{currentDraftId}/stations/new-from-preset")
+    public String createNewStationsFromPresets(
+        @PathVariable String currentDraftId,
+        @ModelAttribute PresetStationFormModel presetStationFormModel,
+        Model model
+    ) {
+        for (final var stationName : presetStationFormModel.getPresetStationsToAdd()) {
+            final var presetStation = PresetStation.getOptionalOf(stationName);
+            if (!presetStation.isEmpty()) {
+                addTrainStationCommand.addTrainStation(
+                    currentDraftId,
+                    presetStation.get().name,
+                    presetStation.get().latitude,
+                    presetStation.get().longitude
+                );
+            } else {
+                throw new ValidationException(
+                    Map.of("Station Name", List.of(stationName + " does not exist"))
+                );
+            }
+        }
+
+        return "redirect:/drafts/{currentDraftId}/stations";
+    }
+
+    /**
+     * Shows a form to create a new custom Station.
+     */
+    @GetMapping("/drafts/{currentDraftId}/stations/new-custom")
+    public String showNewStationForm(@PathVariable String currentDraftId, Model model) {
+        return new StationsView(currentDraftId, draftRepository)
+            .withShowCustomStationForm(true)
+            .addRequiredAttributesTo(model)
+            .getViewName();
+    }
+
+    /**
+     * Creates a new custom Station or shows validation errors.
+     */
+    @PostMapping("/drafts/{currentDraftId}/stations/new-custom")
     public String createNewStation(
         @PathVariable String currentDraftId,
         @ModelAttribute(name = "updatedStationTableRow") StationTableRow stationRow,
@@ -76,7 +115,7 @@ public class StationsController {
             );
         } catch (ValidationException exception) {
             return new StationsView(currentDraftId, draftRepository)
-                .withShowNewStationForm(true)
+                .withShowCustomStationForm(true)
                 .withStationErrorsProvidedBy(exception)
                 .addRequiredAttributesTo(model)
                 .getViewName();
@@ -124,45 +163,6 @@ public class StationsController {
                 .withStationErrorsProvidedBy(exception)
                 .addRequiredAttributesTo(model)
                 .getViewName();
-        }
-
-        return "redirect:/drafts/{currentDraftId}/stations";
-    }
-
-    /**
-     * Shows a form to create new default Stations.
-     */
-    @GetMapping("/drafts/{currentDraftId}/stations/new-default")
-    public String showNewDefaultStationsForm(@PathVariable String currentDraftId, Model model) {
-        return new StationsView(currentDraftId, draftRepository)
-            .withShowNewDefaultStationsForm(true)
-            .addRequiredAttributesTo(model)
-            .getViewName();
-    }
-
-    /**
-     * Creates a new default Station or shows validation errors.
-     */
-    @PostMapping("/drafts/{currentDraftId}/stations/new-default")
-    public String createNewDefaultStations(
-        @PathVariable String currentDraftId,
-        @ModelAttribute(name = "stations") Stations stations,
-        Model model
-    ) {
-        for (final var stationName : stations.getStations()) {
-            final var coordinates = new DefaultStations().getCoordinatesOf(stationName);
-            if (!coordinates.isEmpty()) {
-                addTrainStationCommand.addTrainStation(
-                    currentDraftId,
-                    stationName,
-                    coordinates.get(0),
-                    coordinates.get(1)
-                );
-            } else {
-                throw new ValidationException(
-                    Map.of("Station Name", List.of(stationName + " does not exist"))
-                );
-            }
         }
 
         return "redirect:/drafts/{currentDraftId}/stations";

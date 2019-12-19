@@ -6,7 +6,7 @@
     <body>
         <th:block th:insert="~{fragments :: header('drafts')}"></th:block>
 
-        <div id="data-panel" th:if="${currentDraftDto != null}">
+        <div id="data-panel">
 
             <div id="network-elements-box" class="box">
                 <th:block th:insert="~{fragments :: tabs('stations')}"></th:block>
@@ -42,13 +42,13 @@
                                         </div>
                                     </td>
                                 </tr>
-                                <tr th:unless="${showNewStationForm} or ${showNewDefaultStationsForm}">
+                                <tr th:unless="${showCustomStationForm} or ${showPresetStationForm}">
                                     <td colspan="5">
-                                        <a th:href="@{|/drafts/${currentDraftId}/stations/new-default|}">+ Add Default Stations</a> |
-                                        <a th:href="@{|/drafts/${currentDraftId}/stations/new|}">+ Add Custom Station</a>
+                                        <a th:href="@{|/drafts/${currentDraftId}/stations/new-from-preset|}">+ Add Preset Stations</a> |
+                                        <a th:href="@{|/drafts/${currentDraftId}/stations/new-custom|}">+ Add Custom Station</a>
                                     </td>
                                 </tr>
-                                <tr th:if="${showNewStationForm}">
+                                <tr th:if="${showCustomStationForm}">
                                     <td>+</td>
                                     <td th:insert="::stationTableCell('stationName', ${newStationTableRow.stationName}, ${newStationTableRow.showInputField}, ${newStationTableRow.stationNameErrors})"></td>
                                     <td th:insert="::stationTableCell('latitude', ${newStationTableRow.latitude}, ${newStationTableRow.showInputField}, ${newStationTableRow.latitudeErrors})"></td>
@@ -69,9 +69,9 @@
                         </th:block>
                     </form>
 
-                    <form method="post" th:if="${showNewDefaultStationsForm}" th:object="${stations}">
-                        <select name="stations" multiple size="10" th:field="*{stations}">
-                            <option th:each="station : ${defaultStations}" th:text="${station}" th:value="${station}">Berlin Hbf</option>
+                    <form method="post" th:if="${showPresetStationForm}" th:object="${presetStationFormModel}">
+                        <select name="stations" multiple size="10" th:field="*{presetStationsToAdd}">
+                            <option th:each="presetStation : ${allPresetStations}" th:text="${presetStation.name}" th:value="${presetStation}">Berlin Hbf</option>
                         </select>
                         <input type="submit" value="Add Stations"> |
                         <a th:href="@{|/drafts/${currentDraftId}/stations|}">Cancel</a>

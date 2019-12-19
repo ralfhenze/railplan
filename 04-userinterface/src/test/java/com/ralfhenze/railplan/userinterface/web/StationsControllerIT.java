@@ -84,12 +84,12 @@ public class StationsControllerIT extends HtmlITBase {
     }
 
     @Test
-    public void userCanAccessAFormToAddANewStation() throws Exception {
+    public void userCanAccessAFormToAddANewCustomStation() throws Exception {
         // Given an existing Draft
         given(draftRepository.getRailNetworkDraftOfId(any())).willReturn(berlinHamburgDraft);
 
         // When we call GET /drafts/123/stations/new
-        final var response = getGetResponse("/drafts/123/stations/new");
+        final var response = getGetResponse("/drafts/123/stations/new-custom");
 
         // Then we get a form with input fields for Station name and coordinates
         final var document = Jsoup.parse(response.getContentAsString());
@@ -100,10 +100,10 @@ public class StationsControllerIT extends HtmlITBase {
     }
 
     @Test
-    public void userCanAddANewStation() throws Exception {
+    public void userCanAddANewCustomStation() throws Exception {
         // When we call POST /drafts/123/stations/new with valid Station parameters
         final var response = getPostResponse(
-            "/drafts/123/stations/new",
+            "/drafts/123/stations/new-custom",
             Map.of(
                 "stationName", potsdamHbfName.getName(),
                 "latitude", potsdamHbfPos.getLatitudeAsString(),
@@ -125,8 +125,11 @@ public class StationsControllerIT extends HtmlITBase {
     }
 
     @Test
-    public void userSeesValidationErrorsWhenAddingAnInvalidStation() throws Exception {
-        verifyPostRequestWithInvalidStationData("/drafts/123/stations/new", addTrainStationCommand);
+    public void userSeesValidationErrorsWhenAddingAnInvalidCustomStation() throws Exception {
+        verifyPostRequestWithInvalidStationData(
+            "/drafts/123/stations/new-custom",
+            addTrainStationCommand
+        );
     }
 
     @Test
