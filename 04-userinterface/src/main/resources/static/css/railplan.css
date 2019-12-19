@@ -68,6 +68,10 @@ header {
     background-color: #ffffff;
 }
 
+a {
+    color: #888888;
+}
+
 #logo {
     display: inline-block;
 }
@@ -100,6 +104,10 @@ nav ul {
 #main-navigation ul li a {
     padding: 10px 20px;
     text-decoration: none;
+}
+
+#main-navigation ul li a.selected {
+    color: #f00000;
 }
 
 .box {
@@ -173,10 +181,6 @@ nav ul {
 #network-elements-box nav li .selected {
     background-color: #ffffff;
     color: #000000;
-}
-
-a {
-    color: #888888;
 }
 
 table {

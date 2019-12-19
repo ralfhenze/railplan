@@ -6,12 +6,12 @@
         <link rel="stylesheet" type="text/css" href="/css/railplan.css" />
     </head>
     <body>
-        <header th:fragment="header">
+        <header th:fragment="header(selectedNavEntry)">
             <h2 id="logo"><a href="/">RailPlan</a></h2>
             <nav id="main-navigation">
                 <ul>
-                    <li><a class="selected" th:href="@{|/drafts|}">Drafts</a></li>
-                    <li><a th:href="@{|/networks|}">Networks</a></li>
+                    <li><a th:class="${selectedNavEntry} == 'drafts' ? 'selected' : ''" th:href="@{|/drafts|}">Drafts</a></li>
+                    <li><a th:class="${selectedNavEntry} == 'networks' ? 'selected' : ''" th:href="@{|/networks|}">Networks</a></li>
                 </ul>
             </nav>
         </header>
