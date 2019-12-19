@@ -4,7 +4,7 @@ import com.ralfhenze.railplan.domain.common.validation.ValidationException;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftId;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftRepository;
 import com.ralfhenze.railplan.infrastructure.persistence.dto.RailNetworkDraftDto;
-import com.ralfhenze.railplan.userinterface.web.GermanySvg;
+import com.ralfhenze.railplan.userinterface.web.GermanySvgViewFragment;
 import org.springframework.ui.Model;
 
 import java.time.LocalDate;
@@ -50,16 +50,8 @@ public class ReleaseView {
             ));
         }
 
-        final var germanySvg = new GermanySvg();
-        model.addAttribute("germanyWidth", GermanySvg.MAP_WIDTH);
-        model.addAttribute("germanyHeight", GermanySvg.MAP_HEIGHT);
-        model.addAttribute("germanySvgPath", germanySvg.getPath());
-        model.addAttribute("germanySvgStations", germanySvg.getStationCoordinates(
-            draftDto.getStations())
-        );
-        model.addAttribute("germanySvgTracks", germanySvg.getTrackCoordinates(
-            draftDto.getStations(), draftDto.getTracks())
-        );
+        new GermanySvgViewFragment(draftDto.getStations(), draftDto.getTracks())
+            .addRequiredAttributesTo(model);
 
         return this;
     }

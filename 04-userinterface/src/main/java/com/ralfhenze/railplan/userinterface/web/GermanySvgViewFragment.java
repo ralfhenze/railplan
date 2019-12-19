@@ -4,16 +4,17 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ralfhenze.railplan.infrastructure.persistence.dto.RailwayTrackDto;
 import com.ralfhenze.railplan.infrastructure.persistence.dto.TrainStationDto;
+import org.springframework.ui.Model;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class GermanySvg {
+public class GermanySvgViewFragment {
 
-    public static final double MAP_WIDTH = 200;
-    public static final double MAP_HEIGHT = 400;
+    private static final double MAP_WIDTH = 200;
+    private static final double MAP_HEIGHT = 400;
     private static final double EARTH_RADIUS = 6378137.0;
     private static final double ZOOM = 5.0;
     private static final double MAX_LATITUDE = 85.0511287798;
@@ -21,8 +22,26 @@ public class GermanySvg {
     private static final double SCALE = 256.0 * Math.pow(2, ZOOM) / EARTH_RADIUS;
 
     private final List<Double> center = getPointFromLatLng(50.0, 10.5, SCALE);
+    private final List<TrainStationDto> stationDtos;
+    private final List<RailwayTrackDto> trackDtos;
 
-    public String getPath() {
+    public GermanySvgViewFragment(
+        final List<TrainStationDto> stationDtos,
+        final List<RailwayTrackDto> trackDtos
+    ) {
+        this.stationDtos = stationDtos;
+        this.trackDtos = trackDtos;
+    }
+
+    public void addRequiredAttributesTo(final Model model) {
+        model.addAttribute("germanyWidth", MAP_WIDTH);
+        model.addAttribute("germanyHeight", MAP_HEIGHT);
+        model.addAttribute("germanySvgPath", getPath());
+        model.addAttribute("germanySvgStations", getStationCoordinates(stationDtos));
+        model.addAttribute("germanySvgTracks", getTrackCoordinates(stationDtos, trackDtos));
+    }
+
+    private String getPath() {
         final var mapper = new ObjectMapper();
         final var inputStream = TypeReference.class
             .getResourceAsStream("/json/germany_border_geo_path.json");
@@ -45,7 +64,7 @@ public class GermanySvg {
         }
     }
 
-    public List<List<Long>> getStationCoordinates(final List<TrainStationDto> stationDtos) {
+    private List<List<Long>> getStationCoordinates(final List<TrainStationDto> stationDtos) {
         return stationDtos.stream()
             .map(stationDto ->
                 getPixelCoordinates(stationDto.getLatitude(), stationDto.getLongitude())
@@ -53,7 +72,7 @@ public class GermanySvg {
             .collect(Collectors.toList());
     }
 
-    public List<List<Long>> getTrackCoordinates(
+    private List<List<Long>> getTrackCoordinates(
         final List<TrainStationDto> stationDtos,
         final List<RailwayTrackDto> trackDtos
     ) {

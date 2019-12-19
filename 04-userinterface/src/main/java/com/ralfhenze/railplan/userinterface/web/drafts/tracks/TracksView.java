@@ -6,7 +6,7 @@ import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraf
 import com.ralfhenze.railplan.infrastructure.persistence.dto.RailNetworkDraftDto;
 import com.ralfhenze.railplan.infrastructure.persistence.dto.RailwayTrackDto;
 import com.ralfhenze.railplan.infrastructure.persistence.dto.TrainStationDto;
-import com.ralfhenze.railplan.userinterface.web.GermanySvg;
+import com.ralfhenze.railplan.userinterface.web.GermanySvgViewFragment;
 import org.javatuples.Pair;
 import org.springframework.ui.Model;
 
@@ -78,16 +78,8 @@ public class TracksView {
             ))
             .collect(Collectors.toList()));
 
-        final var germanySvg = new GermanySvg();
-        model.addAttribute("germanyWidth", GermanySvg.MAP_WIDTH);
-        model.addAttribute("germanyHeight", GermanySvg.MAP_HEIGHT);
-        model.addAttribute("germanySvgPath", germanySvg.getPath());
-        model.addAttribute("germanySvgStations", germanySvg.getStationCoordinates(
-            draftDto.getStations())
-        );
-        model.addAttribute("germanySvgTracks", germanySvg.getTrackCoordinates(
-            draftDto.getStations(), draftDto.getTracks())
-        );
+        new GermanySvgViewFragment(draftDto.getStations(), draftDto.getTracks())
+            .addRequiredAttributesTo(model);
 
         return this;
     }
