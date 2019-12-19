@@ -35,6 +35,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import static com.ralfhenze.railplan.userinterface.web.TestData.berlinHamburgDraft;
 import static com.ralfhenze.railplan.userinterface.web.TestData.berlinHbfName;
 import static com.ralfhenze.railplan.userinterface.web.TestData.berlinHbfPos;
 import static com.ralfhenze.railplan.userinterface.web.TestData.hamburgHbfName;
@@ -130,7 +131,7 @@ public class DraftsControllerIT {
     @Test
     public void userGetsAListOfAllStationsOfADraft() throws Exception {
         // Given an existing Draft
-        given(draftRepository.getRailNetworkDraftOfId(any())).willReturn(getBerlinHamburgDraft());
+        given(draftRepository.getRailNetworkDraftOfId(any())).willReturn(berlinHamburgDraft);
 
         // When we call GET /drafts/123/stations
         final var response = getGetResponse("/drafts/123/stations");
@@ -160,7 +161,7 @@ public class DraftsControllerIT {
     @Test
     public void userGetsAListOfAllTracksOfADraft() throws Exception {
         // Given an existing Draft
-        given(draftRepository.getRailNetworkDraftOfId(any())).willReturn(getBerlinHamburgDraft());
+        given(draftRepository.getRailNetworkDraftOfId(any())).willReturn(berlinHamburgDraft);
 
         // When we call GET /drafts/123/tracks
         final var response = getGetResponse("/drafts/123/tracks");
@@ -192,7 +193,7 @@ public class DraftsControllerIT {
     @Test
     public void userCanAccessAFormToAddANewStation() throws Exception {
         // Given an existing Draft
-        given(draftRepository.getRailNetworkDraftOfId(any())).willReturn(getBerlinHamburgDraft());
+        given(draftRepository.getRailNetworkDraftOfId(any())).willReturn(berlinHamburgDraft);
 
         // When we call GET /drafts/123/stations/new
         final var response = getGetResponse("/drafts/123/stations/new");
@@ -238,7 +239,7 @@ public class DraftsControllerIT {
     @Test
     public void userCanAccessAFormToEditAnExistingStation() throws Exception {
         // Given an existing Draft
-        given(draftRepository.getRailNetworkDraftOfId(any())).willReturn(getBerlinHamburgDraft());
+        given(draftRepository.getRailNetworkDraftOfId(any())).willReturn(berlinHamburgDraft);
 
         // When we call GET /drafts/123/stations/1/edit
         final var response = getGetResponse("/drafts/123/stations/1/edit");
@@ -304,7 +305,7 @@ public class DraftsControllerIT {
     @Test
     public void userCanAccessAFormToAddANewTrack() throws Exception {
         // Given an existing Draft
-        given(draftRepository.getRailNetworkDraftOfId(any())).willReturn(getBerlinHamburgDraft());
+        given(draftRepository.getRailNetworkDraftOfId(any())).willReturn(berlinHamburgDraft);
 
         // When we call GET /drafts/123/tracks/new
         final var response = getGetResponse("/drafts/123/tracks/new");
@@ -345,7 +346,7 @@ public class DraftsControllerIT {
             .willThrow(validationException);
 
         // Given an existing Draft
-        given(draftRepository.getRailNetworkDraftOfId(any())).willReturn(getBerlinHamburgDraft());
+        given(draftRepository.getRailNetworkDraftOfId(any())).willReturn(berlinHamburgDraft);
 
         // When we call POST /drafts/123/tracks/new with invalid Track parameters
         final var response = getPostResponse(
@@ -382,7 +383,7 @@ public class DraftsControllerIT {
     @Test
     public void userCanAccessAFormToReleaseAnExistingDraft() throws Exception {
         // Given an existing Draft
-        given(draftRepository.getRailNetworkDraftOfId(any())).willReturn(getBerlinHamburgDraft());
+        given(draftRepository.getRailNetworkDraftOfId(any())).willReturn(berlinHamburgDraft);
 
         // When we call GET /drafts/123/release
         final var response = getGetResponse("/drafts/123/release");
@@ -420,7 +421,7 @@ public class DraftsControllerIT {
     @Test
     public void userSeesValidationErrorsWhenReleasingADraftWithAnInvalidPeriod() throws Exception {
         // Given an existing Draft
-        given(draftRepository.getRailNetworkDraftOfId(any())).willReturn(getBerlinHamburgDraft());
+        given(draftRepository.getRailNetworkDraftOfId(any())).willReturn(berlinHamburgDraft);
 
         // And we will get validation errors when attempting to release the Draft
         final var startDateErrors = List.of("Start Date error");
@@ -475,7 +476,7 @@ public class DraftsControllerIT {
         }
 
         // Given an existing Draft
-        given(draftRepository.getRailNetworkDraftOfId(any())).willReturn(getBerlinHamburgDraft());
+        given(draftRepository.getRailNetworkDraftOfId(any())).willReturn(berlinHamburgDraft);
 
         // When we call POST to url with invalid Station parameters
         final var response = getPostResponse(
@@ -493,14 +494,6 @@ public class DraftsControllerIT {
         assertThat(document.select(".errors.stationName li").eachText()).isEqualTo(nameErrors);
         assertThat(document.select(".errors.latitude li").eachText()).isEqualTo(latErrors);
         assertThat(document.select(".errors.longitude li").eachText()).isEqualTo(lngErrors);
-    }
-
-    private RailNetworkDraft getBerlinHamburgDraft() {
-        return new RailNetworkDraft()
-            .withId(new RailNetworkDraftId("123"))
-            .withNewStation(berlinHbfName, berlinHbfPos)
-            .withNewStation(hamburgHbfName, hamburgHbfPos)
-            .withNewTrack(berlinHbfName, hamburgHbfName);
     }
 
     private MockHttpServletResponse getGetResponse(final String url) throws Exception {
