@@ -1,14 +1,10 @@
-package com.ralfhenze.railplan.userinterface.web.controllers;
+package com.ralfhenze.railplan.userinterface.web.drafts.stations;
 
 import com.ralfhenze.railplan.application.commands.AddTrainStationCommand;
 import com.ralfhenze.railplan.application.commands.DeleteTrainStationCommand;
 import com.ralfhenze.railplan.application.commands.UpdateTrainStationCommand;
 import com.ralfhenze.railplan.domain.common.validation.ValidationException;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftRepository;
-import com.ralfhenze.railplan.userinterface.web.DefaultStations;
-import com.ralfhenze.railplan.userinterface.web.Stations;
-import com.ralfhenze.railplan.userinterface.web.StationTableRow;
-import com.ralfhenze.railplan.userinterface.web.StationsView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

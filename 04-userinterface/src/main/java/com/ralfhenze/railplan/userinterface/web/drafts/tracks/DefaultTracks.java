@@ -1,4 +1,6 @@
-package com.ralfhenze.railplan.userinterface.web;
+package com.ralfhenze.railplan.userinterface.web.drafts.tracks;
+
+import com.ralfhenze.railplan.userinterface.web.drafts.stations.DefaultStation;
 
 import java.util.Comparator;
 import java.util.List;

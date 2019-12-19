@@ -1,4 +1,4 @@
-package com.ralfhenze.railplan.userinterface.web.controllers;
+package com.ralfhenze.railplan.userinterface.web.networks;
 
 import com.ralfhenze.railplan.application.queries.Queries;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.release.ReleasedRailNetworkId;
@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Controller

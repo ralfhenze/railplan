@@ -1,4 +1,4 @@
-package com.ralfhenze.railplan.userinterface.web.controllers;
+package com.ralfhenze.railplan.userinterface.web.api;
 
 import com.ralfhenze.railplan.application.commands.AddRailNetworkDraftCommand;
 import com.ralfhenze.railplan.application.commands.AddRailwayTrackCommand;

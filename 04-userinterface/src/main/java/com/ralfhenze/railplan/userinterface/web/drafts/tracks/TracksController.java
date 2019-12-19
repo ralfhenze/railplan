@@ -1,13 +1,10 @@
-package com.ralfhenze.railplan.userinterface.web.controllers;
+package com.ralfhenze.railplan.userinterface.web.drafts.tracks;
 
 import com.ralfhenze.railplan.application.commands.AddRailwayTrackCommand;
 import com.ralfhenze.railplan.application.commands.DeleteRailwayTrackCommand;
 import com.ralfhenze.railplan.domain.common.validation.ValidationException;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftRepository;
 import com.ralfhenze.railplan.infrastructure.persistence.dto.RailwayTrackDto;
-import com.ralfhenze.railplan.userinterface.web.DefaultTracks;
-import com.ralfhenze.railplan.userinterface.web.TrackIds;
-import com.ralfhenze.railplan.userinterface.web.TracksView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

@@ -1,10 +1,8 @@
-package com.ralfhenze.railplan.userinterface.web.controllers;
+package com.ralfhenze.railplan.userinterface.web.drafts.release;
 
 import com.ralfhenze.railplan.application.commands.ReleaseRailNetworkCommand;
 import com.ralfhenze.railplan.domain.common.validation.ValidationException;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftRepository;
-import com.ralfhenze.railplan.userinterface.web.ReleaseView;
-import com.ralfhenze.railplan.userinterface.web.ValidityPeriodDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

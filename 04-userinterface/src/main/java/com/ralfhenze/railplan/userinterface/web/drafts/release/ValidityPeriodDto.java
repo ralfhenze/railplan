@@ -1,4 +1,4 @@
-package com.ralfhenze.railplan.userinterface.web;
+package com.ralfhenze.railplan.userinterface.web.drafts.release;
 
 public class ValidityPeriodDto {
 

@@ -1,4 +1,4 @@
-package com.ralfhenze.railplan.userinterface.web;
+package com.ralfhenze.railplan.userinterface.web.drafts.stations;
 
 public enum DefaultStation {
     AACHEN_HBF("Aachen Hbf", 50.767802, 6.091262),

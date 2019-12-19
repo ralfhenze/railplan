@@ -1,10 +1,10 @@
-package com.ralfhenze.railplan.userinterface.web;
+package com.ralfhenze.railplan.userinterface.web.drafts.release;
 
-import com.ralfhenze.railplan.application.queries.Queries;
 import com.ralfhenze.railplan.domain.common.validation.ValidationException;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftId;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftRepository;
 import com.ralfhenze.railplan.infrastructure.persistence.dto.RailNetworkDraftDto;
+import com.ralfhenze.railplan.userinterface.web.GermanySvg;
 import org.springframework.ui.Model;
 
 import java.time.LocalDate;
