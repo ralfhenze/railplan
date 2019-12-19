@@ -1,6 +1,8 @@
 <!DOCTYPE HTML>
 <html lang="en-US" xmlns:th="http://www.thymeleaf.org">
-    <th:block th:insert="~{fragments :: head}"></th:block>
+    <head th:replace="~{fragments :: head}">
+        <title>RailPlan</title>
+    </head>
     <body>
         <th:block th:insert="~{fragments :: header}"></th:block>
         <h1>RailPlan</h1>
