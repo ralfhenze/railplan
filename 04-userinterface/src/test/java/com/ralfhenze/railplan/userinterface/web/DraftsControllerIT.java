@@ -21,14 +21,10 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.util.LinkedMultiValueMap;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -48,18 +44,10 @@ import static org.mockito.ArgumentMatchers.anyDouble;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest
-public class DraftsControllerIT {
-
-    private final static int HTTP_OK = 200;
-    private final static int HTTP_MOVED_TEMPORARILY = 302;
-
-    @Autowired
-    private MockMvc mockMvc;
+public class DraftsControllerIT extends HtmlITBase {
 
     @MockBean
     private MongoTemplate mongoTemplate;
@@ -494,29 +482,5 @@ public class DraftsControllerIT {
         assertThat(document.select(".errors.stationName li").eachText()).isEqualTo(nameErrors);
         assertThat(document.select(".errors.latitude li").eachText()).isEqualTo(latErrors);
         assertThat(document.select(".errors.longitude li").eachText()).isEqualTo(lngErrors);
-    }
-
-    private MockHttpServletResponse getGetResponse(final String url) throws Exception {
-        return mockMvc.perform(get(url)).andReturn().getResponse();
-    }
-
-    private MockHttpServletResponse getPostResponse(
-        final String url,
-        final Map<String, String> parameters
-    ) throws Exception {
-        final var multiValueMapParameters = new LinkedMultiValueMap<String, String>();
-        parameters.forEach((key, value) -> multiValueMapParameters.put(key, List.of(value)));
-
-        return mockMvc
-            .perform(post(url).params(multiValueMapParameters))
-            .andReturn()
-            .getResponse();
-    }
-
-    private Element getElement(
-        final String cssSelector,
-        final MockHttpServletResponse response
-    ) throws Exception {
-        return Jsoup.parse(response.getContentAsString()).selectFirst(cssSelector);
     }
 }
