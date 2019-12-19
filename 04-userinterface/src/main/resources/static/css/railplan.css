@@ -121,6 +121,10 @@ nav ul {
     background-image: url("../img/railway-tracks.jpg");
 }
 
+.drafts {
+    background-image: url("../img/railway-construction.jpg");
+}
+
 .networks {
     background-image: url("../img/frankfurt-hbf.jpg");
 }

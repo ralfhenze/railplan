@@ -6,21 +6,26 @@
     <body>
         <th:block th:insert="~{fragments :: header}"></th:block>
 
-        <div id="draft-selector">
-            <h3>Rail Network Drafts</h3>
-            <nav id="draft-navigation" aria-label="Draft Selection">
-                <ul>
-                    <li th:each="draftId,status : ${draftIds}">
-                        <span th:if="${currentDraftId == draftId}">*</span>
-                        <a th:href="@{|/drafts/${draftId}|}" th:text="'Draft ' + ${status.count}">Draft 1</a>
-                        (<a th:href="@{|/drafts/${draftId}/delete|}">Delete</a>)
-                    </li>
-                </ul>
-            </nav>
-            <div>
-                <a id="add-draft-button" href="/drafts/new">+ Add Draft</a>
+        <div class="drafts fullscreen-wrapper">
+            <div id="index-box" class="box">
+
+                <div id="draft-selector">
+                    <h3>Rail Network Drafts</h3>
+                    <nav id="draft-navigation" aria-label="Draft Selection">
+                        <ul>
+                            <li th:each="draftId,status : ${draftIds}">
+                                <span th:if="${currentDraftId == draftId}">*</span>
+                                <a th:href="@{|/drafts/${draftId}|}" th:text="'Draft ' + ${status.count}">Draft 1</a>
+                                (<a th:href="@{|/drafts/${draftId}/delete|}">Delete</a>)
+                            </li>
+                        </ul>
+                    </nav>
+                    <div>
+                        <a id="add-draft-button" href="/drafts/new">+ Add Draft</a>
+                    </div>
+                </div>
+
             </div>
         </div>
-
     </body>
 </html>
