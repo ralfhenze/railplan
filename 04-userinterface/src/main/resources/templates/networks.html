@@ -1,81 +1,74 @@
 <!DOCTYPE HTML>
 <html lang="en-US" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{fragments :: head}">
-    <title>RailPlan</title>
-</head>
-<body>
-    <h2>RailPlan</h2>
+    <head th:replace="~{fragments :: head}">
+        <title>RailPlan</title>
+    </head>
+    <body>
+        <th:block th:insert="~{fragments :: header}"></th:block>
 
-    <nav id="main-navigation">
-        <ul>
-            <li><a th:href="@{|/drafts|}">Drafts</a></li>
-            <li>Networks</li>
-        </ul>
-    </nav>
+        <h3>Released Rail Networks</h3>
+        <nav id="network-navigation">
+            <ul>
+                <li th:each="networkId,status : ${networkIds}">
+                    <span th:if="${currentNetworkId == networkId}">*</span>
+                    <a th:href="@{|/networks/${networkId}|}" th:text="'Network ' + ${status.count}">Network 1</a>
+                </li>
+            </ul>
+        </nav>
+        <div th:if="${currentNetwork != null}">
+            <h1>Network</h1>
 
-    <h3>Released Rail Networks</h3>
-    <nav id="network-navigation">
-        <ul>
-            <li th:each="networkId,status : ${networkIds}">
-                <span th:if="${currentNetworkId == networkId}">*</span>
-                <a th:href="@{|/networks/${networkId}|}" th:text="'Network ' + ${status.count}">Network 1</a>
-            </li>
-        </ul>
-    </nav>
-    <div th:if="${currentNetwork != null}">
-        <h1>Network</h1>
+            <h3>Valid</h3>
+            <dl>
+                <dt>From</dt>
+                <dd class="valid-from" th:text="${currentNetwork.getPeriod().getStartDate()}">2020-01-01</dd>
+            </dl>
+            <dl>
+                <dt>Until</dt>
+                <dd class="valid-until" th:text="${currentNetwork.getPeriod().getEndDate()}">2020-01-31</dd>
+            </dl>
 
-        <h3>Valid</h3>
-        <dl>
-            <dt>From</dt>
-            <dd class="valid-from" th:text="${currentNetwork.getPeriod().getStartDate()}">2020-01-01</dd>
-        </dl>
-        <dl>
-            <dt>Until</dt>
-            <dd class="valid-until" th:text="${currentNetwork.getPeriod().getEndDate()}">2020-01-31</dd>
-        </dl>
+            <table id="stations">
+                <caption><h3>Stations</h3></caption>
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Latitude</th>
+                        <th scope="col">Longitude</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:class="station-row" th:each="station, status : ${currentNetwork.getStations()}">
+                        <td th:text="${status.count}">1</td>
+                        <td class="stationName" th:text="${station.getName()}">Berlin Hbf</td>
+                        <td class="latitude" th:text="${station.getLocation().getLatitude()}">52.524927</td>
+                        <td class="longitude" th:text="${station.getLocation().getLongitude()}">13.369348</td>
+                    </tr>
+                </tbody>
+            </table>
 
-        <table id="stations">
-            <caption><h3>Stations</h3></caption>
-            <thead>
-                <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Name</th>
-                    <th scope="col">Latitude</th>
-                    <th scope="col">Longitude</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr th:class="station-row" th:each="station, status : ${currentNetwork.getStations()}">
-                    <td th:text="${status.count}">1</td>
-                    <td class="stationName" th:text="${station.getName()}">Berlin Hbf</td>
-                    <td class="latitude" th:text="${station.getLocation().getLatitude()}">52.524927</td>
-                    <td class="longitude" th:text="${station.getLocation().getLongitude()}">13.369348</td>
-                </tr>
-            </tbody>
-        </table>
+            <table id="tracks">
+                <caption><h3>Tracks</h3></caption>
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Station 1</th>
+                        <th scope="col"></th>
+                        <th scope="col">Station 2</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:class="track-row" th:each="track, status : ${tracks}">
+                        <td th:text="${status.count}">1</td>
+                        <td th:class="station-1" th:text="${track.get(0)}">Berlin Hbf</td>
+                        <td>&lt;&equals;&gt;</td>
+                        <td th:class="station-2" th:text="${track.get(1)}">Hamburg Hbf</td>
+                    </tr>
+                </tbody>
+            </table>
 
-        <table id="tracks">
-            <caption><h3>Tracks</h3></caption>
-            <thead>
-                <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Station 1</th>
-                    <th scope="col"></th>
-                    <th scope="col">Station 2</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr th:class="track-row" th:each="track, status : ${tracks}">
-                    <td th:text="${status.count}">1</td>
-                    <td th:class="station-1" th:text="${track.get(0)}">Berlin Hbf</td>
-                    <td>&lt;&equals;&gt;</td>
-                    <td th:class="station-2" th:text="${track.get(1)}">Hamburg Hbf</td>
-                </tr>
-            </tbody>
-        </table>
+        </div>
 
-    </div>
-
-</body>
+    </body>
 </html>
