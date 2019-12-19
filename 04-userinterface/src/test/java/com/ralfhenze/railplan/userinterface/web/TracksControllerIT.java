@@ -59,12 +59,12 @@ public class TracksControllerIT extends HtmlITBase {
     }
 
     @Test
-    public void userCanAccessAFormToAddANewTrack() throws Exception {
+    public void userCanAccessAFormToAddANewCustomTrack() throws Exception {
         // Given an existing Draft
         given(draftRepository.getRailNetworkDraftOfId(any())).willReturn(berlinHamburgDraft);
 
-        // When we call GET /drafts/123/tracks/new
-        final var response = getGetResponse("/drafts/123/tracks/new");
+        // When we call GET /drafts/123/tracks/new-custom
+        final var response = getGetResponse("/drafts/123/tracks/new-custom");
 
         // Then we get a form with input fields for Station name and coordinates
         final var trackForm = getElement("#track-form", response);
@@ -75,10 +75,10 @@ public class TracksControllerIT extends HtmlITBase {
     }
 
     @Test
-    public void userCanAddANewTrack() throws Exception {
-        // When we call POST /drafts/123/tracks/new with valid Track parameters
+    public void userCanAddANewCustomTrack() throws Exception {
+        // When we call POST /drafts/123/tracks/new-custom with valid Track parameters
         final var response = getPostResponse(
-            "/drafts/123/tracks/new",
+            "/drafts/123/tracks/new-custom",
             Map.of("firstStationId", "1", "secondStationId", "2")
         );
 
@@ -91,7 +91,7 @@ public class TracksControllerIT extends HtmlITBase {
     }
 
     @Test
-    public void userSeesValidationErrorsWhenAddingAnInvalidTrack() throws Exception {
+    public void userSeesValidationErrorsWhenAddingAnInvalidCustomTrack() throws Exception {
         final var firstStationErrors = List.of("Station 1 error");
         final var secondStationErrors = List.of("Station 2 error");
         final var validationException = new ValidationException(Map.of(
@@ -104,9 +104,9 @@ public class TracksControllerIT extends HtmlITBase {
         // Given an existing Draft
         given(draftRepository.getRailNetworkDraftOfId(any())).willReturn(berlinHamburgDraft);
 
-        // When we call POST /drafts/123/tracks/new with invalid Track parameters
+        // When we call POST /drafts/123/tracks/new-custom with invalid Track parameters
         final var response = getPostResponse(
-            "/drafts/123/tracks/new",
+            "/drafts/123/tracks/new-custom",
             Map.of("firstStationId", "2", "secondStationId", "2")
         );
 

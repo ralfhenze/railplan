@@ -88,7 +88,7 @@ public class StationsControllerIT extends HtmlITBase {
         // Given an existing Draft
         given(draftRepository.getRailNetworkDraftOfId(any())).willReturn(berlinHamburgDraft);
 
-        // When we call GET /drafts/123/stations/new
+        // When we call GET /drafts/123/stations/new-custom
         final var response = getGetResponse("/drafts/123/stations/new-custom");
 
         // Then we get a form with input fields for Station name and coordinates
@@ -101,7 +101,7 @@ public class StationsControllerIT extends HtmlITBase {
 
     @Test
     public void userCanAddANewCustomStation() throws Exception {
-        // When we call POST /drafts/123/stations/new with valid Station parameters
+        // When we call POST /drafts/123/stations/new-custom with valid Station parameters
         final var response = getPostResponse(
             "/drafts/123/stations/new-custom",
             Map.of(
