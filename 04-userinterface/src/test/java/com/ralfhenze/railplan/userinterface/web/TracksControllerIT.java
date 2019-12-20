@@ -4,6 +4,7 @@ import com.ralfhenze.railplan.application.commands.AddRailwayTrackCommand;
 import com.ralfhenze.railplan.application.commands.DeleteRailwayTrackCommand;
 import com.ralfhenze.railplan.domain.common.validation.ValidationException;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftRepository;
+import com.ralfhenze.railplan.userinterface.web.drafts.tracks.PresetTracks;
 import org.jsoup.Jsoup;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -59,6 +60,42 @@ public class TracksControllerIT extends HtmlITBase {
     }
 
     @Test
+    public void userCanAccessAFormToAddNewTracksFromPresets() throws Exception {
+        // Given an existing Draft
+        given(draftRepository.getRailNetworkDraftOfId(any())).willReturn(berlinHamburgDraft);
+
+        // When we call GET /drafts/123/tracks/new-from-preset
+        final var response = getGetResponse("/drafts/123/tracks/new-from-preset");
+
+        // Then we get a form with a multi-select-box of all preset Tracks
+        final var presetTrackForm = getElement("#preset-track-form", response);
+        assertThat(response.getStatus()).isEqualTo(HTTP_OK);
+        assertThat(presetTrackForm.select("select[name='presetTrackIdsToAdd'] option"))
+            .hasSize(new PresetTracks().getAllPresetTracks().size());
+        assertThat(presetTrackForm.select("input[type='submit']")).hasSize(1);
+    }
+
+    @Test
+    public void userCanAddNewTracksFromPresets() throws Exception {
+        // When we call POST /drafts/123/tracks/new-from-preset with two valid preset Track IDs
+        final var response = getPostResponseWithMultiValueParameters(
+            "/drafts/123/tracks/new-from-preset",
+            Map.of("presetTrackIdsToAdd", List.of("1", "2"))
+        );
+
+        // Then an AddRailwayTrackCommand is issued for each given preset Track
+        final var presetTracks = new PresetTracks().getAllPresetTracks();
+        List.of(presetTracks.get(1), presetTracks.get(2)).forEach(track ->
+            verify(addRailwayTrackCommand)
+                .addRailwayTrackByStationName("123", track.station1.name, track.station2.name)
+        );
+
+        // And we will be redirected to the Tracks page
+        assertThat(response.getStatus()).isEqualTo(HTTP_MOVED_TEMPORARILY);
+        assertThat(response.getRedirectedUrl()).isEqualTo("/drafts/123/tracks");
+    }
+
+    @Test
     public void userCanAccessAFormToAddANewCustomTrack() throws Exception {
         // Given an existing Draft
         given(draftRepository.getRailNetworkDraftOfId(any())).willReturn(berlinHamburgDraft);
@@ -66,12 +103,12 @@ public class TracksControllerIT extends HtmlITBase {
         // When we call GET /drafts/123/tracks/new-custom
         final var response = getGetResponse("/drafts/123/tracks/new-custom");
 
-        // Then we get a form with input fields for Station name and coordinates
-        final var trackForm = getElement("#track-form", response);
+        // Then we get a form with dropdown lists for first and second Station
+        final var customTrackForm = getElement("#custom-track-form", response);
         assertThat(response.getStatus()).isEqualTo(HTTP_OK);
-        assertThat(trackForm.select("select[name='firstStationId']")).hasSize(1);
-        assertThat(trackForm.select("select[name='secondStationId']")).hasSize(1);
-        assertThat(trackForm.select("input[type='submit']")).hasSize(1);
+        assertThat(customTrackForm.select("select[name='firstStationId']")).hasSize(1);
+        assertThat(customTrackForm.select("select[name='secondStationId']")).hasSize(1);
+        assertThat(customTrackForm.select("input[type='submit']")).hasSize(1);
     }
 
     @Test
@@ -111,15 +148,15 @@ public class TracksControllerIT extends HtmlITBase {
         );
 
         // Then each Station selector has the invalid value
-        final var trackForm = getElement("#track-form", response);
+        final var customTrackForm = getElement("#custom-track-form", response);
         assertThat(response.getStatus()).isEqualTo(HTTP_OK);
-        assertThat(trackForm.select("select[name='firstStationId']").val()).isEqualTo("2");
-        assertThat(trackForm.select("select[name='secondStationId']").val()).isEqualTo("2");
+        assertThat(customTrackForm.select("select[name='firstStationId']").val()).isEqualTo("2");
+        assertThat(customTrackForm.select("select[name='secondStationId']").val()).isEqualTo("2");
 
         // And each Station selector shows it's error messages
-        assertThat(trackForm.select(".errors.firstStationId li").eachText())
+        assertThat(customTrackForm.select(".errors.firstStationId li").eachText())
             .isEqualTo(firstStationErrors);
-        assertThat(trackForm.select(".errors.secondStationId li").eachText())
+        assertThat(customTrackForm.select(".errors.secondStationId li").eachText())
             .isEqualTo(secondStationErrors);
     }
 

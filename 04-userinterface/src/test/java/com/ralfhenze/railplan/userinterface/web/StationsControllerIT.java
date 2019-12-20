@@ -85,7 +85,7 @@ public class StationsControllerIT extends HtmlITBase {
     }
 
     @Test
-    public void userCanAccessAFormToAddANewStationFromPreset() throws Exception {
+    public void userCanAccessAFormToAddNewStationsFromPresets() throws Exception {
         // Given an existing Draft
         given(draftRepository.getRailNetworkDraftOfId(any())).willReturn(berlinHamburgDraft);
 
@@ -100,8 +100,8 @@ public class StationsControllerIT extends HtmlITBase {
     }
 
     @Test
-    public void userCanAddNewStationsFromPreset() throws Exception {
-        // When we call POST /drafts/123/stations/new-from-preset with valid preset Stations
+    public void userCanAddNewStationsFromPresets() throws Exception {
+        // When we call POST /drafts/123/stations/new-from-preset with two valid preset Stations
         final var response = getPostResponseWithMultiValueParameters(
             "/drafts/123/stations/new-from-preset",
             Map.of(

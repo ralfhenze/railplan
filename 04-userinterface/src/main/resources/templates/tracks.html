@@ -12,7 +12,7 @@
                 <th:block th:insert="~{fragments :: tabs('tracks')}"></th:block>
 
                 <div id="tracks">
-                    <form id="track-form" method="post" th:action="@{|/drafts/${currentDraftId}/tracks/new|}" th:object="${newTrack}">
+                    <form id="custom-track-form" method="post" th:action="@{|/drafts/${currentDraftId}/tracks/new|}" th:object="${newTrack}">
                         <table>
                             <caption><h3>Railway Tracks</h3></caption>
                             <thead>
@@ -60,8 +60,8 @@
                         </th:block>
                     </form>
 
-                    <form method="post" th:if="${showPresetTrackForm}" th:object="${presetTrackFormModel}">
-                        <select name="tracks" multiple size="10" th:field="*{presetTrackIdsToAdd}">
+                    <form id="preset-track-form" method="post" th:if="${showPresetTrackForm}" th:object="${presetTrackFormModel}">
+                        <select multiple="multiple" size="10" th:field="*{presetTrackIdsToAdd}">
                             <option
                                 th:each="presetTrack : ${allPresetTracks}"
                                 th:text="${presetTrack.get('text')}"
