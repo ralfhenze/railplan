@@ -7,6 +7,7 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.LinkedMultiValueMap;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -29,11 +30,18 @@ public abstract class HtmlITBase {
         final String url,
         final Map<String, String> parameters
     ) throws Exception {
-        final var multiValueMapParameters = new LinkedMultiValueMap<String, String>();
-        parameters.forEach((key, value) -> multiValueMapParameters.put(key, List.of(value)));
+        final Map<String, List<String>> parametersMap = new HashMap<>();
+        parameters.forEach((key, value) -> parametersMap.put(key, List.of(value)));
 
+        return getPostResponseWithMultiValueParameters(url, parametersMap);
+    }
+
+    protected MockHttpServletResponse getPostResponseWithMultiValueParameters(
+        final String url,
+        final Map<String, List<String>> parameters
+    ) throws Exception {
         return mockMvc
-            .perform(post(url).params(multiValueMapParameters))
+            .perform(post(url).params(new LinkedMultiValueMap<>(parameters)))
             .andReturn()
             .getResponse();
     }

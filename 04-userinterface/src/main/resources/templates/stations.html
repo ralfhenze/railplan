@@ -70,7 +70,7 @@
                     </form>
 
                     <form method="post" th:if="${showPresetStationForm}" th:object="${presetStationFormModel}">
-                        <select name="stations" multiple size="10" th:field="*{presetStationsToAdd}">
+                        <select multiple="multiple" size="10" th:field="*{presetStationsToAdd}">
                             <option th:each="presetStation : ${allPresetStations}" th:text="${presetStation.name}" th:value="${presetStation}">Berlin Hbf</option>
                         </select>
                         <input type="submit" value="Add Stations"> |

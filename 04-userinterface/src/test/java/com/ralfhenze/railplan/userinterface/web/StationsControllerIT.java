@@ -8,6 +8,7 @@ import com.ralfhenze.railplan.domain.common.validation.ValidationException;
 import com.ralfhenze.railplan.domain.railnetwork.elements.GeoLocationInGermany;
 import com.ralfhenze.railplan.domain.railnetwork.elements.TrainStationName;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftRepository;
+import com.ralfhenze.railplan.userinterface.web.drafts.stations.PresetStation;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
 import org.junit.Test;
@@ -81,6 +82,45 @@ public class StationsControllerIT extends HtmlITBase {
             .isEqualTo(location.getLatitudeAsString());
         assertThat(row.selectFirst(".longitude").text())
             .isEqualTo(location.getLongitudeAsString());
+    }
+
+    @Test
+    public void userCanAccessAFormToAddANewStationFromPreset() throws Exception {
+        // Given an existing Draft
+        given(draftRepository.getRailNetworkDraftOfId(any())).willReturn(berlinHamburgDraft);
+
+        // When we call GET /drafts/123/stations/new-from-preset
+        final var response = getGetResponse("/drafts/123/stations/new-from-preset");
+
+        // Then we get a form with a multi-select-box of all preset Stations
+        final var document = Jsoup.parse(response.getContentAsString());
+        assertThat(response.getStatus()).isEqualTo(HTTP_OK);
+        assertThat(document.select("select[name='presetStationsToAdd'] option"))
+            .hasSize(PresetStation.values().length);
+    }
+
+    @Test
+    public void userCanAddNewStationsFromPreset() throws Exception {
+        // When we call POST /drafts/123/stations/new-from-preset with valid preset Stations
+        final var response = getPostResponseWithMultiValueParameters(
+            "/drafts/123/stations/new-from-preset",
+            Map.of(
+                "presetStationsToAdd", List.of(
+                    PresetStation.FRANKFURT_HBF.name(),
+                    PresetStation.STUTTGART_HBF.name()
+                )
+            )
+        );
+
+        // Then an AddTrainStationCommand is issued for each given preset Station
+        List.of(PresetStation.FRANKFURT_HBF, PresetStation.STUTTGART_HBF).forEach(station ->
+            verify(addTrainStationCommand)
+                .addTrainStation("123", station.name, station.latitude, station.longitude)
+        );
+
+        // And we will be redirected to the Stations page
+        assertThat(response.getStatus()).isEqualTo(HTTP_MOVED_TEMPORARILY);
+        assertThat(response.getRedirectedUrl()).isEqualTo("/drafts/123/stations");
     }
 
     @Test
