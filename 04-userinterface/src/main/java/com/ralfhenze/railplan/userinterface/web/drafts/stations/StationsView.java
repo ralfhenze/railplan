@@ -23,6 +23,7 @@ public class StationsView {
     private boolean showCustomStationForm = false;
     private boolean showPresetStationForm = false;
     private Map<String, List<String>> stationErrors;
+    private Map<String, List<String>> presetStationErrors;
 
     public StationsView(
         final String currentDraftId,
@@ -56,6 +57,11 @@ public class StationsView {
         return this;
     }
 
+    public StationsView withPresetStationErrorsProvidedBy(final ValidationException exception) {
+        this.presetStationErrors = exception.getErrorMessagesAsHashMap();
+        return this;
+    }
+
     public StationsView addRequiredAttributesTo(final Model model) {
         final var draftDto = getDraftDto();
         final var stationNames = getStationNames(draftDto);
@@ -69,7 +75,10 @@ public class StationsView {
 
         model.addAttribute("showPresetStationForm", showPresetStationForm);
         model.addAttribute("allPresetStations", PresetStation.values());
-        model.addAttribute("presetStationFormModel", new PresetStationFormModel());
+        model.addAttribute("presetStationErrors", presetStationErrors);
+        if (presetStationErrors == null) {
+            model.addAttribute("presetStationFormModel", new PresetStationFormModel());
+        }
 
         new GermanySvgViewFragment(draftDto.getStations(), draftDto.getTracks())
             .addRequiredAttributesTo(model);

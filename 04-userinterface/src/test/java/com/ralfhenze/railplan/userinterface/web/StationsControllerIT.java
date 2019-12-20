@@ -124,6 +124,30 @@ public class StationsControllerIT extends HtmlITBase {
     }
 
     @Test
+    public void userSeesValidationErrorsWhenAddingInvalidPresetStations() throws Exception {
+        final var nameErrors = List.of("name error 1", "name error 2");
+        final var validationException = new ValidationException(Map.of(
+            "Station Name", nameErrors
+        ));
+        given(addTrainStationCommand.addTrainStation(any(), any(), anyDouble(), anyDouble()))
+            .willThrow(validationException);
+
+        // Given an existing Draft
+        given(draftRepository.getRailNetworkDraftOfId(any())).willReturn(berlinHamburgDraft);
+
+        // When we call POST /drafts/123/stations/new-from-preset with two invalid preset Stations
+        final var response = getPostResponseWithMultiValueParameters(
+            "/drafts/123/stations/new-from-preset",
+            Map.of("presetStationsToAdd", List.of(PresetStation.BERLIN_HBF.name(), "XYZ"))
+        );
+
+        // Then the form shows the error messages
+        final var presetStationForm = getElement("#preset-station-form", response);
+        assertThat(response.getStatus()).isEqualTo(HTTP_OK);
+        assertThat(presetStationForm.select(".errors li").eachText()).isEqualTo(nameErrors);
+    }
+
+    @Test
     public void userCanAccessAFormToAddANewCustomStation() throws Exception {
         // Given an existing Draft
         given(draftRepository.getRailNetworkDraftOfId(any())).willReturn(berlinHamburgDraft);
@@ -258,7 +282,7 @@ public class StationsControllerIT extends HtmlITBase {
                 .when(updateTrainStationCommand)
                 .updateTrainStation(any(), any(), any(), anyDouble(), anyDouble());
         } else {
-            throw new Exception("Unsupported command " + command.toString());
+            throw new IllegalArgumentException("Unsupported command " + command.toString());
         }
 
         // Given an existing Draft

@@ -69,10 +69,13 @@
                         </th:block>
                     </form>
 
-                    <form method="post" th:if="${showPresetStationForm}" th:object="${presetStationFormModel}">
+                    <form id="preset-station-form" method="post" th:if="${showPresetStationForm}" th:object="${presetStationFormModel}">
                         <select multiple="multiple" size="10" th:field="*{presetStationsToAdd}">
                             <option th:each="presetStation : ${allPresetStations}" th:text="${presetStation.name}" th:value="${presetStation}">Berlin Hbf</option>
                         </select>
+                        <ul class="errors" th:if="${presetStationErrors != null}">
+                            <li th:each="error : ${presetStationErrors.get('Station Name')}" th:text="${error}">Error</li>
+                        </ul>
                         <input type="submit" value="Add Stations"> |
                         <a th:href="@{|/drafts/${currentDraftId}/stations|}">Cancel</a>
                     </form>

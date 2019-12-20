@@ -67,23 +67,30 @@ public class StationsController {
         @ModelAttribute PresetStationFormModel presetStationFormModel,
         Model model
     ) {
-        for (final var stationName : presetStationFormModel.getPresetStationsToAdd()) {
-            final var presetStation = PresetStation.getOptionalOf(stationName);
-            if (!presetStation.isEmpty()) {
-                addTrainStationCommand.addTrainStation(
-                    currentDraftId,
-                    presetStation.get().name,
-                    presetStation.get().latitude,
-                    presetStation.get().longitude
-                );
-            } else {
-                throw new ValidationException(
-                    Map.of("Station Name", List.of(stationName + " does not exist"))
-                );
+        try {
+            for (final var stationName : presetStationFormModel.getPresetStationsToAdd()) {
+                final var presetStation = PresetStation.getOptionalOf(stationName);
+                if (!presetStation.isEmpty()) {
+                    addTrainStationCommand.addTrainStation(
+                        currentDraftId,
+                        presetStation.get().name,
+                        presetStation.get().latitude,
+                        presetStation.get().longitude
+                    );
+                } else {
+                    throw new ValidationException(
+                        Map.of("Station Name", List.of(stationName + " does not exist"))
+                    );
+                }
             }
+            return "redirect:/drafts/{currentDraftId}/stations";
+        } catch (ValidationException exception) {
+            return new StationsView(currentDraftId, draftRepository)
+                .withShowPresetStationForm(true)
+                .withPresetStationErrorsProvidedBy(exception)
+                .addRequiredAttributesTo(model)
+                .getViewName();
         }
-
-        return "redirect:/drafts/{currentDraftId}/stations";
     }
 
     /**
