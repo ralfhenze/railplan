@@ -1,9 +1,12 @@
 package com.ralfhenze.railplan.domain.railnetwork.elements;
 
+import com.ralfhenze.railplan.domain.common.Validatable;
 import com.ralfhenze.railplan.domain.common.ValueObject;
-import com.ralfhenze.railplan.domain.common.validation.Validation;
-import com.ralfhenze.railplan.domain.common.validation.ValidationException;
+import com.ralfhenze.railplan.domain.common.validation.PropertyValidation;
+import com.ralfhenze.railplan.domain.common.validation.ValidationError;
 import com.ralfhenze.railplan.domain.common.validation.constraints.IsNotEqualTo;
+
+import java.util.List;
 
 /**
  * https://en.wikipedia.org/wiki/Double-track_railway
@@ -12,7 +15,7 @@ import com.ralfhenze.railplan.domain.common.validation.constraints.IsNotEqualTo;
  * [x] a Track has no direction
  * [x] equal when two DoubleTrackRailways connect the same Stations
  */
-public class RailwayTrack implements ValueObject {
+public class RailwayTrack implements ValueObject, Validatable {
 
     private final TrainStationId firstStationId;
     private final TrainStationId secondStationId;
@@ -20,13 +23,20 @@ public class RailwayTrack implements ValueObject {
     public RailwayTrack(
         final TrainStationId firstStationId,
         final TrainStationId secondStationId
-    ) throws ValidationException {
-        new Validation()
-            .ensureThat(secondStationId, new IsNotEqualTo<>(firstStationId), "Second Station ID")
-            .throwExceptionIfInvalid();
-
+    ) {
         this.firstStationId = firstStationId;
         this.secondStationId = secondStationId;
+    }
+
+    @Override
+    public boolean isValid() {
+        return getValidationErrors().isEmpty();
+    }
+
+    public List<ValidationError> getValidationErrors() {
+        return new PropertyValidation<>(secondStationId)
+            .ensureIt(new IsNotEqualTo<>(firstStationId))
+            .getValidationErrors();
     }
 
     public boolean connectsStation(final TrainStationId stationId) {
