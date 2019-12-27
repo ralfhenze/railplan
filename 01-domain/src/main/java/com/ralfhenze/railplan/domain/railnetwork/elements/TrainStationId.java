@@ -1,20 +1,30 @@
 package com.ralfhenze.railplan.domain.railnetwork.elements;
 
 import com.ralfhenze.railplan.domain.common.Id;
-import com.ralfhenze.railplan.domain.common.validation.Validation;
-import com.ralfhenze.railplan.domain.common.validation.ValidationException;
+import com.ralfhenze.railplan.domain.common.Validatable;
+import com.ralfhenze.railplan.domain.common.validation.PropertyValidation;
+import com.ralfhenze.railplan.domain.common.validation.ValidationError;
 import com.ralfhenze.railplan.domain.common.validation.constraints.IsNotBlank;
 
-public class TrainStationId implements Id {
+import java.util.List;
+
+public class TrainStationId implements Id, Validatable {
 
     private final String id;
 
-    public TrainStationId(final String id) throws ValidationException {
-        new Validation()
-            .ensureThat(id, new IsNotBlank(), "Train Station ID")
-            .throwExceptionIfInvalid();
-
+    public TrainStationId(final String id) {
         this.id = id;
+    }
+
+    @Override
+    public boolean isValid() {
+        return getValidationErrors().isEmpty();
+    }
+
+    public List<ValidationError> getValidationErrors() {
+        return new PropertyValidation<>(id)
+            .ensureIt(new IsNotBlank())
+            .getValidationErrors();
     }
 
     @Override
