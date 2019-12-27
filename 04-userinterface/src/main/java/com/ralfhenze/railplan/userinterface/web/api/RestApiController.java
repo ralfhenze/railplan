@@ -58,14 +58,14 @@ public class RestApiController {
     ) {
         final var draftRepository = new RailNetworkDraftMongoDbRepository(mongoTemplate);
 
-        final var addedStation = new AddTrainStationCommand(draftRepository).addTrainStation(
+        final var updatedDraft = new AddTrainStationCommand(draftRepository).addTrainStation(
             draftId,
             stationDto.getName(),
             stationDto.getLatitude(),
             stationDto.getLongitude()
         );
 
-        return new TrainStationDto(addedStation);
+        return new TrainStationDto(updatedDraft.getStations().getLastOptional().get());
     }
 
     @GetMapping("/drafts/{draftId}/tracks")
