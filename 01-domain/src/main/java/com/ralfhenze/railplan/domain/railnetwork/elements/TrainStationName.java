@@ -17,6 +17,7 @@ import java.util.List;
  */
 public class TrainStationName implements ValueObject, Validatable {
 
+    private final static int MIN_LENGTH = 4;
     private final static String VALID_NAME_REGEX = "^[A-ZÄÖÜ]{1}[a-zäöüßA-Z\\ \\.\\-\\(\\)]{3,29}$";
 
     private final String name;
@@ -32,7 +33,7 @@ public class TrainStationName implements ValueObject, Validatable {
 
     public List<ValidationError> getValidationErrors() {
         return new PropertyValidation<>(name)
-            .ensureIt(new HasMinLength(4))
+            .ensureIt(new HasMinLength(MIN_LENGTH))
             .ensureIt(new MatchesRegex(VALID_NAME_REGEX))
             .getValidationErrors();
     }
