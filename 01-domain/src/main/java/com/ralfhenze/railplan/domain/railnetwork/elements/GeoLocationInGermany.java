@@ -1,9 +1,12 @@
 package com.ralfhenze.railplan.domain.railnetwork.elements;
 
+import com.ralfhenze.railplan.domain.common.Validatable;
 import com.ralfhenze.railplan.domain.common.ValueObject;
-import com.ralfhenze.railplan.domain.common.validation.Validation;
-import com.ralfhenze.railplan.domain.common.validation.ValidationException;
+import com.ralfhenze.railplan.domain.common.validation.PropertyValidation;
+import com.ralfhenze.railplan.domain.common.validation.ValidationError;
 import com.ralfhenze.railplan.domain.common.validation.constraints.IsWithinRange;
+
+import java.util.List;
 
 /**
  * [-] a Station is located on land
@@ -14,7 +17,7 @@ import com.ralfhenze.railplan.domain.common.validation.constraints.IsWithinRange
  * https://en.wikipedia.org/wiki/Latitude
  * https://en.wikipedia.org/wiki/Longitude
  */
-public class GeoLocationInGermany implements ValueObject {
+public class GeoLocationInGermany implements ValueObject, Validatable {
 
     // Germany bounding box taken from
     // https://gist.github.com/graydon/11198540
@@ -28,17 +31,27 @@ public class GeoLocationInGermany implements ValueObject {
     private final double latitude;
     private final double longitude;
 
-    public GeoLocationInGermany(
-        final double latitude,
-        final double longitude
-    ) throws ValidationException {
-        new Validation()
-            .ensureThat(latitude, new IsWithinRange(GERMANY_WEST_LAT, GERMANY_EAST_LAT), "Latitude")
-            .ensureThat(longitude, new IsWithinRange(GERMANY_SOUTH_LNG, GERMANY_NORTH_LNG), "Longitude")
-            .throwExceptionIfInvalid();
-
+    public GeoLocationInGermany(final double latitude, final double longitude) {
         this.latitude = latitude;
         this.longitude = longitude;
+    }
+
+    @Override
+    public boolean isValid() {
+        return getLatitudeErrors().isEmpty()
+            && getLongitudeErrors().isEmpty();
+    }
+
+    public List<ValidationError> getLatitudeErrors() {
+        return new PropertyValidation<>(latitude)
+            .ensureIt(new IsWithinRange(GERMANY_WEST_LAT, GERMANY_EAST_LAT))
+            .getValidationErrors();
+    }
+
+    public List<ValidationError> getLongitudeErrors() {
+        return new PropertyValidation<>(longitude)
+            .ensureIt(new IsWithinRange(GERMANY_SOUTH_LNG, GERMANY_NORTH_LNG))
+            .getValidationErrors();
     }
 
     /**
