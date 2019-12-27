@@ -2,6 +2,7 @@ package com.ralfhenze.railplan.domain;
 
 import com.ralfhenze.railplan.domain.common.validation.ValidationException;
 import com.ralfhenze.railplan.domain.railnetwork.elements.TrainStationName;
+import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -22,6 +23,14 @@ public class TrainStationNameUT {
         assertThatExceptionOfType(ValidationException.class).isThrownBy(() ->
             new TrainStationName(stationName)
         );
+    }
+
+    @Test
+    public void isInvalidWithTooShortStationName() {
+        final var tooShortStationName = new TrainStationName("Ber");
+
+        assertThat(tooShortStationName.isValid()).isFalse();
+        assertThat(tooShortStationName.getValidationErrors()).hasSize(2);
     }
 
     /*
