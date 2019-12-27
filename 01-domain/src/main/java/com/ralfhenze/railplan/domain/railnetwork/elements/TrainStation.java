@@ -1,16 +1,17 @@
 package com.ralfhenze.railplan.domain.railnetwork.elements;
 
 import com.ralfhenze.railplan.domain.common.LocalEntity;
-import com.ralfhenze.railplan.domain.common.validation.Validation;
-import com.ralfhenze.railplan.domain.common.validation.ValidationException;
-import com.ralfhenze.railplan.domain.common.validation.constraints.IsNotNull;
+import com.ralfhenze.railplan.domain.common.Validatable;
+import com.ralfhenze.railplan.domain.common.validation.ValidationError;
+
+import java.util.List;
 
 /**
  * https://en.wikipedia.org/wiki/Train_station
  *
  * Local Entity within RailNetwork Aggregate
  */
-public class TrainStation implements LocalEntity {
+public class TrainStation implements LocalEntity, Validatable {
 
     private final TrainStationId id;
     private final TrainStationName name;
@@ -20,16 +21,19 @@ public class TrainStation implements LocalEntity {
         final TrainStationId id,
         final TrainStationName name,
         final GeoLocationInGermany location
-    ) throws ValidationException {
-        new Validation()
-            .ensureThat(id, new IsNotNull(), "Station ID")
-            .ensureThat(name, new IsNotNull(), "Station Name")
-            .ensureThat(location, new IsNotNull(), "Geo Location")
-            .throwExceptionIfInvalid();
-
+    ) {
         this.id = id;
         this.name = name;
         this.location = location;
+    }
+
+    @Override
+    public boolean isValid() {
+        return id.isValid() && name.isValid() && location.isValid();
+    }
+
+    public List<ValidationError> getValidationErrors() {
+        return List.of();
     }
 
     public TrainStationId getId() {
@@ -44,13 +48,11 @@ public class TrainStation implements LocalEntity {
         return location;
     }
 
-    public TrainStation withName(final TrainStationName name) throws ValidationException {
+    public TrainStation withName(final TrainStationName name) {
         return new TrainStation(this.id, name, this.location);
     }
 
-    public TrainStation withLocation(
-        final GeoLocationInGermany location
-    ) throws ValidationException {
+    public TrainStation withLocation(final GeoLocationInGermany location) {
         return new TrainStation(this.id, this.name, location);
     }
 
