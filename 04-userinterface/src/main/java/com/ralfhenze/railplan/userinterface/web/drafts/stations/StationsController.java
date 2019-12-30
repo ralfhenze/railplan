@@ -3,7 +3,10 @@ package com.ralfhenze.railplan.userinterface.web.drafts.stations;
 import com.ralfhenze.railplan.application.commands.AddTrainStationCommand;
 import com.ralfhenze.railplan.application.commands.DeleteTrainStationCommand;
 import com.ralfhenze.railplan.application.commands.UpdateTrainStationCommand;
+import com.ralfhenze.railplan.domain.common.EntityNotFoundException;
 import com.ralfhenze.railplan.domain.common.validation.ValidationException;
+import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraft;
+import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftId;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -53,7 +56,7 @@ public class StationsController {
     @GetMapping("/drafts/{currentDraftId}/stations/new-from-preset")
     public String showPresetStationForm(@PathVariable String currentDraftId, Model model) {
         return new StationsView(currentDraftId, draftRepository)
-            .withShowPresetStationForm(true)
+            .withShowPresetStationForm(true, false)
             .addRequiredAttributesTo(model)
             .getViewName();
     }
@@ -67,27 +70,29 @@ public class StationsController {
         @ModelAttribute PresetStationFormModel presetStationFormModel,
         Model model
     ) {
-        try {
-            for (final var stationName : presetStationFormModel.getPresetStationsToAdd()) {
-                final var presetStation = PresetStation.getOptionalOf(stationName);
-                if (!presetStation.isEmpty()) {
-                    addTrainStationCommand.addTrainStation(
-                        currentDraftId,
-                        presetStation.get().name,
-                        presetStation.get().latitude,
-                        presetStation.get().longitude
-                    );
-                } else {
-                    throw new ValidationException(
-                        Map.of("Station Name", List.of(stationName + " does not exist"))
-                    );
-                }
+        RailNetworkDraft updatedDraft = draftRepository
+            .getRailNetworkDraftOfId(new RailNetworkDraftId(currentDraftId));
+
+        for (final var stationName : presetStationFormModel.getPresetStationsToAdd()) {
+            final var presetStation = PresetStation.getOptionalOf(stationName);
+            if (presetStation.isPresent()) {
+                updatedDraft = addTrainStationCommand.addTrainStation(
+                    currentDraftId,
+                    presetStation.get().name,
+                    presetStation.get().latitude,
+                    presetStation.get().longitude
+                );
+            } else {
+                throw new EntityNotFoundException("Station \"" + stationName + "\" does not exist");
             }
+        }
+
+        if (updatedDraft.isValid()) {
             return "redirect:/drafts/{currentDraftId}/stations";
-        } catch (ValidationException exception) {
+        } else {
             return new StationsView(currentDraftId, draftRepository)
-                .withShowPresetStationForm(true)
-                .withPresetStationErrorsProvidedBy(exception)
+                .withShowPresetStationForm(true, true)
+                .withDraft(updatedDraft)
                 .addRequiredAttributesTo(model)
                 .getViewName();
         }

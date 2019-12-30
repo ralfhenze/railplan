@@ -6,7 +6,6 @@ import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraf
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftId;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftRepository;
 import com.ralfhenze.railplan.infrastructure.persistence.dto.RailNetworkDraftDto;
-import com.ralfhenze.railplan.infrastructure.persistence.dto.TrainStationDto;
 import com.ralfhenze.railplan.userinterface.web.GermanySvgViewFragment;
 import org.springframework.ui.Model;
 
@@ -24,9 +23,9 @@ public class StationsView {
     private String stationIdToEdit;
     private boolean showCustomStationForm = false;
     private boolean showPresetStationForm = false;
+    private boolean showPresetStationFormErrors = false;
     private RailNetworkDraft draft;
     private Map<String, List<String>> stationErrors;
-    private Map<String, List<String>> presetStationErrors;
 
     public StationsView(
         final String currentDraftId,
@@ -50,8 +49,12 @@ public class StationsView {
         return this;
     }
 
-    public StationsView withShowPresetStationForm(final boolean showPresetStationForm) {
+    public StationsView withShowPresetStationForm(
+        final boolean showPresetStationForm,
+        final boolean showPresetStationFormErrors
+    ) {
         this.showPresetStationForm = showPresetStationForm;
+        this.showPresetStationFormErrors = showPresetStationFormErrors;
         return this;
     }
 
@@ -65,11 +68,6 @@ public class StationsView {
         return this;
     }
 
-    public StationsView withPresetStationErrorsProvidedBy(final ValidationException exception) {
-        this.presetStationErrors = exception.getErrorMessagesAsHashMap();
-        return this;
-    }
-
     public StationsView addRequiredAttributesTo(final Model model) {
         final var draftDto = getDraftDto();
 
@@ -79,8 +77,7 @@ public class StationsView {
 
         model.addAttribute("showPresetStationForm", showPresetStationForm);
         model.addAttribute("allPresetStations", PresetStation.values());
-        model.addAttribute("presetStationErrors", presetStationErrors);
-        if (presetStationErrors == null) {
+        if (!showPresetStationFormErrors) {
             model.addAttribute("presetStationFormModel", new PresetStationFormModel());
         }
 
@@ -138,10 +135,11 @@ public class StationsView {
         newStationTableRow.disabled = (stationIdToEdit != null);
 
         if (stationIdToEdit == null && draft != null) {
-            final var station = draft.getStations().getLastOptional().get();
-            newStationTableRow.stationNameErrors = getErrorsAsString(station.getName().getValidationErrors());
-            newStationTableRow.latitudeErrors = getErrorsAsString(station.getLocation().getLatitudeErrors());
-            newStationTableRow.longitudeErrors = getErrorsAsString(station.getLocation().getLongitudeErrors());
+            draft.getStations().getLastOptional().ifPresent(station -> {
+                newStationTableRow.stationNameErrors = getErrorsAsString(station.getName().getValidationErrors());
+                newStationTableRow.latitudeErrors = getErrorsAsString(station.getLocation().getLatitudeErrors());
+                newStationTableRow.longitudeErrors = getErrorsAsString(station.getLocation().getLongitudeErrors());
+            });
         }
 
         return newStationTableRow;
