@@ -2,7 +2,7 @@ package com.ralfhenze.railplan.domain.railnetwork.elements;
 
 import com.ralfhenze.railplan.domain.common.Validatable;
 import com.ralfhenze.railplan.domain.common.ValueObject;
-import com.ralfhenze.railplan.domain.common.validation.PropertyValidation;
+import com.ralfhenze.railplan.domain.common.validation.Validation;
 import com.ralfhenze.railplan.domain.common.validation.ValidationError;
 import com.ralfhenze.railplan.domain.common.validation.constraints.HasMinLength;
 import com.ralfhenze.railplan.domain.common.validation.constraints.MatchesRegex;
@@ -32,7 +32,7 @@ public class TrainStationName implements ValueObject, Validatable {
     }
 
     public List<ValidationError> getValidationErrors() {
-        return new PropertyValidation<>(name)
+        return new Validation<>(name)
             .ensureIt(new HasMinLength(MIN_LENGTH))
             .ensureIt(new MatchesRegex(VALID_NAME_REGEX))
             .getValidationErrors();

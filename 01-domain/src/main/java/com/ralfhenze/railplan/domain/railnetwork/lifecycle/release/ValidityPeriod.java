@@ -2,7 +2,7 @@ package com.ralfhenze.railplan.domain.railnetwork.lifecycle.release;
 
 import com.ralfhenze.railplan.domain.common.Validatable;
 import com.ralfhenze.railplan.domain.common.ValueObject;
-import com.ralfhenze.railplan.domain.common.validation.PropertyValidation;
+import com.ralfhenze.railplan.domain.common.validation.Validation;
 import com.ralfhenze.railplan.domain.common.validation.ValidationError;
 import com.ralfhenze.railplan.domain.common.validation.constraints.IsAfter;
 import com.ralfhenze.railplan.domain.common.validation.constraints.IsEqualTo;
@@ -41,7 +41,7 @@ public class ValidityPeriod implements ValueObject, Validatable {
 
     public List<ValidationError> getStartDateErrors() {
         if (lastEndDate != null) {
-            return new PropertyValidation<>(startDate)
+            return new Validation<>(startDate)
                 .ensureIt(new IsEqualTo<>(lastEndDate.plusDays(1)))
                 .getValidationErrors();
         } else {
@@ -50,7 +50,7 @@ public class ValidityPeriod implements ValueObject, Validatable {
     }
 
     public List<ValidationError> getEndDateErrors() {
-        return new PropertyValidation<>(endDate)
+        return new Validation<>(endDate)
             .ensureIt(new IsAfter(startDate))
             .getValidationErrors();
     }

@@ -2,7 +2,7 @@ package com.ralfhenze.railplan.domain.railnetwork.elements;
 
 import com.ralfhenze.railplan.domain.common.Validatable;
 import com.ralfhenze.railplan.domain.common.ValueObject;
-import com.ralfhenze.railplan.domain.common.validation.PropertyValidation;
+import com.ralfhenze.railplan.domain.common.validation.Validation;
 import com.ralfhenze.railplan.domain.common.validation.ValidationError;
 import com.ralfhenze.railplan.domain.common.validation.constraints.IsNotEqualTo;
 
@@ -34,7 +34,7 @@ public class RailwayTrack implements ValueObject, Validatable {
     }
 
     public List<ValidationError> getValidationErrors() {
-        return new PropertyValidation<>(secondStationId)
+        return new Validation<>(secondStationId)
             .ensureIt(new IsNotEqualTo<>(firstStationId))
             .getValidationErrors();
     }

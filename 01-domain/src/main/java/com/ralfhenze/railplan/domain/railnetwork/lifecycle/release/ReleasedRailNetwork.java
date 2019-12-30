@@ -2,7 +2,7 @@ package com.ralfhenze.railplan.domain.railnetwork.lifecycle.release;
 
 import com.ralfhenze.railplan.domain.common.Aggregate;
 import com.ralfhenze.railplan.domain.common.Validatable;
-import com.ralfhenze.railplan.domain.common.validation.PropertyValidation;
+import com.ralfhenze.railplan.domain.common.validation.Validation;
 import com.ralfhenze.railplan.domain.common.validation.ValidationError;
 import com.ralfhenze.railplan.domain.common.validation.constraints.HasMinSize;
 import com.ralfhenze.railplan.domain.railnetwork.elements.RailwayTrack;
@@ -65,7 +65,7 @@ public class ReleasedRailNetwork implements Aggregate, Validatable {
     }
 
     public List<ValidationError> getStationErrors() {
-        return new PropertyValidation<>(stations)
+        return new Validation<>(stations)
             .ensureIt(new HasMinSize<>(2))
             .ensureIt(new HasUniqueStationNames())
             .ensureIt(new HasNoStationsNearerThan10Km())
@@ -73,7 +73,7 @@ public class ReleasedRailNetwork implements Aggregate, Validatable {
     }
 
     public List<ValidationError> getTrackErrors() {
-        return new PropertyValidation<>(tracks)
+        return new Validation<>(tracks)
             .ensureIt(new HasMinSize<>(1))
             .ensureIt(new HasNoTracksLongerThan300Km(stations))
             .ensureIt(new HasNoDuplicateTracks(stations))
@@ -82,7 +82,7 @@ public class ReleasedRailNetwork implements Aggregate, Validatable {
     }
 
     public List<ValidationError> getPeriodErrors() {
-        return new PropertyValidation<>(tracks)
+        return new Validation<>(tracks)
             .ensureIt(new HasMinSize<>(1))
             .ensureIt(new HasNoTracksLongerThan300Km(stations))
             .ensureIt(new HasNoDuplicateTracks(stations))

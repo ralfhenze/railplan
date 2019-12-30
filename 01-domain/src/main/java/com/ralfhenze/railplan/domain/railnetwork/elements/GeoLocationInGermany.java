@@ -2,7 +2,7 @@ package com.ralfhenze.railplan.domain.railnetwork.elements;
 
 import com.ralfhenze.railplan.domain.common.Validatable;
 import com.ralfhenze.railplan.domain.common.ValueObject;
-import com.ralfhenze.railplan.domain.common.validation.PropertyValidation;
+import com.ralfhenze.railplan.domain.common.validation.Validation;
 import com.ralfhenze.railplan.domain.common.validation.ValidationError;
 import com.ralfhenze.railplan.domain.common.validation.constraints.IsWithinRange;
 
@@ -43,13 +43,13 @@ public class GeoLocationInGermany implements ValueObject, Validatable {
     }
 
     public List<ValidationError> getLatitudeErrors() {
-        return new PropertyValidation<>(latitude)
+        return new Validation<>(latitude)
             .ensureIt(new IsWithinRange(GERMANY_WEST_LAT, GERMANY_EAST_LAT))
             .getValidationErrors();
     }
 
     public List<ValidationError> getLongitudeErrors() {
-        return new PropertyValidation<>(longitude)
+        return new Validation<>(longitude)
             .ensureIt(new IsWithinRange(GERMANY_SOUTH_LNG, GERMANY_NORTH_LNG))
             .getValidationErrors();
     }
