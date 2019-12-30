@@ -6,7 +6,7 @@
     <body>
         <th:block th:insert="~{fragments :: header('drafts')}"></th:block>
 
-        <div id="data-panel" th:if="${currentDraftDto != null}">
+        <div id="data-panel">
 
             <div id="network-elements-box" class="box">
                 <th:block th:insert="~{fragments :: tabs('tracks')}"></th:block>

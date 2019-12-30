@@ -40,8 +40,6 @@ public class ReleaseView {
     public ReleaseView addRequiredAttributesTo(final Model model) {
         final var draftDto = getDraftDto();
 
-        model.addAttribute("currentDraftDto", draftDto);
-
         model.addAttribute("releaseErrors", releaseErrors);
         if (releaseErrors.isEmpty()) {
             model.addAttribute("validityPeriod", new ValidityPeriodDto(

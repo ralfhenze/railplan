@@ -57,7 +57,6 @@ public class TracksView {
         final var draftDto = getDraftDto();
         final var stationNames = getStationNames(draftDto);
 
-        model.addAttribute("currentDraftDto", draftDto);
         model.addAttribute("stationNames", stationNames);
         model.addAttribute("tracks", getTracksWithStationNames(draftDto, stationNames));
         model.addAttribute("showCustomTrackForm", showCustomTrackForm);

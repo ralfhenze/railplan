@@ -74,7 +74,6 @@ public class StationsView {
         final var draftDto = getDraftDto();
         final var stationNames = getStationNames(draftDto);
 
-        model.addAttribute("currentDraftDto", draftDto);
         model.addAttribute("stationNames", stationNames);
 
         model.addAttribute("stationTableRows", getStationTableRows(model));
