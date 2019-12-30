@@ -108,27 +108,27 @@ public class StationsController {
      * Creates a new custom Station or shows validation errors.
      */
     @PostMapping("/drafts/{currentDraftId}/stations/new-custom")
-    public String createNewStation(
+    public String createNewCustomStation(
         @PathVariable String currentDraftId,
         @ModelAttribute(name = "updatedStationTableRow") StationTableRow stationRow,
         Model model
     ) {
-        try {
-            addTrainStationCommand.addTrainStation(
-                currentDraftId,
-                stationRow.stationName,
-                Double.parseDouble(stationRow.latitude),
-                Double.parseDouble(stationRow.longitude)
-            );
-        } catch (ValidationException exception) {
+        final var draftWithNewCustomStation = addTrainStationCommand.addTrainStation(
+            currentDraftId,
+            stationRow.stationName,
+            Double.parseDouble(stationRow.latitude),
+            Double.parseDouble(stationRow.longitude)
+        );
+
+        if (draftWithNewCustomStation.isValid()) {
+            return "redirect:/drafts/{currentDraftId}/stations";
+        } else {
             return new StationsView(currentDraftId, draftRepository)
                 .withShowCustomStationForm(true)
-                .withStationErrorsProvidedBy(exception)
+                .withDraft(draftWithNewCustomStation)
                 .addRequiredAttributesTo(model)
                 .getViewName();
         }
-
-        return "redirect:/drafts/{currentDraftId}/stations";
     }
 
     /**

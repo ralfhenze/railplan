@@ -1,6 +1,8 @@
 package com.ralfhenze.railplan.userinterface.web.drafts.stations;
 
+import com.ralfhenze.railplan.domain.common.validation.ValidationError;
 import com.ralfhenze.railplan.domain.common.validation.ValidationException;
+import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraft;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftId;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftRepository;
 import com.ralfhenze.railplan.infrastructure.persistence.dto.RailNetworkDraftDto;
@@ -22,6 +24,7 @@ public class StationsView {
     private String stationIdToEdit;
     private boolean showCustomStationForm = false;
     private boolean showPresetStationForm = false;
+    private RailNetworkDraft draft;
     private Map<String, List<String>> stationErrors;
     private Map<String, List<String>> presetStationErrors;
 
@@ -57,6 +60,11 @@ public class StationsView {
         return this;
     }
 
+    public StationsView withDraft(final RailNetworkDraft draft) {
+        this.draft = draft;
+        return this;
+    }
+
     public StationsView withPresetStationErrorsProvidedBy(final ValidationException exception) {
         this.presetStationErrors = exception.getErrorMessagesAsHashMap();
         return this;
@@ -69,7 +77,7 @@ public class StationsView {
         model.addAttribute("currentDraftDto", draftDto);
         model.addAttribute("stationNames", stationNames);
 
-        model.addAttribute("stationTableRows", getStationTableRows(model, draftDto));
+        model.addAttribute("stationTableRows", getStationTableRows(model));
         model.addAttribute("showCustomStationForm", showCustomStationForm);
         model.addAttribute("newStationTableRow", getNewStationTableRow(model));
 
@@ -87,8 +95,9 @@ public class StationsView {
     }
 
     private RailNetworkDraftDto getDraftDto() {
-        final var draft = draftRepository
-            .getRailNetworkDraftOfId(new RailNetworkDraftId(currentDraftId));
+        if (draft == null) {
+            draft = draftRepository.getRailNetworkDraftOfId(new RailNetworkDraftId(currentDraftId));
+        }
 
         return new RailNetworkDraftDto(draft);
     }
@@ -100,26 +109,23 @@ public class StationsView {
             .collect(Collectors.toMap(TrainStationDto::getId, TrainStationDto::getName));
     }
 
-    private List<StationTableRow> getStationTableRows(
-        final Model model,
-        final RailNetworkDraftDto draftDto
-    ) {
-        return draftDto
+    private List<StationTableRow> getStationTableRows(final Model model) {
+        return draft
             .getStations()
             .stream()
-            .map(stationDto -> {
+            .map(station -> {
                 final var row = new StationTableRow();
-                row.stationId = String.valueOf(stationDto.getId());
-                row.stationName = stationDto.getName();
-                row.latitude = String.valueOf(stationDto.getLatitude());
-                row.longitude = String.valueOf(stationDto.getLongitude());
+                row.stationId = station.getId().toString();
+                row.stationName = station.getName().getName();
+                row.latitude = station.getLocation().getLatitudeAsString();
+                row.longitude = station.getLocation().getLongitudeAsString();
                 row.showInputField = (row.stationId.equals(stationIdToEdit));
 
                 if (row.stationId.equals(stationIdToEdit)) {
-                    if (stationErrors != null) {
-                        row.stationNameErrors = stationErrors.getOrDefault("Station name", List.of());
-                        row.latitudeErrors = stationErrors.getOrDefault("Latitude", List.of());
-                        row.longitudeErrors = stationErrors.getOrDefault("Longitude", List.of());
+                    if (!station.isValid()) {
+                        row.stationNameErrors = getErrorsAsString(station.getName().getValidationErrors());
+                        row.latitudeErrors = getErrorsAsString(station.getLocation().getLatitudeErrors());
+                        row.longitudeErrors = getErrorsAsString(station.getLocation().getLongitudeErrors());
                     }
 
                     setStationRowPropertiesIfModelContainsThem(row, model);
@@ -130,6 +136,10 @@ public class StationsView {
             .collect(Collectors.toList());
     }
 
+    private List<String> getErrorsAsString(List<ValidationError> validationErrors) {
+        return validationErrors.stream().map(e -> e.getMessage()).collect(Collectors.toList());
+    }
+
     private StationTableRow getNewStationTableRow(final Model model) {
         final var newStationTableRow = new StationTableRow();
 
@@ -138,10 +148,11 @@ public class StationsView {
         newStationTableRow.showInputField = true;
         newStationTableRow.disabled = (stationIdToEdit != null);
 
-        if (stationIdToEdit == null && stationErrors != null) {
-            newStationTableRow.stationNameErrors = stationErrors.getOrDefault("Station name", List.of());
-            newStationTableRow.latitudeErrors = stationErrors.getOrDefault("Latitude", List.of());
-            newStationTableRow.longitudeErrors = stationErrors.getOrDefault("Longitude", List.of());
+        if (stationIdToEdit == null && draft != null) {
+            final var station = draft.getStations().getLastOptional().get();
+            newStationTableRow.stationNameErrors = getErrorsAsString(station.getName().getValidationErrors());
+            newStationTableRow.latitudeErrors = getErrorsAsString(station.getLocation().getLatitudeErrors());
+            newStationTableRow.longitudeErrors = getErrorsAsString(station.getLocation().getLongitudeErrors());
         }
 
         return newStationTableRow;
