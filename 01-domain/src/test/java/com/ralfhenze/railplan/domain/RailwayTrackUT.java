@@ -1,12 +1,10 @@
 package com.ralfhenze.railplan.domain;
 
-import com.ralfhenze.railplan.domain.common.validation.ValidationException;
 import com.ralfhenze.railplan.domain.railnetwork.elements.RailwayTrack;
 import com.ralfhenze.railplan.domain.railnetwork.elements.TrainStationId;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 public class RailwayTrackUT {
 
@@ -23,11 +21,11 @@ public class RailwayTrackUT {
     }
 
     @Test
-    public void cannotBeConstructedWithTheSameStationIds() {
+    public void isInvalidWithTheSameStationIds() {
         final var stationId = new TrainStationId("1");
 
-        assertThatExceptionOfType(ValidationException.class).isThrownBy(() ->
-            new RailwayTrack(stationId, stationId)
-        );
+        final var track = new RailwayTrack(stationId, stationId);
+
+        assertThat(track.isValid()).isFalse();
     }
 }

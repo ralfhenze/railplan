@@ -1,11 +1,9 @@
 package com.ralfhenze.railplan.domain;
 
-import com.ralfhenze.railplan.domain.common.validation.ValidationException;
 import com.ralfhenze.railplan.domain.railnetwork.elements.GeoLocationInGermany;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 public class GeoLocationUT {
 
@@ -29,10 +27,9 @@ public class GeoLocationUT {
         "-33.863272, 151.211579", // Sydney
     })
      */
-    public void cannotBeConstructedWithCoordinatesOutsideOfGermany(Double latitude, Double longitude) {
-        assertThatExceptionOfType(ValidationException.class).isThrownBy(() ->
-            new GeoLocationInGermany(latitude, longitude)
-        );
+    public void isInvalidWithCoordinatesOutsideOfGermany(Double latitude, Double longitude) {
+        final var invalidLocation = new GeoLocationInGermany(latitude, longitude);
+        assertThat(invalidLocation.isValid()).isFalse();
     }
 
     @Test

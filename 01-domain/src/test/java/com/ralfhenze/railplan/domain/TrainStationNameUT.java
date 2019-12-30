@@ -1,11 +1,9 @@
 package com.ralfhenze.railplan.domain;
 
-import com.ralfhenze.railplan.domain.common.validation.ValidationException;
 import com.ralfhenze.railplan.domain.railnetwork.elements.TrainStationName;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 public class TrainStationNameUT {
 
@@ -19,10 +17,8 @@ public class TrainStationNameUT {
         "This is a very very very very very long station name", // too long
     })
      */
-    public void cannotBeConstructedWithAnInvalidStationName(String stationName) {
-        assertThatExceptionOfType(ValidationException.class).isThrownBy(() ->
-            new TrainStationName(stationName)
-        );
+    public void isInvalidWithAnInvalidStationName(String stationName) {
+        assertThat(new TrainStationName(stationName).isValid()).isFalse();
     }
 
     @Test
