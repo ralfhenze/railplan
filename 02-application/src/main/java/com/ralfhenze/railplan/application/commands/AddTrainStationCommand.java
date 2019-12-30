@@ -44,7 +44,9 @@ public class AddTrainStationCommand implements Command {
             new GeoLocationInGermany(latitude, longitude)
         );
 
-        draftRepository.persist(updatedDraft);
+        if (updatedDraft.isValid()) {
+            draftRepository.persist(updatedDraft);
+        }
 
         return updatedDraft;
     }
