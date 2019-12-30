@@ -1,7 +1,6 @@
 package com.ralfhenze.railplan.acceptance.stepdefs;
 
 import com.ralfhenze.railplan.domain.TestData;
-import com.ralfhenze.railplan.domain.common.validation.ValidationException;
 import com.ralfhenze.railplan.domain.railnetwork.elements.TrainStation;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraft;
 import cucumber.api.java.en.Given;
@@ -15,7 +14,6 @@ public class TrackMaximumLengthSteps {
     private RailNetworkDraft draft;
     private TrainStation station1;
     private TrainStation station2;
-    private boolean exceptionWasThrown;
 
     @Given("^a Rail Network Draft with two Stations \"(.*)\" and \"(.*)\" \\(distance: (.*)\\)$")
     public void setupTwoStations(String stationName1, String stationName2, String distance) {
@@ -28,21 +26,16 @@ public class TrackMaximumLengthSteps {
 
     @When("^a Network Planner tries to connect those two stations with a new Railway Track$")
     public void addRailwayTrack() {
-        exceptionWasThrown = false;
-        try {
-            draft = draft.withNewTrack(station1.getName(), station2.getName());
-        } catch (IllegalArgumentException | ValidationException e) {
-            exceptionWasThrown = true;
-        }
+        draft = draft.withNewTrack(station1.getName(), station2.getName());
     }
 
     @Then("^the new Track should be (.*)$")
     public void assertAdded(String addedOrRejected) {
         if ("added".equals(addedOrRejected)) {
-            assertThat(exceptionWasThrown).isFalse();
+            assertThat(draft.isValid()).isTrue();
             assertThat(draft.getTracks()).hasSize(1);
         } else if ("rejected".equals(addedOrRejected)) {
-            assertThat(exceptionWasThrown).isTrue();
+            assertThat(draft.isValid()).isFalse();
         }
     }
 }

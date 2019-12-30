@@ -58,7 +58,7 @@ public class RailNetworkDraft implements Aggregate, Validatable {
 
     @Override
     public boolean isValid() {
-        return id.get().isValid()
+        return id.map(RailNetworkDraftId::isValid).orElse(true)
             && stations.allSatisfy(TrainStation::isValid)
             && tracks.allSatisfy(RailwayTrack::isValid)
             && getStationErrors().isEmpty()
