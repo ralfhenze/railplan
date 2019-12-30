@@ -93,6 +93,13 @@ public class TracksView {
 
     private TrackErrors getTrackErrors() {
         final var trackErrors = new TrackErrors();
+        trackErrors.firstStationErrors = draft
+            .getTracks()
+            .getLastOptional().get()
+            .getFirstStationIdErrors()
+            .stream()
+            .map(e -> e.getMessage())
+            .collect(Collectors.toList());
         trackErrors.secondStationErrors = draft
             .getTracks()
             .getLastOptional().get()

@@ -1,10 +1,11 @@
 package com.ralfhenze.railplan.userinterface.web;
 
 import com.ralfhenze.railplan.application.commands.ReleaseRailNetworkCommand;
-import com.ralfhenze.railplan.domain.common.validation.ValidationException;
+import com.ralfhenze.railplan.domain.common.validation.ValidationError;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftRepository;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.release.ReleasedRailNetwork;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.release.ReleasedRailNetworkId;
+import com.ralfhenze.railplan.domain.railnetwork.lifecycle.release.ValidityPeriod;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -21,6 +22,7 @@ import static com.ralfhenze.railplan.userinterface.web.TestData.berlinHamburgDra
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 @RunWith(SpringRunner.class)
@@ -54,9 +56,12 @@ public class ReleaseControllerIT extends HtmlITBase {
 
     @Test
     public void userCanReleaseAnExistingDraft() throws Exception {
-        // Given we will get an ID for our Released Rail Network
+        // Given we will get a ReleasedRailNetwork
+        final var network = mock(ReleasedRailNetwork.class);
+        given(network.isValid()).willReturn(true);
+        given(network.getId()).willReturn(Optional.of(new ReleasedRailNetworkId("1")));
         given(releaseRailNetworkCommand.releaseRailNetworkDraft(any(), any(), any()))
-            .willReturn(new ReleasedRailNetwork(Optional.of(new ReleasedRailNetworkId("1")), null, null, null));
+            .willReturn(network);
 
         // When we call POST /drafts/123/release with valid parameters
         final var response = getPostResponse(
@@ -79,15 +84,16 @@ public class ReleaseControllerIT extends HtmlITBase {
         // Given an existing Draft
         given(draftRepository.getRailNetworkDraftOfId(any())).willReturn(berlinHamburgDraft);
 
-        // And we will get validation errors when attempting to release the Draft
-        final var startDateErrors = List.of("Start Date error");
-        final var endDateErrors = List.of("End Date error");
-        final var validationException = new ValidationException(Map.of(
-            "Start Date", startDateErrors,
-            "End Date", endDateErrors
-        ));
+        // And we will get an invalid Network when attempting to release the Draft
+        final var period = mock(ValidityPeriod.class);
+        given(period.getStartDateErrors())
+            .willReturn(List.of(new ValidationError("Start Date error")));
+        given(period.getEndDateErrors())
+            .willReturn(List.of(new ValidationError("End Date error")));
+        final var network = mock(ReleasedRailNetwork.class);
+        given(network.getPeriod()).willReturn(period);
         given(releaseRailNetworkCommand.releaseRailNetworkDraft(any(), any(), any()))
-            .willThrow(validationException);
+            .willReturn(network);
 
         // When we call POST /drafts/123/release with invalid Date parameters
         final var response = getPostResponse(
@@ -103,8 +109,8 @@ public class ReleaseControllerIT extends HtmlITBase {
 
         // And each Date field shows it's error messages
         assertThat(releaseForm.select(".errors.startDate li").eachText())
-            .isEqualTo(startDateErrors);
+            .isEqualTo(List.of("Start Date error"));
         assertThat(releaseForm.select(".errors.endDate li").eachText())
-            .isEqualTo(endDateErrors);
+            .isEqualTo(List.of("End Date error"));
     }
 }

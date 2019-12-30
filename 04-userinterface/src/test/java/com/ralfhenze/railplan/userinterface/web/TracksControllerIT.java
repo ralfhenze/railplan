@@ -2,9 +2,13 @@ package com.ralfhenze.railplan.userinterface.web;
 
 import com.ralfhenze.railplan.application.commands.AddRailwayTrackCommand;
 import com.ralfhenze.railplan.application.commands.DeleteRailwayTrackCommand;
+import com.ralfhenze.railplan.domain.common.validation.ValidationError;
 import com.ralfhenze.railplan.domain.common.validation.ValidationException;
+import com.ralfhenze.railplan.domain.railnetwork.elements.RailwayTrack;
+import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraft;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftRepository;
 import com.ralfhenze.railplan.userinterface.web.drafts.tracks.PresetTracks;
+import org.eclipse.collections.api.factory.Lists;
 import org.jsoup.Jsoup;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,6 +26,7 @@ import static com.ralfhenze.railplan.userinterface.web.TestData.hamburgHbfName;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 @RunWith(SpringRunner.class)
@@ -113,6 +118,11 @@ public class TracksControllerIT extends HtmlITBase {
 
     @Test
     public void userCanAddANewCustomTrack() throws Exception {
+        // Given we will get a valid Draft
+        final var draft = mock(RailNetworkDraft.class);
+        given(draft.isValid()).willReturn(true);
+        given(addRailwayTrackCommand.addRailwayTrack(any(), any(), any())).willReturn(draft);
+
         // When we call POST /drafts/123/tracks/new-custom with valid Track parameters
         final var response = getPostResponse(
             "/drafts/123/tracks/new-custom",
@@ -129,14 +139,15 @@ public class TracksControllerIT extends HtmlITBase {
 
     @Test
     public void userSeesValidationErrorsWhenAddingAnInvalidCustomTrack() throws Exception {
-        final var firstStationErrors = List.of("Station 1 error");
-        final var secondStationErrors = List.of("Station 2 error");
-        final var validationException = new ValidationException(Map.of(
-            "First Station ID", firstStationErrors,
-            "Second Station ID", secondStationErrors
-        ));
-        given(addRailwayTrackCommand.addRailwayTrack(any(), any(), any()))
-            .willThrow(validationException);
+        final var track = mock(RailwayTrack.class);
+        given(track.getFirstStationIdErrors())
+            .willReturn(List.of(new ValidationError("Station 1 error")));
+        given(track.getSecondStationIdErrors())
+            .willReturn(List.of(new ValidationError("Station 2 error")));
+        final var draft = mock(RailNetworkDraft.class);
+        given(draft.getTracks()).willReturn(Lists.immutable.of(track));
+
+        given(addRailwayTrackCommand.addRailwayTrack(any(), any(), any())).willReturn(draft);
 
         // Given an existing Draft
         given(draftRepository.getRailNetworkDraftOfId(any())).willReturn(berlinHamburgDraft);
@@ -155,9 +166,9 @@ public class TracksControllerIT extends HtmlITBase {
 
         // And each Station selector shows it's error messages
         assertThat(customTrackForm.select(".errors.firstStationId li").eachText())
-            .isEqualTo(firstStationErrors);
+            .isEqualTo(List.of("Station 1 error"));
         assertThat(customTrackForm.select(".errors.secondStationId li").eachText())
-            .isEqualTo(secondStationErrors);
+            .isEqualTo(List.of("Station 2 error"));
     }
 
     @Test

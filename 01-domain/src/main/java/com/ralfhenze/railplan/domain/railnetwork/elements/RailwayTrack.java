@@ -30,7 +30,12 @@ public class RailwayTrack implements ValueObject, Validatable {
 
     @Override
     public boolean isValid() {
-        return getSecondStationIdErrors().isEmpty();
+        return getFirstStationIdErrors().isEmpty()
+            && getSecondStationIdErrors().isEmpty();
+    }
+
+    public List<ValidationError> getFirstStationIdErrors() {
+        return List.of();
     }
 
     public List<ValidationError> getSecondStationIdErrors() {
