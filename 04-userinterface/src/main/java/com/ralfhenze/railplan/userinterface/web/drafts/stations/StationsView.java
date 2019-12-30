@@ -72,9 +72,6 @@ public class StationsView {
 
     public StationsView addRequiredAttributesTo(final Model model) {
         final var draftDto = getDraftDto();
-        final var stationNames = getStationNames(draftDto);
-
-        model.addAttribute("stationNames", stationNames);
 
         model.addAttribute("stationTableRows", getStationTableRows(model));
         model.addAttribute("showCustomStationForm", showCustomStationForm);
@@ -99,13 +96,6 @@ public class StationsView {
         }
 
         return new RailNetworkDraftDto(draft);
-    }
-
-    private Map<Integer, String> getStationNames(final RailNetworkDraftDto draftDto) {
-        return draftDto
-            .getStations()
-            .stream()
-            .collect(Collectors.toMap(TrainStationDto::getId, TrainStationDto::getName));
     }
 
     private List<StationTableRow> getStationTableRows(final Model model) {
