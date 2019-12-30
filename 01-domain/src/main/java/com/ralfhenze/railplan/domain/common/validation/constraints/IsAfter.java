@@ -1,7 +1,7 @@
 package com.ralfhenze.railplan.domain.common.validation.constraints;
 
-import com.ralfhenze.railplan.domain.common.validation.ErrorMessage;
 import com.ralfhenze.railplan.domain.common.validation.ValidationConstraint;
+import com.ralfhenze.railplan.domain.common.validation.ValidationError;
 
 import java.time.LocalDate;
 import java.util.Optional;
@@ -15,14 +15,9 @@ public class IsAfter implements ValidationConstraint<LocalDate> {
     }
 
     @Override
-    public Optional<ErrorMessage> validate(
-        final LocalDate date,
-        final String fieldName
-    ) {
+    public Optional<ValidationError> validate(final LocalDate date) {
         if (!date.isAfter(startDate)) {
-            return Optional.of(new ErrorMessage(
-                fieldName + " (" + date + ") must be after " + startDate
-            ));
+            return Optional.of(new ValidationError("must be after " + startDate));
         }
 
         return Optional.empty();

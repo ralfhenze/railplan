@@ -1,7 +1,7 @@
 package com.ralfhenze.railplan.domain.common.validation.constraints;
 
-import com.ralfhenze.railplan.domain.common.validation.ErrorMessage;
 import com.ralfhenze.railplan.domain.common.validation.ValidationConstraint;
+import com.ralfhenze.railplan.domain.common.validation.ValidationError;
 
 import java.util.Optional;
 
@@ -16,13 +16,11 @@ public class IsWithinRange implements ValidationConstraint<Double> {
     }
 
     @Override
-    public Optional<ErrorMessage> validate(final Double value, final String fieldName) {
+    public Optional<ValidationError> validate(final Double value) {
         if (value < inclusiveMin || value > inclusiveMax) {
             return Optional.of(
-                new ErrorMessage(
-                    fieldName + " must be within "
-                    + "[" + inclusiveMin + " ... " + inclusiveMax + "]"
-                    + ", but was " + value
+                new ValidationError(
+                    "must be within [" + inclusiveMin + " ... " + inclusiveMax + "]"
                 )
             );
         }

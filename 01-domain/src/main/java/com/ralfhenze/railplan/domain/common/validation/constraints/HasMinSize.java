@@ -1,7 +1,7 @@
 package com.ralfhenze.railplan.domain.common.validation.constraints;
 
-import com.ralfhenze.railplan.domain.common.validation.ErrorMessage;
 import com.ralfhenze.railplan.domain.common.validation.ValidationConstraint;
+import com.ralfhenze.railplan.domain.common.validation.ValidationError;
 import org.eclipse.collections.api.collection.ImmutableCollection;
 
 import java.util.Optional;
@@ -15,15 +15,9 @@ public class HasMinSize<T extends ImmutableCollection> implements ValidationCons
     }
 
     @Override
-    public Optional<ErrorMessage> validate(
-        final T collection,
-        final String fieldName
-    ) {
+    public Optional<ValidationError> validate(final T collection) {
         if (collection.size() < minSize) {
-            return Optional.of(new ErrorMessage(
-                fieldName + " requires at least "
-                + minSize + " elements, but had " + collection.size()
-            ));
+            return Optional.of(new ValidationError("requires at least " + minSize + " elements"));
         }
 
         return Optional.empty();

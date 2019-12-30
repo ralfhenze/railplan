@@ -1,8 +1,8 @@
 package com.ralfhenze.railplan.domain.railnetwork.invariants;
 
 import com.ralfhenze.railplan.domain.common.Combinations;
-import com.ralfhenze.railplan.domain.common.validation.ErrorMessage;
 import com.ralfhenze.railplan.domain.common.validation.ValidationConstraint;
+import com.ralfhenze.railplan.domain.common.validation.ValidationError;
 import com.ralfhenze.railplan.domain.railnetwork.elements.RailwayTrack;
 import com.ralfhenze.railplan.domain.railnetwork.elements.TrainStation;
 import org.eclipse.collections.api.list.ImmutableList;
@@ -23,10 +23,7 @@ public class HasNoDuplicateTracks
     }
 
     @Override
-    public Optional<ErrorMessage> validate(
-        final ImmutableList<RailwayTrack> tracks,
-        final String fieldName
-    ) {
+    public Optional<ValidationError> validate(final ImmutableList<RailwayTrack> tracks) {
         if (tracks.size() < 2) {
             return Optional.empty();
         }
@@ -46,11 +43,13 @@ public class HasNoDuplicateTracks
             final var station2 = stations
                 .detect(s -> s.getId().equals(track.getSecondStationId()));
 
-            return Optional.of(new ErrorMessage(
-                "Track between \""
+            return Optional.of(
+                new ValidationError(
+                    "Track between \""
                     + station1.getName() + "\" and \""
                     + station2.getName() + "\" already exists"
-            ));
+                )
+            );
         }
 
         return Optional.empty();

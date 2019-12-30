@@ -1,7 +1,7 @@
 package com.ralfhenze.railplan.domain.railnetwork.invariants;
 
-import com.ralfhenze.railplan.domain.common.validation.ErrorMessage;
 import com.ralfhenze.railplan.domain.common.validation.ValidationConstraint;
+import com.ralfhenze.railplan.domain.common.validation.ValidationError;
 import com.ralfhenze.railplan.domain.railnetwork.elements.TrainStation;
 import org.eclipse.collections.api.list.ImmutableList;
 
@@ -11,10 +11,7 @@ import java.util.Optional;
 public class HasUniqueStationNames implements ValidationConstraint<ImmutableList<TrainStation>> {
 
     @Override
-    public Optional<ErrorMessage> validate(
-        final ImmutableList<TrainStation> stations,
-        final String fieldName
-    ) {
+    public Optional<ValidationError> validate(final ImmutableList<TrainStation> stations) {
         if (stations.size() >= 2) {
             final var duplicateStationName = stations
                 .groupBy(TrainStation::getName)
@@ -24,7 +21,7 @@ public class HasUniqueStationNames implements ValidationConstraint<ImmutableList
 
             if (duplicateStationName != null) {
                 return Optional.of(
-                    new ErrorMessage(
+                    new ValidationError(
                         "Station Name \"" + duplicateStationName + "\" already exists"
                     )
                 );

@@ -1,7 +1,7 @@
 package com.ralfhenze.railplan.domain.railnetwork.invariants;
 
-import com.ralfhenze.railplan.domain.common.validation.ErrorMessage;
 import com.ralfhenze.railplan.domain.common.validation.ValidationConstraint;
+import com.ralfhenze.railplan.domain.common.validation.ValidationError;
 import com.ralfhenze.railplan.domain.railnetwork.elements.RailwayTrack;
 import com.ralfhenze.railplan.domain.railnetwork.elements.TrainStationId;
 import com.ralfhenze.railplan.domain.railnetwork.elements.TrainStation;
@@ -23,10 +23,7 @@ public class HasNoUnconnectedSubGraphs
     }
 
     @Override
-    public Optional<ErrorMessage> validate(
-        final ImmutableList<RailwayTrack> tracks,
-        final String fieldName
-    ) {
+    public Optional<ValidationError> validate(final ImmutableList<RailwayTrack> tracks) {
         if (stations.isEmpty() || tracks.isEmpty()) {
             return Optional.empty();
         }
@@ -58,10 +55,12 @@ public class HasNoUnconnectedSubGraphs
         final var unconnectedSubGraphExists = (visitedNodes.size() < nodes.size());
 
         if (unconnectedSubGraphExists) {
-            return Optional.of(new ErrorMessage(
-                "Unconnected sub-graphs are not allowed! Please make sure that the rail network"
-                    + " is a single graph and all stations are reachable from each other."
-            ));
+            return Optional.of(
+                new ValidationError(
+                    "Unconnected sub-graphs are not allowed! Please make sure that the Rail "
+                    + "Network is a single graph and all Stations are reachable from each other."
+                )
+            );
         }
 
         return Optional.empty();

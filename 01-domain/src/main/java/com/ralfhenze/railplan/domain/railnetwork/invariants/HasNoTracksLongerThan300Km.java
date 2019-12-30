@@ -1,7 +1,7 @@
 package com.ralfhenze.railplan.domain.railnetwork.invariants;
 
-import com.ralfhenze.railplan.domain.common.validation.ErrorMessage;
 import com.ralfhenze.railplan.domain.common.validation.ValidationConstraint;
+import com.ralfhenze.railplan.domain.common.validation.ValidationError;
 import com.ralfhenze.railplan.domain.railnetwork.elements.RailwayTrack;
 import com.ralfhenze.railplan.domain.railnetwork.elements.TrainStationId;
 import com.ralfhenze.railplan.domain.railnetwork.elements.TrainStation;
@@ -22,10 +22,7 @@ public class HasNoTracksLongerThan300Km
     }
 
     @Override
-    public Optional<ErrorMessage> validate(
-        final ImmutableList<RailwayTrack> tracks,
-        final String fieldName
-    ) {
+    public Optional<ValidationError> validate(final ImmutableList<RailwayTrack> tracks) {
         if (tracks.isEmpty()) {
             return Optional.empty();
         }
@@ -45,13 +42,15 @@ public class HasNoTracksLongerThan300Km
             final var id2 = tooLongTrack.get().getSecondStationId();
             final var trackLength = getTrackLength(stationsMap, id1, id2);
 
-            return Optional.of(new ErrorMessage(
-                "Track from \""
+            return Optional.of(
+                new ValidationError(
+                    "Track from \""
                     + stationsMap.get(id1).getName() + "\" (" + id1 + ") to \""
                     + stationsMap.get(id2).getName() + "\" (" + id2 + ") must be shorter than "
                     + MAXIMUM_LENGTH_KM + " km"
                     + ", but was ~" + Math.round(trackLength) + " km"
-            ));
+                )
+            );
         }
 
         return Optional.empty();

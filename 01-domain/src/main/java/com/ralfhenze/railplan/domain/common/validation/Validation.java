@@ -36,9 +36,7 @@ public class Validation<T> {
         final List<ValidationError> errors = new ArrayList<>();
 
         for (final var constraint : constraints) {
-            constraint.validate(property, "").ifPresent(errorMessage ->
-                errors.add(new ValidationError(errorMessage.getMessage()))
-            );
+            constraint.validate(property).ifPresent(errors::add);
         }
 
         return errors;

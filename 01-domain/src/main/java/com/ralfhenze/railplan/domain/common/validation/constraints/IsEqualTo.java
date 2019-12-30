@@ -1,7 +1,7 @@
 package com.ralfhenze.railplan.domain.common.validation.constraints;
 
-import com.ralfhenze.railplan.domain.common.validation.ErrorMessage;
 import com.ralfhenze.railplan.domain.common.validation.ValidationConstraint;
+import com.ralfhenze.railplan.domain.common.validation.ValidationError;
 
 import java.util.Optional;
 
@@ -14,11 +14,9 @@ public class IsEqualTo<T> implements ValidationConstraint<T> {
     }
 
     @Override
-    public Optional<ErrorMessage> validate(final T value, final String fieldName) {
+    public Optional<ValidationError> validate(final T value) {
         if (!value.equals(comparedValue)) {
-            return Optional.of(
-                new ErrorMessage(fieldName + " must be equal to \"" + value + "\"")
-            );
+            return Optional.of(new ValidationError("must be equal to \"" + value + "\""));
         }
 
         return Optional.empty();

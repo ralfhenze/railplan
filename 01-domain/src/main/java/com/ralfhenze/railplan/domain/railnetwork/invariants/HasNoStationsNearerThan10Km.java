@@ -1,8 +1,8 @@
 package com.ralfhenze.railplan.domain.railnetwork.invariants;
 
 import com.ralfhenze.railplan.domain.common.Combinations;
-import com.ralfhenze.railplan.domain.common.validation.ErrorMessage;
 import com.ralfhenze.railplan.domain.common.validation.ValidationConstraint;
+import com.ralfhenze.railplan.domain.common.validation.ValidationError;
 import com.ralfhenze.railplan.domain.railnetwork.elements.TrainStation;
 import org.eclipse.collections.api.list.ImmutableList;
 
@@ -16,10 +16,7 @@ public class HasNoStationsNearerThan10Km
     private final Combinations combinations = new Combinations();
 
     @Override
-    public Optional<ErrorMessage> validate(
-        final ImmutableList<TrainStation> stations,
-        final String fieldName
-    ) {
+    public Optional<ValidationError> validate(final ImmutableList<TrainStation> stations) {
         if (stations.size() < 2) {
             return Optional.empty();
         }
@@ -50,13 +47,15 @@ public class HasNoStationsNearerThan10Km
             final var distance = firstStation.getLocation()
                 .getKilometerDistanceTo(secondStation.getLocation());
 
-            return Optional.of(new ErrorMessage(
-                "Distance between Station \""
+            return Optional.of(
+                new ValidationError(
+                    "Distance between Station \""
                     + firstStation.getName() + "\" and \"" + secondStation.getName()
                     + "\" should be > 10 km, but was ~"
                     + (Math.round(distance * 100.0) / 100.0)
                     + " km"
-            ));
+                )
+            );
         }
 
         return Optional.empty();
