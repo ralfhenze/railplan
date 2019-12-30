@@ -1,10 +1,10 @@
 package com.ralfhenze.railplan.domain.railnetwork.lifecycle.release;
 
 import com.ralfhenze.railplan.domain.common.Aggregate;
-import com.ralfhenze.railplan.domain.common.validation.Validation;
-import com.ralfhenze.railplan.domain.common.validation.ValidationException;
+import com.ralfhenze.railplan.domain.common.Validatable;
+import com.ralfhenze.railplan.domain.common.validation.PropertyValidation;
+import com.ralfhenze.railplan.domain.common.validation.ValidationError;
 import com.ralfhenze.railplan.domain.common.validation.constraints.HasMinSize;
-import com.ralfhenze.railplan.domain.common.validation.constraints.IsNotNull;
 import com.ralfhenze.railplan.domain.railnetwork.elements.RailwayTrack;
 import com.ralfhenze.railplan.domain.railnetwork.elements.TrainStation;
 import com.ralfhenze.railplan.domain.railnetwork.invariants.HasNoDuplicateTracks;
@@ -14,6 +14,7 @@ import com.ralfhenze.railplan.domain.railnetwork.invariants.HasNoUnconnectedSubG
 import com.ralfhenze.railplan.domain.railnetwork.invariants.HasUniqueStationNames;
 import org.eclipse.collections.api.list.ImmutableList;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -22,7 +23,7 @@ import java.util.Optional;
  * [x] all invariants of RailNetworkDraft
  * [ ] released Rail Network Plans can't be changed any more
  */
-public class ReleasedRailNetwork implements Aggregate {
+public class ReleasedRailNetwork implements Aggregate, Validatable {
 
     private final Optional<ReleasedRailNetworkId> id;
     private final ValidityPeriod period;
@@ -33,7 +34,7 @@ public class ReleasedRailNetwork implements Aggregate {
         final ValidityPeriod period,
         final ImmutableList<TrainStation> stations,
         final ImmutableList<RailwayTrack> tracks
-    ) throws ValidationException {
+    ) {
         this(Optional.empty(), period, stations, tracks);
     }
 
@@ -42,23 +43,37 @@ public class ReleasedRailNetwork implements Aggregate {
         final ValidityPeriod period,
         final ImmutableList<TrainStation> stations,
         final ImmutableList<RailwayTrack> tracks
-    ) throws ValidationException {
-        new Validation()
-            .ensureThat(id, new IsNotNull(), "Rail Network ID")
-            .ensureThat(period, new IsNotNull(), "Validity Period")
-            .ensureThat(stations, new HasMinSize(2), "Train Stations")
-            .ensureThat(stations, new HasNoStationsNearerThan10Km(), "Train Stations")
-            .ensureThat(stations, new HasUniqueStationNames(), "Station Name")
-            .ensureThat(tracks, new HasMinSize(1), "Railway Tracks")
-            .ensureThat(tracks, new HasNoTracksLongerThan300Km(stations), "Railway Tracks")
-            .ensureThat(tracks, new HasNoDuplicateTracks(stations), "Railway Tracks")
-            .ensureThat(tracks, new HasNoUnconnectedSubGraphs(stations), "Railway Tracks")
-            .throwExceptionIfInvalid();
-
+    ) {
         this.id = id;
         this.period = period;
         this.stations = stations;
         this.tracks = tracks;
+    }
+
+    @Override
+    public boolean isValid() {
+        return id.get().isValid()
+            && stations.allSatisfy(TrainStation::isValid)
+            && tracks.allSatisfy(RailwayTrack::isValid)
+            && getStationErrors().isEmpty()
+            && getTrackErrors().isEmpty();
+    }
+
+    public List<ValidationError> getStationErrors() {
+        return new PropertyValidation<>(stations)
+            .ensureIt(new HasMinSize<>(2))
+            .ensureIt(new HasUniqueStationNames())
+            .ensureIt(new HasNoStationsNearerThan10Km())
+            .getValidationErrors();
+    }
+
+    public List<ValidationError> getTrackErrors() {
+        return new PropertyValidation<>(tracks)
+            .ensureIt(new HasMinSize<>(1))
+            .ensureIt(new HasNoTracksLongerThan300Km(stations))
+            .ensureIt(new HasNoDuplicateTracks(stations))
+            .ensureIt(new HasNoUnconnectedSubGraphs(stations))
+            .getValidationErrors();
     }
 
     public Optional<ReleasedRailNetworkId> getId() {

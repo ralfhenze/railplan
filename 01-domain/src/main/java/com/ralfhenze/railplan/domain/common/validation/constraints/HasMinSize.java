@@ -6,7 +6,7 @@ import org.eclipse.collections.api.collection.ImmutableCollection;
 
 import java.util.Optional;
 
-public class HasMinSize implements ValidationConstraint<ImmutableCollection<?>> {
+public class HasMinSize<T extends ImmutableCollection> implements ValidationConstraint<T> {
 
     private final int minSize;
 
@@ -16,7 +16,7 @@ public class HasMinSize implements ValidationConstraint<ImmutableCollection<?>> 
 
     @Override
     public Optional<ErrorMessage> validate(
-        final ImmutableCollection<?> collection,
+        final T collection,
         final String fieldName
     ) {
         if (collection.size() < minSize) {
