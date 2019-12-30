@@ -14,6 +14,7 @@ import com.ralfhenze.railplan.domain.railnetwork.invariants.HasNoUnconnectedSubG
 import com.ralfhenze.railplan.domain.railnetwork.invariants.HasUniqueStationNames;
 import org.eclipse.collections.api.list.ImmutableList;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,30 +30,34 @@ public class ReleasedRailNetwork implements Aggregate, Validatable {
     private final ValidityPeriod period;
     private final ImmutableList<TrainStation> stations;
     private final ImmutableList<RailwayTrack> tracks;
+    private final LocalDate lastEndDate;
 
     public ReleasedRailNetwork(
         final ValidityPeriod period,
         final ImmutableList<TrainStation> stations,
         final ImmutableList<RailwayTrack> tracks
     ) {
-        this(Optional.empty(), period, stations, tracks);
+        this(Optional.empty(), period, stations, tracks, null);
     }
 
     public ReleasedRailNetwork(
         final Optional<ReleasedRailNetworkId> id,
         final ValidityPeriod period,
         final ImmutableList<TrainStation> stations,
-        final ImmutableList<RailwayTrack> tracks
+        final ImmutableList<RailwayTrack> tracks,
+        final LocalDate lastEndDate
     ) {
         this.id = id;
         this.period = period;
         this.stations = stations;
         this.tracks = tracks;
+        this.lastEndDate = lastEndDate;
     }
 
     @Override
     public boolean isValid() {
-        return id.get().isValid()
+        return id.map(ReleasedRailNetworkId::isValid).orElse(true)
+            && period.isValid()
             && stations.allSatisfy(TrainStation::isValid)
             && tracks.allSatisfy(RailwayTrack::isValid)
             && getStationErrors().isEmpty()
@@ -68,6 +73,15 @@ public class ReleasedRailNetwork implements Aggregate, Validatable {
     }
 
     public List<ValidationError> getTrackErrors() {
+        return new PropertyValidation<>(tracks)
+            .ensureIt(new HasMinSize<>(1))
+            .ensureIt(new HasNoTracksLongerThan300Km(stations))
+            .ensureIt(new HasNoDuplicateTracks(stations))
+            .ensureIt(new HasNoUnconnectedSubGraphs(stations))
+            .getValidationErrors();
+    }
+
+    public List<ValidationError> getPeriodErrors() {
         return new PropertyValidation<>(tracks)
             .ensureIt(new HasMinSize<>(1))
             .ensureIt(new HasNoTracksLongerThan300Km(stations))

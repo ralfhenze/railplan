@@ -6,12 +6,12 @@ import com.ralfhenze.railplan.domain.common.validation.ValidationConstraint;
 import java.time.LocalDate;
 import java.util.Optional;
 
-public class IsBefore implements ValidationConstraint<LocalDate> {
+public class IsAfter implements ValidationConstraint<LocalDate> {
 
-    private final LocalDate laterDate;
+    private final LocalDate startDate;
 
-    public IsBefore(final LocalDate laterDate) {
-        this.laterDate = laterDate;
+    public IsAfter(final LocalDate startDate) {
+        this.startDate = startDate;
     }
 
     @Override
@@ -19,9 +19,9 @@ public class IsBefore implements ValidationConstraint<LocalDate> {
         final LocalDate date,
         final String fieldName
     ) {
-        if (!date.isBefore(laterDate)) {
+        if (!date.isAfter(startDate)) {
             return Optional.of(new ErrorMessage(
-                fieldName + " (" + date + ") must be before " + laterDate
+                fieldName + " (" + date + ") must be after " + startDate
             ));
         }
 

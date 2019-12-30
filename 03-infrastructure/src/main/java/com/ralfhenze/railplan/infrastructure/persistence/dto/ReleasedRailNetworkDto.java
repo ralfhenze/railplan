@@ -36,7 +36,8 @@ public class ReleasedRailNetworkDto {
             Optional.of(new ReleasedRailNetworkId(String.valueOf(id))),
             new ValidityPeriod(LocalDate.parse(startDate), LocalDate.parse(endDate)),
             Lists.immutable.ofAll(stations).collect(TrainStationDto::toTrainStation),
-            Lists.immutable.ofAll(tracks).collect(RailwayTrackDto::toRailwayTrack)
+            Lists.immutable.ofAll(tracks).collect(RailwayTrackDto::toRailwayTrack),
+            null // TODO: fix this
         );
     }
 

@@ -45,10 +45,8 @@ public class RailNetworkReleaseServiceUT {
         assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
             releaseService.release(
                 draft,
-                new ValidityPeriod(
-                    invalidStartDate, // should be one day after last end date (2019-11-21)
-                    LocalDate.of(2019, 12, 1)
-                )
+                invalidStartDate, // should be one day after last end date (2019-11-21)
+                LocalDate.of(2019, 12, 1)
             );
         });
     }

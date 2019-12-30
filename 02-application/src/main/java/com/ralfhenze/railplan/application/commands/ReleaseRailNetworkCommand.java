@@ -49,7 +49,7 @@ public class ReleaseRailNetworkCommand implements Command {
             .getRailNetworkDraftOfId(new RailNetworkDraftId(draftId));
 
         final var releasedRailNetwork = releaseService
-            .release(draft, new ValidityPeriod(startDate, endDate));
+            .release(draft, startDate, endDate);
 
         return releasedRailNetwork.getId().get();
     }
