@@ -3,6 +3,7 @@ package com.ralfhenze.railplan.userinterface.web;
 import com.ralfhenze.railplan.application.commands.ReleaseRailNetworkCommand;
 import com.ralfhenze.railplan.domain.common.validation.ValidationException;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftRepository;
+import com.ralfhenze.railplan.domain.railnetwork.lifecycle.release.ReleasedRailNetwork;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.release.ReleasedRailNetworkId;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,6 +15,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static com.ralfhenze.railplan.userinterface.web.TestData.berlinHamburgDraft;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -54,7 +56,7 @@ public class ReleaseControllerIT extends HtmlITBase {
     public void userCanReleaseAnExistingDraft() throws Exception {
         // Given we will get an ID for our Released Rail Network
         given(releaseRailNetworkCommand.releaseRailNetworkDraft(any(), any(), any()))
-            .willReturn(new ReleasedRailNetworkId("1"));
+            .willReturn(new ReleasedRailNetwork(Optional.of(new ReleasedRailNetworkId("1")), null, null, null));
 
         // When we call POST /drafts/123/release with valid parameters
         final var response = getPostResponse(

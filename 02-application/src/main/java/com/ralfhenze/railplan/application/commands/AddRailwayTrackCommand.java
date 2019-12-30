@@ -1,12 +1,10 @@
 package com.ralfhenze.railplan.application.commands;
 
-import com.ralfhenze.railplan.domain.railnetwork.elements.RailwayTrack;
 import com.ralfhenze.railplan.domain.railnetwork.elements.TrainStationId;
 import com.ralfhenze.railplan.domain.railnetwork.elements.TrainStationName;
+import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraft;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftId;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftRepository;
-
-import java.util.Optional;
 
 public class AddRailwayTrackCommand implements Command {
 
@@ -16,7 +14,7 @@ public class AddRailwayTrackCommand implements Command {
         this.draftRepository = draftRepository;
     }
 
-    public Optional<RailwayTrack> addRailwayTrack(
+    public RailNetworkDraft addRailwayTrack(
         final String railNetworkDraftId,
         final String firstStationId,
         final String secondStationId
@@ -33,10 +31,10 @@ public class AddRailwayTrackCommand implements Command {
             draftRepository.persist(updatedDraft);
         }
 
-        return updatedDraft.getTracks().getLastOptional();
+        return updatedDraft;
     }
 
-    public RailwayTrack addRailwayTrackByStationName(
+    public RailNetworkDraft addRailwayTrackByStationName(
         final String railNetworkDraftId,
         final String firstStationName,
         final String secondStationName
@@ -53,6 +51,6 @@ public class AddRailwayTrackCommand implements Command {
             draftRepository.persist(updatedDraft);
         }
 
-        return updatedDraft.getTracks().getLast();
+        return updatedDraft;
     }
 }

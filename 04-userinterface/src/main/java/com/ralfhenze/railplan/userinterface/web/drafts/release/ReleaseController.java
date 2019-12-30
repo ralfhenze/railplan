@@ -1,7 +1,6 @@
 package com.ralfhenze.railplan.userinterface.web.drafts.release;
 
 import com.ralfhenze.railplan.application.commands.ReleaseRailNetworkCommand;
-import com.ralfhenze.railplan.domain.common.validation.ValidationException;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -50,18 +49,17 @@ public class ReleaseController {
         @ModelAttribute(name = "validityPeriod") ValidityPeriodDto periodDto,
         Model model
     ) {
-        try {
-            final var networkId = releaseRailNetworkCommand.releaseRailNetworkDraft(
-                currentDraftId,
-                LocalDate.parse(periodDto.getStartDate()),
-                LocalDate.parse(periodDto.getEndDate())
-            );
+        final var network = releaseRailNetworkCommand.releaseRailNetworkDraft(
+            currentDraftId,
+            LocalDate.parse(periodDto.getStartDate()),
+            LocalDate.parse(periodDto.getEndDate())
+        );
 
-            return "redirect:/networks/" + networkId;
-
-        } catch (ValidationException exception) {
+        if (network.isValid()) {
+            return "redirect:/networks/" + network.getId().get();
+        } else {
             return new ReleaseView(currentDraftId, draftRepository)
-                .withReleaseErrorsProvidedBy(exception)
+                .withNetwork(network)
                 .addRequiredAttributesTo(model)
                 .getViewName();
         }

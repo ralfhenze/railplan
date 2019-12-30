@@ -4,7 +4,7 @@ import com.ralfhenze.railplan.domain.common.EntityNotFoundException;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftId;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftRepository;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.release.RailNetworkReleaseService;
-import com.ralfhenze.railplan.domain.railnetwork.lifecycle.release.ReleasedRailNetworkId;
+import com.ralfhenze.railplan.domain.railnetwork.lifecycle.release.ReleasedRailNetwork;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.release.ReleasedRailNetworkRepository;
 
 import java.time.LocalDate;
@@ -37,7 +37,7 @@ public class ReleaseRailNetworkCommand implements Command {
      *
      * @throws EntityNotFoundException if Rail Network Draft with draftId does not exist
      */
-    public ReleasedRailNetworkId releaseRailNetworkDraft(
+    public ReleasedRailNetwork releaseRailNetworkDraft(
         final String draftId,
         final LocalDate startDate,
         final LocalDate endDate
@@ -48,6 +48,6 @@ public class ReleaseRailNetworkCommand implements Command {
         final var releasedRailNetwork = releaseService
             .release(draft, startDate, endDate);
 
-        return releasedRailNetwork.getId().get();
+        return releasedRailNetwork;
     }
 }

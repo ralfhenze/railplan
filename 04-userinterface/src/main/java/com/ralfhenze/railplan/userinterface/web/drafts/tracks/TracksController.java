@@ -2,7 +2,7 @@ package com.ralfhenze.railplan.userinterface.web.drafts.tracks;
 
 import com.ralfhenze.railplan.application.commands.AddRailwayTrackCommand;
 import com.ralfhenze.railplan.application.commands.DeleteRailwayTrackCommand;
-import com.ralfhenze.railplan.domain.common.validation.ValidationException;
+import com.ralfhenze.railplan.domain.common.EntityNotFoundException;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftRepository;
 import com.ralfhenze.railplan.infrastructure.persistence.dto.RailwayTrackDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,9 +12,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-
-import java.util.List;
-import java.util.Map;
 
 @Controller
 public class TracksController {
@@ -77,9 +74,7 @@ public class TracksController {
                     track.get().station2.name
                 );
             } else {
-                throw new ValidationException(
-                    Map.of("Default Track ID", List.of(trackId + " does not exist"))
-                );
+                throw new EntityNotFoundException("Preset Track " + trackId + " does not exist");
             }
         }
 
@@ -109,21 +104,21 @@ public class TracksController {
         @ModelAttribute(name = "newTrack") RailwayTrackDto trackDto,
         Model model
     ) {
-        try {
-            addRailwayTrackCommand.addRailwayTrack(
-                currentDraftId,
-                String.valueOf(trackDto.getFirstStationId()),
-                String.valueOf(trackDto.getSecondStationId())
-            );
-        } catch (ValidationException exception) {
+        final var draftWithNewCustomTrack = addRailwayTrackCommand.addRailwayTrack(
+            currentDraftId,
+            String.valueOf(trackDto.getFirstStationId()),
+            String.valueOf(trackDto.getSecondStationId())
+        );
+
+        if (draftWithNewCustomTrack.isValid()) {
+            return "redirect:/drafts/{currentDraftId}/tracks";
+        } else {
             return new TracksView(currentDraftId, draftRepository)
                 .withShowCustomTrackForm(true)
-                .withTrackErrorsProvidedBy(exception)
+                .withDraft(draftWithNewCustomTrack)
                 .addRequiredAttributesTo(model)
                 .getViewName();
         }
-
-        return "redirect:/drafts/{currentDraftId}/tracks";
     }
 
     /**

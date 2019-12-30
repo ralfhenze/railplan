@@ -80,12 +80,12 @@ public class RestApiController {
     ) {
         final var draftRepository = new RailNetworkDraftMongoDbRepository(mongoTemplate);
 
-        final var addedTrack = new AddRailwayTrackCommand(draftRepository).addRailwayTrack(
+        final var updatedDraft = new AddRailwayTrackCommand(draftRepository).addRailwayTrack(
             draftId,
             String.valueOf(trackDto.getFirstStationId()),
             String.valueOf(trackDto.getSecondStationId())
         );
 
-        return new RailwayTrackDto(addedTrack.get());
+        return new RailwayTrackDto(updatedDraft.getTracks().getLastOptional().get());
     }
 }

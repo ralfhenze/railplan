@@ -1,6 +1,6 @@
 package com.ralfhenze.railplan.userinterface.web.drafts.tracks;
 
-import com.ralfhenze.railplan.domain.common.validation.ValidationException;
+import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraft;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftId;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftRepository;
 import com.ralfhenze.railplan.infrastructure.persistence.dto.RailNetworkDraftDto;
@@ -24,7 +24,12 @@ public class TracksView {
     private final RailNetworkDraftRepository draftRepository;
     private boolean showCustomTrackForm = false;
     private boolean showPresetTrackForm = false;
-    private Map<String, List<String>> trackErrors = Map.of();
+    private RailNetworkDraft draft;
+
+    public class TrackErrors {
+        public List<String> firstStationErrors = List.of();
+        public List<String> secondStationErrors = List.of();
+    }
 
     public TracksView(
         final String currentDraftId,
@@ -48,8 +53,8 @@ public class TracksView {
         return this;
     }
 
-    public TracksView withTrackErrorsProvidedBy(final ValidationException exception) {
-        this.trackErrors = exception.getErrorMessagesAsHashMap();
+    public TracksView withDraft(final RailNetworkDraft draft) {
+        this.draft = draft;
         return this;
     }
 
@@ -60,9 +65,12 @@ public class TracksView {
         model.addAttribute("stationNames", stationNames);
         model.addAttribute("tracks", getTracksWithStationNames(draftDto, stationNames));
         model.addAttribute("showCustomTrackForm", showCustomTrackForm);
-        model.addAttribute("trackErrors", trackErrors);
-        if (trackErrors.isEmpty()) {
+
+        if (draft == null) {
             model.addAttribute("newTrack", new RailwayTrackDto());
+            model.addAttribute("trackErrors", new TrackErrors());
+        } else {
+            model.addAttribute("trackErrors", getTrackErrors());
         }
 
         model.addAttribute("showPresetTrackForm", showPresetTrackForm);
@@ -81,6 +89,19 @@ public class TracksView {
             .addRequiredAttributesTo(model);
 
         return this;
+    }
+
+    private TrackErrors getTrackErrors() {
+        final var trackErrors = new TrackErrors();
+        trackErrors.secondStationErrors = draft
+            .getTracks()
+            .getLastOptional().get()
+            .getSecondStationIdErrors()
+            .stream()
+            .map(e -> e.getMessage())
+            .collect(Collectors.toList());
+
+        return trackErrors;
     }
 
     private RailNetworkDraftDto getDraftDto() {

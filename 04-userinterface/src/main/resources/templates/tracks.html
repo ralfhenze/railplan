@@ -12,7 +12,7 @@
                 <th:block th:insert="~{fragments :: tabs('tracks')}"></th:block>
 
                 <div id="tracks">
-                    <form id="custom-track-form" method="post" th:action="@{|/drafts/${currentDraftId}/tracks/new|}" th:object="${newTrack}">
+                    <form id="custom-track-form" method="post" th:object="${newTrack}">
                         <table>
                             <caption><h3>Railway Tracks</h3></caption>
                             <thead>
@@ -40,9 +40,9 @@
                                 </tr>
                                 <tr th:if="${showCustomTrackForm}">
                                     <td>+</td>
-                                    <td th:insert="::trackSelector('firstStationId', *{firstStationId}, ${trackErrors['First Station ID']})"></td>
+                                    <td th:insert="::trackSelector('firstStationId', *{firstStationId}, ${trackErrors.firstStationErrors})"></td>
                                     <td>&lt;&equals;&gt;</td>
-                                    <td th:insert="::trackSelector('secondStationId', *{secondStationId}, ${trackErrors['Second Station ID']})"></td>
+                                    <td th:insert="::trackSelector('secondStationId', *{secondStationId}, ${trackErrors.secondStationErrors})"></td>
                                     <td>
                                         <input type="submit" value="Add Track"> |
                                         <a th:href="@{|/drafts/${currentDraftId}/tracks|}">Cancel</a>
