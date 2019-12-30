@@ -1,7 +1,6 @@
 package com.ralfhenze.railplan.userinterface.web.drafts.stations;
 
 import com.ralfhenze.railplan.domain.common.validation.ValidationError;
-import com.ralfhenze.railplan.domain.common.validation.ValidationException;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraft;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftId;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftRepository;
@@ -10,7 +9,6 @@ import com.ralfhenze.railplan.userinterface.web.GermanySvgViewFragment;
 import org.springframework.ui.Model;
 
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -25,7 +23,6 @@ public class StationsView {
     private boolean showPresetStationForm = false;
     private boolean showPresetStationFormErrors = false;
     private RailNetworkDraft draft;
-    private Map<String, List<String>> stationErrors;
 
     public StationsView(
         final String currentDraftId,
@@ -55,11 +52,6 @@ public class StationsView {
     ) {
         this.showPresetStationForm = showPresetStationForm;
         this.showPresetStationFormErrors = showPresetStationFormErrors;
-        return this;
-    }
-
-    public StationsView withStationErrorsProvidedBy(final ValidationException exception) {
-        this.stationErrors = exception.getErrorMessagesAsHashMap();
         return this;
     }
 

@@ -4,7 +4,6 @@ import com.ralfhenze.railplan.application.commands.AddTrainStationCommand;
 import com.ralfhenze.railplan.application.commands.DeleteTrainStationCommand;
 import com.ralfhenze.railplan.application.commands.UpdateTrainStationCommand;
 import com.ralfhenze.railplan.domain.common.EntityNotFoundException;
-import com.ralfhenze.railplan.domain.common.validation.ValidationException;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraft;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftId;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftRepository;
@@ -15,9 +14,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-
-import java.util.List;
-import java.util.Map;
 
 @Controller
 public class StationsController {
@@ -70,13 +66,13 @@ public class StationsController {
         @ModelAttribute PresetStationFormModel presetStationFormModel,
         Model model
     ) {
-        RailNetworkDraft updatedDraft = draftRepository
+        RailNetworkDraft draftWithNewPresetStations = draftRepository
             .getRailNetworkDraftOfId(new RailNetworkDraftId(currentDraftId));
 
         for (final var stationName : presetStationFormModel.getPresetStationsToAdd()) {
             final var presetStation = PresetStation.getOptionalOf(stationName);
             if (presetStation.isPresent()) {
-                updatedDraft = addTrainStationCommand.addTrainStation(
+                draftWithNewPresetStations = addTrainStationCommand.addTrainStation(
                     currentDraftId,
                     presetStation.get().name,
                     presetStation.get().latitude,
@@ -87,12 +83,12 @@ public class StationsController {
             }
         }
 
-        if (updatedDraft.isValid()) {
+        if (draftWithNewPresetStations.isValid()) {
             return "redirect:/drafts/{currentDraftId}/stations";
         } else {
             return new StationsView(currentDraftId, draftRepository)
                 .withShowPresetStationForm(true, true)
-                .withDraft(updatedDraft)
+                .withDraft(draftWithNewPresetStations)
                 .addRequiredAttributesTo(model)
                 .getViewName();
         }
@@ -161,23 +157,23 @@ public class StationsController {
         @ModelAttribute(name = "updatedStationTableRow") StationTableRow stationRow,
         Model model
     ) {
-        try {
-            updateTrainStationCommand.updateTrainStation(
-                currentDraftId,
-                stationId,
-                stationRow.stationName,
-                Double.parseDouble(stationRow.latitude),
-                Double.parseDouble(stationRow.longitude)
-            );
-        } catch (ValidationException exception) {
+        final var draftWithUpdatedStation = updateTrainStationCommand.updateTrainStation(
+            currentDraftId,
+            stationId,
+            stationRow.stationName,
+            Double.parseDouble(stationRow.latitude),
+            Double.parseDouble(stationRow.longitude)
+        );
+
+        if (draftWithUpdatedStation.isValid()) {
+            return "redirect:/drafts/{currentDraftId}/stations";
+        } else {
             return new StationsView(currentDraftId, draftRepository)
                 .withStationIdToEdit(stationId)
-                .withStationErrorsProvidedBy(exception)
+                .withDraft(draftWithUpdatedStation)
                 .addRequiredAttributesTo(model)
                 .getViewName();
         }
-
-        return "redirect:/drafts/{currentDraftId}/stations";
     }
 
     /**
