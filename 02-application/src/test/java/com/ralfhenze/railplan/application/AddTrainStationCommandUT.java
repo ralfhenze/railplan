@@ -1,7 +1,6 @@
 package com.ralfhenze.railplan.application;
 
 import com.ralfhenze.railplan.application.commands.AddTrainStationCommand;
-import com.ralfhenze.railplan.domain.common.validation.ValidationException;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraft;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftRepository;
 import org.junit.Test;
@@ -48,18 +47,13 @@ public class AddTrainStationCommandUT {
         given(draftRepository.getRailNetworkDraftOfId(any()))
             .willReturn(new RailNetworkDraft());
 
-        var numberOfErrorMessages = 0;
-        try {
-            command.addTrainStation(
-                "1",
-                "Be", // 1. too short
-                0,    // 2. out of range
-                0     // 3. out of range
-            );
-        } catch (ValidationException exception) {
-            numberOfErrorMessages = exception.getErrorMessages().size();
-        }
+        final var draft = command.addTrainStation(
+            "1",
+            "Be", // 1. too short
+            0,    // 2. out of range
+            0     // 3. out of range
+        );
 
-        assertThat(numberOfErrorMessages).isEqualTo(3);
+        assertThat(draft.isValid()).isFalse();
     }
 }

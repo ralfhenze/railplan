@@ -1,13 +1,11 @@
 package com.ralfhenze.railplan.application.commands;
 
 import com.ralfhenze.railplan.domain.common.EntityNotFoundException;
-import com.ralfhenze.railplan.domain.common.validation.ValidationException;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftId;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftRepository;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.release.RailNetworkReleaseService;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.release.ReleasedRailNetworkId;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.release.ReleasedRailNetworkRepository;
-import com.ralfhenze.railplan.domain.railnetwork.lifecycle.release.ValidityPeriod;
 
 import java.time.LocalDate;
 
@@ -38,7 +36,6 @@ public class ReleaseRailNetworkCommand implements Command {
      * Releases given Rail Network Draft for period between given dates.
      *
      * @throws EntityNotFoundException if Rail Network Draft with draftId does not exist
-     * @throws ValidationException if Draft violates Network invariants or dates are invalid
      */
     public ReleasedRailNetworkId releaseRailNetworkDraft(
         final String draftId,

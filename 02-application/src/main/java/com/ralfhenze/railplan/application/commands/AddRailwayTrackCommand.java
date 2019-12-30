@@ -1,6 +1,5 @@
 package com.ralfhenze.railplan.application.commands;
 
-import com.ralfhenze.railplan.domain.common.validation.ValidationException;
 import com.ralfhenze.railplan.domain.railnetwork.elements.RailwayTrack;
 import com.ralfhenze.railplan.domain.railnetwork.elements.TrainStationId;
 import com.ralfhenze.railplan.domain.railnetwork.elements.TrainStationName;
@@ -21,7 +20,7 @@ public class AddRailwayTrackCommand implements Command {
         final String railNetworkDraftId,
         final String firstStationId,
         final String secondStationId
-    ) throws ValidationException {
+    ) {
         final var draft = draftRepository
             .getRailNetworkDraftOfId(new RailNetworkDraftId(railNetworkDraftId));
 
@@ -30,7 +29,9 @@ public class AddRailwayTrackCommand implements Command {
             new TrainStationId(secondStationId)
         );
 
-        draftRepository.persist(updatedDraft);
+        if (updatedDraft.isValid()) {
+            draftRepository.persist(updatedDraft);
+        }
 
         return updatedDraft.getTracks().getLastOptional();
     }
@@ -39,7 +40,7 @@ public class AddRailwayTrackCommand implements Command {
         final String railNetworkDraftId,
         final String firstStationName,
         final String secondStationName
-    ) throws ValidationException {
+    ) {
         final var draft = draftRepository
             .getRailNetworkDraftOfId(new RailNetworkDraftId(railNetworkDraftId));
 
@@ -48,7 +49,9 @@ public class AddRailwayTrackCommand implements Command {
             new TrainStationName(secondStationName)
         );
 
-        draftRepository.persist(updatedDraft);
+        if (updatedDraft.isValid()) {
+            draftRepository.persist(updatedDraft);
+        }
 
         return updatedDraft.getTracks().getLast();
     }
