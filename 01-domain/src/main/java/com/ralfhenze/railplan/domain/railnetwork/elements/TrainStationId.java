@@ -1,14 +1,13 @@
 package com.ralfhenze.railplan.domain.railnetwork.elements;
 
 import com.ralfhenze.railplan.domain.common.Id;
-import com.ralfhenze.railplan.domain.common.Validatable;
 import com.ralfhenze.railplan.domain.common.validation.Validation;
 import com.ralfhenze.railplan.domain.common.validation.ValidationError;
 import com.ralfhenze.railplan.domain.common.validation.constraints.IsNotBlank;
 
 import java.util.List;
 
-public class TrainStationId implements Id, Validatable {
+public class TrainStationId implements Id {
 
     private final String id;
 

@@ -2,7 +2,6 @@ package com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft;
 
 import com.ralfhenze.railplan.domain.common.Aggregate;
 import com.ralfhenze.railplan.domain.common.EntityNotFoundException;
-import com.ralfhenze.railplan.domain.common.Validatable;
 import com.ralfhenze.railplan.domain.common.validation.Validation;
 import com.ralfhenze.railplan.domain.common.validation.ValidationError;
 import com.ralfhenze.railplan.domain.railnetwork.elements.GeoLocationInGermany;
@@ -28,7 +27,7 @@ import static com.ralfhenze.railplan.domain.common.Preconditions.ensureNotNull;
  * [x] two Stations can only be connected by a single Track
  * [x] the maximum length of a Track is 300 km
  */
-public class RailNetworkDraft implements Aggregate, Validatable {
+public class RailNetworkDraft implements Aggregate {
 
     private final Optional<RailNetworkDraftId> id;
     private final ImmutableList<TrainStation> stations;

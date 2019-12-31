@@ -1,7 +1,6 @@
 package com.ralfhenze.railplan.domain.railnetwork.elements;
 
 import com.ralfhenze.railplan.domain.common.LocalEntity;
-import com.ralfhenze.railplan.domain.common.Validatable;
 import com.ralfhenze.railplan.domain.common.validation.ValidationError;
 
 import java.util.List;
@@ -11,7 +10,7 @@ import java.util.List;
  *
  * Local Entity within RailNetwork Aggregate
  */
-public class TrainStation implements LocalEntity, Validatable {
+public class TrainStation implements LocalEntity {
 
     private final TrainStationId id;
     private final TrainStationName name;

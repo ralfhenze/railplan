@@ -1,4 +1,4 @@
 package com.ralfhenze.railplan.domain.common;
 
-public interface ValueObject {
+public interface ValueObject extends Validatable {
 }

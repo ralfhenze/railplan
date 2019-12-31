@@ -1,7 +1,6 @@
 package com.ralfhenze.railplan.domain.railnetwork.lifecycle.release;
 
 import com.ralfhenze.railplan.domain.common.Aggregate;
-import com.ralfhenze.railplan.domain.common.Validatable;
 import com.ralfhenze.railplan.domain.common.validation.Validation;
 import com.ralfhenze.railplan.domain.common.validation.ValidationError;
 import com.ralfhenze.railplan.domain.common.validation.constraints.HasMinSize;
@@ -23,7 +22,7 @@ import java.util.Optional;
  * [x] all invariants of RailNetworkDraft
  * [ ] released Rail Network Plans can't be changed any more
  */
-public class ReleasedRailNetwork implements Aggregate, Validatable {
+public class ReleasedRailNetwork implements Aggregate {
 
     private final Optional<ReleasedRailNetworkId> id;
     private final ValidityPeriod period;

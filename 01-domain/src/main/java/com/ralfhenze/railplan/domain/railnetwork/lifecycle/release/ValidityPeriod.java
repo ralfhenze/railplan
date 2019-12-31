@@ -1,6 +1,5 @@
 package com.ralfhenze.railplan.domain.railnetwork.lifecycle.release;
 
-import com.ralfhenze.railplan.domain.common.Validatable;
 import com.ralfhenze.railplan.domain.common.ValueObject;
 import com.ralfhenze.railplan.domain.common.validation.Validation;
 import com.ralfhenze.railplan.domain.common.validation.ValidationError;
@@ -13,7 +12,7 @@ import java.util.List;
 /**
  * [x] the TimePeriod's StartDate is before (<) EndDate
  */
-public class ValidityPeriod implements ValueObject, Validatable {
+public class ValidityPeriod implements ValueObject {
 
     private final LocalDate startDate;
     private final LocalDate endDate;

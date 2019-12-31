@@ -1,6 +1,5 @@
 package com.ralfhenze.railplan.domain.railnetwork.elements;
 
-import com.ralfhenze.railplan.domain.common.Validatable;
 import com.ralfhenze.railplan.domain.common.ValueObject;
 import com.ralfhenze.railplan.domain.common.validation.Validation;
 import com.ralfhenze.railplan.domain.common.validation.ValidationError;
@@ -17,7 +16,7 @@ import java.util.List;
  * https://en.wikipedia.org/wiki/Latitude
  * https://en.wikipedia.org/wiki/Longitude
  */
-public class GeoLocationInGermany implements ValueObject, Validatable {
+public class GeoLocationInGermany implements ValueObject {
 
     // Germany bounding box taken from
     // https://gist.github.com/graydon/11198540

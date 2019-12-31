@@ -1,14 +1,13 @@
 package com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft;
 
 import com.ralfhenze.railplan.domain.common.Id;
-import com.ralfhenze.railplan.domain.common.Validatable;
 import com.ralfhenze.railplan.domain.common.validation.Validation;
 import com.ralfhenze.railplan.domain.common.validation.ValidationError;
 import com.ralfhenze.railplan.domain.common.validation.constraints.IsNotBlank;
 
 import java.util.List;
 
-public class RailNetworkDraftId implements Id, Validatable {
+public class RailNetworkDraftId implements Id {
 
     private final String id;
 

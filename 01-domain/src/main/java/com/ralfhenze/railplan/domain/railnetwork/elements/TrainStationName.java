@@ -1,6 +1,5 @@
 package com.ralfhenze.railplan.domain.railnetwork.elements;
 
-import com.ralfhenze.railplan.domain.common.Validatable;
 import com.ralfhenze.railplan.domain.common.ValueObject;
 import com.ralfhenze.railplan.domain.common.validation.Validation;
 import com.ralfhenze.railplan.domain.common.validation.ValidationError;
@@ -15,7 +14,7 @@ import java.util.List;
  * [x] a Station's Name has a min length of 4 characters
  * [x] a Station's Name has a max length of 30 characters
  */
-public class TrainStationName implements ValueObject, Validatable {
+public class TrainStationName implements ValueObject {
 
     private final static int MIN_LENGTH = 4;
     private final static String VALID_NAME_REGEX = "^[A-ZÄÖÜ]{1}[a-zäöüßA-Z\\ \\.\\-\\(\\)]{3,29}$";

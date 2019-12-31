@@ -1,6 +1,5 @@
 package com.ralfhenze.railplan.domain.railnetwork.elements;
 
-import com.ralfhenze.railplan.domain.common.Validatable;
 import com.ralfhenze.railplan.domain.common.ValueObject;
 import com.ralfhenze.railplan.domain.common.validation.Validation;
 import com.ralfhenze.railplan.domain.common.validation.ValidationError;
@@ -15,7 +14,7 @@ import java.util.List;
  * [x] a Track has no direction
  * [x] equal when two DoubleTrackRailways connect the same Stations
  */
-public class RailwayTrack implements ValueObject, Validatable {
+public class RailwayTrack implements ValueObject {
 
     private final TrainStationId firstStationId;
     private final TrainStationId secondStationId;
