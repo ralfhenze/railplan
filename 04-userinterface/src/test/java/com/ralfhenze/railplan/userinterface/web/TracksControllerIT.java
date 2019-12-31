@@ -3,7 +3,6 @@ package com.ralfhenze.railplan.userinterface.web;
 import com.ralfhenze.railplan.application.commands.AddRailwayTrackCommand;
 import com.ralfhenze.railplan.application.commands.DeleteRailwayTrackCommand;
 import com.ralfhenze.railplan.domain.common.validation.ValidationError;
-import com.ralfhenze.railplan.domain.common.validation.ValidationException;
 import com.ralfhenze.railplan.domain.railnetwork.elements.RailwayTrack;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraft;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftRepository;

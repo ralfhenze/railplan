@@ -66,7 +66,7 @@ public class StationsController {
         @ModelAttribute PresetStationFormModel presetStationFormModel,
         Model model
     ) {
-        RailNetworkDraft draftWithNewPresetStations = draftRepository
+        var draftWithNewPresetStations = draftRepository
             .getRailNetworkDraftOfId(new RailNetworkDraftId(currentDraftId));
 
         for (final var stationName : presetStationFormModel.getPresetStationsToAdd()) {
