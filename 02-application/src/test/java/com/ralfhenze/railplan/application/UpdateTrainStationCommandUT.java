@@ -14,8 +14,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 public class UpdateTrainStationCommandUT {
 
@@ -43,7 +43,7 @@ public class UpdateTrainStationCommandUT {
             hamburgHbfPos.getLongitude()
         );
 
-        then(draftRepository).should().persist(updatedDraftCaptor.capture());
+        verify(draftRepository).persist(updatedDraftCaptor.capture());
         final var updatedStation = updatedDraftCaptor.getValue().getStations().getAny();
         assertThat(updatedStation.getName()).isEqualTo(hamburgHbfName);
         assertThat(updatedStation.getLocation()).isEqualTo(hamburgHbfPos);

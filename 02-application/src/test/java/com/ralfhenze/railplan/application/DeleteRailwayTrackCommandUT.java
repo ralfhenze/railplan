@@ -1,7 +1,6 @@
 package com.ralfhenze.railplan.application;
 
 import com.ralfhenze.railplan.application.commands.DeleteRailwayTrackCommand;
-import com.ralfhenze.railplan.application.commands.DeleteTrainStationCommand;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraft;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftRepository;
 import org.junit.Test;
@@ -15,8 +14,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 public class DeleteRailwayTrackCommandUT {
 
@@ -46,7 +45,7 @@ public class DeleteRailwayTrackCommandUT {
             track.getSecondStationId().toString()
         );
 
-        then(draftRepository).should().persist(updatedDraftCaptor.capture());
+        verify(draftRepository).persist(updatedDraftCaptor.capture());
         assertThat(updatedDraftCaptor.getValue().getTracks()).isEmpty();
     }
 }

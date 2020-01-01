@@ -8,8 +8,8 @@ import org.mockito.ArgumentCaptor;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 public class DeleteRailNetworkDraftCommandUT {
 
@@ -29,7 +29,7 @@ public class DeleteRailNetworkDraftCommandUT {
 
         command.deleteRailNetworkDraft(draftId);
 
-        then(draftRepository).should().deleteRailNetworkDraftOfId(draftIdCaptor.capture());
+        verify(draftRepository).deleteRailNetworkDraftOfId(draftIdCaptor.capture());
         assertThat(draftIdCaptor.getValue().toString()).isEqualTo(draftId);
     }
 }
