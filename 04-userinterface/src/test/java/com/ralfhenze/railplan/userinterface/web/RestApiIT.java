@@ -12,7 +12,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 
-import static org.assertj.core.api.BDDAssertions.then;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -38,8 +38,8 @@ public class RestApiIT {
             .perform(get("/api/drafts")).andReturn().getResponse();
 
         // Then we get the Draft as JSON
-        then(response.getStatus()).isEqualTo(200);
-        then(response.getContentAsString()).isEqualTo(
+        assertThat(response.getStatus()).isEqualTo(200);
+        assertThat(response.getContentAsString()).isEqualTo(
             "[{\"id\":\"123\",\"stations\":[],\"tracks\":[]}]"
         );
     }
