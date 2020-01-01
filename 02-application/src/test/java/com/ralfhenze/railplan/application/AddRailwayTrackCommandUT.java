@@ -10,9 +10,9 @@ import static com.ralfhenze.railplan.application.TestData.berlinHbfPos;
 import static com.ralfhenze.railplan.application.TestData.hamburgHbfName;
 import static com.ralfhenze.railplan.application.TestData.hamburgHbfPos;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 public class AddRailwayTrackCommandUT {
 
@@ -23,8 +23,8 @@ public class AddRailwayTrackCommandUT {
         final var draft = new RailNetworkDraft()
             .withNewStation(berlinHbfName, berlinHbfPos)
             .withNewStation(hamburgHbfName, hamburgHbfPos);
-        when(draftRepository.getRailNetworkDraftOfId(any()))
-            .thenReturn(draft);
+        given(draftRepository.getRailNetworkDraftOfId(any()))
+            .willReturn(draft);
 
         command.addRailwayTrack("1", "1", "2");
 

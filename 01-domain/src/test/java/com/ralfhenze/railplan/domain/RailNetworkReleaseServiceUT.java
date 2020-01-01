@@ -10,8 +10,8 @@ import java.time.LocalDate;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 public class RailNetworkReleaseServiceUT {
 
@@ -28,16 +28,16 @@ public class RailNetworkReleaseServiceUT {
         final var railNetworkRepository = mock(ReleasedRailNetworkRepository.class);
         final var lastRailNetwork = mock(ReleasedRailNetwork.class);
 
-        when(lastRailNetwork.getPeriod())
-            .thenReturn(
+        given(lastRailNetwork.getPeriod())
+            .willReturn(
                 new ValidityPeriod(
                     LocalDate.of(2019, 11, 14),
                     LocalDate.of(2019, 11, 20) // last end date
                 )
             );
 
-        when(railNetworkRepository.getLastReleasedRailNetwork())
-            .thenReturn(Optional.of(lastRailNetwork));
+        given(railNetworkRepository.getLastReleasedRailNetwork())
+            .willReturn(Optional.of(lastRailNetwork));
 
         final var releaseService = new RailNetworkReleaseService(railNetworkRepository);
         final var draft = mock(RailNetworkDraft.class);
