@@ -103,9 +103,9 @@ public class GermanySvgViewFragment {
     private List<Double> getPointFromLatLng(double lat, final double lng, final double scale) {
         // Spherical Mercator map projection
         // inspired by Leaflet JavaScript code (functions project, _transform, scale)
-        lat = Math.max(Math.min(MAX_LATITUDE, lat), -MAX_LATITUDE);
+        double clippedLat = Math.max(Math.min(MAX_LATITUDE, lat), -MAX_LATITUDE);
         double x = Math.toRadians(lng) * EARTH_RADIUS;
-        double y = Math.toRadians(lat);
+        double y = Math.toRadians(clippedLat);
         y = Math.log(Math.tan((PI / 4.0) + (y / 2.0))) * EARTH_RADIUS;
 
         x = scale * (0.5 / PI * x + 0.5);
