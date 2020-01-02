@@ -6,8 +6,6 @@ public class PresetStationFormModel {
 
     private List<String> presetStationsToAdd;
 
-    public PresetStationFormModel() {}
-
     public List<String> getPresetStationsToAdd() {
         return presetStationsToAdd;
     }

@@ -15,8 +15,6 @@ public class StationTableRow {
     public String longitude = "0.0";
     public List<String> longitudeErrors = new ArrayList<>();
 
-    public StationTableRow() {}
-
     public boolean isShowInputField() {
         return showInputField;
     }

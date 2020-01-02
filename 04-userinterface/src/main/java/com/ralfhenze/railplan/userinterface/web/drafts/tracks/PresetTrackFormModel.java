@@ -6,8 +6,6 @@ public class PresetTrackFormModel {
 
     private List<Integer> presetTrackIdsToAdd;
 
-    public PresetTrackFormModel() {}
-
     public List<Integer> getPresetTrackIdsToAdd() {
         return presetTrackIdsToAdd;
     }
