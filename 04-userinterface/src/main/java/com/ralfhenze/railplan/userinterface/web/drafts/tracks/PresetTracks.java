@@ -9,16 +9,6 @@ import java.util.stream.Collectors;
 
 public class PresetTracks {
 
-    public class Track {
-        public final PresetStation station1;
-        public final PresetStation station2;
-
-        Track(PresetStation station1, PresetStation station2) {
-            this.station1 = station1;
-            this.station2 = station2;
-        }
-    }
-
     private final List<Track> tracks = List.of(
         new Track(PresetStation.HAMBURG_HBF, PresetStation.KIEL_HBF),
         new Track(PresetStation.HAMBURG_HBF, PresetStation.ROSTOCK_HBF),
@@ -68,6 +58,16 @@ public class PresetTracks {
         new Track(PresetStation.MUENCHEN_HBF, PresetStation.NUERNBERG_HBF),
         new Track(PresetStation.MUENCHEN_HBF, PresetStation.AUGSBURG_HBF)
     );
+
+    public class Track {
+        public final PresetStation station1;
+        public final PresetStation station2;
+
+        Track(PresetStation station1, PresetStation station2) {
+            this.station1 = station1;
+            this.station2 = station2;
+        }
+    }
 
     public List<Track> getAllPresetTracks() {
         return tracks.stream()

@@ -36,6 +36,11 @@ public class TestData {
     public static final GeoLocationInGermany stuttgartHbfPos = new GeoLocationInGermany(48.784245, 9.182160);
     public static final TrainStation stuttgartHbf = new TrainStation(new TrainStationId("6"), stuttgartHbfName, stuttgartHbfPos);
 
+    public static final ValidityPeriod defaultPeriod = new ValidityPeriod(
+        LocalDate.of(2019, 11, 14),
+        LocalDate.of(2019, 11, 20)
+    );
+
     public static TrainStation getStation(String stationName) {
         ImmutableMap<String, TrainStation> stations =
             Sets.immutable.of(
@@ -55,9 +60,4 @@ public class TestData {
 
         return stations.get(stationName);
     }
-
-    public static final ValidityPeriod defaultPeriod = new ValidityPeriod(
-        LocalDate.of(2019, 11, 14),
-        LocalDate.of(2019, 11, 20)
-    );
 }
