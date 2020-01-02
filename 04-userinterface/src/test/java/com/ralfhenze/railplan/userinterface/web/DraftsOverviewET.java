@@ -30,7 +30,7 @@ public class DraftsOverviewET {
     private String baseUrl;
 
     @Before
-    public void setup() {
+    public void initializeSelenium() {
         final var chromeOptions = new ChromeOptions();
         chromeOptions.addArguments("--headless");
         driver = new ChromeDriver(chromeOptions);
