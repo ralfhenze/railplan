@@ -90,12 +90,12 @@ Even with these assumptions the domain is complex enough to study Microservices 
 ### Commands
 
 *   Add Rail Network Draft
+*   Delete Rail Network Draft
 *   Add Train Station
+*   Update Train Station
+*   Delete Train Station
 *   Add Railway Track
-*   Rename Train Station
-*   Relocate Train Station
-*   Remove Train Station
-*   Remove Railway Track
+*   Delete Railway Track
 *   Release Rail Network
 
 ### Invariants
