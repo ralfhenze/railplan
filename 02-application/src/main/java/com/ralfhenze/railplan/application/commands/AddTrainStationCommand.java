@@ -1,53 +1,40 @@
 package com.ralfhenze.railplan.application.commands;
 
-import com.ralfhenze.railplan.domain.common.EntityNotFoundException;
-import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraft;
-import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftId;
-import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftRepository;
-import com.ralfhenze.railplan.domain.railnetwork.elements.GeoLocationInGermany;
-import com.ralfhenze.railplan.domain.railnetwork.elements.TrainStationName;
-
-import static com.ralfhenze.railplan.domain.common.Preconditions.ensureNotNull;
-
 /**
- * A command to add a new TrainStation to a RailNetworkDraft
+ * A command DTO to add a new TrainStation to a RailNetworkDraft
  */
 public class AddTrainStationCommand implements Command {
 
-    private final RailNetworkDraftRepository draftRepository;
+    private final String draftId;
+    private final String stationName;
+    private final double latitude;
+    private final double longitude;
 
-    /**
-     * Constructs the command
-     *
-     * @throws IllegalArgumentException if draftRepository is null
-     */
-    public AddTrainStationCommand(final RailNetworkDraftRepository draftRepository) {
-        this.draftRepository = ensureNotNull(draftRepository, "Draft Repository");
-    }
-
-    /**
-     * Adds a new TrainStation to given RailNetworkDraft
-     *
-     * @throws EntityNotFoundException if RailNetworkDraft with draftId does not exist
-     */
-    public RailNetworkDraft addTrainStation(
+    public AddTrainStationCommand(
         final String draftId,
         final String stationName,
         final double latitude,
         final double longitude
     ) {
-        final var draft = draftRepository
-            .getRailNetworkDraftOfId(new RailNetworkDraftId(draftId));
+        this.draftId = draftId;
+        this.stationName = stationName;
+        this.latitude = latitude;
+        this.longitude = longitude;
+    }
 
-        final var updatedDraft = draft.withNewStation(
-            new TrainStationName(stationName),
-            new GeoLocationInGermany(latitude, longitude)
-        );
+    public String getDraftId() {
+        return draftId;
+    }
 
-        if (updatedDraft.isValid()) {
-            draftRepository.persist(updatedDraft);
-        }
+    public String getStationName() {
+        return stationName;
+    }
 
-        return updatedDraft;
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
     }
 }

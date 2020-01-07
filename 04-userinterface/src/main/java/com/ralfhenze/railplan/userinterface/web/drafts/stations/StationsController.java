@@ -1,5 +1,6 @@
 package com.ralfhenze.railplan.userinterface.web.drafts.stations;
 
+import com.ralfhenze.railplan.application.TrainStationService;
 import com.ralfhenze.railplan.application.commands.AddTrainStationCommand;
 import com.ralfhenze.railplan.application.commands.DeleteTrainStationCommand;
 import com.ralfhenze.railplan.application.commands.UpdateTrainStationCommand;
@@ -18,19 +19,19 @@ import org.springframework.web.bind.annotation.PostMapping;
 public class StationsController {
 
     private final RailNetworkDraftRepository draftRepository;
-    private final AddTrainStationCommand addTrainStationCommand;
+    private final TrainStationService trainStationService;
     private final DeleteTrainStationCommand deleteTrainStationCommand;
     private final UpdateTrainStationCommand updateTrainStationCommand;
 
     @Autowired
     public StationsController(
         final RailNetworkDraftRepository draftRepository,
-        final AddTrainStationCommand addTrainStationCommand,
+        final TrainStationService trainStationService,
         final DeleteTrainStationCommand deleteTrainStationCommand,
         final UpdateTrainStationCommand updateTrainStationCommand
     ) {
         this.draftRepository = draftRepository;
-        this.addTrainStationCommand = addTrainStationCommand;
+        this.trainStationService = trainStationService;
         this.deleteTrainStationCommand = deleteTrainStationCommand;
         this.updateTrainStationCommand = updateTrainStationCommand;
     }
@@ -71,11 +72,13 @@ public class StationsController {
         for (final var stationName : presetStationFormModel.getPresetStationsToAdd()) {
             final var presetStation = PresetStation.getOptionalOf(stationName);
             if (presetStation.isPresent()) {
-                draftWithNewPresetStations = addTrainStationCommand.addTrainStation(
-                    currentDraftId,
-                    presetStation.get().name,
-                    presetStation.get().latitude,
-                    presetStation.get().longitude
+                draftWithNewPresetStations = trainStationService.addStationToDraft(
+                    new AddTrainStationCommand(
+                        currentDraftId,
+                        presetStation.get().name,
+                        presetStation.get().latitude,
+                        presetStation.get().longitude
+                    )
                 );
             } else {
                 throw new EntityNotFoundException("Station \"" + stationName + "\" does not exist");
@@ -113,11 +116,13 @@ public class StationsController {
         @ModelAttribute(name = "updatedStationTableRow") StationTableRow stationRow,
         Model model
     ) {
-        final var draftWithNewCustomStation = addTrainStationCommand.addTrainStation(
-            currentDraftId,
-            stationRow.stationName,
-            Double.parseDouble(stationRow.latitude),
-            Double.parseDouble(stationRow.longitude)
+        final var draftWithNewCustomStation = trainStationService.addStationToDraft(
+            new AddTrainStationCommand(
+                currentDraftId,
+                stationRow.stationName,
+                Double.parseDouble(stationRow.latitude),
+                Double.parseDouble(stationRow.longitude)
+            )
         );
 
         if (draftWithNewCustomStation.isValid()) {

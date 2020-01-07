@@ -1,5 +1,6 @@
 package com.ralfhenze.railplan.userinterface.web;
 
+import com.ralfhenze.railplan.application.TrainStationService;
 import com.ralfhenze.railplan.application.commands.AddTrainStationCommand;
 import com.ralfhenze.railplan.application.commands.Command;
 import com.ralfhenze.railplan.application.commands.DeleteTrainStationCommand;
@@ -14,6 +15,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -34,6 +36,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyDouble;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @RunWith(SpringRunner.class)
@@ -47,7 +50,7 @@ public class StationsControllerIT extends HtmlITBase {
     private RailNetworkDraftRepository draftRepository;
 
     @MockBean
-    private AddTrainStationCommand addTrainStationCommand;
+    private TrainStationService trainStationService;
 
     @MockBean
     private UpdateTrainStationCommand updateTrainStationCommand;
@@ -102,12 +105,11 @@ public class StationsControllerIT extends HtmlITBase {
 
     @Test
     public void userCanAddNewStationsFromPresets() throws Exception {
-        // Given RailNetworkDraftRepository and AddTrainStationCommand will return a valid Draft
+        // Given RailNetworkDraftRepository and TrainStationService will return a valid Draft
         final var draft = mock(RailNetworkDraft.class);
         given(draft.isValid()).willReturn(true);
         given(draftRepository.getRailNetworkDraftOfId(any())).willReturn(draft);
-        given(addTrainStationCommand.addTrainStation(any(), any(), anyDouble(), anyDouble()))
-            .willReturn(draft);
+        given(trainStationService.addStationToDraft(any())).willReturn(draft);
 
         // When we call POST /drafts/123/stations/new-from-preset with two valid preset Stations
         final var response = getPostResponseWithMultiValueParameters(
@@ -121,10 +123,19 @@ public class StationsControllerIT extends HtmlITBase {
         );
 
         // Then an AddTrainStationCommand is issued for each given preset Station
-        List.of(PresetStation.FRANKFURT_HBF, PresetStation.STUTTGART_HBF).forEach(station ->
-            verify(addTrainStationCommand)
-                .addTrainStation("123", station.name, station.latitude, station.longitude)
-        );
+        final var stations = List.of(PresetStation.FRANKFURT_HBF, PresetStation.STUTTGART_HBF);
+        final var commandCaptor = ArgumentCaptor.forClass(AddTrainStationCommand.class);
+
+        verify(trainStationService, times(2)).addStationToDraft(commandCaptor.capture());
+
+        for (final var i : List.of(0, 1)) {
+            final var executedCommand = commandCaptor.getAllValues().get(i);
+            final var station = stations.get(i);
+            assertThat(executedCommand.getDraftId()).isEqualTo("123");
+            assertThat(executedCommand.getStationName()).isEqualTo(station.name);
+            assertThat(executedCommand.getLatitude()).isEqualTo(station.latitude);
+            assertThat(executedCommand.getLongitude()).isEqualTo(station.longitude);
+        }
 
         // And we will be redirected to the Stations page
         assertThat(response.getStatus()).isEqualTo(HTTP_MOVED_TEMPORARILY);
@@ -143,8 +154,7 @@ public class StationsControllerIT extends HtmlITBase {
             * keine Verbindung zur Datenbank (Netzwerkfehler)
          */
         final var nameErrors = List.of("name error 1", "name error 2");
-        given(addTrainStationCommand.addTrainStation(any(), any(), anyDouble(), anyDouble()))
-            .willReturn(berlinHamburgDraft);
+        given(trainStationService.addStationToDraft(any())).willReturn(berlinHamburgDraft);
 
         // Given an existing Draft
         given(draftRepository.getRailNetworkDraftOfId(any())).willReturn(berlinHamburgDraft);
@@ -179,11 +189,10 @@ public class StationsControllerIT extends HtmlITBase {
 
     @Test
     public void userCanAddANewCustomStation() throws Exception {
-        // Given AddTrainStationCommand will return a valid Draft
+        // Given TrainStationService will return a valid Draft
         final var draft = mock(RailNetworkDraft.class);
         given(draft.isValid()).willReturn(true);
-        given(addTrainStationCommand.addTrainStation(any(), any(), anyDouble(), anyDouble()))
-            .willReturn(draft);
+        given(trainStationService.addStationToDraft(any())).willReturn(draft);
 
         // When we call POST /drafts/123/stations/new-custom with valid Station parameters
         final var response = getPostResponse(
@@ -196,12 +205,15 @@ public class StationsControllerIT extends HtmlITBase {
         );
 
         // Then an AddTrainStationCommand is issued with given Station parameters
-        verify(addTrainStationCommand).addTrainStation(
-            "123",
-            potsdamHbfName.getName(),
-            potsdamHbfPos.getLatitude(),
-            potsdamHbfPos.getLongitude()
-        );
+        final var commandCaptor = ArgumentCaptor.forClass(AddTrainStationCommand.class);
+
+        verify(trainStationService).addStationToDraft(commandCaptor.capture());
+
+        final var executedCommand = commandCaptor.getValue();
+        assertThat(executedCommand.getDraftId()).isEqualTo("123");
+        assertThat(executedCommand.getStationName()).isEqualTo(potsdamHbfName.getName());
+        assertThat(executedCommand.getLatitude()).isEqualTo(potsdamHbfPos.getLatitude());
+        assertThat(executedCommand.getLongitude()).isEqualTo(potsdamHbfPos.getLongitude());
 
         // And we will be redirected to the Stations page
         assertThat(response.getStatus()).isEqualTo(HTTP_MOVED_TEMPORARILY);
@@ -212,7 +224,7 @@ public class StationsControllerIT extends HtmlITBase {
     public void userSeesValidationErrorsWhenAddingAnInvalidCustomStation() throws Exception {
         verifyPostRequestWithInvalidStationData(
             "/drafts/123/stations/new-custom",
-            addTrainStationCommand
+            new AddTrainStationCommand("", "", 0, 0)
         );
     }
 
@@ -298,7 +310,7 @@ public class StationsControllerIT extends HtmlITBase {
 
         // And the commands will return the updated Draft
         if (command instanceof AddTrainStationCommand) {
-            given(addTrainStationCommand.addTrainStation(any(), any(), anyDouble(), anyDouble()))
+            given(trainStationService.addStationToDraft(any()))
                 .willReturn(
                     berlinHamburgDraft.withNewStation(
                         new TrainStationName("ab"),

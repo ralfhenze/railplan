@@ -1,5 +1,6 @@
 package com.ralfhenze.railplan.userinterface.web.api;
 
+import com.ralfhenze.railplan.application.TrainStationService;
 import com.ralfhenze.railplan.application.commands.AddRailNetworkDraftCommand;
 import com.ralfhenze.railplan.application.commands.AddRailwayTrackCommand;
 import com.ralfhenze.railplan.application.commands.AddTrainStationCommand;
@@ -58,11 +59,13 @@ public class RestApiController {
     ) {
         final var draftRepository = new RailNetworkDraftMongoDbRepository(mongoTemplate);
 
-        final var updatedDraft = new AddTrainStationCommand(draftRepository).addTrainStation(
-            draftId,
-            stationDto.getName(),
-            stationDto.getLatitude(),
-            stationDto.getLongitude()
+        final var updatedDraft = new TrainStationService(draftRepository).addStationToDraft(
+            new AddTrainStationCommand(
+                draftId,
+                stationDto.getName(),
+                stationDto.getLatitude(),
+                stationDto.getLongitude()
+            )
         );
 
         return new TrainStationDto(updatedDraft.getStations().getLastOptional().get());

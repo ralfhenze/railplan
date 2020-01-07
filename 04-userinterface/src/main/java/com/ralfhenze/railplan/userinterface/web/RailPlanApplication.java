@@ -1,5 +1,6 @@
 package com.ralfhenze.railplan.userinterface.web;
 
+import com.ralfhenze.railplan.application.TrainStationService;
 import com.ralfhenze.railplan.application.commands.AddRailNetworkDraftCommand;
 import com.ralfhenze.railplan.application.commands.AddRailwayTrackCommand;
 import com.ralfhenze.railplan.application.commands.AddTrainStationCommand;
@@ -62,8 +63,8 @@ public class RailPlanApplication {
     }
 
     @Bean
-    public AddTrainStationCommand getAddTrainStationCommand() {
-        return new AddTrainStationCommand(railNetworkDraftRepository);
+    public TrainStationService getTrainStationService() {
+        return new TrainStationService(railNetworkDraftRepository);
     }
 
     @Bean
