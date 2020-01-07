@@ -2,6 +2,7 @@ package com.ralfhenze.railplan.application;
 
 import com.ralfhenze.railplan.application.commands.AddTrainStationCommand;
 import com.ralfhenze.railplan.application.commands.DeleteTrainStationCommand;
+import com.ralfhenze.railplan.application.commands.UpdateTrainStationCommand;
 import com.ralfhenze.railplan.domain.common.EntityNotFoundException;
 import com.ralfhenze.railplan.domain.railnetwork.elements.GeoLocationInGermany;
 import com.ralfhenze.railplan.domain.railnetwork.elements.TrainStationId;
@@ -13,7 +14,7 @@ import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraf
 import static com.ralfhenze.railplan.domain.common.Preconditions.ensureNotNull;
 
 /**
- * A command to add a new TrainStation to a RailNetworkDraft
+ * An application service to execute TrainStation commands
  */
 public class TrainStationService implements ApplicationService {
 
@@ -41,6 +42,27 @@ public class TrainStationService implements ApplicationService {
             new TrainStationName(command.getStationName()),
             new GeoLocationInGermany(command.getLatitude(), command.getLongitude())
         );
+
+        if (updatedDraft.isValid()) {
+            draftRepository.persist(updatedDraft);
+        }
+
+        return updatedDraft;
+    }
+
+    /**
+     * Executes UpdateTrainStationCommand.
+     *
+     * @throws EntityNotFoundException if RailNetworkDraft with draftId does not exist
+     */
+    public RailNetworkDraft updateStationOfDraft(final UpdateTrainStationCommand command) {
+        final var updatedDraft = draftRepository
+            .getRailNetworkDraftOfId(new RailNetworkDraftId(command.getDraftId()))
+            .withUpdatedStation(
+                new TrainStationId(command.getStationId()),
+                new TrainStationName(command.getStationName()),
+                new GeoLocationInGermany(command.getLatitude(), command.getLongitude())
+            );
 
         if (updatedDraft.isValid()) {
             draftRepository.persist(updatedDraft);

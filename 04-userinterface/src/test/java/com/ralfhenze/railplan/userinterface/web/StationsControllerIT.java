@@ -33,7 +33,6 @@ import static com.ralfhenze.railplan.userinterface.web.TestData.potsdamHbfName;
 import static com.ralfhenze.railplan.userinterface.web.TestData.potsdamHbfPos;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyDouble;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -51,9 +50,6 @@ public class StationsControllerIT extends HtmlITBase {
 
     @MockBean
     private TrainStationService trainStationService;
-
-    @MockBean
-    private UpdateTrainStationCommand updateTrainStationCommand;
 
     @Test
     public void userGetsAListOfAllStationsOfADraft() throws Exception {
@@ -249,9 +245,7 @@ public class StationsControllerIT extends HtmlITBase {
         // Given UpdateTrainStationCommand will return a valid Draft
         final var draft = mock(RailNetworkDraft.class);
         given(draft.isValid()).willReturn(true);
-        given(updateTrainStationCommand
-            .updateTrainStation(any(), any(), any(), anyDouble(), anyDouble()))
-            .willReturn(draft);
+        given(trainStationService.updateStationOfDraft(any())).willReturn(draft);
 
         // When we call POST /drafts/123/stations/1/edit with valid Station parameters
         final var response = getPostResponse(
@@ -264,13 +258,15 @@ public class StationsControllerIT extends HtmlITBase {
         );
 
         // Then an UpdateTrainStationCommand is issued with given Station parameters
-        verify(updateTrainStationCommand).updateTrainStation(
-            "123",
-            "1",
-            potsdamHbfName.getName(),
-            potsdamHbfPos.getLatitude(),
-            potsdamHbfPos.getLongitude()
-        );
+        final var commandCaptor = ArgumentCaptor.forClass(UpdateTrainStationCommand.class);
+        verify(trainStationService).updateStationOfDraft(commandCaptor.capture());
+
+        final var executedCommand = commandCaptor.getValue();
+        assertThat(executedCommand.getDraftId()).isEqualTo("123");
+        assertThat(executedCommand.getStationId()).isEqualTo("1");
+        assertThat(executedCommand.getStationName()).isEqualTo(potsdamHbfName.getName());
+        assertThat(executedCommand.getLatitude()).isEqualTo(potsdamHbfPos.getLatitude());
+        assertThat(executedCommand.getLongitude()).isEqualTo(potsdamHbfPos.getLongitude());
 
         // And we will be redirected to the Stations page
         assertThat(response.getStatus()).isEqualTo(HTTP_MOVED_TEMPORARILY);
@@ -281,7 +277,7 @@ public class StationsControllerIT extends HtmlITBase {
     public void userSeesValidationErrorsWhenUpdatingAStationWithInvalidData() throws Exception {
         verifyPostRequestWithInvalidStationData(
             "/drafts/123/stations/1/edit",
-            updateTrainStationCommand
+            new UpdateTrainStationCommand("", "", "", 0, 0)
         );
     }
 
@@ -320,8 +316,7 @@ public class StationsControllerIT extends HtmlITBase {
                     )
                 );
         } else if (command instanceof UpdateTrainStationCommand) {
-            given(updateTrainStationCommand
-                .updateTrainStation(any(), any(), any(), anyDouble(), anyDouble()))
+            given(trainStationService.updateStationOfDraft(any()))
                 .willReturn(
                     berlinHamburgDraft.withUpdatedStation(
                         new TrainStationId("1"),

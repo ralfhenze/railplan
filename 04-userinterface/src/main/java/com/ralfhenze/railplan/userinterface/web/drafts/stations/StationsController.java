@@ -20,17 +20,14 @@ public class StationsController {
 
     private final RailNetworkDraftRepository draftRepository;
     private final TrainStationService trainStationService;
-    private final UpdateTrainStationCommand updateTrainStationCommand;
 
     @Autowired
     public StationsController(
         final RailNetworkDraftRepository draftRepository,
-        final TrainStationService trainStationService,
-        final UpdateTrainStationCommand updateTrainStationCommand
+        final TrainStationService trainStationService
     ) {
         this.draftRepository = draftRepository;
         this.trainStationService = trainStationService;
-        this.updateTrainStationCommand = updateTrainStationCommand;
     }
 
     /**
@@ -158,12 +155,14 @@ public class StationsController {
         @ModelAttribute(name = "updatedStationTableRow") StationTableRow stationRow,
         Model model
     ) {
-        final var draftWithUpdatedStation = updateTrainStationCommand.updateTrainStation(
-            currentDraftId,
-            stationId,
-            stationRow.stationName,
-            Double.parseDouble(stationRow.latitude),
-            Double.parseDouble(stationRow.longitude)
+        final var draftWithUpdatedStation = trainStationService.updateStationOfDraft(
+            new UpdateTrainStationCommand(
+                currentDraftId,
+                stationId,
+                stationRow.stationName,
+                Double.parseDouble(stationRow.latitude),
+                Double.parseDouble(stationRow.longitude)
+            )
         );
 
         if (draftWithUpdatedStation.isValid()) {
