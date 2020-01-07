@@ -1,9 +1,11 @@
 package com.ralfhenze.railplan.application;
 
 import com.ralfhenze.railplan.application.commands.AddTrainStationCommand;
+import com.ralfhenze.railplan.application.commands.DeleteTrainStationCommand;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraft;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftRepository;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 
 import static com.ralfhenze.railplan.application.TestData.berlinHbfName;
 import static com.ralfhenze.railplan.application.TestData.berlinHbfPos;
@@ -59,5 +61,22 @@ public class TrainStationServiceUT {
         );
 
         assertThat(draft.isValid()).isFalse();
+    }
+
+    @Test
+    public void deletesStationAndPersistsUpdatedDraft() {
+        final var draftRepository = mock(RailNetworkDraftRepository.class);
+        final var trainStationService = new TrainStationService(draftRepository);
+        final var draft = new RailNetworkDraft().withNewStation(berlinHbfName, berlinHbfPos);
+        final var updatedDraftCaptor = ArgumentCaptor.forClass(RailNetworkDraft.class);
+        given(draftRepository.getRailNetworkDraftOfId(any()))
+            .willReturn(draft);
+
+        trainStationService.deleteStationFromDraft(
+            new DeleteTrainStationCommand("1", "1")
+        );
+
+        verify(draftRepository).persist(updatedDraftCaptor.capture());
+        assertThat(updatedDraftCaptor.getValue().getStations()).isEmpty();
     }
 }

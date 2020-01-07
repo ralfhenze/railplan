@@ -1,41 +1,23 @@
 package com.ralfhenze.railplan.application.commands;
 
-import com.ralfhenze.railplan.domain.common.EntityNotFoundException;
-import com.ralfhenze.railplan.domain.railnetwork.elements.TrainStationId;
-import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftId;
-import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftRepository;
-
-import static com.ralfhenze.railplan.domain.common.Preconditions.ensureNotNull;
-
 /**
- * A command to delete a TrainStation from a RailNetworkDraft.
+ * A command DTO to delete a TrainStation from a RailNetworkDraft.
  */
 public class DeleteTrainStationCommand implements Command {
 
-    private final RailNetworkDraftRepository draftRepository;
+    private final String draftId;
+    private final String stationId;
 
-    /**
-     * Constructs the command.
-     *
-     * @throws IllegalArgumentException if draftRepository is null
-     */
-    public DeleteTrainStationCommand(final RailNetworkDraftRepository draftRepository) {
-        this.draftRepository = ensureNotNull(draftRepository, "Draft Repository");
+    public DeleteTrainStationCommand(final String draftId, final String stationId) {
+        this.draftId = draftId;
+        this.stationId = stationId;
     }
 
-    /**
-     * Deletes given TrainStation from given RailNetworkDraft.
-     *
-     * @throws EntityNotFoundException if RailNetworkDraft with draftId or TrainStation
-     *                                 with stationId does not exist
-     */
-    public void deleteTrainStation(final String draftId, final String stationId) {
-        final var draft = draftRepository
-            .getRailNetworkDraftOfId(new RailNetworkDraftId(draftId));
+    public String getDraftId() {
+        return draftId;
+    }
 
-        final var updatedDraft = draft
-            .withoutStation(new TrainStationId(stationId));
-
-        draftRepository.persist(updatedDraft);
+    public String getStationId() {
+        return stationId;
     }
 }

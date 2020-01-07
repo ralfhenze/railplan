@@ -1,8 +1,10 @@
 package com.ralfhenze.railplan.application;
 
 import com.ralfhenze.railplan.application.commands.AddTrainStationCommand;
+import com.ralfhenze.railplan.application.commands.DeleteTrainStationCommand;
 import com.ralfhenze.railplan.domain.common.EntityNotFoundException;
 import com.ralfhenze.railplan.domain.railnetwork.elements.GeoLocationInGermany;
+import com.ralfhenze.railplan.domain.railnetwork.elements.TrainStationId;
 import com.ralfhenze.railplan.domain.railnetwork.elements.TrainStationName;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraft;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftId;
@@ -18,7 +20,7 @@ public class TrainStationService implements ApplicationService {
     private final RailNetworkDraftRepository draftRepository;
 
     /**
-     * Constructs the application service
+     * Constructs the application service.
      *
      * @throws IllegalArgumentException if draftRepository is null
      */
@@ -27,7 +29,7 @@ public class TrainStationService implements ApplicationService {
     }
 
     /**
-     * Executes AddTrainStationCommand
+     * Executes AddTrainStationCommand.
      *
      * @throws EntityNotFoundException if RailNetworkDraft with draftId does not exist
      */
@@ -45,5 +47,21 @@ public class TrainStationService implements ApplicationService {
         }
 
         return updatedDraft;
+    }
+
+    /**
+     * Executes DeleteTrainStationCommand.
+     *
+     * @throws EntityNotFoundException if RailNetworkDraft with draftId or TrainStation
+     *                                 with stationId does not exist
+     */
+    public void deleteStationFromDraft(final DeleteTrainStationCommand command) {
+        final var draft = draftRepository
+            .getRailNetworkDraftOfId(new RailNetworkDraftId(command.getDraftId()));
+
+        final var updatedDraft = draft
+            .withoutStation(new TrainStationId(command.getStationId()));
+
+        draftRepository.persist(updatedDraft);
     }
 }

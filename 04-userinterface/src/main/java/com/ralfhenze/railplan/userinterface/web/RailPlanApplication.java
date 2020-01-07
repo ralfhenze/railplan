@@ -3,10 +3,8 @@ package com.ralfhenze.railplan.userinterface.web;
 import com.ralfhenze.railplan.application.TrainStationService;
 import com.ralfhenze.railplan.application.commands.AddRailNetworkDraftCommand;
 import com.ralfhenze.railplan.application.commands.AddRailwayTrackCommand;
-import com.ralfhenze.railplan.application.commands.AddTrainStationCommand;
 import com.ralfhenze.railplan.application.commands.DeleteRailNetworkDraftCommand;
 import com.ralfhenze.railplan.application.commands.DeleteRailwayTrackCommand;
-import com.ralfhenze.railplan.application.commands.DeleteTrainStationCommand;
 import com.ralfhenze.railplan.application.commands.ReleaseRailNetworkCommand;
 import com.ralfhenze.railplan.application.commands.UpdateTrainStationCommand;
 import com.ralfhenze.railplan.application.queries.Queries;
@@ -75,11 +73,6 @@ public class RailPlanApplication {
     @Bean
     public DeleteRailwayTrackCommand getDeleteRailwayTrackCommand() {
         return new DeleteRailwayTrackCommand(railNetworkDraftRepository);
-    }
-
-    @Bean
-    public DeleteTrainStationCommand getDeleteTrainStationCommand() {
-        return new DeleteTrainStationCommand(railNetworkDraftRepository);
     }
 
     @Bean

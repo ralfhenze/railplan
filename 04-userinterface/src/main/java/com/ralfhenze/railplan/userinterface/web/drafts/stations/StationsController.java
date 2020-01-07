@@ -20,19 +20,16 @@ public class StationsController {
 
     private final RailNetworkDraftRepository draftRepository;
     private final TrainStationService trainStationService;
-    private final DeleteTrainStationCommand deleteTrainStationCommand;
     private final UpdateTrainStationCommand updateTrainStationCommand;
 
     @Autowired
     public StationsController(
         final RailNetworkDraftRepository draftRepository,
         final TrainStationService trainStationService,
-        final DeleteTrainStationCommand deleteTrainStationCommand,
         final UpdateTrainStationCommand updateTrainStationCommand
     ) {
         this.draftRepository = draftRepository;
         this.trainStationService = trainStationService;
-        this.deleteTrainStationCommand = deleteTrainStationCommand;
         this.updateTrainStationCommand = updateTrainStationCommand;
     }
 
@@ -188,8 +185,9 @@ public class StationsController {
         @PathVariable String currentDraftId,
         @PathVariable String stationId
     ) {
-        deleteTrainStationCommand
-            .deleteTrainStation(currentDraftId, stationId);
+        trainStationService.deleteStationFromDraft(
+            new DeleteTrainStationCommand(currentDraftId, stationId)
+        );
 
         return "redirect:/drafts/{currentDraftId}/stations";
     }

@@ -55,9 +55,6 @@ public class StationsControllerIT extends HtmlITBase {
     @MockBean
     private UpdateTrainStationCommand updateTrainStationCommand;
 
-    @MockBean
-    private DeleteTrainStationCommand deleteTrainStationCommand;
-
     @Test
     public void userGetsAListOfAllStationsOfADraft() throws Exception {
         // Given an existing Draft
@@ -294,7 +291,12 @@ public class StationsControllerIT extends HtmlITBase {
         final var response = getGetResponse("/drafts/123/stations/1/delete");
 
         // Then a DeleteTrainStationCommand is issued
-        verify(deleteTrainStationCommand).deleteTrainStation("123", "1");
+        final var commandCaptor = ArgumentCaptor.forClass(DeleteTrainStationCommand.class);
+        verify(trainStationService).deleteStationFromDraft(commandCaptor.capture());
+
+        final var executedDeleteCommand = commandCaptor.getValue();
+        assertThat(executedDeleteCommand.getDraftId()).isEqualTo("123");
+        assertThat(executedDeleteCommand.getStationId()).isEqualTo("1");
 
         // And we will be redirected to the Stations page
         assertThat(response.getStatus()).isEqualTo(HTTP_MOVED_TEMPORARILY);
