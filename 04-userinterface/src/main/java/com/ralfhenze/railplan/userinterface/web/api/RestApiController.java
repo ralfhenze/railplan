@@ -1,8 +1,9 @@
 package com.ralfhenze.railplan.userinterface.web.api;
 
+import com.ralfhenze.railplan.application.RailwayTrackService;
 import com.ralfhenze.railplan.application.TrainStationService;
 import com.ralfhenze.railplan.application.commands.AddRailNetworkDraftCommand;
-import com.ralfhenze.railplan.application.commands.AddRailwayTrackCommand;
+import com.ralfhenze.railplan.application.commands.AddRailwayTrackByStationIdCommand;
 import com.ralfhenze.railplan.application.commands.AddTrainStationCommand;
 import com.ralfhenze.railplan.infrastructure.persistence.MongoDbQueries;
 import com.ralfhenze.railplan.infrastructure.persistence.RailNetworkDraftMongoDbRepository;
@@ -83,10 +84,12 @@ public class RestApiController {
     ) {
         final var draftRepository = new RailNetworkDraftMongoDbRepository(mongoTemplate);
 
-        final var updatedDraft = new AddRailwayTrackCommand(draftRepository).addRailwayTrack(
-            draftId,
-            String.valueOf(trackDto.getFirstStationId()),
-            String.valueOf(trackDto.getSecondStationId())
+        final var updatedDraft = new RailwayTrackService(draftRepository).addTrackByStationId(
+            new AddRailwayTrackByStationIdCommand(
+                draftId,
+                String.valueOf(trackDto.getFirstStationId()),
+                String.valueOf(trackDto.getSecondStationId())
+            )
         );
 
         return new RailwayTrackDto(updatedDraft.getTracks().getLastOptional().get());

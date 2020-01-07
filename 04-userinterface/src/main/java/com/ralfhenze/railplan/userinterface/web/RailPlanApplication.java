@@ -1,8 +1,8 @@
 package com.ralfhenze.railplan.userinterface.web;
 
+import com.ralfhenze.railplan.application.RailwayTrackService;
 import com.ralfhenze.railplan.application.TrainStationService;
 import com.ralfhenze.railplan.application.commands.AddRailNetworkDraftCommand;
-import com.ralfhenze.railplan.application.commands.AddRailwayTrackCommand;
 import com.ralfhenze.railplan.application.commands.DeleteRailNetworkDraftCommand;
 import com.ralfhenze.railplan.application.commands.DeleteRailwayTrackCommand;
 import com.ralfhenze.railplan.application.commands.ReleaseRailNetworkCommand;
@@ -55,8 +55,8 @@ public class RailPlanApplication {
     }
 
     @Bean
-    public AddRailwayTrackCommand getAddRailwayTrackCommand() {
-        return new AddRailwayTrackCommand(railNetworkDraftRepository);
+    public RailwayTrackService getRailwayTrackService() {
+        return new RailwayTrackService(railNetworkDraftRepository);
     }
 
     @Bean

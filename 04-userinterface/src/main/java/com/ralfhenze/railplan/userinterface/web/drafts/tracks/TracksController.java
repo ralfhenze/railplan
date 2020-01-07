@@ -1,6 +1,8 @@
 package com.ralfhenze.railplan.userinterface.web.drafts.tracks;
 
-import com.ralfhenze.railplan.application.commands.AddRailwayTrackCommand;
+import com.ralfhenze.railplan.application.RailwayTrackService;
+import com.ralfhenze.railplan.application.commands.AddRailwayTrackByStationIdCommand;
+import com.ralfhenze.railplan.application.commands.AddRailwayTrackByStationNameCommand;
 import com.ralfhenze.railplan.application.commands.DeleteRailwayTrackCommand;
 import com.ralfhenze.railplan.domain.common.EntityNotFoundException;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftRepository;
@@ -17,17 +19,17 @@ import org.springframework.web.bind.annotation.PostMapping;
 public class TracksController {
 
     private final RailNetworkDraftRepository draftRepository;
-    private final AddRailwayTrackCommand addRailwayTrackCommand;
+    private final RailwayTrackService railwayTrackService;
     private final DeleteRailwayTrackCommand deleteRailwayTrackCommand;
 
     @Autowired
     public TracksController(
         final RailNetworkDraftRepository draftRepository,
-        final AddRailwayTrackCommand addRailwayTrackCommand,
+        final RailwayTrackService railwayTrackService,
         final DeleteRailwayTrackCommand deleteRailwayTrackCommand
     ) {
         this.draftRepository = draftRepository;
-        this.addRailwayTrackCommand = addRailwayTrackCommand;
+        this.railwayTrackService = railwayTrackService;
         this.deleteRailwayTrackCommand = deleteRailwayTrackCommand;
     }
 
@@ -68,10 +70,12 @@ public class TracksController {
             final var track = new PresetTracks().getTrackOfId(trackId);
 
             if (track.isPresent()) {
-                addRailwayTrackCommand.addRailwayTrackByStationName(
-                    currentDraftId,
-                    track.get().station1.name,
-                    track.get().station2.name
+                railwayTrackService.addTrackByStationName(
+                    new AddRailwayTrackByStationNameCommand(
+                        currentDraftId,
+                        track.get().station1.name,
+                        track.get().station2.name
+                    )
                 );
             } else {
                 throw new EntityNotFoundException("Preset Track " + trackId + " does not exist");
@@ -104,10 +108,12 @@ public class TracksController {
         @ModelAttribute(name = "newTrack") RailwayTrackDto trackDto,
         Model model
     ) {
-        final var draftWithNewCustomTrack = addRailwayTrackCommand.addRailwayTrack(
-            currentDraftId,
-            String.valueOf(trackDto.getFirstStationId()),
-            String.valueOf(trackDto.getSecondStationId())
+        final var draftWithNewCustomTrack = railwayTrackService.addTrackByStationId(
+            new AddRailwayTrackByStationIdCommand(
+                currentDraftId,
+                String.valueOf(trackDto.getFirstStationId()),
+                String.valueOf(trackDto.getSecondStationId())
+            )
         );
 
         if (draftWithNewCustomTrack.isValid()) {

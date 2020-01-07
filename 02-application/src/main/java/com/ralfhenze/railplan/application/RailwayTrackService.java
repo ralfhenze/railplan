@@ -1,30 +1,30 @@
-package com.ralfhenze.railplan.application.commands;
+package com.ralfhenze.railplan.application;
 
+import com.ralfhenze.railplan.application.commands.AddRailwayTrackByStationIdCommand;
+import com.ralfhenze.railplan.application.commands.AddRailwayTrackByStationNameCommand;
 import com.ralfhenze.railplan.domain.railnetwork.elements.TrainStationId;
 import com.ralfhenze.railplan.domain.railnetwork.elements.TrainStationName;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraft;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftId;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftRepository;
 
-public class AddRailwayTrackCommand implements Command {
+public class RailwayTrackService implements ApplicationService {
 
     final private RailNetworkDraftRepository draftRepository;
 
-    public AddRailwayTrackCommand(final RailNetworkDraftRepository draftRepository) {
+    public RailwayTrackService(final RailNetworkDraftRepository draftRepository) {
         this.draftRepository = draftRepository;
     }
 
-    public RailNetworkDraft addRailwayTrack(
-        final String railNetworkDraftId,
-        final String firstStationId,
-        final String secondStationId
+    public RailNetworkDraft addTrackByStationId(
+        final AddRailwayTrackByStationIdCommand command
     ) {
         final var draft = draftRepository
-            .getRailNetworkDraftOfId(new RailNetworkDraftId(railNetworkDraftId));
+            .getRailNetworkDraftOfId(new RailNetworkDraftId(command.getDraftId()));
 
         final var updatedDraft = draft.withNewTrack(
-            new TrainStationId(firstStationId),
-            new TrainStationId(secondStationId)
+            new TrainStationId(command.getFirstStationId()),
+            new TrainStationId(command.getSecondStationId())
         );
 
         if (updatedDraft.isValid()) {
@@ -34,17 +34,15 @@ public class AddRailwayTrackCommand implements Command {
         return updatedDraft;
     }
 
-    public RailNetworkDraft addRailwayTrackByStationName(
-        final String railNetworkDraftId,
-        final String firstStationName,
-        final String secondStationName
+    public RailNetworkDraft addTrackByStationName(
+        final AddRailwayTrackByStationNameCommand command
     ) {
         final var draft = draftRepository
-            .getRailNetworkDraftOfId(new RailNetworkDraftId(railNetworkDraftId));
+            .getRailNetworkDraftOfId(new RailNetworkDraftId(command.getDraftId()));
 
         final var updatedDraft = draft.withNewTrack(
-            new TrainStationName(firstStationName),
-            new TrainStationName(secondStationName)
+            new TrainStationName(command.getFirstStationName()),
+            new TrainStationName(command.getSecondStationName())
         );
 
         if (updatedDraft.isValid()) {

@@ -1,6 +1,8 @@
 package com.ralfhenze.railplan.userinterface.web;
 
-import com.ralfhenze.railplan.application.commands.AddRailwayTrackCommand;
+import com.ralfhenze.railplan.application.RailwayTrackService;
+import com.ralfhenze.railplan.application.commands.AddRailwayTrackByStationIdCommand;
+import com.ralfhenze.railplan.application.commands.AddRailwayTrackByStationNameCommand;
 import com.ralfhenze.railplan.application.commands.DeleteRailwayTrackCommand;
 import com.ralfhenze.railplan.domain.common.validation.ValidationError;
 import com.ralfhenze.railplan.domain.railnetwork.elements.RailwayTrack;
@@ -11,6 +13,7 @@ import org.eclipse.collections.api.factory.Lists;
 import org.jsoup.Jsoup;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -26,6 +29,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @RunWith(SpringRunner.class)
@@ -39,7 +43,7 @@ public class TracksControllerIT extends HtmlITBase {
     private RailNetworkDraftRepository draftRepository;
 
     @MockBean
-    private AddRailwayTrackCommand addRailwayTrackCommand;
+    private RailwayTrackService railwayTrackService;
 
     @MockBean
     private DeleteRailwayTrackCommand deleteRailwayTrackCommand;
@@ -89,10 +93,20 @@ public class TracksControllerIT extends HtmlITBase {
 
         // Then an AddRailwayTrackCommand is issued for each given preset Track
         final var presetTracks = new PresetTracks().getAllPresetTracks();
-        List.of(presetTracks.get(1), presetTracks.get(2)).forEach(track ->
-            verify(addRailwayTrackCommand)
-                .addRailwayTrackByStationName("123", track.station1.name, track.station2.name)
-        );
+        final var expectedTracks = List.of(presetTracks.get(1), presetTracks.get(2));
+        final var commandCaptor = ArgumentCaptor
+            .forClass(AddRailwayTrackByStationNameCommand.class);
+
+        verify(railwayTrackService, times(2)).addTrackByStationName(commandCaptor.capture());
+
+        final var executedCommands = commandCaptor.getAllValues();
+        for (final var i : List.of(0, 1)) {
+            final var executedCommand = executedCommands.get(i);
+            final var track = expectedTracks.get(i);
+            assertThat(executedCommand.getDraftId()).isEqualTo("123");
+            assertThat(executedCommand.getFirstStationName()).isEqualTo(track.station1.name);
+            assertThat(executedCommand.getSecondStationName()).isEqualTo(track.station2.name);
+        }
 
         // And we will be redirected to the Tracks page
         assertThat(response.getStatus()).isEqualTo(HTTP_MOVED_TEMPORARILY);
@@ -120,7 +134,7 @@ public class TracksControllerIT extends HtmlITBase {
         // Given we will get a valid Draft
         final var draft = mock(RailNetworkDraft.class);
         given(draft.isValid()).willReturn(true);
-        given(addRailwayTrackCommand.addRailwayTrack(any(), any(), any())).willReturn(draft);
+        given(railwayTrackService.addTrackByStationId(any())).willReturn(draft);
 
         // When we call POST /drafts/123/tracks/new-custom with valid Track parameters
         final var response = getPostResponse(
@@ -129,7 +143,13 @@ public class TracksControllerIT extends HtmlITBase {
         );
 
         // Then an AddRailwayTrackCommand is issued with given Track parameters
-        verify(addRailwayTrackCommand).addRailwayTrack("123", "1", "2");
+        final var commandCaptor = ArgumentCaptor.forClass(AddRailwayTrackByStationIdCommand.class);
+        verify(railwayTrackService).addTrackByStationId(commandCaptor.capture());
+
+        final var executedCommand = commandCaptor.getValue();
+        assertThat(executedCommand.getDraftId()).isEqualTo("123");
+        assertThat(executedCommand.getFirstStationId()).isEqualTo("1");
+        assertThat(executedCommand.getSecondStationId()).isEqualTo("2");
 
         // And we will be redirected to the Tracks page
         assertThat(response.getStatus()).isEqualTo(HTTP_MOVED_TEMPORARILY);
@@ -146,7 +166,7 @@ public class TracksControllerIT extends HtmlITBase {
         final var draft = mock(RailNetworkDraft.class);
         given(draft.getTracks()).willReturn(Lists.immutable.of(track));
 
-        given(addRailwayTrackCommand.addRailwayTrack(any(), any(), any())).willReturn(draft);
+        given(railwayTrackService.addTrackByStationId(any())).willReturn(draft);
 
         // Given an existing Draft
         given(draftRepository.getRailNetworkDraftOfId(any())).willReturn(berlinHamburgDraft);
