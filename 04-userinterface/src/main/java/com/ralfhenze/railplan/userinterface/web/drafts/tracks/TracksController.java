@@ -20,17 +20,14 @@ public class TracksController {
 
     private final RailNetworkDraftRepository draftRepository;
     private final RailwayTrackService railwayTrackService;
-    private final DeleteRailwayTrackCommand deleteRailwayTrackCommand;
 
     @Autowired
     public TracksController(
         final RailNetworkDraftRepository draftRepository,
-        final RailwayTrackService railwayTrackService,
-        final DeleteRailwayTrackCommand deleteRailwayTrackCommand
+        final RailwayTrackService railwayTrackService
     ) {
         this.draftRepository = draftRepository;
         this.railwayTrackService = railwayTrackService;
-        this.deleteRailwayTrackCommand = deleteRailwayTrackCommand;
     }
 
     /**
@@ -136,8 +133,9 @@ public class TracksController {
         @PathVariable String firstStationId,
         @PathVariable String secondStationId
     ) {
-        deleteRailwayTrackCommand
-            .deleteRailwayTrack(currentDraftId, firstStationId, secondStationId);
+        railwayTrackService.deleteTrackFromDraft(
+            new DeleteRailwayTrackCommand(currentDraftId, firstStationId, secondStationId)
+        );
 
         return "redirect:/drafts/{currentDraftId}/tracks";
     }

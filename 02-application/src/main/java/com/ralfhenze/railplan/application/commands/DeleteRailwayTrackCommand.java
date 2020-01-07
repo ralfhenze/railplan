@@ -1,45 +1,33 @@
 package com.ralfhenze.railplan.application.commands;
 
-import com.ralfhenze.railplan.domain.common.EntityNotFoundException;
-import com.ralfhenze.railplan.domain.railnetwork.elements.TrainStationId;
-import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftId;
-import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftRepository;
-
-import static com.ralfhenze.railplan.domain.common.Preconditions.ensureNotNull;
-
 /**
- * A command to delete a RailwayTrack from a RailNetworkDraft.
+ * A command DTO to delete a RailwayTrack from a RailNetworkDraft.
  */
 public class DeleteRailwayTrackCommand implements Command {
 
-    private final RailNetworkDraftRepository draftRepository;
+    private final String draftId;
+    private final String stationId1;
+    private final String stationId2;
 
-    /**
-     * Constructs the command.
-     *
-     * @throws IllegalArgumentException if draftRepository is null
-     */
-    public DeleteRailwayTrackCommand(final RailNetworkDraftRepository draftRepository) {
-        this.draftRepository = ensureNotNull(draftRepository, "Draft Repository");
-    }
-
-    /**
-     * Deletes RailwayTrack between Stations of given stationIds from given RailNetworkDraft.
-     *
-     * @throws EntityNotFoundException if RailNetworkDraft with draftId or TrainStation
-     *                                 with stationId1 or stationId2 does not exist
-     */
-    public void deleteRailwayTrack(
+    public DeleteRailwayTrackCommand(
         final String draftId,
         final String stationId1,
         final String stationId2
     ) {
-        final var draft = draftRepository
-            .getRailNetworkDraftOfId(new RailNetworkDraftId(draftId));
+        this.draftId = draftId;
+        this.stationId1 = stationId1;
+        this.stationId2 = stationId2;
+    }
 
-        final var updatedDraft = draft
-            .withoutTrack(new TrainStationId(stationId1), new TrainStationId(stationId2));
+    public String getDraftId() {
+        return draftId;
+    }
 
-        draftRepository.persist(updatedDraft);
+    public String getStationId1() {
+        return stationId1;
+    }
+
+    public String getStationId2() {
+        return stationId2;
     }
 }
