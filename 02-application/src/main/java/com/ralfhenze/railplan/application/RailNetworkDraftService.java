@@ -1,22 +1,22 @@
-package com.ralfhenze.railplan.application.commands;
+package com.ralfhenze.railplan.application;
 
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraft;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftRepository;
 
 import java.util.Optional;
 
-public class AddRailNetworkDraftCommand implements Command {
+public class RailNetworkDraftService implements ApplicationService {
 
     final private RailNetworkDraftRepository railNetworkDraftRepository;
 
-    public AddRailNetworkDraftCommand(
+    public RailNetworkDraftService(
         final RailNetworkDraftRepository railNetworkDraftRepository
     ) {
         this.railNetworkDraftRepository = railNetworkDraftRepository;
     }
 
-    public Optional<RailNetworkDraft> addRailNetworkDraft() {
-        RailNetworkDraft draft = new RailNetworkDraft();
+    public Optional<RailNetworkDraft> addDraft() {
+        final var draft = new RailNetworkDraft();
 
         Optional<RailNetworkDraft> persistedDraft = railNetworkDraftRepository.persist(draft);
 

@@ -1,8 +1,8 @@
 package com.ralfhenze.railplan.userinterface.web.api;
 
+import com.ralfhenze.railplan.application.RailNetworkDraftService;
 import com.ralfhenze.railplan.application.RailwayTrackService;
 import com.ralfhenze.railplan.application.TrainStationService;
-import com.ralfhenze.railplan.application.commands.AddRailNetworkDraftCommand;
 import com.ralfhenze.railplan.application.commands.AddRailwayTrackByStationIdCommand;
 import com.ralfhenze.railplan.application.commands.AddTrainStationCommand;
 import com.ralfhenze.railplan.infrastructure.persistence.MongoDbQueries;
@@ -36,8 +36,8 @@ public class RestApiController {
     @PostMapping("/drafts")
     public RailNetworkDraftDto addDraft() {
         final var addedDraft =
-            new AddRailNetworkDraftCommand(new RailNetworkDraftMongoDbRepository(mongoTemplate))
-                .addRailNetworkDraft()
+            new RailNetworkDraftService(new RailNetworkDraftMongoDbRepository(mongoTemplate))
+                .addDraft()
                 .get();
 
         return new RailNetworkDraftDto(addedDraft);

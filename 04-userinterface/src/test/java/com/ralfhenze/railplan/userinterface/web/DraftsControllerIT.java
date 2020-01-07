@@ -1,6 +1,6 @@
 package com.ralfhenze.railplan.userinterface.web;
 
-import com.ralfhenze.railplan.application.commands.AddRailNetworkDraftCommand;
+import com.ralfhenze.railplan.application.RailNetworkDraftService;
 import com.ralfhenze.railplan.application.commands.DeleteRailNetworkDraftCommand;
 import com.ralfhenze.railplan.application.queries.Queries;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraft;
@@ -31,7 +31,7 @@ public class DraftsControllerIT extends HtmlITBase {
     private Queries queries;
 
     @MockBean
-    private AddRailNetworkDraftCommand addRailNetworkDraftCommand;
+    private RailNetworkDraftService railNetworkDraftService;
 
     @MockBean
     private DeleteRailNetworkDraftCommand deleteRailNetworkDraftCommand;
@@ -56,14 +56,14 @@ public class DraftsControllerIT extends HtmlITBase {
     @Test
     public void userCanAddANewDraft() throws Exception {
         // Given a Draft with ID "123" will be created
-        given(addRailNetworkDraftCommand.addRailNetworkDraft())
+        given(railNetworkDraftService.addDraft())
             .willReturn(Optional.of(new RailNetworkDraft().withId(new RailNetworkDraftId("123"))));
 
         // When we call GET /drafts/new
         final var response = getGetResponse("/drafts/new");
 
         // Then an AddRailNetworkDraftCommand is issued
-        verify(addRailNetworkDraftCommand).addRailNetworkDraft();
+        verify(railNetworkDraftService).addDraft();
 
         // And we will be redirected to the new Draft
         assertThat(response.getStatus()).isEqualTo(HTTP_MOVED_TEMPORARILY);

@@ -1,6 +1,6 @@
 package com.ralfhenze.railplan.userinterface.web.drafts;
 
-import com.ralfhenze.railplan.application.commands.AddRailNetworkDraftCommand;
+import com.ralfhenze.railplan.application.RailNetworkDraftService;
 import com.ralfhenze.railplan.application.commands.DeleteRailNetworkDraftCommand;
 import com.ralfhenze.railplan.application.queries.Queries;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,17 +13,17 @@ import org.springframework.web.bind.annotation.PathVariable;
 public class DraftsController {
 
     private final Queries queries;
-    private final AddRailNetworkDraftCommand addRailNetworkDraftCommand;
+    private final RailNetworkDraftService railNetworkDraftService;
     private final DeleteRailNetworkDraftCommand deleteRailNetworkDraftCommand;
 
     @Autowired
     public DraftsController(
         final Queries queries,
-        final AddRailNetworkDraftCommand addRailNetworkDraftCommand,
+        final RailNetworkDraftService railNetworkDraftService,
         final DeleteRailNetworkDraftCommand deleteRailNetworkDraftCommand
     ) {
         this.queries = queries;
-        this.addRailNetworkDraftCommand = addRailNetworkDraftCommand;
+        this.railNetworkDraftService = railNetworkDraftService;
         this.deleteRailNetworkDraftCommand = deleteRailNetworkDraftCommand;
     }
 
@@ -42,8 +42,8 @@ public class DraftsController {
      */
     @GetMapping("/drafts/new")
     public String addDraft() {
-        final var draftId = addRailNetworkDraftCommand
-            .addRailNetworkDraft().get()
+        final var draftId = railNetworkDraftService
+            .addDraft().get()
             .getId().get().toString();
 
         return "redirect:/drafts/" + draftId;

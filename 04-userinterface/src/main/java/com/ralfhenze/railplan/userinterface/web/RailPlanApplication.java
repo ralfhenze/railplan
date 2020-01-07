@@ -1,8 +1,8 @@
 package com.ralfhenze.railplan.userinterface.web;
 
+import com.ralfhenze.railplan.application.RailNetworkDraftService;
 import com.ralfhenze.railplan.application.RailwayTrackService;
 import com.ralfhenze.railplan.application.TrainStationService;
-import com.ralfhenze.railplan.application.commands.AddRailNetworkDraftCommand;
 import com.ralfhenze.railplan.application.commands.DeleteRailNetworkDraftCommand;
 import com.ralfhenze.railplan.application.commands.ReleaseRailNetworkCommand;
 import com.ralfhenze.railplan.application.queries.Queries;
@@ -49,8 +49,8 @@ public class RailPlanApplication {
     }
 
     @Bean
-    public AddRailNetworkDraftCommand getAddRailNetworkDraftCommand() {
-        return new AddRailNetworkDraftCommand(railNetworkDraftRepository);
+    public RailNetworkDraftService getRailNetworkDraftService() {
+        return new RailNetworkDraftService(railNetworkDraftRepository);
     }
 
     @Bean
