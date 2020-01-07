@@ -1,5 +1,6 @@
 package com.ralfhenze.railplan.userinterface.web.drafts.release;
 
+import com.ralfhenze.railplan.application.ReleasedRailNetworkService;
 import com.ralfhenze.railplan.application.commands.ReleaseRailNetworkCommand;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,15 +17,15 @@ import java.time.LocalDate;
 public class ReleaseController {
 
     private final RailNetworkDraftRepository draftRepository;
-    private final ReleaseRailNetworkCommand releaseRailNetworkCommand;
+    private final ReleasedRailNetworkService releasedRailNetworkService;
 
     @Autowired
     public ReleaseController(
         final RailNetworkDraftRepository draftRepository,
-        final ReleaseRailNetworkCommand releaseRailNetworkCommand
+        final ReleasedRailNetworkService releasedRailNetworkService
     ) {
         this.draftRepository = draftRepository;
-        this.releaseRailNetworkCommand = releaseRailNetworkCommand;
+        this.releasedRailNetworkService = releasedRailNetworkService;
     }
 
     /**
@@ -49,10 +50,12 @@ public class ReleaseController {
         @ModelAttribute(name = "validityPeriod") ValidityPeriodDto periodDto,
         Model model
     ) {
-        final var network = releaseRailNetworkCommand.releaseRailNetworkDraft(
-            currentDraftId,
-            LocalDate.parse(periodDto.getStartDate()),
-            LocalDate.parse(periodDto.getEndDate())
+        final var network = releasedRailNetworkService.releaseDraft(
+            new ReleaseRailNetworkCommand(
+                currentDraftId,
+                LocalDate.parse(periodDto.getStartDate()),
+                LocalDate.parse(periodDto.getEndDate())
+            )
         );
 
         if (network.isValid()) {

@@ -1,5 +1,6 @@
 package com.ralfhenze.railplan.userinterface.web;
 
+import com.ralfhenze.railplan.application.ReleasedRailNetworkService;
 import com.ralfhenze.railplan.application.commands.ReleaseRailNetworkCommand;
 import com.ralfhenze.railplan.domain.common.validation.ValidationError;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftRepository;
@@ -8,6 +9,7 @@ import com.ralfhenze.railplan.domain.railnetwork.lifecycle.release.ReleasedRailN
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.release.ValidityPeriod;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -36,7 +38,7 @@ public class ReleaseControllerIT extends HtmlITBase {
     private RailNetworkDraftRepository draftRepository;
 
     @MockBean
-    private ReleaseRailNetworkCommand releaseRailNetworkCommand;
+    private ReleasedRailNetworkService releasedRailNetworkService;
 
     @Test
     public void userCanAccessAFormToReleaseAnExistingDraft() throws Exception {
@@ -60,8 +62,7 @@ public class ReleaseControllerIT extends HtmlITBase {
         final var network = mock(ReleasedRailNetwork.class);
         given(network.isValid()).willReturn(true);
         given(network.getId()).willReturn(Optional.of(new ReleasedRailNetworkId("1")));
-        given(releaseRailNetworkCommand.releaseRailNetworkDraft(any(), any(), any()))
-            .willReturn(network);
+        given(releasedRailNetworkService.releaseDraft(any())).willReturn(network);
 
         // When we call POST /drafts/123/release with valid parameters
         final var response = getPostResponse(
@@ -70,9 +71,13 @@ public class ReleaseControllerIT extends HtmlITBase {
         );
 
         // Then a ReleaseRailNetworkCommand is issued with those parameters
-        verify(releaseRailNetworkCommand).releaseRailNetworkDraft(
-            "123", LocalDate.parse("2020-01-01"), LocalDate.parse("2020-01-31")
-        );
+        final var commandCaptor = ArgumentCaptor.forClass(ReleaseRailNetworkCommand.class);
+        verify(releasedRailNetworkService).releaseDraft(commandCaptor.capture());
+
+        final var executedCommand = commandCaptor.getValue();
+        assertThat(executedCommand.getDraftId()).isEqualTo("123");
+        assertThat(executedCommand.getStartDate()).isEqualTo(LocalDate.parse("2020-01-01"));
+        assertThat(executedCommand.getEndDate()).isEqualTo(LocalDate.parse("2020-01-31"));
 
         // And we will be redirected to the Released Rail Network page
         assertThat(response.getStatus()).isEqualTo(HTTP_MOVED_TEMPORARILY);
@@ -92,8 +97,7 @@ public class ReleaseControllerIT extends HtmlITBase {
             .willReturn(List.of(new ValidationError("End Date error")));
         final var network = mock(ReleasedRailNetwork.class);
         given(network.getPeriod()).willReturn(period);
-        given(releaseRailNetworkCommand.releaseRailNetworkDraft(any(), any(), any()))
-            .willReturn(network);
+        given(releasedRailNetworkService.releaseDraft(any())).willReturn(network);
 
         // When we call POST /drafts/123/release with invalid Date parameters
         final var response = getPostResponse(

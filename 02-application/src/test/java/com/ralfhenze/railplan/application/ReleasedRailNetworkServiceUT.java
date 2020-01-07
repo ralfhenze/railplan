@@ -21,12 +21,12 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
-public class ReleaseRailNetworkCommandUT {
+public class ReleasedRailNetworkServiceUT {
 
     @Test
     public void cannotBeConstructedWithNullArguments() {
         assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() ->
-            new ReleaseRailNetworkCommand(null, null)
+            new ReleasedRailNetworkService(null, null)
         );
     }
 
@@ -34,7 +34,9 @@ public class ReleaseRailNetworkCommandUT {
     public void persistsReleasedNetwork() {
         final var draftRepository = mock(RailNetworkDraftRepository.class);
         final var networkRepository = mock(ReleasedRailNetworkRepository.class);
-        final var command = new ReleaseRailNetworkCommand(draftRepository, networkRepository);
+        final var releasedRailNetworkService = new ReleasedRailNetworkService(
+            draftRepository, networkRepository
+        );
         final var draft = new RailNetworkDraft()
             .withNewStation(berlinHbfName, berlinHbfPos)
             .withNewStation(hamburgHbfName, hamburgHbfPos)
@@ -47,10 +49,12 @@ public class ReleaseRailNetworkCommandUT {
         given(networkRepository.add(any()))
             .willReturn(network);
 
-        command.releaseRailNetworkDraft(
-            "1",
-            defaultPeriod.getStartDate(),
-            defaultPeriod.getEndDate()
+        releasedRailNetworkService.releaseDraft(
+            new ReleaseRailNetworkCommand(
+                "1",
+                defaultPeriod.getStartDate(),
+                defaultPeriod.getEndDate()
+            )
         );
 
         verify(networkRepository).add(any());

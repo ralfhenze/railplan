@@ -2,8 +2,8 @@ package com.ralfhenze.railplan.userinterface.web;
 
 import com.ralfhenze.railplan.application.RailNetworkDraftService;
 import com.ralfhenze.railplan.application.RailwayTrackService;
+import com.ralfhenze.railplan.application.ReleasedRailNetworkService;
 import com.ralfhenze.railplan.application.TrainStationService;
-import com.ralfhenze.railplan.application.commands.ReleaseRailNetworkCommand;
 import com.ralfhenze.railplan.application.queries.Queries;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftRepository;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.release.ReleasedRailNetworkRepository;
@@ -63,8 +63,8 @@ public class RailPlanApplication {
     }
 
     @Bean
-    public ReleaseRailNetworkCommand getReleaseRailNetworkCommand() {
-        return new ReleaseRailNetworkCommand(
+    public ReleasedRailNetworkService getReleasedRailNetworkService() {
+        return new ReleasedRailNetworkService(
             railNetworkDraftRepository,
             releasedRailNetworkRepository
         );
