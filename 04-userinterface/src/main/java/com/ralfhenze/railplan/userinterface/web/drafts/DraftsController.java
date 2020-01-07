@@ -14,17 +14,14 @@ public class DraftsController {
 
     private final Queries queries;
     private final RailNetworkDraftService railNetworkDraftService;
-    private final DeleteRailNetworkDraftCommand deleteRailNetworkDraftCommand;
 
     @Autowired
     public DraftsController(
         final Queries queries,
-        final RailNetworkDraftService railNetworkDraftService,
-        final DeleteRailNetworkDraftCommand deleteRailNetworkDraftCommand
+        final RailNetworkDraftService railNetworkDraftService
     ) {
         this.queries = queries;
         this.railNetworkDraftService = railNetworkDraftService;
-        this.deleteRailNetworkDraftCommand = deleteRailNetworkDraftCommand;
     }
 
     /**
@@ -54,8 +51,9 @@ public class DraftsController {
      */
     @GetMapping("/drafts/{currentDraftId}/delete")
     public String deleteDraft(@PathVariable String currentDraftId) {
-        deleteRailNetworkDraftCommand
-            .deleteRailNetworkDraft(currentDraftId);
+        railNetworkDraftService.deleteDraft(
+            new DeleteRailNetworkDraftCommand(currentDraftId)
+        );
 
         return "redirect:/drafts";
     }

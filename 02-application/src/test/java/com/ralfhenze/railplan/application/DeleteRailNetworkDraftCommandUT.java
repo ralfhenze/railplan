@@ -19,17 +19,4 @@ public class DeleteRailNetworkDraftCommandUT {
             new DeleteRailNetworkDraftCommand(null)
         );
     }
-
-    @Test
-    public void deletesDraft() {
-        final var draftRepository = mock(RailNetworkDraftRepository.class);
-        final var command = new DeleteRailNetworkDraftCommand(draftRepository);
-        final var draftIdCaptor = ArgumentCaptor.forClass(RailNetworkDraftId.class);
-        final var draftId = "1";
-
-        command.deleteRailNetworkDraft(draftId);
-
-        verify(draftRepository).deleteRailNetworkDraftOfId(draftIdCaptor.capture());
-        assertThat(draftIdCaptor.getValue().toString()).isEqualTo(draftId);
-    }
 }

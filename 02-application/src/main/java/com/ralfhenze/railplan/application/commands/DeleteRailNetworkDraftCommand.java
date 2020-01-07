@@ -1,33 +1,17 @@
 package com.ralfhenze.railplan.application.commands;
 
-import com.ralfhenze.railplan.domain.common.EntityNotFoundException;
-import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftId;
-import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftRepository;
-
-import static com.ralfhenze.railplan.domain.common.Preconditions.ensureNotNull;
-
 /**
- * A command to delete a whole RailNetworkDraft.
+ * A command DTO to delete a whole RailNetworkDraft.
  */
 public class DeleteRailNetworkDraftCommand implements Command {
 
-    private final RailNetworkDraftRepository draftRepository;
+    private final String draftId;
 
-    /**
-     * Constructs the command.
-     *
-     * @throws IllegalArgumentException if draftRepository is null
-     */
-    public DeleteRailNetworkDraftCommand(final RailNetworkDraftRepository draftRepository) {
-        this.draftRepository = ensureNotNull(draftRepository, "Draft Repository");
+    public DeleteRailNetworkDraftCommand(final String draftId) {
+        this.draftId = draftId;
     }
 
-    /**
-     * Deletes given RailNetworkDraft.
-     *
-     * @throws EntityNotFoundException if RailNetworkDraft with draftId does not exist
-     */
-    public void deleteRailNetworkDraft(final String draftId) {
-        draftRepository.deleteRailNetworkDraftOfId(new RailNetworkDraftId(draftId));
+    public String getDraftId() {
+        return draftId;
     }
 }

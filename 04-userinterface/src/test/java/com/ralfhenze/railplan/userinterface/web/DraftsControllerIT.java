@@ -8,6 +8,7 @@ import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraf
 import org.jsoup.Jsoup;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -32,9 +33,6 @@ public class DraftsControllerIT extends HtmlITBase {
 
     @MockBean
     private RailNetworkDraftService railNetworkDraftService;
-
-    @MockBean
-    private DeleteRailNetworkDraftCommand deleteRailNetworkDraftCommand;
 
     @Test
     public void userCanNavigateToExistingDrafts() throws Exception {
@@ -76,7 +74,11 @@ public class DraftsControllerIT extends HtmlITBase {
         final var response = getGetResponse("/drafts/123/delete");
 
         // Then a DeleteRailNetworkDraftCommand is issued
-        verify(deleteRailNetworkDraftCommand).deleteRailNetworkDraft("123");
+        final var commandCaptor = ArgumentCaptor.forClass(DeleteRailNetworkDraftCommand.class);
+        verify(railNetworkDraftService).deleteDraft(commandCaptor.capture());
+
+        final var executedCommand = commandCaptor.getValue();
+        assertThat(executedCommand.getDraftId()).isEqualTo("123");
 
         // And we will be redirected to the Drafts overview
         assertThat(response.getStatus()).isEqualTo(HTTP_MOVED_TEMPORARILY);
