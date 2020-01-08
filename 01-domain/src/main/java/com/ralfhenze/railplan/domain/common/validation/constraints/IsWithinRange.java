@@ -1,5 +1,6 @@
 package com.ralfhenze.railplan.domain.common.validation.constraints;
 
+import com.ralfhenze.railplan.domain.common.validation.Field;
 import com.ralfhenze.railplan.domain.common.validation.ValidationConstraint;
 import com.ralfhenze.railplan.domain.common.validation.ValidationError;
 
@@ -16,7 +17,7 @@ public class IsWithinRange implements ValidationConstraint<Double> {
     }
 
     @Override
-    public Optional<ValidationError> validate(final Double value) {
+    public Optional<ValidationError> validate(final Double value, final Field field) {
         if (value < inclusiveMin || value > inclusiveMax) {
             return Optional.of(
                 new ValidationError(

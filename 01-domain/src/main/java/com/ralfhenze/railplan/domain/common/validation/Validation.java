@@ -67,7 +67,7 @@ public class Validation {
      */
     public Validation throwExceptionIfInvalid() {
         final ImmutableList errors = rules
-            .collect((rule) -> rule.constraint.validate(rule.value)) // TODO: add rule.field
+            .collect((rule) -> rule.constraint.validate(rule.value, rule.field))
             .select(Optional::isPresent)
             .collect(Optional::get);
 

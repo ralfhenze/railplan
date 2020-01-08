@@ -1,6 +1,7 @@
 package com.ralfhenze.railplan.domain.railnetwork.invariants;
 
 import com.ralfhenze.railplan.domain.common.Combinations;
+import com.ralfhenze.railplan.domain.common.validation.Field;
 import com.ralfhenze.railplan.domain.common.validation.ValidationConstraint;
 import com.ralfhenze.railplan.domain.common.validation.ValidationError;
 import com.ralfhenze.railplan.domain.railnetwork.elements.RailwayTrack;
@@ -23,7 +24,10 @@ public class HasNoDuplicateTracks
     }
 
     @Override
-    public Optional<ValidationError> validate(final ImmutableList<RailwayTrack> tracks) {
+    public Optional<ValidationError> validate(
+        final ImmutableList<RailwayTrack> tracks,
+        final Field field
+    ) {
         if (tracks.size() < 2) {
             return Optional.empty();
         }

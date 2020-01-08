@@ -1,6 +1,7 @@
 package com.ralfhenze.railplan.domain.railnetwork.invariants;
 
 import com.ralfhenze.railplan.domain.common.Combinations;
+import com.ralfhenze.railplan.domain.common.validation.Field;
 import com.ralfhenze.railplan.domain.common.validation.ValidationConstraint;
 import com.ralfhenze.railplan.domain.common.validation.ValidationError;
 import com.ralfhenze.railplan.domain.railnetwork.elements.TrainStation;
@@ -16,7 +17,10 @@ public class HasNoStationsNearerThan10Km
     private final Combinations combinations = new Combinations();
 
     @Override
-    public Optional<ValidationError> validate(final ImmutableList<TrainStation> stations) {
+    public Optional<ValidationError> validate(
+        final ImmutableList<TrainStation> stations,
+        final Field field
+    ) {
         if (stations.size() < 2) {
             return Optional.empty();
         }

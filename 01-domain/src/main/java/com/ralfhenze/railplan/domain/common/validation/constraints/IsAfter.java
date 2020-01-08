@@ -1,5 +1,6 @@
 package com.ralfhenze.railplan.domain.common.validation.constraints;
 
+import com.ralfhenze.railplan.domain.common.validation.Field;
 import com.ralfhenze.railplan.domain.common.validation.ValidationConstraint;
 import com.ralfhenze.railplan.domain.common.validation.ValidationError;
 
@@ -15,7 +16,7 @@ public class IsAfter implements ValidationConstraint<LocalDate> {
     }
 
     @Override
-    public Optional<ValidationError> validate(final LocalDate date) {
+    public Optional<ValidationError> validate(final LocalDate date, final Field field) {
         if (!date.isAfter(startDate)) {
             return Optional.of(new ValidationError("must be after " + startDate));
         }

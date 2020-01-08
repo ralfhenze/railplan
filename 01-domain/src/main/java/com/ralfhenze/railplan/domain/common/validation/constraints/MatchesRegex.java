@@ -1,5 +1,6 @@
 package com.ralfhenze.railplan.domain.common.validation.constraints;
 
+import com.ralfhenze.railplan.domain.common.validation.Field;
 import com.ralfhenze.railplan.domain.common.validation.ValidationConstraint;
 import com.ralfhenze.railplan.domain.common.validation.ValidationError;
 
@@ -15,7 +16,7 @@ public class MatchesRegex implements ValidationConstraint<String> {
     }
 
     @Override
-    public Optional<ValidationError> validate(final String value) {
+    public Optional<ValidationError> validate(final String value, final Field field) {
         if (!Pattern.matches(regexPattern, value)) {
             return Optional.of(
                 new ValidationError("must match regular expression \"" + regexPattern + "\"")

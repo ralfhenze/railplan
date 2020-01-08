@@ -1,5 +1,6 @@
 package com.ralfhenze.railplan.domain.common.validation.constraints;
 
+import com.ralfhenze.railplan.domain.common.validation.Field;
 import com.ralfhenze.railplan.domain.common.validation.ValidationConstraint;
 import com.ralfhenze.railplan.domain.common.validation.ValidationError;
 
@@ -14,7 +15,7 @@ public class HasMinLength implements ValidationConstraint<String> {
     }
 
     @Override
-    public Optional<ValidationError> validate(final String value) {
+    public Optional<ValidationError> validate(final String value, final Field field) {
         if (value.length() < minLength) {
             return Optional.of(
                 new ValidationError("must have a minimum length of " + minLength + " characters")
