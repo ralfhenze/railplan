@@ -7,7 +7,7 @@ import org.eclipse.collections.api.list.MutableList;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-public class NewValidation {
+public class Validation {
 
     private final ImmutableList<ValidationRule> rules;
     private final MutableList<ValidationError> errors;
@@ -28,12 +28,12 @@ public class NewValidation {
         }
     }
 
-    public NewValidation() {
+    public Validation() {
         this.rules = Lists.immutable.empty();
         this.errors = Lists.mutable.empty();
     }
 
-    private NewValidation(
+    private Validation(
         final ImmutableList<ValidationRule> rules,
         final MutableList<ValidationError> errors
     ) {
@@ -41,12 +41,12 @@ public class NewValidation {
         this.errors = errors;
     }
 
-    public <T> NewValidation ensureThat(
+    public <T> Validation ensureThat(
         final T value,
         final ValidationConstraint<T> constraint,
         final Field field
     ) {
-        return new NewValidation(
+        return new Validation(
             rules.newWith(new ValidationRule(value, constraint, field)),
             errors
         );
@@ -65,7 +65,7 @@ public class NewValidation {
     /**
      * @throws ValidationException if any ValidationConstraint fails
      */
-    public NewValidation throwExceptionIfInvalid() {
+    public Validation throwExceptionIfInvalid() {
         final ImmutableList errors = rules
             .collect((rule) -> rule.constraint.validate(rule.value)) // TODO: add rule.field
             .select(Optional::isPresent)
