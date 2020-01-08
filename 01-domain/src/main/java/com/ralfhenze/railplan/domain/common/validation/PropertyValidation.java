@@ -36,7 +36,7 @@ public class PropertyValidation<T> {
         final List<ValidationError> errors = new ArrayList<>();
 
         for (final var constraint : constraints) {
-            constraint.validate(property).ifPresent(errors::add);
+            constraint.validate(property, null).ifPresent(errors::add);
         }
 
         return errors;
