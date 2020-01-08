@@ -2,7 +2,7 @@ package com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft;
 
 import com.ralfhenze.railplan.domain.common.Aggregate;
 import com.ralfhenze.railplan.domain.common.EntityNotFoundException;
-import com.ralfhenze.railplan.domain.common.validation.Validation;
+import com.ralfhenze.railplan.domain.common.validation.PropertyValidation;
 import com.ralfhenze.railplan.domain.common.validation.ValidationError;
 import com.ralfhenze.railplan.domain.railnetwork.elements.GeoLocationInGermany;
 import com.ralfhenze.railplan.domain.railnetwork.elements.RailwayTrack;
@@ -65,14 +65,14 @@ public class RailNetworkDraft implements Aggregate {
     }
 
     public List<ValidationError> getStationErrors() {
-        return new Validation<>(stations)
+        return new PropertyValidation<>(stations)
             .ensureIt(new HasUniqueStationNames())
             .ensureIt(new HasNoStationsNearerThan10Km())
             .getValidationErrors();
     }
 
     public List<ValidationError> getTrackErrors() {
-        return new Validation<>(tracks)
+        return new PropertyValidation<>(tracks)
             .ensureIt(new HasNoTracksLongerThan300Km(stations))
             .ensureIt(new HasNoDuplicateTracks(stations))
             .getValidationErrors();

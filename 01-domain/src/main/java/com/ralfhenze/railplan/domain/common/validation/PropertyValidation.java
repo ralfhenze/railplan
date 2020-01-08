@@ -6,17 +6,17 @@ import org.eclipse.collections.api.list.ImmutableList;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Validation<T> {
+public class PropertyValidation<T> {
 
     private final T property;
 
     private final ImmutableList<ValidationConstraint<T>> constraints;
 
-    public Validation(final T property) {
+    public PropertyValidation(final T property) {
         this(property, Lists.immutable.empty());
     }
 
-    private Validation(
+    private PropertyValidation(
         final T property,
         final ImmutableList<ValidationConstraint<T>> constraints
     ) {
@@ -24,10 +24,10 @@ public class Validation<T> {
         this.constraints = constraints;
     }
 
-    public Validation<T> ensureIt(
+    public PropertyValidation<T> ensureIt(
         final ValidationConstraint<T> constraint
     ) {
-        return new Validation<>(
+        return new PropertyValidation<>(
             property, constraints.newWith(constraint)
         );
     }

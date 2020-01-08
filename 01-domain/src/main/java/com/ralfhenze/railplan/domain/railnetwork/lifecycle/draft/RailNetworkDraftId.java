@@ -1,7 +1,7 @@
 package com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft;
 
 import com.ralfhenze.railplan.domain.common.Id;
-import com.ralfhenze.railplan.domain.common.validation.Validation;
+import com.ralfhenze.railplan.domain.common.validation.PropertyValidation;
 import com.ralfhenze.railplan.domain.common.validation.ValidationError;
 import com.ralfhenze.railplan.domain.common.validation.constraints.IsNotBlank;
 
@@ -21,7 +21,7 @@ public class RailNetworkDraftId implements Id {
     }
 
     public List<ValidationError> getValidationErrors() {
-        return new Validation<>(id)
+        return new PropertyValidation<>(id)
             .ensureIt(new IsNotBlank())
             .getValidationErrors();
     }
