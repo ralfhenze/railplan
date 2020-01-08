@@ -15,16 +15,16 @@ public class NewValidation {
     private static class ValidationRule {
         private final Object value;
         private final ValidationConstraint constraint;
-        private final String fieldName;
+        private final Field field;
 
         ValidationRule(
             final Object value,
             final ValidationConstraint constraint,
-            final String fieldName
+            final Field field
         ) {
             this.value = value;
             this.constraint = constraint;
-            this.fieldName = fieldName;
+            this.field = field;
         }
     }
 
@@ -44,10 +44,10 @@ public class NewValidation {
     public <T> NewValidation ensureThat(
         final T value,
         final ValidationConstraint<T> constraint,
-        final String fieldName
+        final Field field
     ) {
         return new NewValidation(
-            rules.newWith(new ValidationRule(value, constraint, fieldName)),
+            rules.newWith(new ValidationRule(value, constraint, field)),
             errors
         );
     }
@@ -67,7 +67,7 @@ public class NewValidation {
      */
     public NewValidation throwExceptionIfInvalid() {
         final ImmutableList errors = rules
-            .collect((rule) -> rule.constraint.validate(rule.value)) // TODO: add rule.fieldName
+            .collect((rule) -> rule.constraint.validate(rule.value)) // TODO: add rule.field
             .select(Optional::isPresent)
             .collect(Optional::get);
 
