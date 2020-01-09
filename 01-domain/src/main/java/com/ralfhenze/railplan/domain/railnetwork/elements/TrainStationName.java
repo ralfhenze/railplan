@@ -1,12 +1,11 @@
 package com.ralfhenze.railplan.domain.railnetwork.elements;
 
 import com.ralfhenze.railplan.domain.common.ValueObject;
-import com.ralfhenze.railplan.domain.common.validation.PropertyValidation;
-import com.ralfhenze.railplan.domain.common.validation.ValidationError;
+import com.ralfhenze.railplan.domain.common.validation.Field;
+import com.ralfhenze.railplan.domain.common.validation.Validation;
+import com.ralfhenze.railplan.domain.common.validation.ValidationException;
 import com.ralfhenze.railplan.domain.common.validation.constraints.HasMinLength;
 import com.ralfhenze.railplan.domain.common.validation.constraints.MatchesRegex;
-
-import java.util.List;
 
 /**
  * [x] a Station's Name begins with an uppercase letter
@@ -21,20 +20,16 @@ public class TrainStationName implements ValueObject {
 
     private final String name;
 
+    /**
+     * @throws ValidationException if name violates Station name invariants
+     */
     public TrainStationName(final String name) {
+        new Validation()
+            .ensureThat(name, new HasMinLength(MIN_LENGTH), Field.STATION_NAME)
+            .ensureThat(name, new MatchesRegex(VALID_NAME_REGEX), Field.STATION_NAME)
+            .throwExceptionIfInvalid();
+
         this.name = name;
-    }
-
-    @Override
-    public boolean isValid() {
-        return getValidationErrors().isEmpty();
-    }
-
-    public List<ValidationError> getValidationErrors() {
-        return new PropertyValidation<>(name)
-            .ensureIt(new HasMinLength(MIN_LENGTH))
-            .ensureIt(new MatchesRegex(VALID_NAME_REGEX))
-            .getValidationErrors();
     }
 
     public String getName() {
