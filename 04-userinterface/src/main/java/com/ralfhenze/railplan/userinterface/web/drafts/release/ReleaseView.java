@@ -1,17 +1,15 @@
 package com.ralfhenze.railplan.userinterface.web.drafts.release;
 
-import com.ralfhenze.railplan.domain.common.validation.ValidationError;
+import com.ralfhenze.railplan.domain.common.validation.Field;
+import com.ralfhenze.railplan.domain.common.validation.ValidationException;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftId;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftRepository;
-import com.ralfhenze.railplan.domain.railnetwork.lifecycle.release.ReleasedRailNetwork;
 import com.ralfhenze.railplan.infrastructure.persistence.dto.RailNetworkDraftDto;
 import com.ralfhenze.railplan.userinterface.web.GermanySvgViewFragment;
 import org.springframework.ui.Model;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * Prepares the necessary data for resources/templates/release.html.
@@ -20,10 +18,9 @@ public class ReleaseView {
 
     private final String currentDraftId;
     private final RailNetworkDraftRepository draftRepository;
-    private Map<String, List<String>> releaseErrors = Map.of();
-    private ReleasedRailNetwork network;
+    private ValidationException validationException;
 
-    public class ReleaseErrors {
+    public static class ReleaseErrors {
         public List<String> startDateErrors = List.of();
         public List<String> endDateErrors = List.of();
     }
@@ -40,15 +37,15 @@ public class ReleaseView {
         return "release";
     }
 
-    public ReleaseView withNetwork(final ReleasedRailNetwork network) {
-        this.network = network;
+    public ReleaseView withValidationException(final ValidationException validationException) {
+        this.validationException = validationException;
         return this;
     }
 
     public ReleaseView addRequiredAttributesTo(final Model model) {
         final var draftDto = getDraftDto();
 
-        if (network == null) {
+        if (validationException == null) {
             model.addAttribute("releaseErrors", new ReleaseErrors());
             model.addAttribute("validityPeriod", new ValidityPeriodDto(
                 LocalDate.now().plusDays(1).toString(),
@@ -56,8 +53,8 @@ public class ReleaseView {
             ));
         } else {
             final var releaseErrors = new ReleaseErrors();
-            releaseErrors.startDateErrors = getErrorsAsString(network.getPeriod().getStartDateErrors());
-            releaseErrors.endDateErrors = getErrorsAsString(network.getPeriod().getEndDateErrors());
+            releaseErrors.startDateErrors = validationException.getErrorsOfField(Field.START_DATE);
+            releaseErrors.endDateErrors = validationException.getErrorsOfField(Field.END_DATE);
             model.addAttribute("releaseErrors", releaseErrors);
         }
 
@@ -65,10 +62,6 @@ public class ReleaseView {
             .addRequiredAttributesTo(model);
 
         return this;
-    }
-
-    private List<String> getErrorsAsString(List<ValidationError> validationErrors) {
-        return validationErrors.stream().map(e -> e.getMessage()).collect(Collectors.toList());
     }
 
     private RailNetworkDraftDto getDraftDto() {

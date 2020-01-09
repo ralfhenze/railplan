@@ -1,6 +1,7 @@
 package com.ralfhenze.railplan.userinterface.web.drafts.tracks;
 
-import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraft;
+import com.ralfhenze.railplan.domain.common.validation.Field;
+import com.ralfhenze.railplan.domain.common.validation.ValidationException;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftId;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftRepository;
 import com.ralfhenze.railplan.infrastructure.persistence.dto.RailNetworkDraftDto;
@@ -24,9 +25,9 @@ public class TracksView {
     private final RailNetworkDraftRepository draftRepository;
     private boolean showCustomTrackForm = false;
     private boolean showPresetTrackForm = false;
-    private RailNetworkDraft draft;
+    private ValidationException validationException;
 
-    public class TrackErrors {
+    public static class TrackErrors {
         public List<String> firstStationErrors = List.of();
         public List<String> secondStationErrors = List.of();
     }
@@ -53,8 +54,8 @@ public class TracksView {
         return this;
     }
 
-    public TracksView withDraft(final RailNetworkDraft draft) {
-        this.draft = draft;
+    public TracksView withValidationException(final ValidationException validationException) {
+        this.validationException = validationException;
         return this;
     }
 
@@ -66,7 +67,7 @@ public class TracksView {
         model.addAttribute("tracks", getTracksWithStationNames(draftDto, stationNames));
         model.addAttribute("showCustomTrackForm", showCustomTrackForm);
 
-        if (draft == null) {
+        if (validationException == null) {
             model.addAttribute("newTrack", new RailwayTrackDto());
             model.addAttribute("trackErrors", new TrackErrors());
         } else {
@@ -93,20 +94,8 @@ public class TracksView {
 
     private TrackErrors getTrackErrors() {
         final var trackErrors = new TrackErrors();
-        trackErrors.firstStationErrors = draft
-            .getTracks()
-            .getLastOptional().get()
-            .getFirstStationIdErrors()
-            .stream()
-            .map(e -> e.getMessage())
-            .collect(Collectors.toList());
-        trackErrors.secondStationErrors = draft
-            .getTracks()
-            .getLastOptional().get()
-            .getSecondStationIdErrors()
-            .stream()
-            .map(e -> e.getMessage())
-            .collect(Collectors.toList());
+        trackErrors.firstStationErrors = validationException.getErrorsOfField(Field.FIRST_STATION_ID);
+        trackErrors.secondStationErrors = validationException.getErrorsOfField(Field.SECOND_STATION_ID);
 
         return trackErrors;
     }

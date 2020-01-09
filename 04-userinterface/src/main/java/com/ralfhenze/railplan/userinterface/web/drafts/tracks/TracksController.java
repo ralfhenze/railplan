@@ -5,6 +5,7 @@ import com.ralfhenze.railplan.application.commands.AddRailwayTrackByStationIdCom
 import com.ralfhenze.railplan.application.commands.AddRailwayTrackByStationNameCommand;
 import com.ralfhenze.railplan.application.commands.DeleteRailwayTrackCommand;
 import com.ralfhenze.railplan.domain.common.EntityNotFoundException;
+import com.ralfhenze.railplan.domain.common.validation.ValidationException;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftRepository;
 import com.ralfhenze.railplan.infrastructure.persistence.dto.RailwayTrackDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -105,23 +106,23 @@ public class TracksController {
         @ModelAttribute(name = "newTrack") RailwayTrackDto trackDto,
         Model model
     ) {
-        final var draftWithNewCustomTrack = railwayTrackService.addTrackByStationId(
-            new AddRailwayTrackByStationIdCommand(
-                currentDraftId,
-                String.valueOf(trackDto.getFirstStationId()),
-                String.valueOf(trackDto.getSecondStationId())
-            )
-        );
-
-        if (draftWithNewCustomTrack.isValid()) {
-            return "redirect:/drafts/{currentDraftId}/tracks";
-        } else {
+        try {
+            railwayTrackService.addTrackByStationId(
+                new AddRailwayTrackByStationIdCommand(
+                    currentDraftId,
+                    String.valueOf(trackDto.getFirstStationId()),
+                    String.valueOf(trackDto.getSecondStationId())
+                )
+            );
+        } catch (ValidationException exception){
             return new TracksView(currentDraftId, draftRepository)
                 .withShowCustomTrackForm(true)
-                .withDraft(draftWithNewCustomTrack)
+                .withValidationException(exception)
                 .addRequiredAttributesTo(model)
                 .getViewName();
         }
+
+        return "redirect:/drafts/{currentDraftId}/tracks";
     }
 
     /**

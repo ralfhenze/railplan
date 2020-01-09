@@ -1,6 +1,8 @@
 package com.ralfhenze.railplan.userinterface.web.drafts.stations;
 
+import com.ralfhenze.railplan.domain.common.validation.Field;
 import com.ralfhenze.railplan.domain.common.validation.ValidationError;
+import com.ralfhenze.railplan.domain.common.validation.ValidationException;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraft;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftId;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftRepository;
@@ -23,6 +25,7 @@ public class StationsView {
     private boolean showPresetStationForm = false;
     private boolean showPresetStationFormErrors = false;
     private RailNetworkDraft draft;
+    private ValidationException validationException;
 
     public StationsView(
         final String currentDraftId,
@@ -55,8 +58,8 @@ public class StationsView {
         return this;
     }
 
-    public StationsView withDraft(final RailNetworkDraft draft) {
-        this.draft = draft;
+    public StationsView withValidationException(final ValidationException validationException) {
+        this.validationException = validationException;
         return this;
     }
 
@@ -80,9 +83,7 @@ public class StationsView {
     }
 
     private RailNetworkDraftDto getDraftDto() {
-        if (draft == null) {
-            draft = draftRepository.getRailNetworkDraftOfId(new RailNetworkDraftId(currentDraftId));
-        }
+        draft = draftRepository.getRailNetworkDraftOfId(new RailNetworkDraftId(currentDraftId));
 
         return new RailNetworkDraftDto(draft);
     }
@@ -100,10 +101,10 @@ public class StationsView {
                 row.showInputField = (row.stationId.equals(stationIdToEdit));
 
                 if (row.stationId.equals(stationIdToEdit)) {
-                    if (!station.isValid()) {
-                        row.stationNameErrors = getErrorsAsString(station.getName().getValidationErrors());
-                        row.latitudeErrors = getErrorsAsString(station.getLocation().getLatitudeErrors());
-                        row.longitudeErrors = getErrorsAsString(station.getLocation().getLongitudeErrors());
+                    if (validationException != null) {
+                        row.stationNameErrors = validationException.getErrorsOfField(Field.STATION_NAME);
+                        row.latitudeErrors = validationException.getErrorsOfField(Field.LATITUDE);
+                        row.longitudeErrors = validationException.getErrorsOfField(Field.LONGITUDE);
                     }
 
                     setStationRowPropertiesIfModelContainsThem(row, model);
@@ -126,12 +127,10 @@ public class StationsView {
         newStationTableRow.showInputField = true;
         newStationTableRow.disabled = (stationIdToEdit != null);
 
-        if (stationIdToEdit == null && draft != null) {
-            draft.getStations().getLastOptional().ifPresent(station -> {
-                newStationTableRow.stationNameErrors = getErrorsAsString(station.getName().getValidationErrors());
-                newStationTableRow.latitudeErrors = getErrorsAsString(station.getLocation().getLatitudeErrors());
-                newStationTableRow.longitudeErrors = getErrorsAsString(station.getLocation().getLongitudeErrors());
-            });
+        if (stationIdToEdit == null && validationException != null) {
+            newStationTableRow.stationNameErrors = validationException.getErrorsOfField(Field.STATION_NAME);
+            newStationTableRow.latitudeErrors = validationException.getErrorsOfField(Field.LATITUDE);
+            newStationTableRow.longitudeErrors = validationException.getErrorsOfField(Field.LONGITUDE);
         }
 
         return newStationTableRow;

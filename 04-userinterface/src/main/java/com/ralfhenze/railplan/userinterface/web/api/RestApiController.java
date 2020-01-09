@@ -5,6 +5,7 @@ import com.ralfhenze.railplan.application.RailwayTrackService;
 import com.ralfhenze.railplan.application.TrainStationService;
 import com.ralfhenze.railplan.application.commands.AddRailwayTrackByStationIdCommand;
 import com.ralfhenze.railplan.application.commands.AddTrainStationCommand;
+import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftId;
 import com.ralfhenze.railplan.infrastructure.persistence.MongoDbQueries;
 import com.ralfhenze.railplan.infrastructure.persistence.RailNetworkDraftMongoDbRepository;
 import com.ralfhenze.railplan.infrastructure.persistence.dto.RailNetworkDraftDto;
@@ -60,7 +61,7 @@ public class RestApiController {
     ) {
         final var draftRepository = new RailNetworkDraftMongoDbRepository(mongoTemplate);
 
-        final var updatedDraft = new TrainStationService(draftRepository).addStationToDraft(
+        new TrainStationService(draftRepository).addStationToDraft(
             new AddTrainStationCommand(
                 draftId,
                 stationDto.getName(),
@@ -69,7 +70,13 @@ public class RestApiController {
             )
         );
 
-        return new TrainStationDto(updatedDraft.getStations().getLastOptional().get());
+        final var addedStation = draftRepository
+            .getRailNetworkDraftOfId(new RailNetworkDraftId(draftId))
+            .getStations()
+            .getLastOptional()
+            .get();
+
+        return new TrainStationDto(addedStation);
     }
 
     @GetMapping("/drafts/{draftId}/tracks")
@@ -84,7 +91,7 @@ public class RestApiController {
     ) {
         final var draftRepository = new RailNetworkDraftMongoDbRepository(mongoTemplate);
 
-        final var updatedDraft = new RailwayTrackService(draftRepository).addTrackByStationId(
+        new RailwayTrackService(draftRepository).addTrackByStationId(
             new AddRailwayTrackByStationIdCommand(
                 draftId,
                 String.valueOf(trackDto.getFirstStationId()),
@@ -92,6 +99,12 @@ public class RestApiController {
             )
         );
 
-        return new RailwayTrackDto(updatedDraft.getTracks().getLastOptional().get());
+        final var addedTrack = draftRepository
+            .getRailNetworkDraftOfId(new RailNetworkDraftId(draftId))
+            .getTracks()
+            .getLastOptional()
+            .get();
+
+        return new RailwayTrackDto(addedTrack);
     }
 }

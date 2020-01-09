@@ -22,7 +22,7 @@ public class ValidationException extends RuntimeException {
         return validationErrors.castToList();
     }
 
-    public List<String> getValidationErrorsOfField(final Field field) {
+    public List<String> getErrorsOfField(final Field field) {
         return validationErrors
             .select((error) -> error.getField().equals(field))
             .collect(ValidationError::getMessage)
