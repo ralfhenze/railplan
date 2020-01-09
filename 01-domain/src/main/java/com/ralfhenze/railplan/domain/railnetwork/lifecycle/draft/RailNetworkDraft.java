@@ -132,6 +132,27 @@ public class RailNetworkDraft implements Aggregate {
     /**
      * Returns a new Draft with updated Station name and location.
      *
+     * @throws EntityNotFoundException if TrainStation with currentStationName does not exist
+     * @throws ValidationException if Station Name, Location or Draft invariants are violated
+     */
+    public RailNetworkDraft withUpdatedStation(
+        final String stationId,
+        final String newStationName,
+        final double newLatitude,
+        final double newLongitude
+    ) {
+        final var v = new Validation();
+        final var id = v.get(() -> new TrainStationId(stationId));
+        final var name = v.get(() -> new TrainStationName(newStationName));
+        final var location = v.get(() -> new GeoLocationInGermany(newLatitude, newLongitude));
+        v.throwExceptionIfInvalid();
+
+        return withUpdatedStation(id, name, location);
+    }
+
+    /**
+     * Returns a new Draft with updated Station name and location.
+     *
      * @throws EntityNotFoundException if TrainStation with stationId does not exist
      * @throws ValidationException if any Draft invariants are violated
      */
