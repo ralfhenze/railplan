@@ -1,29 +1,24 @@
 package com.ralfhenze.railplan.domain.railnetwork.lifecycle.release;
 
 import com.ralfhenze.railplan.domain.common.Id;
-import com.ralfhenze.railplan.domain.common.validation.PropertyValidation;
-import com.ralfhenze.railplan.domain.common.validation.ValidationError;
+import com.ralfhenze.railplan.domain.common.validation.Field;
+import com.ralfhenze.railplan.domain.common.validation.Validation;
+import com.ralfhenze.railplan.domain.common.validation.ValidationException;
 import com.ralfhenze.railplan.domain.common.validation.constraints.IsNotBlank;
-
-import java.util.List;
 
 public class ReleasedRailNetworkId implements Id {
 
     private final String id;
 
+    /**
+     * @throws ValidationException if id is blank
+     */
     public ReleasedRailNetworkId(final String id) {
+        new Validation()
+            .ensureThat(id, new IsNotBlank(), Field.NETWORK_ID)
+            .throwExceptionIfInvalid();
+
         this.id = id;
-    }
-
-    @Override
-    public boolean isValid() {
-        return getValidationErrors().isEmpty();
-    }
-
-    public List<ValidationError> getValidationErrors() {
-        return new PropertyValidation<>(id)
-            .ensureIt(new IsNotBlank())
-            .getValidationErrors();
     }
 
     @Override
