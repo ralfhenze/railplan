@@ -2,8 +2,9 @@ package com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft;
 
 import com.ralfhenze.railplan.domain.common.Aggregate;
 import com.ralfhenze.railplan.domain.common.EntityNotFoundException;
-import com.ralfhenze.railplan.domain.common.validation.PropertyValidation;
-import com.ralfhenze.railplan.domain.common.validation.ValidationError;
+import com.ralfhenze.railplan.domain.common.validation.Field;
+import com.ralfhenze.railplan.domain.common.validation.Validation;
+import com.ralfhenze.railplan.domain.common.validation.ValidationException;
 import com.ralfhenze.railplan.domain.railnetwork.elements.GeoLocationInGermany;
 import com.ralfhenze.railplan.domain.railnetwork.elements.RailwayTrack;
 import com.ralfhenze.railplan.domain.railnetwork.elements.TrainStation;
@@ -16,7 +17,6 @@ import com.ralfhenze.railplan.domain.railnetwork.invariants.HasUniqueStationName
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 
-import java.util.List;
 import java.util.Optional;
 
 import static com.ralfhenze.railplan.domain.common.Preconditions.ensureNotNull;
@@ -34,6 +34,9 @@ public class RailNetworkDraft implements Aggregate {
     private final ImmutableList<RailwayTrack> tracks;
     private final int stationId;
 
+    /**
+     * Constructs an empty Draft without Stations or Tracks.
+     */
     public RailNetworkDraft() {
         this(
             Optional.empty(),
@@ -43,47 +46,45 @@ public class RailNetworkDraft implements Aggregate {
         );
     }
 
+    /**
+     * @throws ValidationException if any Draft invariants are violated
+     */
     private RailNetworkDraft(
         final Optional<RailNetworkDraftId> id,
         final ImmutableList<TrainStation> stations,
         final ImmutableList<RailwayTrack> tracks,
         final int stationId
     ) {
+        new Validation()
+            .ensureThat(stations, new HasUniqueStationNames(), Field.STATION_NAME)
+            .ensureThat(stations, new HasNoStationsNearerThan10Km(), Field.LOCATION)
+            .ensureThat(tracks, new HasNoTracksLongerThan300Km(stations), Field.TRACKS)
+            .ensureThat(tracks, new HasNoDuplicateTracks(stations), Field.TRACKS)
+            .throwExceptionIfInvalid();
+
         this.id = id;
         this.stations = stations;
         this.tracks = tracks;
         this.stationId = stationId;
     }
 
-    @Override
-    public boolean isValid() {
-        return id.map(RailNetworkDraftId::isValid).orElse(true)
-            && stations.allSatisfy(TrainStation::isValid)
-            && tracks.allSatisfy(RailwayTrack::isValid)
-            && getStationErrors().isEmpty()
-            && getTrackErrors().isEmpty();
-    }
-
-    public List<ValidationError> getStationErrors() {
-        return new PropertyValidation<>(stations)
-            .ensureIt(new HasUniqueStationNames())
-            .ensureIt(new HasNoStationsNearerThan10Km())
-            .getValidationErrors();
-    }
-
-    public List<ValidationError> getTrackErrors() {
-        return new PropertyValidation<>(tracks)
-            .ensureIt(new HasNoTracksLongerThan300Km(stations))
-            .ensureIt(new HasNoDuplicateTracks(stations))
-            .getValidationErrors();
-    }
-
+    /**
+     * Returns a new Draft with given Draft ID.
+     *
+     * @throws IllegalArgumentException if given ID is null
+     */
     public RailNetworkDraft withId(RailNetworkDraftId id) {
         ensureNotNull(id, "Rail Network Draft ID");
 
         return new RailNetworkDraft(Optional.of(id), stations, tracks, stationId);
     }
 
+    /**
+     * Returns a new Draft with added Station. The new Station will be appended to the
+     * end of the Stations list.
+     *
+     * @throws ValidationException if any Draft invariants are violated
+     */
     public RailNetworkDraft withNewStation(
         final TrainStationName stationName,
         final GeoLocationInGermany location
@@ -99,6 +100,7 @@ public class RailNetworkDraft implements Aggregate {
      * Returns a new Draft with updated Station name and location.
      *
      * @throws EntityNotFoundException if TrainStation with currentStationName does not exist
+     * @throws ValidationException if any Draft invariants are violated
      */
     public RailNetworkDraft withUpdatedStation(
         final TrainStationName currentStationName,
@@ -112,6 +114,7 @@ public class RailNetworkDraft implements Aggregate {
      * Returns a new Draft with updated Station name and location.
      *
      * @throws EntityNotFoundException if TrainStation with stationId does not exist
+     * @throws ValidationException if any Draft invariants are violated
      */
     public RailNetworkDraft withUpdatedStation(
         final TrainStationId stationId,
@@ -158,10 +161,19 @@ public class RailNetworkDraft implements Aggregate {
         );
     }
 
-    public RailNetworkDraft withNewTrack(final TrainStationName name1, final TrainStationName name2) {
+    /**
+     * @throws ValidationException if any Draft invariants are violated
+     */
+    public RailNetworkDraft withNewTrack(
+        final TrainStationName name1,
+        final TrainStationName name2
+    ) {
         return withNewTrack(getStationIdOf(name1), getStationIdOf(name2));
     }
 
+    /**
+     * @throws ValidationException if any Draft invariants are violated
+     */
     public RailNetworkDraft withNewTrack(final TrainStationId id1, final TrainStationId id2) {
         ensureStationExists(id1);
         ensureStationExists(id2);

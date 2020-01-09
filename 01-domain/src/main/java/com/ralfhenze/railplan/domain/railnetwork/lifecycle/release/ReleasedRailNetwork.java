@@ -1,8 +1,9 @@
 package com.ralfhenze.railplan.domain.railnetwork.lifecycle.release;
 
 import com.ralfhenze.railplan.domain.common.Aggregate;
-import com.ralfhenze.railplan.domain.common.validation.PropertyValidation;
-import com.ralfhenze.railplan.domain.common.validation.ValidationError;
+import com.ralfhenze.railplan.domain.common.validation.Field;
+import com.ralfhenze.railplan.domain.common.validation.Validation;
+import com.ralfhenze.railplan.domain.common.validation.ValidationException;
 import com.ralfhenze.railplan.domain.common.validation.constraints.HasMinSize;
 import com.ralfhenze.railplan.domain.railnetwork.elements.RailwayTrack;
 import com.ralfhenze.railplan.domain.railnetwork.elements.TrainStation;
@@ -13,14 +14,13 @@ import com.ralfhenze.railplan.domain.railnetwork.invariants.HasNoUnconnectedSubG
 import com.ralfhenze.railplan.domain.railnetwork.invariants.HasUniqueStationNames;
 import org.eclipse.collections.api.list.ImmutableList;
 
-import java.util.List;
 import java.util.Optional;
 
 /**
- * [x] the Rail Network Plan contains at least two Stations and one Track
- * [x] the Rail Network Plan is a single graph without unconnected sub-graphs
+ * [x] the Released Rail Network contains at least two Stations and one Track
+ * [x] the Released Rail Network is a single graph without unconnected sub-graphs
  * [x] all invariants of RailNetworkDraft
- * [ ] released Rail Network Plans can't be changed any more
+ * [ ] a Released Rail Network can't be changed any more
  */
 public class ReleasedRailNetwork implements Aggregate {
 
@@ -29,6 +29,11 @@ public class ReleasedRailNetwork implements Aggregate {
     private final ImmutableList<TrainStation> stations;
     private final ImmutableList<RailwayTrack> tracks;
 
+    /**
+     * Constructs a Network without an ID. Ensures that all Network invariants are satisfied.
+     *
+     * @throws ValidationException if any Network invariants are violated
+     */
     public ReleasedRailNetwork(
         final ValidityPeriod period,
         final ImmutableList<TrainStation> stations,
@@ -37,43 +42,31 @@ public class ReleasedRailNetwork implements Aggregate {
         this(Optional.empty(), period, stations, tracks);
     }
 
+    /**
+     * Constructs a Network. Ensures that all Network invariants are satisfied.
+     *
+     * @throws ValidationException if any Network invariants are violated
+     */
     public ReleasedRailNetwork(
         final Optional<ReleasedRailNetworkId> id,
         final ValidityPeriod period,
         final ImmutableList<TrainStation> stations,
         final ImmutableList<RailwayTrack> tracks
     ) {
+        new Validation()
+            .ensureThat(stations, new HasMinSize<>(2), Field.STATIONS)
+            .ensureThat(stations, new HasUniqueStationNames(), Field.STATION_NAME)
+            .ensureThat(stations, new HasNoStationsNearerThan10Km(), Field.LOCATION)
+            .ensureThat(tracks, new HasMinSize<>(1), Field.TRACKS)
+            .ensureThat(tracks, new HasNoTracksLongerThan300Km(stations), Field.TRACKS)
+            .ensureThat(tracks, new HasNoDuplicateTracks(stations), Field.TRACKS)
+            .ensureThat(tracks, new HasNoUnconnectedSubGraphs(stations), Field.TRACKS)
+            .throwExceptionIfInvalid();
+
         this.id = id;
         this.period = period;
         this.stations = stations;
         this.tracks = tracks;
-    }
-
-    @Override
-    public boolean isValid() {
-        return id.map(ReleasedRailNetworkId::isValid).orElse(true)
-            && period.isValid()
-            && stations.allSatisfy(TrainStation::isValid)
-            && tracks.allSatisfy(RailwayTrack::isValid)
-            && getStationErrors().isEmpty()
-            && getTrackErrors().isEmpty();
-    }
-
-    public List<ValidationError> getStationErrors() {
-        return new PropertyValidation<>(stations)
-            .ensureIt(new HasMinSize<>(2))
-            .ensureIt(new HasUniqueStationNames())
-            .ensureIt(new HasNoStationsNearerThan10Km())
-            .getValidationErrors();
-    }
-
-    public List<ValidationError> getTrackErrors() {
-        return new PropertyValidation<>(tracks)
-            .ensureIt(new HasMinSize<>(1))
-            .ensureIt(new HasNoTracksLongerThan300Km(stations))
-            .ensureIt(new HasNoDuplicateTracks(stations))
-            .ensureIt(new HasNoUnconnectedSubGraphs(stations))
-            .getValidationErrors();
     }
 
     public Optional<ReleasedRailNetworkId> getId() {

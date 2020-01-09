@@ -10,6 +10,8 @@ public enum Field {
     LOCATION,
     LATITUDE,
     LONGITUDE,
+    STATIONS,
+    TRACKS,
     START_DATE,
     END_DATE
 }

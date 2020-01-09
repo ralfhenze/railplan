@@ -1,6 +1,7 @@
 package com.ralfhenze.railplan.domain.railnetwork.lifecycle.release;
 
 import com.ralfhenze.railplan.domain.common.DomainService;
+import com.ralfhenze.railplan.domain.common.validation.ValidationException;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraft;
 
 import java.time.LocalDate;
@@ -22,6 +23,8 @@ public class RailNetworkReleaseService implements DomainService {
 
     /**
      * Releases given Draft for given Period.
+     *
+     * @throws ValidationException if any Network or Validity Period invariants are violated
      */
     public ReleasedRailNetwork release(
         final RailNetworkDraft draft,
@@ -40,10 +43,6 @@ public class RailNetworkReleaseService implements DomainService {
             draft.getStations(),
             draft.getTracks()
         );
-
-        if (!network.isValid()) {
-            return network;
-        }
 
         return networkRepository.add(network);
     }
