@@ -8,9 +8,9 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 public class TrainStationUT {
 
     @Test
-    public void isInvalidWithNullArguments() {
-        assertThatExceptionOfType(NullPointerException.class).isThrownBy(() ->
-            new TrainStation(null, null, null).isValid()
+    public void cannotBeConstructedWithNullArguments() {
+        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() ->
+            new TrainStation(null, null, null)
         );
     }
 }

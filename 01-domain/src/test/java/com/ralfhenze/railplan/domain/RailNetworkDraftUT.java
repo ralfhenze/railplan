@@ -1,6 +1,7 @@
 package com.ralfhenze.railplan.domain;
 
 import com.ralfhenze.railplan.domain.common.EntityNotFoundException;
+import com.ralfhenze.railplan.domain.common.validation.ValidationException;
 import com.ralfhenze.railplan.domain.railnetwork.elements.TrainStation;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraft;
 import org.junit.Test;
@@ -35,36 +36,36 @@ public class RailNetworkDraftUT {
 
     @Test
     public void ensuresUniqueStationNamesWhenRenaming() {
-        var draft = new RailNetworkDraft()
+        final var draft = new RailNetworkDraft()
             .withNewStation(berlinHbfName, berlinHbfPos)
             .withNewStation(potsdamHbfName, potsdamHbfPos);
 
-        draft = draft.withUpdatedStation(potsdamHbfName, berlinHbfName, potsdamHbfPos);
-
-        assertThat(draft.isValid()).isFalse();
+        assertThatExceptionOfType(ValidationException.class).isThrownBy(() ->
+            draft.withUpdatedStation(potsdamHbfName, berlinHbfName, potsdamHbfPos)
+        );
     }
 
     @Test
     public void ensuresMinimumStationDistanceWhenRelocating() {
-        var draft = new RailNetworkDraft()
+        final var draft = new RailNetworkDraft()
             .withNewStation(berlinHbfName, berlinHbfPos)
             .withNewStation(potsdamHbfName, potsdamHbfPos);
 
-        draft = draft.withUpdatedStation(potsdamHbfName, potsdamHbfName, berlinOstPos);
-
-        assertThat(draft.isValid()).isFalse();
+        assertThatExceptionOfType(ValidationException.class).isThrownBy(() ->
+            draft.withUpdatedStation(potsdamHbfName, potsdamHbfName, berlinOstPos)
+        );
     }
 
     @Test
     public void ensuresNoDuplicateTracks() {
-        var draft = new RailNetworkDraft()
+        final var draft = new RailNetworkDraft()
             .withNewStation(berlinHbfName, berlinHbfPos)
             .withNewStation(potsdamHbfName, potsdamHbfPos)
             .withNewTrack(berlinHbfName, potsdamHbfName);
 
-        draft = draft.withNewTrack(potsdamHbfName, berlinHbfName);
-
-        assertThat(draft.isValid()).isFalse();
+        assertThatExceptionOfType(ValidationException.class).isThrownBy(() ->
+            draft.withNewTrack(potsdamHbfName, berlinHbfName)
+        );
     }
 
     @Test

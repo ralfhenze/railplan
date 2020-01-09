@@ -1,6 +1,7 @@
 package com.ralfhenze.railplan.acceptance.stepdefs;
 
 import com.ralfhenze.railplan.domain.TestData;
+import com.ralfhenze.railplan.domain.common.validation.ValidationException;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraft;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
@@ -11,6 +12,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class StationInvariantsSteps {
 
     private RailNetworkDraft draft;
+    private boolean exceptionWasThrown;
 
     @Given("^a Rail Network Draft with a Station \"(.*)\"$")
     public void setupRailNetworkDraft(final String stationName) {
@@ -31,16 +33,21 @@ public class StationInvariantsSteps {
 
     private void addStation(final String stationName) {
         final var stationToAdd = TestData.getStation(stationName);
-        draft = draft.withNewStation(stationToAdd.getName(), stationToAdd.getLocation());
+        exceptionWasThrown = false;
+        try {
+            draft = draft.withNewStation(stationToAdd.getName(), stationToAdd.getLocation());
+        } catch (IllegalArgumentException | ValidationException e) {
+            exceptionWasThrown = true;
+        }
     }
 
     @Then("^the new Station should be (.*)$")
     public void assertAdded(final String addedOrRejected) {
         if ("added".equals(addedOrRejected)) {
-            assertThat(draft.isValid()).isTrue();
+            assertThat(exceptionWasThrown).isFalse();
             assertThat(draft.getStations()).hasSize(2);
         } else if ("rejected".equals(addedOrRejected)) {
-            assertThat(draft.isValid()).isFalse();
+            assertThat(exceptionWasThrown).isTrue();
         }
     }
 }

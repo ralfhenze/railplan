@@ -2,6 +2,8 @@ package com.ralfhenze.railplan.domain.railnetwork.elements;
 
 import com.ralfhenze.railplan.domain.common.LocalEntity;
 
+import static com.ralfhenze.railplan.domain.common.Preconditions.ensureNotNull;
+
 /**
  * https://en.wikipedia.org/wiki/Train_station
  *
@@ -18,9 +20,9 @@ public class TrainStation implements LocalEntity {
         final TrainStationName name,
         final GeoLocationInGermany location
     ) {
-        this.id = id;
-        this.name = name;
-        this.location = location;
+        this.id = ensureNotNull(id, "TrainStationId");
+        this.name = ensureNotNull(name, "TrainStationName");
+        this.location = ensureNotNull(location, "GeoLocationInGermany");
     }
 
     public TrainStationId getId() {
