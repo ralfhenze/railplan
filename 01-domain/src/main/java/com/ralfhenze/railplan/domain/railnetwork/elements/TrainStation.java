@@ -1,9 +1,6 @@
 package com.ralfhenze.railplan.domain.railnetwork.elements;
 
 import com.ralfhenze.railplan.domain.common.LocalEntity;
-import com.ralfhenze.railplan.domain.common.validation.ValidationError;
-
-import java.util.List;
 
 /**
  * https://en.wikipedia.org/wiki/Train_station
@@ -24,15 +21,6 @@ public class TrainStation implements LocalEntity {
         this.id = id;
         this.name = name;
         this.location = location;
-    }
-
-    @Override
-    public boolean isValid() {
-        return id.isValid() && name.isValid() && location.isValid();
-    }
-
-    public List<ValidationError> getValidationErrors() {
-        return List.of();
     }
 
     public TrainStationId getId() {
