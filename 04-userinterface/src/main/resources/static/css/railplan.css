@@ -193,6 +193,10 @@ table caption {
     display: none;
 }
 
+table tr {
+    vertical-align: top;
+}
+
 table th, td {
     padding: 10px 20px;
     border-bottom: 1px solid #bbbbbb;
