@@ -32,10 +32,10 @@
                                     <td th:class="station-2" th:text="${track.get(1).getValue1()}">Hamburg Hbf</td>
                                     <td><a th:href="@{|/drafts/${currentDraftId}/tracks/${track.get(0).getValue0()}/${track.get(1).getValue0()}/delete|}">Delete</a></td>
                                 </tr>
-                                <tr th:unless="${showCustomTrackForm} or ${showPresetTrackForm}">
+                                <tr th:unless="${showCustomTrackForm} or ${showPresetTrackForm}" class="add-button-row">
                                     <td colspan="5">
-                                        <a th:href="@{|/drafts/${currentDraftId}/tracks/new-from-preset|}">+ Add Preset Tracks</a> |
-                                        <a th:href="@{|/drafts/${currentDraftId}/tracks/new-custom|}">+ Add Custom Track</a>
+                                        <a class="add-button" th:href="@{|/drafts/${currentDraftId}/tracks/new-from-preset|}">+ Add Preset Tracks</a>
+                                        <a class="add-button" th:href="@{|/drafts/${currentDraftId}/tracks/new-custom|}">+ Add Custom Track</a>
                                     </td>
                                 </tr>
                                 <tr th:if="${showCustomTrackForm}">
@@ -44,7 +44,7 @@
                                     <td>&lt;&equals;&gt;</td>
                                     <td th:insert="::trackSelector('secondStationId', *{secondStationId}, ${trackErrors.secondStationErrors})"></td>
                                     <td>
-                                        <input type="submit" value="Add Track"> |
+                                        <input type="submit" class="add-button" value="Add Track"> |
                                         <a th:href="@{|/drafts/${currentDraftId}/tracks|}">Cancel</a>
                                     </td>
                                 </tr>
@@ -68,7 +68,7 @@
                                 th:value="${presetTrack.get('value')}">Berlin Hbf &lt;&equals;&gt; Hamburg Hbf</option>
                         </select>
                         <p>
-                            <input type="submit" value="Add Tracks"> |
+                            <input type="submit" class="add-button" value="Add Tracks"> |
                             <a th:href="@{|/drafts/${currentDraftId}/tracks|}">Cancel</a>
                         </p>
                     </form>

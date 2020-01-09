@@ -42,10 +42,10 @@
                                         </div>
                                     </td>
                                 </tr>
-                                <tr th:unless="${showCustomStationForm} or ${showPresetStationForm}">
+                                <tr th:unless="${showCustomStationForm} or ${showPresetStationForm}" class="add-button-row">
                                     <td colspan="5">
-                                        <a th:href="@{|/drafts/${currentDraftId}/stations/new-from-preset|}">+ Add Preset Stations</a> |
-                                        <a th:href="@{|/drafts/${currentDraftId}/stations/new-custom|}">+ Add Custom Station</a>
+                                        <a class="add-button" th:href="@{|/drafts/${currentDraftId}/stations/new-from-preset|}">+ Add Preset Stations</a>
+                                        <a class="add-button" th:href="@{|/drafts/${currentDraftId}/stations/new-custom|}">+ Add Custom Station</a>
                                     </td>
                                 </tr>
                                 <tr th:if="${showCustomStationForm}">
@@ -54,7 +54,7 @@
                                     <td th:insert="::stationTableCell('latitude', ${newStationTableRow.latitude}, ${newStationTableRow.showInputField}, ${newStationTableRow.latitudeErrors})"></td>
                                     <td th:insert="::stationTableCell('longitude', ${newStationTableRow.longitude}, ${newStationTableRow.showInputField}, ${newStationTableRow.longitudeErrors})"></td>
                                     <td>
-                                        <input type="submit" value="Add Station"> |
+                                        <input type="submit" class="add-button" value="Add Station"> |
                                         <a th:href="@{|/drafts/${currentDraftId}/stations|}">Cancel</a>
                                     </td>
                                 </tr>
@@ -76,7 +76,7 @@
                         <ul class="errors" th:if="${presetStationErrors != null}">
                             <li th:each="error : ${presetStationErrors.get('Station Name')}" th:text="${error}">Error</li>
                         </ul>
-                        <input type="submit" value="Add Stations"> |
+                        <input type="submit" class="add-button" value="Add Stations"> |
                         <a th:href="@{|/drafts/${currentDraftId}/stations|}">Cancel</a>
                     </form>
                 </div>
