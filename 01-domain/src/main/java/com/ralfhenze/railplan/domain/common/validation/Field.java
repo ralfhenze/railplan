@@ -5,7 +5,11 @@ public enum Field {
     STATION_ID,
     NETWORK_ID,
     STATION_NAME,
+    FIRST_STATION_ID,
+    SECOND_STATION_ID,
     LOCATION,
     LATITUDE,
-    LONGITUDE
+    LONGITUDE,
+    START_DATE,
+    END_DATE
 }

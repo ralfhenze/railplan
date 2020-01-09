@@ -1,11 +1,10 @@
 package com.ralfhenze.railplan.domain.railnetwork.elements;
 
 import com.ralfhenze.railplan.domain.common.ValueObject;
-import com.ralfhenze.railplan.domain.common.validation.PropertyValidation;
-import com.ralfhenze.railplan.domain.common.validation.ValidationError;
+import com.ralfhenze.railplan.domain.common.validation.Field;
+import com.ralfhenze.railplan.domain.common.validation.Validation;
+import com.ralfhenze.railplan.domain.common.validation.ValidationException;
 import com.ralfhenze.railplan.domain.common.validation.constraints.IsWithinRange;
-
-import java.util.List;
 
 /**
  * [-] a Station is located on land
@@ -30,27 +29,21 @@ public class GeoLocationInGermany implements ValueObject {
     private final double latitude;
     private final double longitude;
 
+    /**
+     * @throws ValidationException if latitude or longitude are not within Germany
+     */
     public GeoLocationInGermany(final double latitude, final double longitude) {
+        new Validation()
+            .ensureThat(
+                latitude, new IsWithinRange(GERMANY_WEST_LAT, GERMANY_EAST_LAT), Field.LATITUDE
+            )
+            .ensureThat(
+                longitude, new IsWithinRange(GERMANY_SOUTH_LNG, GERMANY_NORTH_LNG), Field.LONGITUDE
+            )
+            .throwExceptionIfInvalid();
+
         this.latitude = latitude;
         this.longitude = longitude;
-    }
-
-    @Override
-    public boolean isValid() {
-        return getLatitudeErrors().isEmpty()
-            && getLongitudeErrors().isEmpty();
-    }
-
-    public List<ValidationError> getLatitudeErrors() {
-        return new PropertyValidation<>(latitude)
-            .ensureIt(new IsWithinRange(GERMANY_WEST_LAT, GERMANY_EAST_LAT))
-            .getValidationErrors();
-    }
-
-    public List<ValidationError> getLongitudeErrors() {
-        return new PropertyValidation<>(longitude)
-            .ensureIt(new IsWithinRange(GERMANY_SOUTH_LNG, GERMANY_NORTH_LNG))
-            .getValidationErrors();
     }
 
     /**
