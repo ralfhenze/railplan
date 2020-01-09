@@ -2,6 +2,7 @@ package com.ralfhenze.railplan.application;
 
 import com.ralfhenze.railplan.application.commands.ReleaseRailNetworkCommand;
 import com.ralfhenze.railplan.domain.common.EntityNotFoundException;
+import com.ralfhenze.railplan.domain.common.validation.ValidationException;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftId;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftRepository;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.release.RailNetworkReleaseService;
@@ -19,7 +20,7 @@ public class ReleasedRailNetworkService implements ApplicationService {
     final private RailNetworkReleaseService releaseService;
 
     /**
-     * Constructs the service.
+     * Constructs the Network service.
      *
      * @throws IllegalArgumentException if draftRepository or networkRepository is null
      */
@@ -32,13 +33,14 @@ public class ReleasedRailNetworkService implements ApplicationService {
     }
 
     /**
-     * Executes ReleaseRailNetworkCommand.
+     * Releases an existing Draft.
      *
-     * @throws EntityNotFoundException if Rail Network Draft with draftId does not exist
+     * @throws ValidationException if draftId is not valid or Network invariants are violated
+     * @throws EntityNotFoundException if RailNetworkDraft with draftId does not exist
      */
     public ReleasedRailNetwork releaseDraft(final ReleaseRailNetworkCommand command) {
-        final var draft = draftRepository
-            .getRailNetworkDraftOfId(new RailNetworkDraftId(command.getDraftId()));
+        final var draftId = new RailNetworkDraftId(command.getDraftId());
+        final var draft = draftRepository.getRailNetworkDraftOfId(draftId);
 
         final var releasedRailNetwork = releaseService
             .release(draft, command.getStartDate(), command.getEndDate());

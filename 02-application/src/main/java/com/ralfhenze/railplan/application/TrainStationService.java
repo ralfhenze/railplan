@@ -4,24 +4,24 @@ import com.ralfhenze.railplan.application.commands.AddTrainStationCommand;
 import com.ralfhenze.railplan.application.commands.DeleteTrainStationCommand;
 import com.ralfhenze.railplan.application.commands.UpdateTrainStationCommand;
 import com.ralfhenze.railplan.domain.common.EntityNotFoundException;
+import com.ralfhenze.railplan.domain.common.validation.ValidationException;
 import com.ralfhenze.railplan.domain.railnetwork.elements.GeoLocationInGermany;
 import com.ralfhenze.railplan.domain.railnetwork.elements.TrainStationId;
 import com.ralfhenze.railplan.domain.railnetwork.elements.TrainStationName;
-import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraft;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftId;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftRepository;
 
 import static com.ralfhenze.railplan.domain.common.Preconditions.ensureNotNull;
 
 /**
- * An application service to execute TrainStation commands
+ * An application service to add, update and delete Stations.
  */
 public class TrainStationService implements ApplicationService {
 
     private final RailNetworkDraftRepository draftRepository;
 
     /**
-     * Constructs the application service.
+     * Constructs the Station service.
      *
      * @throws IllegalArgumentException if draftRepository is null
      */
@@ -30,59 +30,57 @@ public class TrainStationService implements ApplicationService {
     }
 
     /**
-     * Executes AddTrainStationCommand.
+     * Adds a new Station to an existing Draft.
      *
+     * @throws ValidationException if draftId, stationName or coordinates are not valid
      * @throws EntityNotFoundException if RailNetworkDraft with draftId does not exist
      */
-    public RailNetworkDraft addStationToDraft(final AddTrainStationCommand command) {
-        final var draft = draftRepository
-            .getRailNetworkDraftOfId(new RailNetworkDraftId(command.getDraftId()));
+    public void addStationToDraft(final AddTrainStationCommand command) {
+        final var draftId = new RailNetworkDraftId(command.getDraftId());
+        final var draft = draftRepository.getRailNetworkDraftOfId(draftId);
 
         final var updatedDraft = draft.withNewStation(
             new TrainStationName(command.getStationName()),
             new GeoLocationInGermany(command.getLatitude(), command.getLongitude())
         );
 
-        if (updatedDraft.isValid()) {
-            draftRepository.persist(updatedDraft);
-        }
-
-        return updatedDraft;
+        draftRepository.persist(updatedDraft);
     }
 
     /**
-     * Executes UpdateTrainStationCommand.
+     * Updates an existing Station of an existing Draft.
      *
-     * @throws EntityNotFoundException if RailNetworkDraft with draftId does not exist
+     * @throws ValidationException if draftId, stationName or coordinates are not valid
+     * @throws EntityNotFoundException if RailNetworkDraft with draftId or TrainStation
+     *                                 with stationId does not exist
      */
-    public RailNetworkDraft updateStationOfDraft(final UpdateTrainStationCommand command) {
-        final var updatedDraft = draftRepository
-            .getRailNetworkDraftOfId(new RailNetworkDraftId(command.getDraftId()))
-            .withUpdatedStation(
-                new TrainStationId(command.getStationId()),
-                new TrainStationName(command.getStationName()),
-                new GeoLocationInGermany(command.getLatitude(), command.getLongitude())
-            );
+    public void updateStationOfDraft(final UpdateTrainStationCommand command) {
+        final var draftId = new RailNetworkDraftId(command.getDraftId());
+        final var draft = draftRepository.getRailNetworkDraftOfId(draftId);
 
-        if (updatedDraft.isValid()) {
-            draftRepository.persist(updatedDraft);
-        }
+        final var updatedDraft = draft.withUpdatedStation(
+            new TrainStationId(command.getStationId()),
+            new TrainStationName(command.getStationName()),
+            new GeoLocationInGermany(command.getLatitude(), command.getLongitude())
+        );
 
-        return updatedDraft;
+        draftRepository.persist(updatedDraft);
     }
 
     /**
-     * Executes DeleteTrainStationCommand.
+     * Deletes an existing Station from an existing Draft.
      *
+     * @throws ValidationException if draftId or stationId is not valid
      * @throws EntityNotFoundException if RailNetworkDraft with draftId or TrainStation
      *                                 with stationId does not exist
      */
     public void deleteStationFromDraft(final DeleteTrainStationCommand command) {
-        final var draft = draftRepository
-            .getRailNetworkDraftOfId(new RailNetworkDraftId(command.getDraftId()));
+        final var draftId = new RailNetworkDraftId(command.getDraftId());
+        final var draft = draftRepository.getRailNetworkDraftOfId(draftId);
 
-        final var updatedDraft = draft
-            .withoutStation(new TrainStationId(command.getStationId()));
+        final var updatedDraft = draft.withoutStation(
+            new TrainStationId(command.getStationId())
+        );
 
         draftRepository.persist(updatedDraft);
     }

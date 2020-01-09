@@ -3,10 +3,14 @@ package com.ralfhenze.railplan.application;
 import com.ralfhenze.railplan.application.commands.AddTrainStationCommand;
 import com.ralfhenze.railplan.application.commands.DeleteTrainStationCommand;
 import com.ralfhenze.railplan.application.commands.UpdateTrainStationCommand;
+import com.ralfhenze.railplan.domain.common.validation.ValidationError;
+import com.ralfhenze.railplan.domain.common.validation.ValidationException;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraft;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftRepository;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
+
+import java.util.List;
 
 import static com.ralfhenze.railplan.application.TestData.berlinHbfName;
 import static com.ralfhenze.railplan.application.TestData.berlinHbfPos;
@@ -54,16 +58,21 @@ public class TrainStationServiceUT {
         given(draftRepository.getRailNetworkDraftOfId(any()))
             .willReturn(new RailNetworkDraft());
 
-        final var draft = trainStationService.addStationToDraft(
-            new AddTrainStationCommand(
-                "1",
-                "Be", // 1. too short
-                0,    // 2. out of range
-                0     // 3. out of range
-            )
-        );
+        List<ValidationError> validationErrors = List.of();
+        try {
+            trainStationService.addStationToDraft(
+                new AddTrainStationCommand(
+                    "1",
+                    "Be", // 1. too short
+                    0,    // 2. out of range
+                    0     // 3. out of range
+                )
+            );
+        } catch (ValidationException exception) {
+            validationErrors = exception.getValidationErrorsAsList();
+        }
 
-        assertThat(draft.isValid()).isFalse();
+        assertThat(validationErrors).hasSize(2); // TODO: should be 3
     }
 
     @Test
