@@ -40,8 +40,9 @@ public class TrainStationService implements ApplicationService {
         final var draft = draftRepository.getRailNetworkDraftOfId(draftId);
 
         final var updatedDraft = draft.withNewStation(
-            new TrainStationName(command.getStationName()),
-            new GeoLocationInGermany(command.getLatitude(), command.getLongitude())
+            command.getStationName(),
+            command.getLatitude(),
+            command.getLongitude()
         );
 
         draftRepository.persist(updatedDraft);

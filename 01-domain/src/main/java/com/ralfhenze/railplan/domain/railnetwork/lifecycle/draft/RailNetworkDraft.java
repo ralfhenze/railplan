@@ -83,6 +83,25 @@ public class RailNetworkDraft implements Aggregate {
      * Returns a new Draft with added Station. The new Station will be appended to the
      * end of the Stations list.
      *
+     * @throws ValidationException if Station Name, Location or Draft invariants are violated
+     */
+    public RailNetworkDraft withNewStation(
+        final String stationName,
+        final double latitude,
+        final double longitude
+    ) {
+        final var v = new Validation();
+        final var name = v.get(() -> new TrainStationName(stationName));
+        final var location = v.get(() -> new GeoLocationInGermany(latitude, longitude));
+        v.throwExceptionIfInvalid();
+
+        return withNewStation(name, location);
+    }
+
+    /**
+     * Returns a new Draft with added Station. The new Station will be appended to the
+     * end of the Stations list.
+     *
      * @throws ValidationException if any Draft invariants are violated
      */
     public RailNetworkDraft withNewStation(

@@ -66,13 +66,16 @@ public class Validation {
      * @throws ValidationException if any ValidationConstraint fails
      */
     public Validation throwExceptionIfInvalid() {
-        final ImmutableList errors = rules
+        final MutableList collectedErrors = rules
             .collect((rule) -> rule.constraint.validate(rule.value, rule.field))
             .select(Optional::isPresent)
-            .collect(Optional::get);
+            .collect(Optional::get)
+            .toList();
 
-        if (!errors.isEmpty()) {
-            throw new ValidationException(errors);
+        collectedErrors.addAll(errors);
+
+        if (!collectedErrors.isEmpty()) {
+            throw new ValidationException(collectedErrors);
         }
 
         return this;

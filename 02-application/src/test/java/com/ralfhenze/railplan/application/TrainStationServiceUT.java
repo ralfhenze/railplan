@@ -63,16 +63,16 @@ public class TrainStationServiceUT {
             trainStationService.addStationToDraft(
                 new AddTrainStationCommand(
                     "1",
-                    "Be", // 1. too short
-                    0,    // 2. out of range
-                    0     // 3. out of range
+                    "Be", // 1. too short + 2. doesn't match Regex
+                    0,    // 3. out of range
+                    0     // 4. out of range
                 )
             );
         } catch (ValidationException exception) {
             validationErrors = exception.getValidationErrors();
         }
 
-        assertThat(validationErrors).hasSize(2); // TODO: should be 3
+        assertThat(validationErrors).hasSize(4);
     }
 
     @Test
