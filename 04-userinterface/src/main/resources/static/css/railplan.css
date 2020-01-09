@@ -199,6 +199,15 @@ table th, td {
     text-align: left;
 }
 
+.invalid {
+    background-color: #ffdddd;
+    border: 1px solid #ff7777;
+}
+
+.errors {
+    color: #dd0000;
+}
+
 #germany-map {
     width: 39.4%;
     box-sizing: border-box;
