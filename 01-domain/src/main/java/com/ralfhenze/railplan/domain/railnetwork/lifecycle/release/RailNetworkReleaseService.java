@@ -33,13 +33,15 @@ public class RailNetworkReleaseService implements DomainService {
     ) {
         final var lastReleasedRailNetwork = networkRepository.getLastReleasedRailNetwork();
 
-        LocalDate lastEndDate = null;
+        var period = new ValidityPeriod(startDate, endDate);
+
         if (lastReleasedRailNetwork.isPresent()) {
-            lastEndDate = lastReleasedRailNetwork.get().getPeriod().getEndDate();
+            final var lastEndDate = lastReleasedRailNetwork.get().getPeriod().getEndDate();
+            period = new ValidityPeriod(startDate, endDate, lastEndDate);
         }
 
         final var network = new ReleasedRailNetwork(
-            new ValidityPeriod(startDate, endDate, lastEndDate),
+            period,
             draft.getStations(),
             draft.getTracks()
         );
