@@ -51,7 +51,8 @@ public class HasNoDuplicateTracks
                 new ValidationError(
                     "Track between \""
                     + station1.getName() + "\" and \""
-                    + station2.getName() + "\" already exists"
+                    + station2.getName() + "\" already exists",
+                    field
                 )
             );
         }

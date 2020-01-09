@@ -11,7 +11,7 @@ public class IsNotNull implements ValidationConstraint<Object> {
     @Override
     public Optional<ValidationError> validate(final Object value, final Field field) {
         if (value == null) {
-            return Optional.of(new ValidationError("must not be null"));
+            return Optional.of(new ValidationError("must not be null", field));
         }
 
         return Optional.empty();

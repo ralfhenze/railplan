@@ -57,7 +57,7 @@ public class Validation {
             final var instance = supplier.get();
             return instance;
         } catch (ValidationException exception) {
-            errors.addAll(exception.getValidationErrorsAsList());
+            errors.addAll(exception.getValidationErrors());
             return null;
         }
     }

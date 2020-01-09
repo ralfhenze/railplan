@@ -62,7 +62,8 @@ public class HasNoUnconnectedSubGraphs
             return Optional.of(
                 new ValidationError(
                     "Unconnected sub-graphs are not allowed! Please make sure that the Rail "
-                    + "Network is a single graph and all Stations are reachable from each other."
+                    + "Network is a single graph and all Stations are reachable from each other.",
+                    field
                 )
             );
         }

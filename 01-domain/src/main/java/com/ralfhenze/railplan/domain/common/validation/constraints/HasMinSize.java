@@ -18,7 +18,9 @@ public class HasMinSize<T extends ImmutableCollection> implements ValidationCons
     @Override
     public Optional<ValidationError> validate(final T collection, final Field field) {
         if (collection.size() < minSize) {
-            return Optional.of(new ValidationError("requires at least " + minSize + " elements"));
+            return Optional.of(
+                new ValidationError("requires at least " + minSize + " elements", field)
+            );
         }
 
         return Optional.empty();

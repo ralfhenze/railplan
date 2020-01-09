@@ -18,7 +18,9 @@ public class HasMinLength implements ValidationConstraint<String> {
     public Optional<ValidationError> validate(final String value, final Field field) {
         if (value.length() < minLength) {
             return Optional.of(
-                new ValidationError("must have a minimum length of " + minLength + " characters")
+                new ValidationError(
+                    "must have a minimum length of " + minLength + " characters", field
+                )
             );
         }
 

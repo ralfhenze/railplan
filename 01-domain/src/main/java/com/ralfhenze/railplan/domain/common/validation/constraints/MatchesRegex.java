@@ -19,7 +19,9 @@ public class MatchesRegex implements ValidationConstraint<String> {
     public Optional<ValidationError> validate(final String value, final Field field) {
         if (!Pattern.matches(regexPattern, value)) {
             return Optional.of(
-                new ValidationError("must match regular expression \"" + regexPattern + "\"")
+                new ValidationError(
+                    "must match regular expression \"" + regexPattern + "\"", field
+                )
             );
         }
 

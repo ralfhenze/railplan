@@ -18,11 +18,14 @@ public class ValidationException extends RuntimeException {
         this.validationErrors = validationErrors;
     }
 
-    public ImmutableList<ValidationError> getValidationErrors() {
-        return validationErrors;
+    public List<ValidationError> getValidationErrors() {
+        return validationErrors.castToList();
     }
 
-    public List<ValidationError> getValidationErrorsAsList() {
-        return validationErrors.castToList();
+    public List<String> getValidationErrorsOfField(final Field field) {
+        return validationErrors
+            .select((error) -> error.getField().equals(field))
+            .collect(ValidationError::getMessage)
+            .castToList();
     }
 }

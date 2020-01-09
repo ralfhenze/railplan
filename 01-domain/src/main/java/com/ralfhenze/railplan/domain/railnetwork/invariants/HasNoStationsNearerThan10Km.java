@@ -57,7 +57,8 @@ public class HasNoStationsNearerThan10Km
                     + firstStation.getName() + "\" and \"" + secondStation.getName()
                     + "\" should be > 10 km, but was ~"
                     + (Math.round(distance * 100.0) / 100.0)
-                    + " km"
+                    + " km",
+                    field
                 )
             );
         }

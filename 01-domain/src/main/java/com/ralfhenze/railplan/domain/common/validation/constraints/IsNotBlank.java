@@ -11,7 +11,7 @@ public class IsNotBlank implements ValidationConstraint<String> {
     @Override
     public Optional<ValidationError> validate(final String value, final Field field) {
         if (value.isBlank()) {
-            return Optional.of(new ValidationError("must not be blank"));
+            return Optional.of(new ValidationError("must not be blank", field));
         }
 
         return Optional.empty();

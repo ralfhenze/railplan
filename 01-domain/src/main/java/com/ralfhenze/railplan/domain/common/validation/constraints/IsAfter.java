@@ -18,7 +18,7 @@ public class IsAfter implements ValidationConstraint<LocalDate> {
     @Override
     public Optional<ValidationError> validate(final LocalDate date, final Field field) {
         if (!date.isAfter(startDate)) {
-            return Optional.of(new ValidationError("must be after " + startDate));
+            return Optional.of(new ValidationError("must be after " + startDate, field));
         }
 
         return Optional.empty();

@@ -52,7 +52,8 @@ public class HasNoTracksLongerThan300Km
                     + stationsMap.get(id1).getName() + "\" (" + id1 + ") to \""
                     + stationsMap.get(id2).getName() + "\" (" + id2 + ") must be shorter than "
                     + MAXIMUM_LENGTH_KM + " km"
-                    + ", but was ~" + Math.round(trackLength) + " km"
+                    + ", but was ~" + Math.round(trackLength) + " km",
+                    field
                 )
             );
         }

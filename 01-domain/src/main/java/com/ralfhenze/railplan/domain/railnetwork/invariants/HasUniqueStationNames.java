@@ -26,7 +26,7 @@ public class HasUniqueStationNames implements ValidationConstraint<ImmutableList
             if (duplicateStationName != null) {
                 return Optional.of(
                     new ValidationError(
-                        "Station Name \"" + duplicateStationName + "\" already exists"
+                        "Station Name \"" + duplicateStationName + "\" already exists", field
                     )
                 );
             }

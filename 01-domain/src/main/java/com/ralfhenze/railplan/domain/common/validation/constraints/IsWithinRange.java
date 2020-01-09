@@ -21,7 +21,7 @@ public class IsWithinRange implements ValidationConstraint<Double> {
         if (value < inclusiveMin || value > inclusiveMax) {
             return Optional.of(
                 new ValidationError(
-                    "must be within [" + inclusiveMin + " ... " + inclusiveMax + "]"
+                    "must be within [" + inclusiveMin + " ... " + inclusiveMax + "]", field
                 )
             );
         }

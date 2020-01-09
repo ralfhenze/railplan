@@ -69,7 +69,7 @@ public class TrainStationServiceUT {
                 )
             );
         } catch (ValidationException exception) {
-            validationErrors = exception.getValidationErrorsAsList();
+            validationErrors = exception.getValidationErrors();
         }
 
         assertThat(validationErrors).hasSize(2); // TODO: should be 3

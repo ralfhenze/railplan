@@ -17,7 +17,9 @@ public class IsNotEqualTo<T> implements ValidationConstraint<T> {
     @Override
     public Optional<ValidationError> validate(final T value, final Field field) {
         if (value.equals(comparedValue)) {
-            return Optional.of(new ValidationError("must not be equal to \"" + value + "\""));
+            return Optional.of(
+                new ValidationError("must not be equal to \"" + value + "\"", field)
+            );
         }
 
         return Optional.empty();
