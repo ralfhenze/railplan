@@ -5,6 +5,9 @@ import com.ralfhenze.railplan.application.commands.AddTrainStationCommand;
 import com.ralfhenze.railplan.application.commands.Command;
 import com.ralfhenze.railplan.application.commands.DeleteTrainStationCommand;
 import com.ralfhenze.railplan.application.commands.UpdateTrainStationCommand;
+import com.ralfhenze.railplan.domain.common.validation.Field;
+import com.ralfhenze.railplan.domain.common.validation.ValidationError;
+import com.ralfhenze.railplan.domain.common.validation.ValidationException;
 import com.ralfhenze.railplan.domain.railnetwork.elements.GeoLocationInGermany;
 import com.ralfhenze.railplan.domain.railnetwork.elements.TrainStationId;
 import com.ralfhenze.railplan.domain.railnetwork.elements.TrainStationName;
@@ -34,6 +37,7 @@ import static com.ralfhenze.railplan.userinterface.web.TestData.potsdamHbfPos;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -98,12 +102,6 @@ public class StationsControllerIT extends HtmlITBase {
 
     @Test
     public void userCanAddNewStationsFromPresets() throws Exception {
-        // Given RailNetworkDraftRepository and TrainStationService will return a valid Draft
-        final var draft = mock(RailNetworkDraft.class);
-        given(draft.isValid()).willReturn(true);
-        given(draftRepository.getRailNetworkDraftOfId(any())).willReturn(draft);
-        given(trainStationService.addStationToDraft(any())).willReturn(draft);
-
         // When we call POST /drafts/123/stations/new-from-preset with two valid preset Stations
         final var response = getPostResponseWithMultiValueParameters(
             "/drafts/123/stations/new-from-preset",
@@ -147,7 +145,7 @@ public class StationsControllerIT extends HtmlITBase {
             * keine Verbindung zur Datenbank (Netzwerkfehler)
          */
         final var nameErrors = List.of("name error 1", "name error 2");
-        given(trainStationService.addStationToDraft(any())).willReturn(berlinHamburgDraft);
+        //given(trainStationService.addStationToDraft(any())).willReturn(berlinHamburgDraft);
 
         // Given an existing Draft
         given(draftRepository.getRailNetworkDraftOfId(any())).willReturn(berlinHamburgDraft);
@@ -182,11 +180,6 @@ public class StationsControllerIT extends HtmlITBase {
 
     @Test
     public void userCanAddANewCustomStation() throws Exception {
-        // Given TrainStationService will return a valid Draft
-        final var draft = mock(RailNetworkDraft.class);
-        given(draft.isValid()).willReturn(true);
-        given(trainStationService.addStationToDraft(any())).willReturn(draft);
-
         // When we call POST /drafts/123/stations/new-custom with valid Station parameters
         final var response = getPostResponse(
             "/drafts/123/stations/new-custom",
@@ -242,11 +235,6 @@ public class StationsControllerIT extends HtmlITBase {
 
     @Test
     public void userCanUpdateAnExistingStation() throws Exception {
-        // Given UpdateTrainStationCommand will return a valid Draft
-        final var draft = mock(RailNetworkDraft.class);
-        given(draft.isValid()).willReturn(true);
-        given(trainStationService.updateStationOfDraft(any())).willReturn(draft);
-
         // When we call POST /drafts/123/stations/1/edit with valid Station parameters
         final var response = getPostResponse(
             "/drafts/123/stations/1/edit",
@@ -306,24 +294,21 @@ public class StationsControllerIT extends HtmlITBase {
         // Given an existing Draft
         given(draftRepository.getRailNetworkDraftOfId(any())).willReturn(berlinHamburgDraft);
 
-        // And the commands will return the updated Draft
+        // And the commands will throw a ValidationException
+        final var nameError1 = "name error 1";
+        final var nameError2 = "name error 2";
+        final var latError = "lat error";
+        final var lngError = "lng error";
+        final var validationException = new ValidationException(List.of(
+            new ValidationError(nameError1, Field.STATION_NAME),
+            new ValidationError(nameError2, Field.STATION_NAME),
+            new ValidationError(latError, Field.LATITUDE),
+            new ValidationError(lngError, Field.LONGITUDE)
+        ));
         if (command instanceof AddTrainStationCommand) {
-            given(trainStationService.addStationToDraft(any()))
-                .willReturn(
-                    berlinHamburgDraft.withNewStation(
-                        new TrainStationName("ab"),
-                        new GeoLocationInGermany(1.0, 1.0)
-                    )
-                );
+            doThrow(validationException).when(trainStationService).addStationToDraft(any());
         } else if (command instanceof UpdateTrainStationCommand) {
-            given(trainStationService.updateStationOfDraft(any()))
-                .willReturn(
-                    berlinHamburgDraft.withUpdatedStation(
-                        new TrainStationId("1"),
-                        new TrainStationName("ab"),
-                        new GeoLocationInGermany(1.0, 1.0)
-                    )
-                );
+            doThrow(validationException).when(trainStationService).updateStationOfDraft(any());
         } else {
             throw new IllegalArgumentException("Unsupported command " + command.toString());
         }
@@ -341,8 +326,11 @@ public class StationsControllerIT extends HtmlITBase {
         assertThat(document.selectFirst("input[name='longitude']").val()).isEqualTo("1.0");
 
         // And each input field shows it's error messages
-        assertThat(document.select(".errors.stationName li")).hasSize(2);
-        assertThat(document.select(".errors.latitude li")).hasSize(1);
-        assertThat(document.select(".errors.longitude li")).hasSize(1);
+        assertThat(document.select(".errors.stationName li").eachText())
+            .isEqualTo(List.of(nameError1, nameError2));
+        assertThat(document.select(".errors.latitude li").eachText())
+            .isEqualTo(List.of(latError));
+        assertThat(document.select(".errors.longitude li").eachText())
+            .isEqualTo(List.of(lngError));
     }
 }
