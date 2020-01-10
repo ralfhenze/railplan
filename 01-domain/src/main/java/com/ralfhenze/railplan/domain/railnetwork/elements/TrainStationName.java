@@ -6,6 +6,8 @@ import com.ralfhenze.railplan.domain.common.validation.Validation;
 import com.ralfhenze.railplan.domain.common.validation.ValidationException;
 import com.ralfhenze.railplan.domain.common.validation.constraints.HasMinLength;
 import com.ralfhenze.railplan.domain.common.validation.constraints.MatchesRegex;
+import com.ralfhenze.railplan.domain.railnetwork.invariants.DoesNotAlreadyExist;
+import org.eclipse.collections.api.list.ImmutableList;
 
 /**
  * [x] a Station's Name begins with an uppercase letter
@@ -27,6 +29,20 @@ public class TrainStationName implements ValueObject {
         new Validation()
             .ensureThat(name, new HasMinLength(MIN_LENGTH), Field.STATION_NAME)
             .ensureThat(name, new MatchesRegex(VALID_NAME_REGEX), Field.STATION_NAME)
+            .throwExceptionIfInvalid();
+
+        this.name = name;
+    }
+
+    /**
+     * @throws ValidationException if name violates Station name invariants
+     */
+    public TrainStationName(final String name, final ImmutableList<String> otherNames) {
+        new Validation()
+            .ensureThat(name, new HasMinLength(MIN_LENGTH), Field.STATION_NAME)
+            .ensureThat(name, new MatchesRegex(VALID_NAME_REGEX), Field.STATION_NAME)
+            .throwExceptionIfInvalid()
+            .ensureThat(name, new DoesNotAlreadyExist(otherNames), Field.STATION_NAME)
             .throwExceptionIfInvalid();
 
         this.name = name;

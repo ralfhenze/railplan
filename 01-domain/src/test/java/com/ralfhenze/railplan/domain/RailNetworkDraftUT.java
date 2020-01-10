@@ -3,6 +3,7 @@ package com.ralfhenze.railplan.domain;
 import com.ralfhenze.railplan.domain.common.EntityNotFoundException;
 import com.ralfhenze.railplan.domain.common.validation.Field;
 import com.ralfhenze.railplan.domain.common.validation.ValidationException;
+import com.ralfhenze.railplan.domain.railnetwork.elements.GeoLocationInGermany;
 import com.ralfhenze.railplan.domain.railnetwork.elements.TrainStation;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraft;
 import org.assertj.core.api.Condition;
@@ -24,6 +25,8 @@ public class RailNetworkDraftUT {
 
     private final Condition<Throwable> oneStationNameError = getErrorCondition(Field.STATION_NAME, 1);
     private final Condition<Throwable> oneLocationError = getErrorCondition(Field.LOCATION, 1);
+    private final Condition<Throwable> oneLatitudeError = getErrorCondition(Field.LATITUDE, 1);
+    private final Condition<Throwable> oneLongitudeError = getErrorCondition(Field.LONGITUDE, 1);
     private final Condition<Throwable> oneTracksError = getErrorCondition(Field.TRACKS, 1);
 
     @Test
@@ -42,6 +45,25 @@ public class RailNetworkDraftUT {
         final var stationNames = updatedDraft.getStations().collect(TrainStation::getName);
         assertThat(stationNames)
             .containsExactly(berlinHbfName, hamburgHbfName, stuttgartHbfName);
+    }
+
+    @Test
+    public void accumulatesValidationErrorsWhenAddingNewStation() {
+        // Given a Draft with "Berlin Hbf"
+        final var draft = new RailNetworkDraft()
+            .withNewStation(berlinHbfName, berlinHbfPos);
+
+        // When we try to add a new "Berlin Hbf" Station with invalid coordinates
+        final var ex = catchThrowable(() ->
+            draft.withNewStation(berlinHbfName.getName(), 0, 0)
+        );
+
+        // Then we get a Station name, a Latitude and a Longitude validation error
+        assertThat(ex)
+            .isInstanceOf(ValidationException.class)
+            .has(oneStationNameError)
+            .has(oneLatitudeError)
+            .has(oneLongitudeError);
     }
 
     @Test

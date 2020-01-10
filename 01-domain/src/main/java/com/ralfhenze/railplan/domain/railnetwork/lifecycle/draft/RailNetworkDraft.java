@@ -5,6 +5,7 @@ import com.ralfhenze.railplan.domain.common.EntityNotFoundException;
 import com.ralfhenze.railplan.domain.common.validation.Field;
 import com.ralfhenze.railplan.domain.common.validation.Validation;
 import com.ralfhenze.railplan.domain.common.validation.ValidationException;
+import com.ralfhenze.railplan.domain.common.validation.constraints.IsEqualTo;
 import com.ralfhenze.railplan.domain.railnetwork.elements.GeoLocationInGermany;
 import com.ralfhenze.railplan.domain.railnetwork.elements.RailwayTrack;
 import com.ralfhenze.railplan.domain.railnetwork.elements.TrainStation;
@@ -90,8 +91,10 @@ public class RailNetworkDraft implements Aggregate {
         final double latitude,
         final double longitude
     ) {
-        final var v = new Validation();
-        final var name = v.get(() -> new TrainStationName(stationName));
+        final var otherStationNames = stations.collect((s) -> s.getName().getName());
+
+        var v = new Validation();
+        final var name = v.get(() -> new TrainStationName(stationName, otherStationNames));
         final var location = v.get(() -> new GeoLocationInGermany(latitude, longitude));
         v.throwExceptionIfInvalid();
 
