@@ -103,6 +103,7 @@ public class StationsView {
                 if (row.stationId.equals(stationIdToEdit)) {
                     if (validationException != null) {
                         row.stationNameErrors = validationException.getErrorsOfField(Field.STATION_NAME);
+                        row.locationErrors = validationException.getErrorsOfField(Field.LOCATION);
                         row.latitudeErrors = validationException.getErrorsOfField(Field.LATITUDE);
                         row.longitudeErrors = validationException.getErrorsOfField(Field.LONGITUDE);
                     }
@@ -115,10 +116,6 @@ public class StationsView {
             .collect(Collectors.toList());
     }
 
-    private List<String> getErrorsAsString(List<ValidationError> validationErrors) {
-        return validationErrors.stream().map(e -> e.getMessage()).collect(Collectors.toList());
-    }
-
     private StationTableRow getNewStationTableRow(final Model model) {
         final var newStationTableRow = new StationTableRow();
 
@@ -129,6 +126,7 @@ public class StationsView {
 
         if (stationIdToEdit == null && validationException != null) {
             newStationTableRow.stationNameErrors = validationException.getErrorsOfField(Field.STATION_NAME);
+            newStationTableRow.locationErrors = validationException.getErrorsOfField(Field.LOCATION);
             newStationTableRow.latitudeErrors = validationException.getErrorsOfField(Field.LATITUDE);
             newStationTableRow.longitudeErrors = validationException.getErrorsOfField(Field.LONGITUDE);
         }
