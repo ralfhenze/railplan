@@ -91,10 +91,8 @@ public class RailNetworkDraft implements Aggregate {
         final double latitude,
         final double longitude
     ) {
-        final var otherStationNames = stations.collect((s) -> s.getName().getName());
-
         var v = new Validation();
-        final var name = v.get(() -> new TrainStationName(stationName, otherStationNames));
+        final var name = v.get(() -> new TrainStationName(stationName, getOtherStationNames()));
         final var location = v.get(() -> new GeoLocationInGermany(latitude, longitude));
         v.throwExceptionIfInvalid();
 
@@ -146,7 +144,7 @@ public class RailNetworkDraft implements Aggregate {
     ) {
         final var v = new Validation();
         final var id = v.get(() -> new TrainStationId(stationId));
-        final var name = v.get(() -> new TrainStationName(newStationName));
+        final var name = v.get(() -> new TrainStationName(newStationName, getOtherStationNames()));
         final var location = v.get(() -> new GeoLocationInGermany(newLatitude, newLongitude));
         v.throwExceptionIfInvalid();
 
@@ -278,6 +276,10 @@ public class RailNetworkDraft implements Aggregate {
             .detectOptional(station -> station.getName().equals(name))
             .orElseThrow(() -> new EntityNotFoundException("Station", "name", name.getName()))
             .getId();
+    }
+
+    private ImmutableList<String> getOtherStationNames() {
+        return stations.collect((s) -> s.getName().getName());
     }
 
     private void ensureTrackExists(

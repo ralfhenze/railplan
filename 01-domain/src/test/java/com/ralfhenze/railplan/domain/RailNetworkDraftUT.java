@@ -67,6 +67,26 @@ public class RailNetworkDraftUT {
     }
 
     @Test
+    public void accumulatesValidationErrorsWhenUpdatingStation() {
+        // Given a Draft with "Berlin Hbf" and "Hamburg Hbf"
+        final var draft = new RailNetworkDraft()
+            .withNewStation(berlinHbfName, berlinHbfPos)
+            .withNewStation(hamburgHbfName, hamburgHbfPos);
+
+        // When we try to rename "Hamburg Hbf" to "Berlin Hbf" with invalid coordinates
+        final var ex = catchThrowable(() ->
+            draft.withUpdatedStation("2", berlinHbfName.getName(), 0, 0)
+        );
+
+        // Then we get a Station name, a Latitude and a Longitude validation error
+        assertThat(ex)
+            .isInstanceOf(ValidationException.class)
+            .has(oneStationNameError)
+            .has(oneLatitudeError)
+            .has(oneLongitudeError);
+    }
+
+    @Test
     public void ensuresUniqueStationNamesWhenRenaming() {
         // Given a Draft with "Berlin Hbf" and "Hamburg Hbf"
         final var draft = new RailNetworkDraft()
