@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 public class StationsController {
@@ -34,10 +35,10 @@ public class StationsController {
      * Shows a list of Stations.
      */
     @GetMapping({"/drafts/{currentDraftId}", "/drafts/{currentDraftId}/stations"})
+    @ResponseBody
     public String showDraftPage(@PathVariable String currentDraftId, Model model) {
         return new StationsView(currentDraftId, draftRepository)
-            .addRequiredAttributesTo(model)
-            .getViewName();
+            .getHtml(model);
     }
 
     /**

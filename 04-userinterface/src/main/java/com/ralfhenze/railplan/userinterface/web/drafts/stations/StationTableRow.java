@@ -6,6 +6,7 @@ public class StationTableRow {
 
     public boolean showInputField = false;
     public boolean disabled = false;
+    public int index = 0;
     public String stationId = "";
     public String stationName = "";
     public List<String> stationNameErrors = List.of();

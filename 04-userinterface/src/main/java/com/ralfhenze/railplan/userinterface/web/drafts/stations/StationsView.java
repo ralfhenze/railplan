@@ -1,17 +1,47 @@
 package com.ralfhenze.railplan.userinterface.web.drafts.stations;
 
 import com.ralfhenze.railplan.domain.common.validation.Field;
-import com.ralfhenze.railplan.domain.common.validation.ValidationError;
 import com.ralfhenze.railplan.domain.common.validation.ValidationException;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraft;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftId;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftRepository;
 import com.ralfhenze.railplan.infrastructure.persistence.dto.RailNetworkDraftDto;
 import com.ralfhenze.railplan.userinterface.web.GermanySvgViewFragment;
+import j2html.Config;
+import j2html.tags.ContainerTag;
+import j2html.tags.EmptyTag;
 import org.springframework.ui.Model;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
+import static j2html.TagCreator.a;
+import static j2html.TagCreator.body;
+import static j2html.TagCreator.caption;
+import static j2html.TagCreator.div;
+import static j2html.TagCreator.each;
+import static j2html.TagCreator.form;
+import static j2html.TagCreator.h1;
+import static j2html.TagCreator.h2;
+import static j2html.TagCreator.h3;
+import static j2html.TagCreator.head;
+import static j2html.TagCreator.header;
+import static j2html.TagCreator.html;
+import static j2html.TagCreator.join;
+import static j2html.TagCreator.li;
+import static j2html.TagCreator.link;
+import static j2html.TagCreator.meta;
+import static j2html.TagCreator.nav;
+import static j2html.TagCreator.span;
+import static j2html.TagCreator.table;
+import static j2html.TagCreator.tbody;
+import static j2html.TagCreator.td;
+import static j2html.TagCreator.th;
+import static j2html.TagCreator.thead;
+import static j2html.TagCreator.title;
+import static j2html.TagCreator.tr;
+import static j2html.TagCreator.ul;
 
 /**
  * Prepares the necessary data for resources/templates/stations.html.
@@ -89,11 +119,14 @@ public class StationsView {
     }
 
     private List<StationTableRow> getStationTableRows(final Model model) {
-        return draft
-            .getStations()
-            .stream()
-            .map(station -> {
+        final var stations = draft.getStations();
+
+        return IntStream
+            .range(0, stations.size())
+            .mapToObj(index -> {
+                final var station = stations.get(index);
                 final var row = new StationTableRow();
+                row.index = index + 1;
                 row.stationId = station.getId().toString();
                 row.stationName = station.getName().getName();
                 row.latitude = station.getLocation().getLatitudeAsString();
@@ -145,5 +178,147 @@ public class StationsView {
             row.latitude = updatedStationTableRow.getLatitude();
             row.longitude = updatedStationTableRow.getLongitude();
         }
+    }
+
+    public String getHtml(final Model model) {
+        final var selectedNavEntry = "drafts";
+        final var selectedTab = "stations";
+        final var draftId = currentDraftId;
+        final var draftDto = getDraftDto();
+        final var svg = new GermanySvgViewFragment(draftDto.getStations(), draftDto.getTracks());
+        final var stationTableRows = getStationTableRows(model);
+
+        Config.closeEmptyTags = true;
+
+        return "<!DOCTYPE HTML>\n" + html().attr("lang", "en-US").with(
+            head(
+                title("RailPlan"),
+                meta().attr("http-equiv", "Content-Type").attr("content", "text/html; charset=UTF-8"),
+                link().withRel("stylesheet").withHref("/css/railplan.css")
+            ),
+            body(
+                header(
+                    h2().withId("logo").with(
+                        a().withHref("/").withText("RailPlan")
+                    ),
+                    nav().withId("main-navigation").with(
+                        ul(
+                            li(
+                                a().withHref("/drafts")
+                                    .withCondClass("drafts".equals(selectedNavEntry), "selected")
+                                    .withText("Drafts")
+                            ),
+                            li(
+                                a().withHref("/networks")
+                                    .withCondClass("networks".equals(selectedNavEntry), "selected")
+                                    .withText("Networks")
+                            )
+                        )
+                    )
+                ),
+                div().withId("data-panel").with(
+                    div().withId("network-elements-box").withClass("box").with(
+                        nav().attr("aria-label", "Network Element Tabs").with(
+                            ul(
+                                li(
+                                    a().withHref("/drafts/" + draftId + "/stations")
+                                        .withCondClass("stations".equals(selectedTab), "selected")
+                                        .withText("Train Stations")
+                                ),
+                                li(
+                                    a().withHref("/drafts/" + draftId + "/tracks")
+                                        .withCondClass("tracks".equals(selectedTab), "selected")
+                                        .withText("Railway Tracks")
+                                ),
+                                li(
+                                    a().withHref("/drafts/" + draftId + "/release")
+                                        .withCondClass("release".equals(selectedTab), "selected")
+                                        .withText("Release")
+                                )
+                            )
+                        ),
+                        div().withId("stations").with(
+                            h1("Draft"),
+                            form().withMethod("post").with(
+                                table(
+                                    caption(h3("Train Stations")),
+                                    thead(
+                                        tr(
+                                            th().attr("scope", "col").withText("#"),
+                                            th().attr("scope", "col").withText("Name"),
+                                            th().attr("scope", "col").withText("Latitude"),
+                                            th().attr("scope", "col").withText("Longitude"),
+                                            th().attr("scope", "col").withText("Actions")
+                                        )
+                                    ),
+                                    tbody(
+                                        each(stationTableRows, row ->
+                                            tr().withClass("station-row").with(
+                                                td(span().withText(String.valueOf(row.index))),
+                                                td(span().withClass("stationName").withText(row.stationName)),
+                                                td(span().withClass("latitude").withText(row.latitude)),
+                                                td(span().withClass("longitude").withText(row.longitude)),
+                                                td(
+                                                    div(
+                                                        join(
+                                                            a().withHref("/drafts/" + draftId + "/stations/" + row.stationId + "/edit")
+                                                                .withText("Edit"),
+                                                            " | ",
+                                                            a().withHref("/drafts/" + draftId + "/stations/" + row.stationId + "/delete")
+                                                                .withText("Delete")
+                                                        )
+                                                    )
+                                                )
+                                            )
+                                        ),
+                                        tr().withClass("add-button-row").with(
+                                            td().attr("colspan", "5").with(
+                                                a().withClass("add-button")
+                                                    .withHref("/drafts/" + draftId + "/stations/new-from-preset")
+                                                    .withText("+ Add Preset Stations"),
+                                                a().withClass("add-button")
+                                                    .withHref("/drafts/" + draftId + "/stations/new-custom")
+                                                    .withText("+ Add Custom Station")
+                                            )
+                                        )
+                                    )
+                                )
+                            )
+                        )
+                    )
+                ),
+                div().withId("germany-map").withClass("box").with(
+                    svg().attr("viewBox", "0 0 " + svg.MAP_WIDTH + " " + svg.MAP_HEIGHT).with(
+                        path().attr("d", svg.getPath()),
+                        each(svg.getTrackCoordinates(), coordinates ->
+                            line()
+                                .attr("x1", coordinates.get(0)).attr("y1", coordinates.get(1))
+                                .attr("x2", coordinates.get(2)).attr("y2", coordinates.get(3))
+                        ),
+                        each(svg.getStationCoordinates(), coordinates ->
+                            circle()
+                                .attr("cx", coordinates.get(0)).attr("cy", coordinates.get(1))
+                                .attr("r", "4")
+                        )
+                    )
+                )
+            )
+        ).renderFormatted();
+    }
+
+    private static ContainerTag svg() {
+        return new ContainerTag("svg");
+    }
+
+    private static EmptyTag path() {
+        return new EmptyTag("path");
+    }
+
+    private static EmptyTag line() {
+        return new EmptyTag("line");
+    }
+
+    private static EmptyTag circle() {
+        return new EmptyTag("circle");
     }
 }

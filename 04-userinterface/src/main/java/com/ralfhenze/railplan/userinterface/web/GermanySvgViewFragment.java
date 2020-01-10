@@ -13,8 +13,8 @@ import java.util.stream.Collectors;
 
 public class GermanySvgViewFragment {
 
-    private static final double MAP_WIDTH = 200;
-    private static final double MAP_HEIGHT = 400;
+    public static final double MAP_WIDTH = 200;
+    public static final double MAP_HEIGHT = 400;
     private static final double EARTH_RADIUS = 6378137.0;
     private static final double ZOOM = 5.0;
     private static final double MAX_LATITUDE = 85.0511287798;
@@ -37,11 +37,11 @@ public class GermanySvgViewFragment {
         model.addAttribute("germanyWidth", MAP_WIDTH);
         model.addAttribute("germanyHeight", MAP_HEIGHT);
         model.addAttribute("germanySvgPath", getPath());
-        model.addAttribute("germanySvgStations", getStationCoordinates(stationDtos));
-        model.addAttribute("germanySvgTracks", getTrackCoordinates(stationDtos, trackDtos));
+        model.addAttribute("germanySvgStations", getStationCoordinates());
+        model.addAttribute("germanySvgTracks", getTrackCoordinates());
     }
 
-    private String getPath() {
+    public String getPath() {
         final var mapper = new ObjectMapper();
         final var inputStream = TypeReference.class
             .getResourceAsStream("/json/germany_border_geo_path.json");
@@ -64,7 +64,7 @@ public class GermanySvgViewFragment {
         }
     }
 
-    private List<List<Long>> getStationCoordinates(final List<TrainStationDto> stationDtos) {
+    public List<List<Long>> getStationCoordinates() {
         return stationDtos.stream()
             .map(stationDto ->
                 getPixelCoordinates(stationDto.getLatitude(), stationDto.getLongitude())
@@ -72,10 +72,7 @@ public class GermanySvgViewFragment {
             .collect(Collectors.toList());
     }
 
-    private List<List<Long>> getTrackCoordinates(
-        final List<TrainStationDto> stationDtos,
-        final List<RailwayTrackDto> trackDtos
-    ) {
+    public List<List<Long>> getTrackCoordinates() {
         final Map<Integer, List<Long>> stationPixelCoordinates = stationDtos.stream()
             .collect(Collectors.toMap(
                 TrainStationDto::getId,
