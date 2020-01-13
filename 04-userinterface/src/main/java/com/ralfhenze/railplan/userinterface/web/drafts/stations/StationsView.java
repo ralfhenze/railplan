@@ -29,6 +29,7 @@ import static j2html.TagCreator.h3;
 import static j2html.TagCreator.head;
 import static j2html.TagCreator.header;
 import static j2html.TagCreator.html;
+import static j2html.TagCreator.iff;
 import static j2html.TagCreator.iffElse;
 import static j2html.TagCreator.input;
 import static j2html.TagCreator.join;
@@ -270,7 +271,8 @@ public class StationsView {
                                                 getErrorsRow(row)
                                             )
                                         ),
-                                        getLastStationsTableRow(draftId, showCustomStationForm, newStationTableRow)
+                                        getLastStationsTableRow(draftId, showCustomStationForm, newStationTableRow),
+                                        iff(newStationTableRow.hasErrors(), getErrorsRow(newStationTableRow))
                                     )
                                 )
                             )

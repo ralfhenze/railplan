@@ -110,10 +110,12 @@ public class StationsController {
      * Creates a new custom Station or shows validation errors.
      */
     @PostMapping("/drafts/{currentDraftId}/stations/new-custom")
+    @ResponseBody
     public String createNewCustomStation(
         @PathVariable String currentDraftId,
         @ModelAttribute(name = "updatedStationTableRow") StationTableRow stationRow,
-        Model model
+        Model model,
+        HttpServletResponse response
     ) {
         try {
             trainStationService.addStationToDraft(
@@ -128,11 +130,10 @@ public class StationsController {
             return new StationsView(currentDraftId, draftRepository)
                 .withShowCustomStationForm(true)
                 .withValidationException(exception)
-                .addRequiredAttributesTo(model)
-                .getViewName();
+                .getHtml(model);
         }
 
-        return "redirect:/drafts/{currentDraftId}/stations";
+        return redirectTo("/drafts/" + currentDraftId + "/stations", response);
     }
 
     /**
