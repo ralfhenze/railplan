@@ -37,6 +37,8 @@ import static j2html.TagCreator.li;
 import static j2html.TagCreator.link;
 import static j2html.TagCreator.meta;
 import static j2html.TagCreator.nav;
+import static j2html.TagCreator.option;
+import static j2html.TagCreator.select;
 import static j2html.TagCreator.span;
 import static j2html.TagCreator.table;
 import static j2html.TagCreator.tag;
@@ -194,6 +196,8 @@ public class StationsView {
         final var stationTableRows = getStationTableRows(model);
         final var showCustomStationForm = this.showCustomStationForm;
         final var newStationTableRow = getNewStationTableRow(model);
+        final var showPresetStationForm = this.showPresetStationForm;
+        final var allPresetStations = List.of(PresetStation.values());
 
         Config.closeEmptyTags = true;
 
@@ -271,11 +275,12 @@ public class StationsView {
                                                 getErrorsRow(row)
                                             )
                                         ),
-                                        getLastStationsTableRow(draftId, showCustomStationForm, newStationTableRow),
+                                        getLastStationsTableRow(draftId, showCustomStationForm, showPresetStationForm, newStationTableRow),
                                         iff(newStationTableRow.hasErrors(), getErrorsRow(newStationTableRow))
                                     )
                                 )
-                            )
+                            ),
+                            iff(showPresetStationForm, getPresetStationForm(draftId, allPresetStations))
                         )
                     )
                 ),
@@ -385,6 +390,7 @@ public class StationsView {
     private static Tag getLastStationsTableRow(
         final String draftId,
         final boolean showCustomStationForm,
+        final boolean showPresetStationForm,
         final StationTableRow row
     ) {
         if (showCustomStationForm) {
@@ -398,7 +404,7 @@ public class StationsView {
                     a().withHref("/drafts/" + draftId + "/stations").withText("Cancel")
                 )
             );
-        } else {
+        } else if (!showPresetStationForm) {
             return tr().withClass("add-button-row").with(
                 td().attr("colspan", "5").with(
                     a().withClass("add-button")
@@ -410,6 +416,22 @@ public class StationsView {
                 )
             );
         }
+
+        return null;
     }
 
+    private static Tag getPresetStationForm(
+        final String draftId,
+        final List<PresetStation> allPresetStations
+    ) {
+        return form().withId("preset-station-form").withMethod("post").with(
+            select().attr("multiple", "multiple").attr("size", 10).withName("presetStationsToAdd").with(
+                each(allPresetStations, presetStation ->
+                    option().withValue(presetStation.name()).withText(presetStation.name)
+                )
+            ),
+            input().withType("submit").withClass("add-button").withValue("Add Stations"),
+            a().withHref("/drafts/" + draftId + "/stations").withText("Cancel")
+        );
+    }
 }

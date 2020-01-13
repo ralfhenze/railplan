@@ -50,11 +50,11 @@ public class StationsController {
      * Shows a form to create new Stations from presets.
      */
     @GetMapping("/drafts/{currentDraftId}/stations/new-from-preset")
+    @ResponseBody
     public String showPresetStationForm(@PathVariable String currentDraftId, Model model) {
         return new StationsView(currentDraftId, draftRepository)
             .withShowPresetStationForm(true, false)
-            .addRequiredAttributesTo(model)
-            .getViewName();
+            .getHtml(model);
     }
 
     /**
