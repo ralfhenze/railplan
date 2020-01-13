@@ -16,6 +16,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
+import static com.ralfhenze.railplan.userinterface.web.ControllerHelper.redirectTo;
+
 @Controller
 public class StationsController {
 
@@ -149,11 +154,13 @@ public class StationsController {
      * Updates an existing Station or shows validation errors.
      */
     @PostMapping("/drafts/{currentDraftId}/stations/{stationId}/edit")
+    @ResponseBody
     public String updateStation(
         @PathVariable String currentDraftId,
         @PathVariable String stationId,
         @ModelAttribute(name = "updatedStationTableRow") StationTableRow stationRow,
-        Model model
+        Model model,
+        HttpServletResponse response
     ) {
         try {
             trainStationService.updateStationOfDraft(
@@ -169,11 +176,10 @@ public class StationsController {
             return new StationsView(currentDraftId, draftRepository)
                 .withStationIdToEdit(stationId)
                 .withValidationException(exception)
-                .addRequiredAttributesTo(model)
-                .getViewName();
+                .getHtml(model);
         }
 
-        return "redirect:/drafts/{currentDraftId}/stations";
+        return redirectTo("/drafts/" + currentDraftId + "/stations", response);
     }
 
     /**

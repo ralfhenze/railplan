@@ -357,6 +357,7 @@ public class StationsView {
     private static Tag getErrorsRow(StationTableRow row) {
         if (row.hasErrors()) {
             return tr(
+                td(),
                 td(
                     getErrorMessages("stationName", row.stationNameErrors)
                 ),
@@ -368,7 +369,8 @@ public class StationsView {
                     td().attr("colspan", "2").with(
                         getErrorMessages("location", row.locationErrors)
                     )
-                )
+                ),
+                td()
             );
         }
 
