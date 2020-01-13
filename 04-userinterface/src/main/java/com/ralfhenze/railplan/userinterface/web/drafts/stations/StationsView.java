@@ -191,6 +191,8 @@ public class StationsView {
         final var draftDto = getDraftDto();
         final var svg = new GermanySvgViewFragment(draftDto.getStations(), draftDto.getTracks());
         final var stationTableRows = getStationTableRows(model);
+        final var showCustomStationForm = this.showCustomStationForm;
+        final var newStationTableRow = getNewStationTableRow(model);
 
         Config.closeEmptyTags = true;
 
@@ -268,16 +270,7 @@ public class StationsView {
                                                 getErrorsRow(row)
                                             )
                                         ),
-                                        tr().withClass("add-button-row").with(
-                                            td().attr("colspan", "5").with(
-                                                a().withClass("add-button")
-                                                    .withHref("/drafts/" + draftId + "/stations/new-from-preset")
-                                                    .withText("+ Add Preset Stations"),
-                                                a().withClass("add-button")
-                                                    .withHref("/drafts/" + draftId + "/stations/new-custom")
-                                                    .withText("+ Add Custom Station")
-                                            )
-                                        )
+                                        getLastStationsTableRow(draftId, showCustomStationForm, newStationTableRow)
                                     )
                                 )
                             )
@@ -354,7 +347,7 @@ public class StationsView {
         }
     }
 
-    private static Tag getErrorsRow(StationTableRow row) {
+    private static Tag getErrorsRow(final StationTableRow row) {
         if (row.hasErrors()) {
             return tr(
                 td(),
@@ -377,7 +370,7 @@ public class StationsView {
         return null;
     }
 
-    private static Tag getErrorMessages(String name, List<String> errors) {
+    private static Tag getErrorMessages(final String name, final List<String> errors) {
         if (!errors.isEmpty()) {
             return ul().withClasses("errors", name).with(
                 each(errors, error -> li().withText(error))
@@ -386,4 +379,35 @@ public class StationsView {
 
         return null;
     }
+
+    private static Tag getLastStationsTableRow(
+        final String draftId,
+        final boolean showCustomStationForm,
+        final StationTableRow row
+    ) {
+        if (showCustomStationForm) {
+            return tr(
+                td().withText("+"),
+                td(getStationTableCell("stationName", row.stationName, row.showInputField, row.stationNameIsInvalid())),
+                td(getStationTableCell("latitude", row.latitude, row.showInputField, row.latitudeIsInvalid())),
+                td(getStationTableCell("longitude", row.longitude, row.showInputField, row.longitudeIsInvalid())),
+                td(
+                    input().withType("submit").withClass("add-button").withValue("Add Station"),
+                    a().withHref("/drafts/" + draftId + "/stations").withText("Cancel")
+                )
+            );
+        } else {
+            return tr().withClass("add-button-row").with(
+                td().attr("colspan", "5").with(
+                    a().withClass("add-button")
+                        .withHref("/drafts/" + draftId + "/stations/new-from-preset")
+                        .withText("+ Add Preset Stations"),
+                    a().withClass("add-button")
+                        .withHref("/drafts/" + draftId + "/stations/new-custom")
+                        .withText("+ Add Custom Station")
+                )
+            );
+        }
+    }
+
 }

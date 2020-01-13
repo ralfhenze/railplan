@@ -99,11 +99,11 @@ public class StationsController {
      * Shows a form to create a new custom Station.
      */
     @GetMapping("/drafts/{currentDraftId}/stations/new-custom")
-    public String showNewStationForm(@PathVariable String currentDraftId, Model model) {
+    @ResponseBody
+    public String showNewCustomStationForm(@PathVariable String currentDraftId, Model model) {
         return new StationsView(currentDraftId, draftRepository)
             .withShowCustomStationForm(true)
-            .addRequiredAttributesTo(model)
-            .getViewName();
+            .getHtml(model);
     }
 
     /**
