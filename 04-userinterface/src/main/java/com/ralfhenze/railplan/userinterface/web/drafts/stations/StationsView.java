@@ -73,10 +73,6 @@ public class StationsView {
         this.draftRepository = draftRepository;
     }
 
-    public String getViewName() {
-        return "stations";
-    }
-
     public StationsView withStationIdToEdit(final String stationIdToEdit) {
         this.stationIdToEdit = stationIdToEdit;
         return this;
@@ -105,25 +101,6 @@ public class StationsView {
 
     public StationsView withValidationException(final ValidationException validationException) {
         this.validationException = validationException;
-        return this;
-    }
-
-    public StationsView addRequiredAttributesTo(final Model model) {
-        final var draftDto = getDraftDto();
-
-        model.addAttribute("stationTableRows", getStationTableRows(model));
-        model.addAttribute("showCustomStationForm", showCustomStationForm);
-        model.addAttribute("newStationTableRow", getNewStationTableRow(model));
-
-        model.addAttribute("showPresetStationForm", showPresetStationForm);
-        model.addAttribute("allPresetStations", PresetStation.values());
-        if (!showPresetStationFormErrors) {
-            model.addAttribute("presetStationFormModel", new PresetStationFormModel());
-        }
-
-        new GermanySvgViewFragment(draftDto.getStations(), draftDto.getTracks())
-            .addRequiredAttributesTo(model);
-
         return this;
     }
 
