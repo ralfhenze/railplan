@@ -10,6 +10,7 @@ import com.ralfhenze.railplan.userinterface.web.GermanySvgViewFragment;
 import j2html.Config;
 import j2html.tags.ContainerTag;
 import j2html.tags.EmptyTag;
+import j2html.tags.Tag;
 import org.springframework.ui.Model;
 
 import java.util.List;
@@ -28,6 +29,8 @@ import static j2html.TagCreator.h3;
 import static j2html.TagCreator.head;
 import static j2html.TagCreator.header;
 import static j2html.TagCreator.html;
+import static j2html.TagCreator.iffElse;
+import static j2html.TagCreator.input;
 import static j2html.TagCreator.join;
 import static j2html.TagCreator.li;
 import static j2html.TagCreator.link;
@@ -35,6 +38,7 @@ import static j2html.TagCreator.meta;
 import static j2html.TagCreator.nav;
 import static j2html.TagCreator.span;
 import static j2html.TagCreator.table;
+import static j2html.TagCreator.tag;
 import static j2html.TagCreator.tbody;
 import static j2html.TagCreator.td;
 import static j2html.TagCreator.th;
@@ -253,22 +257,15 @@ public class StationsView {
                                     ),
                                     tbody(
                                         each(stationTableRows, row ->
-                                            tr().withClass("station-row").with(
-                                                td(span().withText(String.valueOf(row.index))),
-                                                td(span().withClass("stationName").withText(row.stationName)),
-                                                td(span().withClass("latitude").withText(row.latitude)),
-                                                td(span().withClass("longitude").withText(row.longitude)),
-                                                td(
-                                                    div(
-                                                        join(
-                                                            a().withHref("/drafts/" + draftId + "/stations/" + row.stationId + "/edit")
-                                                                .withText("Edit"),
-                                                            " | ",
-                                                            a().withHref("/drafts/" + draftId + "/stations/" + row.stationId + "/delete")
-                                                                .withText("Delete")
-                                                        )
-                                                    )
-                                                )
+                                            tag(null).with(
+                                                tr().withClass("station-row").with(
+                                                    td(span().withText(String.valueOf(row.index))),
+                                                    td(getStationTableCell("stationName", row.stationName, row.showInputField, row.stationNameIsInvalid())),
+                                                    td(getStationTableCell("latitude", row.latitude, row.showInputField, row.latitudeIsInvalid())),
+                                                    td(getStationTableCell("longitude", row.longitude, row.showInputField, row.longitudeIsInvalid())),
+                                                    td(getActionsCell(draftId, row))
+                                                ),
+                                                getErrorsRow(row)
                                             )
                                         ),
                                         tr().withClass("add-button-row").with(
@@ -320,5 +317,71 @@ public class StationsView {
 
     private static EmptyTag circle() {
         return new EmptyTag("circle");
+    }
+
+    private static Tag getStationTableCell(
+        final String name,
+        final String value,
+        final boolean showInputField,
+        final boolean isInvalid
+    ) {
+        if (showInputField) {
+            return input().withCondClass(isInvalid, "invalid").withType("text").withName(name).withValue(value);
+        } else {
+            return span().withClass(name).withText(value);
+        }
+    }
+
+    private static Tag getActionsCell(final String draftId, final StationTableRow row) {
+        if (row.showInputField) {
+            return div(
+                join(
+                    input().withType("submit").withClass("add-button").withValue("Update"),
+                    " | ",
+                    a().withHref("/drafts/" + draftId + "/stations/").withText("Cancel")
+                )
+            );
+        } else {
+            return div(
+                join(
+                    a().withHref("/drafts/" + draftId + "/stations/" + row.stationId + "/edit")
+                        .withText("Edit"),
+                    " | ",
+                    a().withHref("/drafts/" + draftId + "/stations/" + row.stationId + "/delete")
+                        .withText("Delete")
+                )
+            );
+        }
+    }
+
+    private static Tag getErrorsRow(StationTableRow row) {
+        if (row.hasErrors()) {
+            return tr(
+                td(
+                    getErrorMessages("stationName", row.stationNameErrors)
+                ),
+                iffElse(row.locationErrors.isEmpty(),
+                    tag(null).with(
+                        td(getErrorMessages("latitude", row.latitudeErrors)),
+                        td(getErrorMessages("longitude", row.longitudeErrors))
+                    ),
+                    td().attr("colspan", "2").with(
+                        getErrorMessages("location", row.locationErrors)
+                    )
+                )
+            );
+        }
+
+        return null;
+    }
+
+    private static Tag getErrorMessages(String name, List<String> errors) {
+        if (!errors.isEmpty()) {
+            return ul().withClasses("errors", name).with(
+                each(errors, error -> li().withText(error))
+            );
+        }
+
+        return null;
     }
 }

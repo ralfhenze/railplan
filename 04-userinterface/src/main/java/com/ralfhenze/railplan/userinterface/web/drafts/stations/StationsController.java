@@ -134,6 +134,7 @@ public class StationsController {
      * Shows a form to edit an existing Station.
      */
     @GetMapping("/drafts/{currentDraftId}/stations/{stationId}/edit")
+    @ResponseBody
     public String editStation(
         @PathVariable String currentDraftId,
         @PathVariable String stationId,
@@ -141,8 +142,7 @@ public class StationsController {
     ) {
         return new StationsView(currentDraftId, draftRepository)
             .withStationIdToEdit(stationId)
-            .addRequiredAttributesTo(model)
-            .getViewName();
+            .getHtml(model);
     }
 
     /**
