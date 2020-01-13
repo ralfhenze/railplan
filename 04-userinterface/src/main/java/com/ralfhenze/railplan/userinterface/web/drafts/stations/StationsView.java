@@ -63,6 +63,7 @@ public class StationsView {
     private boolean showPresetStationFormErrors = false;
     private RailNetworkDraft draft;
     private ValidationException validationException;
+    private PresetStationFormModel presetStationFormModel;
 
     public StationsView(
         final String currentDraftId,
@@ -92,6 +93,13 @@ public class StationsView {
     ) {
         this.showPresetStationForm = showPresetStationForm;
         this.showPresetStationFormErrors = showPresetStationFormErrors;
+        return this;
+    }
+
+    public StationsView withPresetStationFormModel(
+        final PresetStationFormModel presetStationFormModel
+    ) {
+        this.presetStationFormModel = presetStationFormModel;
         return this;
     }
 
@@ -198,6 +206,8 @@ public class StationsView {
         final var newStationTableRow = getNewStationTableRow(model);
         final var showPresetStationForm = this.showPresetStationForm;
         final var allPresetStations = List.of(PresetStation.values());
+        final var presetStationFormModel = (this.presetStationFormModel == null) ?
+            new PresetStationFormModel() : this.presetStationFormModel;
 
         Config.closeEmptyTags = true;
 
@@ -280,7 +290,7 @@ public class StationsView {
                                     )
                                 )
                             ),
-                            iff(showPresetStationForm, getPresetStationForm(draftId, allPresetStations))
+                            iff(showPresetStationForm, getPresetStationForm(draftId, allPresetStations, presetStationFormModel))
                         )
                     )
                 ),
@@ -422,14 +432,23 @@ public class StationsView {
 
     private static Tag getPresetStationForm(
         final String draftId,
-        final List<PresetStation> allPresetStations
+        final List<PresetStation> allPresetStations,
+        final PresetStationFormModel presetStationFormModel
     ) {
         return form().withId("preset-station-form").withMethod("post").with(
             select().attr("multiple", "multiple").attr("size", 10).withName("presetStationsToAdd").with(
                 each(allPresetStations, presetStation ->
-                    option().withValue(presetStation.name()).withText(presetStation.name)
+                    option()
+                        .withValue(presetStation.name())
+                        .withText(presetStation.name)
+                        .condAttr(
+                            presetStationFormModel.getPresetStationsToAdd().contains(presetStation.name()),
+                            "selected",
+                            "selected"
+                        )
                 )
             ),
+            // TODO: render presetStationErrors
             input().withType("submit").withClass("add-button").withValue("Add Stations"),
             a().withHref("/drafts/" + draftId + "/stations").withText("Cancel")
         );

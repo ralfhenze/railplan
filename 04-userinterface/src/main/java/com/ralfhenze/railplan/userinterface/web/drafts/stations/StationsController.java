@@ -61,10 +61,12 @@ public class StationsController {
      * Creates new Stations from presets or shows validation errors.
      */
     @PostMapping("/drafts/{currentDraftId}/stations/new-from-preset")
+    @ResponseBody
     public String createNewStationsFromPresets(
         @PathVariable String currentDraftId,
         @ModelAttribute PresetStationFormModel presetStationFormModel,
-        Model model
+        Model model,
+        HttpServletResponse response
     ) {
         try {
             for (final var stationName : presetStationFormModel.getPresetStationsToAdd()) {
@@ -87,12 +89,12 @@ public class StationsController {
         } catch (ValidationException exception) {
             return new StationsView(currentDraftId, draftRepository)
                 .withShowPresetStationForm(true, true)
+                .withPresetStationFormModel(presetStationFormModel)
                 .withValidationException(exception)
-                .addRequiredAttributesTo(model)
-                .getViewName();
+                .getHtml(model);
         }
 
-        return "redirect:/drafts/{currentDraftId}/stations";
+        return redirectTo("/drafts/" + currentDraftId + "/stations", response);
     }
 
     /**

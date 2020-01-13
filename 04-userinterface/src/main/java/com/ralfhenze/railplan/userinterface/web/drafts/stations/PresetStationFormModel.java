@@ -4,7 +4,7 @@ import java.util.List;
 
 public class PresetStationFormModel {
 
-    private List<String> presetStationsToAdd;
+    private List<String> presetStationsToAdd = List.of();
 
     public List<String> getPresetStationsToAdd() {
         return presetStationsToAdd;
