@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 public class TracksController {
@@ -35,10 +36,9 @@ public class TracksController {
      * Shows a list of Tracks.
      */
     @GetMapping("/drafts/{currentDraftId}/tracks")
-    public String showTracks(@PathVariable String currentDraftId, Model model) {
-        return new TracksView(currentDraftId, draftRepository)
-            .addRequiredAttributesTo(model)
-            .getViewName();
+    @ResponseBody
+    public String showTracks(@PathVariable String currentDraftId) {
+        return new TracksView(currentDraftId, draftRepository).getHtml();
     }
 
     /**
