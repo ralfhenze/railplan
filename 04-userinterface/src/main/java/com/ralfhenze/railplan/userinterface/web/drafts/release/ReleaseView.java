@@ -9,7 +9,6 @@ import com.ralfhenze.railplan.userinterface.web.DefaultView;
 import com.ralfhenze.railplan.userinterface.web.GermanySvgViewFragment;
 import com.ralfhenze.railplan.userinterface.web.NetworkElementTabsView;
 import j2html.tags.Tag;
-import org.springframework.ui.Model;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -33,8 +32,9 @@ public class ReleaseView {
     private final String currentDraftId;
     private final RailNetworkDraftRepository draftRepository;
     private ValidationException validationException;
+    private ValidityPeriodDto validityPeriod = new ValidityPeriodDto();
 
-    public static class ReleaseErrors {
+    private static class ReleaseErrors {
         public List<String> startDateErrors = List.of();
         public List<String> endDateErrors = List.of();
     }
@@ -47,51 +47,26 @@ public class ReleaseView {
         this.draftRepository = draftRepository;
     }
 
-    public String getViewName() {
-        return "release";
-    }
-
     public ReleaseView withValidationException(final ValidationException validationException) {
         this.validationException = validationException;
         return this;
     }
 
-    public ReleaseView addRequiredAttributesTo(final Model model) {
-        final var draftDto = getDraftDto();
-
-        if (validationException == null) {
-            model.addAttribute("releaseErrors", new ReleaseErrors());
-            model.addAttribute("validityPeriod", new ValidityPeriodDto(
-                LocalDate.now().plusDays(1).toString(),
-                LocalDate.now().plusDays(1).plusMonths(1).toString()
-            ));
-        } else {
-            final var releaseErrors = new ReleaseErrors();
-            releaseErrors.startDateErrors = validationException.getErrorsOfField(Field.START_DATE);
-            releaseErrors.endDateErrors = validationException.getErrorsOfField(Field.END_DATE);
-            model.addAttribute("releaseErrors", releaseErrors);
-        }
-
-        new GermanySvgViewFragment(draftDto.getStations(), draftDto.getTracks())
-            .addRequiredAttributesTo(model);
-
+    public ReleaseView withValidityPeriod(final ValidityPeriodDto validityPeriod) {
+        this.validityPeriod = validityPeriod;
         return this;
-    }
-
-    private RailNetworkDraftDto getDraftDto() {
-        final var draft = draftRepository
-            .getRailNetworkDraftOfId(new RailNetworkDraftId(currentDraftId));
-
-        return new RailNetworkDraftDto(draft);
     }
 
     public String getHtml() {
         final var draftId = currentDraftId;
         final var draftDto = getDraftDto();
-        final var germanyMapSvg = new GermanySvgViewFragment(draftDto.getStations(), draftDto.getTracks());
+        final var germanyMapSvg = new GermanySvgViewFragment(
+            draftDto.getStations(),
+            draftDto.getTracks()
+        );
         final var tabsView = new NetworkElementTabsView();
 
-        final var validityPeriod = new ValidityPeriodDto();
+        final var validityPeriod = this.validityPeriod;
         final var releaseErrors = new ReleaseErrors();
 
         if (validationException == null) {
@@ -140,5 +115,12 @@ public class ReleaseView {
         }
 
         return null;
+    }
+
+    private RailNetworkDraftDto getDraftDto() {
+        final var draft = draftRepository
+            .getRailNetworkDraftOfId(new RailNetworkDraftId(currentDraftId));
+
+        return new RailNetworkDraftDto(draft);
     }
 }

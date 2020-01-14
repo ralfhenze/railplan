@@ -6,14 +6,16 @@ import com.ralfhenze.railplan.domain.common.validation.ValidationException;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletResponse;
 import java.time.LocalDate;
+
+import static com.ralfhenze.railplan.userinterface.web.ControllerHelper.redirectTo;
 
 @Controller
 public class ReleaseController {
@@ -43,10 +45,11 @@ public class ReleaseController {
      * Releases a Draft or shows validation errors.
      */
     @PostMapping("/drafts/{currentDraftId}/release")
+    @ResponseBody
     public String releaseDraft(
         @PathVariable String currentDraftId,
         @ModelAttribute(name = "validityPeriod") ValidityPeriodDto periodDto,
-        Model model
+        HttpServletResponse response
     ) {
         try {
             final var network = releasedRailNetworkService.releaseDraft(
@@ -57,13 +60,13 @@ public class ReleaseController {
                 )
             );
 
-            return "redirect:/networks/" + network.getId().get();
+            return redirectTo("/networks/" + network.getId().get(), response);
 
         } catch (ValidationException exception) {
             return new ReleaseView(currentDraftId, draftRepository)
                 .withValidationException(exception)
-                .addRequiredAttributesTo(model)
-                .getViewName();
+                .withValidityPeriod(periodDto)
+                .getHtml();
         }
     }
 }
