@@ -17,7 +17,7 @@ import static j2html.TagCreator.ul;
 /**
  * An HTML view for the Networks page.
  */
-public class NetworksView {
+public class NetworksListView {
 
     private static class IndexedNetworkId {
         public int index;
@@ -27,7 +27,7 @@ public class NetworksView {
     public String getHtml(final List<String> networkIds) {
         final var indexedNetworkIds = getIndexedNetworkIds(networkIds);
 
-        return new DefaultView().getHtml(DefaultView.SelectedNavEntry.START,
+        return new DefaultView().getHtml(DefaultView.SelectedNavEntry.NETWORKS,
             div().withClasses("networks", "fullscreen-wrapper").with(
                 div().withId("index-box").withClass("box").with(
                     div().withId("draft-selector").with(
