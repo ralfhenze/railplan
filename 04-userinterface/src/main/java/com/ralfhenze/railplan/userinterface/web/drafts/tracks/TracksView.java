@@ -7,7 +7,7 @@ import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraf
 import com.ralfhenze.railplan.infrastructure.persistence.dto.RailNetworkDraftDto;
 import com.ralfhenze.railplan.infrastructure.persistence.dto.RailwayTrackDto;
 import com.ralfhenze.railplan.infrastructure.persistence.dto.TrainStationDto;
-import com.ralfhenze.railplan.userinterface.web.GermanySvgViewFragment;
+import com.ralfhenze.railplan.userinterface.web.views.GermanySvgViewFragment;
 import org.javatuples.Pair;
 import org.springframework.ui.Model;
 

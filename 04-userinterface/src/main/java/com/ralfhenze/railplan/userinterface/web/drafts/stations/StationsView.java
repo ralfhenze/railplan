@@ -6,9 +6,9 @@ import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraf
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftId;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftRepository;
 import com.ralfhenze.railplan.infrastructure.persistence.dto.RailNetworkDraftDto;
-import com.ralfhenze.railplan.userinterface.web.DefaultView;
-import com.ralfhenze.railplan.userinterface.web.GermanySvgViewFragment;
-import com.ralfhenze.railplan.userinterface.web.NetworkElementTabsView;
+import com.ralfhenze.railplan.userinterface.web.views.DefaultView;
+import com.ralfhenze.railplan.userinterface.web.views.GermanySvgViewFragment;
+import com.ralfhenze.railplan.userinterface.web.views.NetworkElementTabsView;
 import j2html.tags.Tag;
 import org.springframework.ui.Model;
 
