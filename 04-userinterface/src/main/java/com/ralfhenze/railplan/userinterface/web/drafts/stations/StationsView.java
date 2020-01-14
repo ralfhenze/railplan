@@ -9,8 +9,6 @@ import com.ralfhenze.railplan.infrastructure.persistence.dto.RailNetworkDraftDto
 import com.ralfhenze.railplan.userinterface.web.DefaultView;
 import com.ralfhenze.railplan.userinterface.web.GermanySvgViewFragment;
 import j2html.Config;
-import j2html.tags.ContainerTag;
-import j2html.tags.EmptyTag;
 import j2html.tags.Tag;
 import org.springframework.ui.Model;
 
@@ -169,7 +167,7 @@ public class StationsView {
         final var selectedTab = "stations";
         final var draftId = currentDraftId;
         final var draftDto = getDraftDto();
-        final var svg = new GermanySvgViewFragment(draftDto.getStations(), draftDto.getTracks());
+        final var germanyMapSvg = new GermanySvgViewFragment(draftDto.getStations(), draftDto.getTracks());
         final var stationTableRows = getStationTableRows(model);
         final var showCustomStationForm = this.showCustomStationForm;
         final var newStationTableRow = getNewStationTableRow(model);
@@ -238,38 +236,8 @@ public class StationsView {
                     )
                 )
             ),
-            div().withId("germany-map").withClass("box").with(
-                svg().attr("viewBox", "0 0 " + svg.MAP_WIDTH + " " + svg.MAP_HEIGHT).with(
-                    path().attr("d", svg.getPath()),
-                    each(svg.getTrackCoordinates(), coordinates ->
-                        line()
-                            .attr("x1", coordinates.get(0)).attr("y1", coordinates.get(1))
-                            .attr("x2", coordinates.get(2)).attr("y2", coordinates.get(3))
-                    ),
-                    each(svg.getStationCoordinates(), coordinates ->
-                        circle()
-                            .attr("cx", coordinates.get(0)).attr("cy", coordinates.get(1))
-                            .attr("r", "4")
-                    )
-                )
-            )
+            germanyMapSvg.getDivTag()
         );
-    }
-
-    private static ContainerTag svg() {
-        return new ContainerTag("svg");
-    }
-
-    private static EmptyTag path() {
-        return new EmptyTag("path");
-    }
-
-    private static EmptyTag line() {
-        return new EmptyTag("line");
-    }
-
-    private static EmptyTag circle() {
-        return new EmptyTag("circle");
     }
 
     private static Tag getStationTableCell(

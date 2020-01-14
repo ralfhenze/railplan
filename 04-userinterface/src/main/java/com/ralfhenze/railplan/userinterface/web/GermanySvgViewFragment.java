@@ -4,12 +4,38 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ralfhenze.railplan.infrastructure.persistence.dto.RailwayTrackDto;
 import com.ralfhenze.railplan.infrastructure.persistence.dto.TrainStationDto;
+import com.ralfhenze.railplan.userinterface.web.drafts.stations.PresetStation;
+import com.ralfhenze.railplan.userinterface.web.drafts.stations.PresetStationFormModel;
+import j2html.Config;
+import j2html.tags.ContainerTag;
+import j2html.tags.EmptyTag;
+import j2html.tags.Tag;
 import org.springframework.ui.Model;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import static j2html.TagCreator.a;
+import static j2html.TagCreator.caption;
+import static j2html.TagCreator.div;
+import static j2html.TagCreator.each;
+import static j2html.TagCreator.form;
+import static j2html.TagCreator.h1;
+import static j2html.TagCreator.h3;
+import static j2html.TagCreator.iff;
+import static j2html.TagCreator.li;
+import static j2html.TagCreator.nav;
+import static j2html.TagCreator.span;
+import static j2html.TagCreator.table;
+import static j2html.TagCreator.tag;
+import static j2html.TagCreator.tbody;
+import static j2html.TagCreator.td;
+import static j2html.TagCreator.th;
+import static j2html.TagCreator.thead;
+import static j2html.TagCreator.tr;
+import static j2html.TagCreator.ul;
 
 public class GermanySvgViewFragment {
 
@@ -33,6 +59,24 @@ public class GermanySvgViewFragment {
         this.trackDtos = trackDtos;
     }
 
+    public Tag getDivTag() {
+        return div().withId("germany-map").withClass("box").with(
+            svg().attr("viewBox", "0 0 " + MAP_WIDTH + " " + MAP_HEIGHT).with(
+                path().attr("d", getPath()),
+                each(getTrackCoordinates(), coordinates ->
+                    line()
+                        .attr("x1", coordinates.get(0)).attr("y1", coordinates.get(1))
+                        .attr("x2", coordinates.get(2)).attr("y2", coordinates.get(3))
+                ),
+                each(getStationCoordinates(), coordinates ->
+                    circle()
+                        .attr("cx", coordinates.get(0)).attr("cy", coordinates.get(1))
+                        .attr("r", "4")
+                )
+            )
+        );
+    }
+
     public void addRequiredAttributesTo(final Model model) {
         model.addAttribute("germanyWidth", MAP_WIDTH);
         model.addAttribute("germanyHeight", MAP_HEIGHT);
@@ -41,7 +85,7 @@ public class GermanySvgViewFragment {
         model.addAttribute("germanySvgTracks", getTrackCoordinates());
     }
 
-    public String getPath() {
+    private String getPath() {
         final var mapper = new ObjectMapper();
         final var inputStream = TypeReference.class
             .getResourceAsStream("/json/germany_border_geo_path.json");
@@ -64,7 +108,7 @@ public class GermanySvgViewFragment {
         }
     }
 
-    public List<List<Long>> getStationCoordinates() {
+    private List<List<Long>> getStationCoordinates() {
         return stationDtos.stream()
             .map(stationDto ->
                 getPixelCoordinates(stationDto.getLatitude(), stationDto.getLongitude())
@@ -72,7 +116,7 @@ public class GermanySvgViewFragment {
             .collect(Collectors.toList());
     }
 
-    public List<List<Long>> getTrackCoordinates() {
+    private List<List<Long>> getTrackCoordinates() {
         final Map<Integer, List<Long>> stationPixelCoordinates = stationDtos.stream()
             .collect(Collectors.toMap(
                 TrainStationDto::getId,
@@ -109,5 +153,21 @@ public class GermanySvgViewFragment {
         y = scale * (-0.5 / PI * y + 0.5);
 
         return List.of(x, y);
+    }
+
+    private ContainerTag svg() {
+        return new ContainerTag("svg");
+    }
+
+    private EmptyTag path() {
+        return new EmptyTag("path");
+    }
+
+    private EmptyTag line() {
+        return new EmptyTag("line");
+    }
+
+    private EmptyTag circle() {
+        return new EmptyTag("circle");
     }
 }
