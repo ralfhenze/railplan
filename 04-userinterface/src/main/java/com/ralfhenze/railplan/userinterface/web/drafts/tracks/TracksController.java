@@ -17,6 +17,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletResponse;
+
+import static com.ralfhenze.railplan.userinterface.web.ControllerHelper.redirectTo;
+
 @Controller
 public class TracksController {
 
@@ -87,24 +91,22 @@ public class TracksController {
      * Shows a form to create a new custom Track.
      */
     @GetMapping("/drafts/{currentDraftId}/tracks/new-custom")
-    public String showCustomTrackForm(
-        @PathVariable String currentDraftId,
-        Model model
-    ) {
+    @ResponseBody
+    public String showCustomTrackForm(@PathVariable String currentDraftId) {
         return new TracksView(currentDraftId, draftRepository)
             .withShowCustomTrackForm(true)
-            .addRequiredAttributesTo(model)
-            .getViewName();
+            .getHtml();
     }
 
     /**
      * Creates a new custom Track or shows validation errors.
      */
     @PostMapping("/drafts/{currentDraftId}/tracks/new-custom")
+    @ResponseBody
     public String createNewCustomTrack(
         @PathVariable String currentDraftId,
         @ModelAttribute(name = "newTrack") RailwayTrackDto trackDto,
-        Model model
+        HttpServletResponse response
     ) {
         try {
             railwayTrackService.addTrackByStationId(
@@ -118,11 +120,11 @@ public class TracksController {
             return new TracksView(currentDraftId, draftRepository)
                 .withShowCustomTrackForm(true)
                 .withValidationException(exception)
-                .addRequiredAttributesTo(model)
-                .getViewName();
+                .withTrack(trackDto)
+                .getHtml();
         }
 
-        return "redirect:/drafts/{currentDraftId}/tracks";
+        return redirectTo("/drafts/" + currentDraftId + "/tracks", response);
     }
 
     /**

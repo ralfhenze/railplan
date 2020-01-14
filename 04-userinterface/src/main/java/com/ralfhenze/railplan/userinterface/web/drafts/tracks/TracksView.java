@@ -10,6 +10,7 @@ import com.ralfhenze.railplan.infrastructure.persistence.dto.TrainStationDto;
 import com.ralfhenze.railplan.userinterface.web.views.DefaultView;
 import com.ralfhenze.railplan.userinterface.web.views.GermanySvgViewFragment;
 import com.ralfhenze.railplan.userinterface.web.views.NetworkElementTabsView;
+import j2html.tags.Tag;
 import org.javatuples.Pair;
 import org.springframework.ui.Model;
 
@@ -24,6 +25,11 @@ import static j2html.TagCreator.div;
 import static j2html.TagCreator.each;
 import static j2html.TagCreator.form;
 import static j2html.TagCreator.h3;
+import static j2html.TagCreator.iff;
+import static j2html.TagCreator.input;
+import static j2html.TagCreator.li;
+import static j2html.TagCreator.option;
+import static j2html.TagCreator.select;
 import static j2html.TagCreator.table;
 import static j2html.TagCreator.tag;
 import static j2html.TagCreator.tbody;
@@ -31,6 +37,7 @@ import static j2html.TagCreator.td;
 import static j2html.TagCreator.th;
 import static j2html.TagCreator.thead;
 import static j2html.TagCreator.tr;
+import static j2html.TagCreator.ul;
 
 /**
  * Prepares the necessary data for resources/templates/tracks.html.
@@ -42,6 +49,7 @@ public class TracksView {
     private boolean showCustomTrackForm = false;
     private boolean showPresetTrackForm = false;
     private ValidationException validationException;
+    private RailwayTrackDto track;
 
     private static class TrackRow {
         public String index;
@@ -80,6 +88,11 @@ public class TracksView {
 
     public TracksView withValidationException(final ValidationException validationException) {
         this.validationException = validationException;
+        return this;
+    }
+
+    public TracksView withTrack(final RailwayTrackDto track) {
+        this.track = track;
         return this;
     }
 
@@ -188,6 +201,15 @@ public class TracksView {
         final var tabsView = new NetworkElementTabsView();
         final var stationNames = getStationNames(draftDto);
         final var trackRows = getTrackRows(draftDto, stationNames);
+        var track = this.track;
+        if (track == null) {
+            track = new RailwayTrackDto();
+        }
+
+        var errors = new TrackErrors();
+        if (validationException != null) {
+            errors = getTrackErrors();
+        }
 
         return new DefaultView().getHtml(DefaultView.SelectedNavEntry.DRAFTS,
             div().withId("data-panel").with(
@@ -221,16 +243,19 @@ public class TracksView {
                                             )
                                         )
                                     ),
-                                    tr().withClass("add-button-row").with(
-                                        td().attr("colspan", "5").with(
-                                            a().withClass("add-button")
-                                                .withHref("/drafts/" + draftId + "/tracks/new-from-preset")
-                                                .withText("+ Add Preset Tracks"),
-                                            a().withClass("add-button")
-                                                .withHref("/drafts/" + draftId + "/tracks/new-custom")
-                                                .withText("+ Add Custom Track")
+                                    iff(!showCustomTrackForm,
+                                        tr().withClass("add-button-row").with(
+                                            td().attr("colspan", "5").with(
+                                                a().withClass("add-button")
+                                                    .withHref("/drafts/" + draftId + "/tracks/new-from-preset")
+                                                    .withText("+ Add Preset Tracks"),
+                                                a().withClass("add-button")
+                                                    .withHref("/drafts/" + draftId + "/tracks/new-custom")
+                                                    .withText("+ Add Custom Track")
+                                            )
                                         )
-                                    )
+                                    ),
+                                    getCustomTrackForm(track, errors, stationNames)
                                 )
                             )
                         )
@@ -238,6 +263,64 @@ public class TracksView {
                 )
             ),
             germanyMapSvg.getDivTag()
+        );
+    }
+
+    private Tag getCustomTrackForm(
+        final RailwayTrackDto track,
+        final TrackErrors errors,
+        final Map<Integer, String> stationNames
+    ) {
+        if (showCustomTrackForm) {
+            return tr(
+                td("+"),
+                td(
+                    getTrackSelector(
+                        "firstStationId",
+                        String.valueOf(track.getFirstStationId()),
+                        errors.firstStationErrors,
+                        stationNames
+                    )
+                ),
+                td("<=>"),
+                td(
+                    getTrackSelector(
+                        "secondStationId",
+                        String.valueOf(track.getSecondStationId()),
+                        errors.secondStationErrors,
+                        stationNames
+                    )
+                ),
+                td(
+                    input().withClass("add-button").withType("submit").withValue("Add Track"),
+                    a().withHref("/drafts/" + currentDraftId + "/tracks").withText("Cancel")
+                )
+            );
+        }
+
+        return null;
+    }
+
+    private Tag getTrackSelector(
+        final String name,
+        final String value,
+        final List<String> errors,
+        final Map<Integer, String> stationNames
+    ) {
+        return tag(null).with(
+            select().withName(name).withValue(value).with(
+                each(stationNames, (stationId, stationName) ->
+                    option()
+                        .condAttr(value.equals(String.valueOf(stationId)), "selected", "selected")
+                        .withValue(String.valueOf(stationId))
+                        .withText(stationName)
+                )
+            ),
+            iff(!errors.isEmpty(),
+                ul().withClasses("errors", name).with(
+                    each(errors, error -> li().withText(error))
+                )
+            )
         );
     }
 }
