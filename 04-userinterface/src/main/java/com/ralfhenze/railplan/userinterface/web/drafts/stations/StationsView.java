@@ -51,7 +51,6 @@ public class StationsView {
     private String stationIdToEdit;
     private boolean showCustomStationForm = false;
     private boolean showPresetStationForm = false;
-    private boolean showPresetStationFormErrors = false;
     private RailNetworkDraft draft;
     private ValidationException validationException;
     private PresetStationFormModel presetStationFormModel;
@@ -74,12 +73,8 @@ public class StationsView {
         return this;
     }
 
-    public StationsView withShowPresetStationForm(
-        final boolean showPresetStationForm,
-        final boolean showPresetStationFormErrors
-    ) {
+    public StationsView withShowPresetStationForm(final boolean showPresetStationForm) {
         this.showPresetStationForm = showPresetStationForm;
-        this.showPresetStationFormErrors = showPresetStationFormErrors;
         return this;
     }
 

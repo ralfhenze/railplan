@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 
 import static com.ralfhenze.railplan.userinterface.web.ControllerHelper.redirectTo;
 
@@ -53,7 +52,7 @@ public class StationsController {
     @ResponseBody
     public String showPresetStationForm(@PathVariable String currentDraftId, Model model) {
         return new StationsView(currentDraftId, draftRepository)
-            .withShowPresetStationForm(true, false)
+            .withShowPresetStationForm(true)
             .getHtml(model);
     }
 
@@ -88,7 +87,7 @@ public class StationsController {
             }
         } catch (ValidationException exception) {
             return new StationsView(currentDraftId, draftRepository)
-                .withShowPresetStationForm(true, true)
+                .withShowPresetStationForm(true)
                 .withPresetStationFormModel(presetStationFormModel)
                 .withValidationException(exception)
                 .getHtml(model);
