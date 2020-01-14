@@ -29,7 +29,7 @@ import static j2html.TagCreator.ul;
  */
 public class ReleaseView {
 
-    private final String currentDraftId;
+    private final String draftId;
     private final RailNetworkDraftRepository draftRepository;
     private ValidationException validationException;
     private ValidityPeriodDto validityPeriod = new ValidityPeriodDto();
@@ -40,10 +40,10 @@ public class ReleaseView {
     }
 
     public ReleaseView(
-        final String currentDraftId,
+        final String draftId,
         final RailNetworkDraftRepository draftRepository
     ) {
-        this.currentDraftId = currentDraftId;
+        this.draftId = draftId;
         this.draftRepository = draftRepository;
     }
 
@@ -58,7 +58,7 @@ public class ReleaseView {
     }
 
     public String getHtml() {
-        final var draftId = currentDraftId;
+        final var draftId = this.draftId;
         final var draftDto = getDraftDto();
         final var germanyMapSvg = new GermanySvgViewFragment(
             draftDto.getStations(),
@@ -119,7 +119,7 @@ public class ReleaseView {
 
     private RailNetworkDraftDto getDraftDto() {
         final var draft = draftRepository
-            .getRailNetworkDraftOfId(new RailNetworkDraftId(currentDraftId));
+            .getRailNetworkDraftOfId(new RailNetworkDraftId(draftId));
 
         return new RailNetworkDraftDto(draft);
     }

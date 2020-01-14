@@ -38,20 +38,20 @@ public class StationsController {
     /**
      * Shows a list of Stations.
      */
-    @GetMapping({"/drafts/{currentDraftId}", "/drafts/{currentDraftId}/stations"})
+    @GetMapping({"/drafts/{draftId}", "/drafts/{draftId}/stations"})
     @ResponseBody
-    public String showDraftPage(@PathVariable String currentDraftId, Model model) {
-        return new StationsView(currentDraftId, draftRepository)
+    public String showDraftPage(@PathVariable String draftId, Model model) {
+        return new StationsView(draftId, draftRepository)
             .getHtml(model);
     }
 
     /**
      * Shows a form to create new Stations from presets.
      */
-    @GetMapping("/drafts/{currentDraftId}/stations/new-from-preset")
+    @GetMapping("/drafts/{draftId}/stations/new-from-preset")
     @ResponseBody
-    public String showPresetStationForm(@PathVariable String currentDraftId, Model model) {
-        return new StationsView(currentDraftId, draftRepository)
+    public String showPresetStationForm(@PathVariable String draftId, Model model) {
+        return new StationsView(draftId, draftRepository)
             .withShowPresetStationForm(true)
             .getHtml(model);
     }
@@ -59,10 +59,10 @@ public class StationsController {
     /**
      * Creates new Stations from presets or shows validation errors.
      */
-    @PostMapping("/drafts/{currentDraftId}/stations/new-from-preset")
+    @PostMapping("/drafts/{draftId}/stations/new-from-preset")
     @ResponseBody
     public String createNewStationsFromPresets(
-        @PathVariable String currentDraftId,
+        @PathVariable String draftId,
         @ModelAttribute PresetStationFormModel presetStationFormModel,
         Model model,
         HttpServletResponse response
@@ -73,7 +73,7 @@ public class StationsController {
                 if (presetStation.isPresent()) {
                     trainStationService.addStationToDraft(
                         new AddTrainStationCommand(
-                            currentDraftId,
+                            draftId,
                             presetStation.get().name,
                             presetStation.get().latitude,
                             presetStation.get().longitude
@@ -86,23 +86,23 @@ public class StationsController {
                 }
             }
         } catch (ValidationException exception) {
-            return new StationsView(currentDraftId, draftRepository)
+            return new StationsView(draftId, draftRepository)
                 .withShowPresetStationForm(true)
                 .withPresetStationFormModel(presetStationFormModel)
                 .withValidationException(exception)
                 .getHtml(model);
         }
 
-        return redirectTo("/drafts/" + currentDraftId + "/stations", response);
+        return redirectTo("/drafts/" + draftId + "/stations", response);
     }
 
     /**
      * Shows a form to create a new custom Station.
      */
-    @GetMapping("/drafts/{currentDraftId}/stations/new-custom")
+    @GetMapping("/drafts/{draftId}/stations/new-custom")
     @ResponseBody
-    public String showNewCustomStationForm(@PathVariable String currentDraftId, Model model) {
-        return new StationsView(currentDraftId, draftRepository)
+    public String showNewCustomStationForm(@PathVariable String draftId, Model model) {
+        return new StationsView(draftId, draftRepository)
             .withShowCustomStationForm(true)
             .getHtml(model);
     }
@@ -110,10 +110,10 @@ public class StationsController {
     /**
      * Creates a new custom Station or shows validation errors.
      */
-    @PostMapping("/drafts/{currentDraftId}/stations/new-custom")
+    @PostMapping("/drafts/{draftId}/stations/new-custom")
     @ResponseBody
     public String createNewCustomStation(
-        @PathVariable String currentDraftId,
+        @PathVariable String draftId,
         @ModelAttribute(name = "updatedStationTableRow") StationTableRow stationRow,
         Model model,
         HttpServletResponse response
@@ -121,33 +121,33 @@ public class StationsController {
         try {
             trainStationService.addStationToDraft(
                 new AddTrainStationCommand(
-                    currentDraftId,
+                    draftId,
                     stationRow.stationName,
                     Double.parseDouble(stationRow.latitude),
                     Double.parseDouble(stationRow.longitude)
                 )
             );
         } catch (ValidationException exception) {
-            return new StationsView(currentDraftId, draftRepository)
+            return new StationsView(draftId, draftRepository)
                 .withShowCustomStationForm(true)
                 .withValidationException(exception)
                 .getHtml(model);
         }
 
-        return redirectTo("/drafts/" + currentDraftId + "/stations", response);
+        return redirectTo("/drafts/" + draftId + "/stations", response);
     }
 
     /**
      * Shows a form to edit an existing Station.
      */
-    @GetMapping("/drafts/{currentDraftId}/stations/{stationId}/edit")
+    @GetMapping("/drafts/{draftId}/stations/{stationId}/edit")
     @ResponseBody
     public String editStation(
-        @PathVariable String currentDraftId,
+        @PathVariable String draftId,
         @PathVariable String stationId,
         Model model
     ) {
-        return new StationsView(currentDraftId, draftRepository)
+        return new StationsView(draftId, draftRepository)
             .withStationIdToEdit(stationId)
             .getHtml(model);
     }
@@ -155,10 +155,10 @@ public class StationsController {
     /**
      * Updates an existing Station or shows validation errors.
      */
-    @PostMapping("/drafts/{currentDraftId}/stations/{stationId}/edit")
+    @PostMapping("/drafts/{draftId}/stations/{stationId}/edit")
     @ResponseBody
     public String updateStation(
-        @PathVariable String currentDraftId,
+        @PathVariable String draftId,
         @PathVariable String stationId,
         @ModelAttribute(name = "updatedStationTableRow") StationTableRow stationRow,
         Model model,
@@ -167,7 +167,7 @@ public class StationsController {
         try {
             trainStationService.updateStationOfDraft(
                 new UpdateTrainStationCommand(
-                    currentDraftId,
+                    draftId,
                     stationId,
                     stationRow.stationName,
                     Double.parseDouble(stationRow.latitude),
@@ -175,27 +175,27 @@ public class StationsController {
                 )
             );
         } catch (ValidationException exception) {
-            return new StationsView(currentDraftId, draftRepository)
+            return new StationsView(draftId, draftRepository)
                 .withStationIdToEdit(stationId)
                 .withValidationException(exception)
                 .getHtml(model);
         }
 
-        return redirectTo("/drafts/" + currentDraftId + "/stations", response);
+        return redirectTo("/drafts/" + draftId + "/stations", response);
     }
 
     /**
      * Deletes an existing Station and redirects to Stations page.
      */
-    @GetMapping("/drafts/{currentDraftId}/stations/{stationId}/delete")
+    @GetMapping("/drafts/{draftId}/stations/{stationId}/delete")
     public String deleteStation(
-        @PathVariable String currentDraftId,
+        @PathVariable String draftId,
         @PathVariable String stationId
     ) {
         trainStationService.deleteStationFromDraft(
-            new DeleteTrainStationCommand(currentDraftId, stationId)
+            new DeleteTrainStationCommand(draftId, stationId)
         );
 
-        return "redirect:/drafts/{currentDraftId}/stations";
+        return "redirect:/drafts/{draftId}/stations";
     }
 }

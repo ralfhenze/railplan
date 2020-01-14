@@ -11,7 +11,6 @@ import com.ralfhenze.railplan.infrastructure.persistence.dto.RailwayTrackDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -38,19 +37,19 @@ public class TracksController {
     /**
      * Shows a list of Tracks.
      */
-    @GetMapping("/drafts/{currentDraftId}/tracks")
+    @GetMapping("/drafts/{draftId}/tracks")
     @ResponseBody
-    public String showTracks(@PathVariable String currentDraftId) {
-        return new TracksView(currentDraftId, draftRepository).getHtml();
+    public String showTracks(@PathVariable String draftId) {
+        return new TracksView(draftId, draftRepository).getHtml();
     }
 
     /**
      * Shows a form to create new Tracks from presets.
      */
-    @GetMapping("/drafts/{currentDraftId}/tracks/new-from-preset")
+    @GetMapping("/drafts/{draftId}/tracks/new-from-preset")
     @ResponseBody
-    public String showPresetTrackForm(@PathVariable String currentDraftId) {
-        return new TracksView(currentDraftId, draftRepository)
+    public String showPresetTrackForm(@PathVariable String draftId) {
+        return new TracksView(draftId, draftRepository)
             .withShowPresetTrackForm(true)
             .getHtml();
     }
@@ -58,11 +57,11 @@ public class TracksController {
     /**
      * Creates new Tracks from presets or shows validation errors.
      */
-    @PostMapping("/drafts/{currentDraftId}/tracks/new-from-preset")
+    @PostMapping("/drafts/{draftId}/tracks/new-from-preset")
     @ResponseBody
     public String createNewTracksFromPresets(
-        @PathVariable String currentDraftId,
-        @ModelAttribute(name = "trackIds") PresetTrackFormModel trackIds,
+        @PathVariable String draftId,
+        PresetTrackFormModel trackIds,
         HttpServletResponse response
     ) {
         for (final var trackId : trackIds.getPresetTrackIdsToAdd()) {
@@ -71,7 +70,7 @@ public class TracksController {
             if (track.isPresent()) {
                 railwayTrackService.addTrackByStationName(
                     new AddRailwayTrackByStationNameCommand(
-                        currentDraftId,
+                        draftId,
                         track.get().station1.name,
                         track.get().station2.name
                     )
@@ -81,16 +80,16 @@ public class TracksController {
             }
         }
 
-        return redirectTo("/drafts/" + currentDraftId + "/tracks", response);
+        return redirectTo("/drafts/" + draftId + "/tracks", response);
     }
 
     /**
      * Shows a form to create a new custom Track.
      */
-    @GetMapping("/drafts/{currentDraftId}/tracks/new-custom")
+    @GetMapping("/drafts/{draftId}/tracks/new-custom")
     @ResponseBody
-    public String showCustomTrackForm(@PathVariable String currentDraftId) {
-        return new TracksView(currentDraftId, draftRepository)
+    public String showCustomTrackForm(@PathVariable String draftId) {
+        return new TracksView(draftId, draftRepository)
             .withShowCustomTrackForm(true)
             .getHtml();
     }
@@ -98,45 +97,45 @@ public class TracksController {
     /**
      * Creates a new custom Track or shows validation errors.
      */
-    @PostMapping("/drafts/{currentDraftId}/tracks/new-custom")
+    @PostMapping("/drafts/{draftId}/tracks/new-custom")
     @ResponseBody
     public String createNewCustomTrack(
-        @PathVariable String currentDraftId,
-        @ModelAttribute(name = "newTrack") RailwayTrackDto trackDto,
+        @PathVariable String draftId,
+        RailwayTrackDto trackDto,
         HttpServletResponse response
     ) {
         try {
             railwayTrackService.addTrackByStationId(
                 new AddRailwayTrackByStationIdCommand(
-                    currentDraftId,
+                    draftId,
                     String.valueOf(trackDto.getFirstStationId()),
                     String.valueOf(trackDto.getSecondStationId())
                 )
             );
         } catch (ValidationException exception){
-            return new TracksView(currentDraftId, draftRepository)
+            return new TracksView(draftId, draftRepository)
                 .withShowCustomTrackForm(true)
                 .withValidationException(exception)
                 .withTrack(trackDto)
                 .getHtml();
         }
 
-        return redirectTo("/drafts/" + currentDraftId + "/tracks", response);
+        return redirectTo("/drafts/" + draftId + "/tracks", response);
     }
 
     /**
      * Deletes an existing Track and redirects to Tracks page.
      */
-    @GetMapping("/drafts/{currentDraftId}/tracks/{firstStationId}/{secondStationId}/delete")
+    @GetMapping("/drafts/{draftId}/tracks/{firstStationId}/{secondStationId}/delete")
     public String deleteTrack(
-        @PathVariable String currentDraftId,
+        @PathVariable String draftId,
         @PathVariable String firstStationId,
         @PathVariable String secondStationId
     ) {
         railwayTrackService.deleteTrackFromDraft(
-            new DeleteRailwayTrackCommand(currentDraftId, firstStationId, secondStationId)
+            new DeleteRailwayTrackCommand(draftId, firstStationId, secondStationId)
         );
 
-        return "redirect:/drafts/{currentDraftId}/tracks";
+        return "redirect:/drafts/{draftId}/tracks";
     }
 }

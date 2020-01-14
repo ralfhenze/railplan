@@ -35,26 +35,26 @@ public class ReleaseController {
     /**
      * Shows a form to release a Draft.
      */
-    @GetMapping("/drafts/{currentDraftId}/release")
+    @GetMapping("/drafts/{draftId}/release")
     @ResponseBody
-    public String showDraftReleaseForm(@PathVariable String currentDraftId) {
-        return new ReleaseView(currentDraftId, draftRepository).getHtml();
+    public String showDraftReleaseForm(@PathVariable String draftId) {
+        return new ReleaseView(draftId, draftRepository).getHtml();
     }
 
     /**
      * Releases a Draft or shows validation errors.
      */
-    @PostMapping("/drafts/{currentDraftId}/release")
+    @PostMapping("/drafts/{draftId}/release")
     @ResponseBody
     public String releaseDraft(
-        @PathVariable String currentDraftId,
+        @PathVariable String draftId,
         @ModelAttribute(name = "validityPeriod") ValidityPeriodDto periodDto,
         HttpServletResponse response
     ) {
         try {
             final var network = releasedRailNetworkService.releaseDraft(
                 new ReleaseRailNetworkCommand(
-                    currentDraftId,
+                    draftId,
                     LocalDate.parse(periodDto.getStartDate()),
                     LocalDate.parse(periodDto.getEndDate())
                 )
@@ -63,7 +63,7 @@ public class ReleaseController {
             return redirectTo("/networks/" + network.getId().get(), response);
 
         } catch (ValidationException exception) {
-            return new ReleaseView(currentDraftId, draftRepository)
+            return new ReleaseView(draftId, draftRepository)
                 .withValidationException(exception)
                 .withValidityPeriod(periodDto)
                 .getHtml();

@@ -37,11 +37,11 @@ public class NetworksController {
     /**
      * Provides a Network page with all information (Validity Period, Stations and Tracks).
      */
-    @GetMapping("/networks/{currentNetworkId}")
+    @GetMapping("/networks/{networkId}")
     @ResponseBody
-    public String showNetworkPage(@PathVariable String currentNetworkId) {
+    public String showNetworkPage(@PathVariable String networkId) {
         final var network = networkRepository
-            .getReleasedRailNetworkOfId(new ReleasedRailNetworkId(currentNetworkId));
+            .getReleasedRailNetworkOfId(new ReleasedRailNetworkId(networkId));
         final var networkDto = new ReleasedRailNetworkDto(network);
 
         return new NetworkView().getHtml(networkDto);

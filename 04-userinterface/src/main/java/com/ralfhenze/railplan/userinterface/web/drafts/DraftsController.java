@@ -48,10 +48,10 @@ public class DraftsController {
     /**
      * Deletes an existing Draft and redirects to /drafts.
      */
-    @GetMapping("/drafts/{currentDraftId}/delete")
-    public String deleteDraft(@PathVariable String currentDraftId) {
+    @GetMapping("/drafts/{draftId}/delete")
+    public String deleteDraft(@PathVariable String draftId) {
         railNetworkDraftService.deleteDraft(
-            new DeleteRailNetworkDraftCommand(currentDraftId)
+            new DeleteRailNetworkDraftCommand(draftId)
         );
 
         return "redirect:/drafts";

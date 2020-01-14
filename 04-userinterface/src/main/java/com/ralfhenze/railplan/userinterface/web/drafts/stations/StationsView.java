@@ -45,7 +45,7 @@ import static j2html.TagCreator.ul;
  */
 public class StationsView {
 
-    private final String currentDraftId;
+    private final String draftId;
     private final RailNetworkDraftRepository draftRepository;
     private String stationIdToEdit;
     private boolean showCustomStationForm = false;
@@ -55,10 +55,10 @@ public class StationsView {
     private PresetStationFormModel presetStationFormModel;
 
     public StationsView(
-        final String currentDraftId,
+        final String draftId,
         final RailNetworkDraftRepository draftRepository
     ) {
-        this.currentDraftId = currentDraftId;
+        this.draftId = draftId;
         this.draftRepository = draftRepository;
     }
 
@@ -90,7 +90,7 @@ public class StationsView {
     }
 
     private RailNetworkDraftDto getDraftDto() {
-        draft = draftRepository.getRailNetworkDraftOfId(new RailNetworkDraftId(currentDraftId));
+        draft = draftRepository.getRailNetworkDraftOfId(new RailNetworkDraftId(draftId));
 
         return new RailNetworkDraftDto(draft);
     }
@@ -158,7 +158,7 @@ public class StationsView {
     }
 
     public String getHtml(final Model model) {
-        final var draftId = currentDraftId;
+        final var draftId = this.draftId;
         final var draftDto = getDraftDto();
         final var germanyMapSvg = new GermanySvgViewFragment(draftDto.getStations(), draftDto.getTracks());
         final var stationTableRows = getStationTableRows(model);

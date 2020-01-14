@@ -29,7 +29,7 @@ public class DraftsView {
     public String getHtml(final List<String> draftIds) {
         final var indexedDraftIds = getIndexedDraftIds(draftIds);
 
-        return new DefaultView().getHtml(DefaultView.SelectedNavEntry.START,
+        return new DefaultView().getHtml(DefaultView.SelectedNavEntry.DRAFTS,
             div().withClasses("drafts", "fullscreen-wrapper").with(
                 div().withId("index-box").withClass("box").with(
                     div().withId("draft-selector").with(

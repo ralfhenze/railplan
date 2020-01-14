@@ -43,7 +43,7 @@ import static j2html.TagCreator.ul;
  */
 public class TracksView {
 
-    private final String currentDraftId;
+    private final String draftId;
     private final RailNetworkDraftRepository draftRepository;
     private boolean showCustomTrackForm = false;
     private boolean showPresetTrackForm = false;
@@ -69,10 +69,10 @@ public class TracksView {
     }
 
     public TracksView(
-        final String currentDraftId,
+        final String draftId,
         final RailNetworkDraftRepository draftRepository
     ) {
-        this.currentDraftId = currentDraftId;
+        this.draftId = draftId;
         this.draftRepository = draftRepository;
     }
 
@@ -97,7 +97,7 @@ public class TracksView {
     }
 
     public String getHtml() {
-        final var draftId = currentDraftId;
+        final var draftId = this.draftId;
         final var draftDto = getDraftDto();
         final var germanyMapSvg = new GermanySvgViewFragment(draftDto.getStations(), draftDto.getTracks());
         final var tabsView = new NetworkElementTabsView();
@@ -196,7 +196,7 @@ public class TracksView {
                 ),
                 td(
                     input().withClass("add-button").withType("submit").withValue("Add Track"),
-                    a().withHref("/drafts/" + currentDraftId + "/tracks").withText("Cancel")
+                    a().withHref("/drafts/" + draftId + "/tracks").withText("Cancel")
                 )
             );
         }
@@ -242,7 +242,7 @@ public class TracksView {
                     ),
                 p(
                     input().withClass("add-button").withType("submit").withValue("Add Tracks"),
-                    a().withHref("/drafts/" + currentDraftId + "/tracks").withText("Cancel")
+                    a().withHref("/drafts/" + draftId + "/tracks").withText("Cancel")
                 )
             );
         }
@@ -260,7 +260,7 @@ public class TracksView {
 
     private RailNetworkDraftDto getDraftDto() {
         final var draft = draftRepository
-            .getRailNetworkDraftOfId(new RailNetworkDraftId(currentDraftId));
+            .getRailNetworkDraftOfId(new RailNetworkDraftId(draftId));
 
         return new RailNetworkDraftDto(draft);
     }
