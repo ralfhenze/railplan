@@ -11,8 +11,6 @@ import com.ralfhenze.railplan.userinterface.web.views.DefaultView;
 import com.ralfhenze.railplan.userinterface.web.views.GermanySvgViewFragment;
 import com.ralfhenze.railplan.userinterface.web.views.NetworkElementTabsView;
 import j2html.tags.Tag;
-import org.javatuples.Pair;
-import org.springframework.ui.Model;
 
 import java.util.List;
 import java.util.Map;
@@ -29,6 +27,7 @@ import static j2html.TagCreator.iff;
 import static j2html.TagCreator.input;
 import static j2html.TagCreator.li;
 import static j2html.TagCreator.option;
+import static j2html.TagCreator.p;
 import static j2html.TagCreator.select;
 import static j2html.TagCreator.table;
 import static j2html.TagCreator.tag;
@@ -40,7 +39,7 @@ import static j2html.TagCreator.tr;
 import static j2html.TagCreator.ul;
 
 /**
- * Prepares the necessary data for resources/templates/tracks.html.
+ * An HTML view that renders a table of Tracks and corresponding forms.
  */
 public class TracksView {
 
@@ -64,16 +63,17 @@ public class TracksView {
         public List<String> secondStationErrors = List.of();
     }
 
+    private static class PresetTrack {
+        public String text;
+        public String value;
+    }
+
     public TracksView(
         final String currentDraftId,
         final RailNetworkDraftRepository draftRepository
     ) {
         this.currentDraftId = currentDraftId;
         this.draftRepository = draftRepository;
-    }
-
-    public String getViewName() {
-        return "tracks";
     }
 
     public TracksView withShowCustomTrackForm(final boolean showCustomTrackForm) {
@@ -95,104 +95,6 @@ public class TracksView {
         this.track = track;
         return this;
     }
-
-    public TracksView addRequiredAttributesTo(final Model model) {
-        final var draftDto = getDraftDto();
-        final var stationNames = getStationNames(draftDto);
-
-        model.addAttribute("stationNames", stationNames);
-        model.addAttribute("tracks", getTracksWithStationNames(draftDto, stationNames));
-        model.addAttribute("showCustomTrackForm", showCustomTrackForm);
-
-        if (validationException == null) {
-            model.addAttribute("newTrack", new RailwayTrackDto());
-            model.addAttribute("trackErrors", new TrackErrors());
-        } else {
-            model.addAttribute("trackErrors", getTrackErrors());
-        }
-
-        model.addAttribute("showPresetTrackForm", showPresetTrackForm);
-        model.addAttribute("presetTrackFormModel", new PresetTrackFormModel());
-
-        final var presetTracks = new PresetTracks().getAllPresetTracks();
-        model.addAttribute("allPresetTracks", IntStream
-            .range(0, presetTracks.size())
-            .mapToObj(i -> Map.of(
-                "value", i,
-                "text", presetTracks.get(i).station1.name + " <=> " + presetTracks.get(i).station2.name
-            ))
-            .collect(Collectors.toList()));
-
-        new GermanySvgViewFragment(draftDto.getStations(), draftDto.getTracks())
-            .addRequiredAttributesTo(model);
-
-        return this;
-    }
-
-    private TrackErrors getTrackErrors() {
-        final var trackErrors = new TrackErrors();
-        trackErrors.firstStationErrors = validationException.getErrorsOfField(Field.FIRST_STATION_ID);
-        trackErrors.secondStationErrors = validationException.getErrorsOfField(Field.SECOND_STATION_ID);
-
-        return trackErrors;
-    }
-
-    private RailNetworkDraftDto getDraftDto() {
-        final var draft = draftRepository
-            .getRailNetworkDraftOfId(new RailNetworkDraftId(currentDraftId));
-
-        return new RailNetworkDraftDto(draft);
-    }
-
-    private Map<Integer, String> getStationNames(final RailNetworkDraftDto draftDto) {
-        return draftDto
-            .getStations()
-            .stream()
-            .collect(Collectors.toMap(TrainStationDto::getId, TrainStationDto::getName));
-    }
-
-    private List<List<Pair<String, String>>> getTracksWithStationNames(
-        final RailNetworkDraftDto draftDto,
-        final Map<Integer, String> stationNames
-    ) {
-        return draftDto
-            .getTracks()
-            .stream()
-            .map(trackDto -> List.of(
-                Pair.with(
-                    String.valueOf(trackDto.getFirstStationId()),
-                    stationNames.get(trackDto.getFirstStationId())
-                ),
-                Pair.with(
-                    String.valueOf(trackDto.getSecondStationId()),
-                    stationNames.get(trackDto.getSecondStationId())
-                )
-            ))
-            .collect(Collectors.toList());
-    }
-
-    private List<TrackRow> getTrackRows(
-        final RailNetworkDraftDto draftDto,
-        final Map<Integer, String> stationNames
-    ) {
-        final var tracks = draftDto.getTracks();
-
-        return IntStream
-            .range(0, tracks.size())
-            .mapToObj(i -> {
-                final var trackDto = tracks.get(i);
-                final var trackRow = new TrackRow();
-                trackRow.index = String.valueOf(i + 1);
-                trackRow.firstStationId = String.valueOf(trackDto.getFirstStationId());
-                trackRow.firstStationName = stationNames.get(trackDto.getFirstStationId());
-                trackRow.secondStationId = String.valueOf(trackDto.getSecondStationId());
-                trackRow.secondStationName = stationNames.get(trackDto.getSecondStationId());
-
-                return trackRow;
-            })
-            .collect(Collectors.toList());
-    }
-
 
     public String getHtml() {
         final var draftId = currentDraftId;
@@ -243,7 +145,7 @@ public class TracksView {
                                             )
                                         )
                                     ),
-                                    iff(!showCustomTrackForm,
+                                    iff(!(showCustomTrackForm || showPresetTrackForm),
                                         tr().withClass("add-button-row").with(
                                             td().attr("colspan", "5").with(
                                                 a().withClass("add-button")
@@ -258,7 +160,8 @@ public class TracksView {
                                     getCustomTrackForm(track, errors, stationNames)
                                 )
                             )
-                        )
+                        ),
+                        getPresetTrackForm()
                     )
                 )
             ),
@@ -322,5 +225,85 @@ public class TracksView {
                 )
             )
         );
+    }
+
+    private Tag getPresetTrackForm() {
+        if (showPresetTrackForm) {
+            final var allPresetTracks = getAllPresetTracks();
+
+            return form().withId("preset-track-form").withMethod("post").with(
+                select().withName("presetTrackIdsToAdd")
+                    .attr("multiple", "multiple")
+                    .attr("size", 10)
+                    .with(
+                        each(allPresetTracks, presetTrack ->
+                            option().withValue(presetTrack.value).withText(presetTrack.text)
+                        )
+                    ),
+                p(
+                    input().withClass("add-button").withType("submit").withValue("Add Tracks"),
+                    a().withHref("/drafts/" + currentDraftId + "/tracks").withText("Cancel")
+                )
+            );
+        }
+
+        return null;
+    }
+
+    private TrackErrors getTrackErrors() {
+        final var trackErrors = new TrackErrors();
+        trackErrors.firstStationErrors = validationException.getErrorsOfField(Field.FIRST_STATION_ID);
+        trackErrors.secondStationErrors = validationException.getErrorsOfField(Field.SECOND_STATION_ID);
+
+        return trackErrors;
+    }
+
+    private RailNetworkDraftDto getDraftDto() {
+        final var draft = draftRepository
+            .getRailNetworkDraftOfId(new RailNetworkDraftId(currentDraftId));
+
+        return new RailNetworkDraftDto(draft);
+    }
+
+    private Map<Integer, String> getStationNames(final RailNetworkDraftDto draftDto) {
+        return draftDto
+            .getStations()
+            .stream()
+            .collect(Collectors.toMap(TrainStationDto::getId, TrainStationDto::getName));
+    }
+
+    private List<TrackRow> getTrackRows(
+        final RailNetworkDraftDto draftDto,
+        final Map<Integer, String> stationNames
+    ) {
+        final var tracks = draftDto.getTracks();
+
+        return IntStream
+            .range(0, tracks.size())
+            .mapToObj(i -> {
+                final var trackDto = tracks.get(i);
+                final var trackRow = new TrackRow();
+                trackRow.index = String.valueOf(i + 1);
+                trackRow.firstStationId = String.valueOf(trackDto.getFirstStationId());
+                trackRow.firstStationName = stationNames.get(trackDto.getFirstStationId());
+                trackRow.secondStationId = String.valueOf(trackDto.getSecondStationId());
+                trackRow.secondStationName = stationNames.get(trackDto.getSecondStationId());
+                return trackRow;
+            })
+            .collect(Collectors.toList());
+    }
+
+    private List<PresetTrack> getAllPresetTracks() {
+        final var presetTracks = new PresetTracks().getAllPresetTracks();
+
+        return IntStream
+            .range(0, presetTracks.size())
+            .mapToObj(i -> {
+                final var track = new PresetTrack();
+                track.value = String.valueOf(i);
+                track.text = presetTracks.get(i).station1.name + " <=> " + presetTracks.get(i).station2.name;
+                return track;
+            })
+            .collect(Collectors.toList());
     }
 }

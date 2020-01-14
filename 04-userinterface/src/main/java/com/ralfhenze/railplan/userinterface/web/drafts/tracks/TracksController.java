@@ -10,7 +10,6 @@ import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraf
 import com.ralfhenze.railplan.infrastructure.persistence.dto.RailwayTrackDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -49,24 +48,22 @@ public class TracksController {
      * Shows a form to create new Tracks from presets.
      */
     @GetMapping("/drafts/{currentDraftId}/tracks/new-from-preset")
-    public String showPresetTrackForm(
-        @PathVariable String currentDraftId,
-        Model model
-    ) {
+    @ResponseBody
+    public String showPresetTrackForm(@PathVariable String currentDraftId) {
         return new TracksView(currentDraftId, draftRepository)
             .withShowPresetTrackForm(true)
-            .addRequiredAttributesTo(model)
-            .getViewName();
+            .getHtml();
     }
 
     /**
      * Creates new Tracks from presets or shows validation errors.
      */
     @PostMapping("/drafts/{currentDraftId}/tracks/new-from-preset")
+    @ResponseBody
     public String createNewTracksFromPresets(
         @PathVariable String currentDraftId,
         @ModelAttribute(name = "trackIds") PresetTrackFormModel trackIds,
-        Model model
+        HttpServletResponse response
     ) {
         for (final var trackId : trackIds.getPresetTrackIdsToAdd()) {
             final var track = new PresetTracks().getTrackOfId(trackId);
@@ -84,7 +81,7 @@ public class TracksController {
             }
         }
 
-        return "redirect:/drafts/{currentDraftId}/tracks";
+        return redirectTo("/drafts/" + currentDraftId + "/tracks", response);
     }
 
     /**
