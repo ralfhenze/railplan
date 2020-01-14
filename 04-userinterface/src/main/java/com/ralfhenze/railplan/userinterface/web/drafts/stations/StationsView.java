@@ -9,7 +9,6 @@ import com.ralfhenze.railplan.infrastructure.persistence.dto.RailNetworkDraftDto
 import com.ralfhenze.railplan.userinterface.web.DefaultView;
 import com.ralfhenze.railplan.userinterface.web.GermanySvgViewFragment;
 import com.ralfhenze.railplan.userinterface.web.NetworkElementTabsView;
-import j2html.Config;
 import j2html.tags.Tag;
 import org.springframework.ui.Model;
 
@@ -170,8 +169,6 @@ public class StationsView {
         final var presetStationFormModel = (this.presetStationFormModel == null) ?
             new PresetStationFormModel() : this.presetStationFormModel;
         final var tabsView = new NetworkElementTabsView();
-
-        Config.closeEmptyTags = true;
 
         return new DefaultView().getHtml(DefaultView.SelectedNavEntry.DRAFTS,
             div().withId("data-panel").with(

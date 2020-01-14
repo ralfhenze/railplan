@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.time.LocalDate;
 
@@ -33,13 +34,9 @@ public class ReleaseController {
      * Shows a form to release a Draft.
      */
     @GetMapping("/drafts/{currentDraftId}/release")
-    public String showDraftReleaseForm(
-        @PathVariable String currentDraftId,
-        Model model
-    ) {
-        return new ReleaseView(currentDraftId, draftRepository)
-            .addRequiredAttributesTo(model)
-            .getViewName();
+    @ResponseBody
+    public String showDraftReleaseForm(@PathVariable String currentDraftId) {
+        return new ReleaseView(currentDraftId, draftRepository).getHtml();
     }
 
     /**
