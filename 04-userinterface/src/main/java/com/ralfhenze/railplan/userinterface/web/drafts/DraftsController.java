@@ -5,9 +5,9 @@ import com.ralfhenze.railplan.application.commands.DeleteRailNetworkDraftCommand
 import com.ralfhenze.railplan.application.queries.Queries;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 public class DraftsController {
@@ -28,10 +28,9 @@ public class DraftsController {
      * Provides a list of all Drafts.
      */
     @GetMapping("/drafts")
-    public String drafts(Model model) {
-        model.addAttribute("draftIds", queries.getAllDraftIds());
-
-        return "drafts";
+    @ResponseBody
+    public String showDraftsPage() {
+        return new DraftsView().getHtml(queries.getAllDraftIds());
     }
 
     /**
