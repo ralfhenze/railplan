@@ -8,6 +8,7 @@ import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraf
 import com.ralfhenze.railplan.infrastructure.persistence.dto.RailNetworkDraftDto;
 import com.ralfhenze.railplan.userinterface.web.DefaultView;
 import com.ralfhenze.railplan.userinterface.web.GermanySvgViewFragment;
+import com.ralfhenze.railplan.userinterface.web.NetworkElementTabsView;
 import j2html.Config;
 import j2html.tags.Tag;
 import org.springframework.ui.Model;
@@ -28,7 +29,6 @@ import static j2html.TagCreator.iffElse;
 import static j2html.TagCreator.input;
 import static j2html.TagCreator.join;
 import static j2html.TagCreator.li;
-import static j2html.TagCreator.nav;
 import static j2html.TagCreator.option;
 import static j2html.TagCreator.select;
 import static j2html.TagCreator.span;
@@ -42,7 +42,7 @@ import static j2html.TagCreator.tr;
 import static j2html.TagCreator.ul;
 
 /**
- * Prepares the necessary data for resources/templates/stations.html.
+ * An HTML view that renders a table of Stations and corresponding forms.
  */
 public class StationsView {
 
@@ -164,7 +164,6 @@ public class StationsView {
     }
 
     public String getHtml(final Model model) {
-        final var selectedTab = "stations";
         final var draftId = currentDraftId;
         final var draftDto = getDraftDto();
         final var germanyMapSvg = new GermanySvgViewFragment(draftDto.getStations(), draftDto.getTracks());
@@ -175,31 +174,14 @@ public class StationsView {
         final var allPresetStations = List.of(PresetStation.values());
         final var presetStationFormModel = (this.presetStationFormModel == null) ?
             new PresetStationFormModel() : this.presetStationFormModel;
+        final var tabsView = new NetworkElementTabsView();
 
         Config.closeEmptyTags = true;
 
         return new DefaultView().getHtml(DefaultView.SelectedNavEntry.DRAFTS,
             div().withId("data-panel").with(
                 div().withId("network-elements-box").withClass("box").with(
-                    nav().attr("aria-label", "Network Element Tabs").with(
-                        ul(
-                            li(
-                                a().withHref("/drafts/" + draftId + "/stations")
-                                    .withCondClass("stations".equals(selectedTab), "selected")
-                                    .withText("Train Stations")
-                            ),
-                            li(
-                                a().withHref("/drafts/" + draftId + "/tracks")
-                                    .withCondClass("tracks".equals(selectedTab), "selected")
-                                    .withText("Railway Tracks")
-                            ),
-                            li(
-                                a().withHref("/drafts/" + draftId + "/release")
-                                    .withCondClass("release".equals(selectedTab), "selected")
-                                    .withText("Release")
-                            )
-                        )
-                    ),
+                    tabsView.getTag(draftId, NetworkElementTabsView.SelectedTab.STATIONS),
                     div().withId("stations").with(
                         h1("Draft"),
                         form().withMethod("post").with(
