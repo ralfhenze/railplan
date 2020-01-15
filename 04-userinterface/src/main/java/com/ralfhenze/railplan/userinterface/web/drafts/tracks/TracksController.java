@@ -40,7 +40,7 @@ public class TracksController {
     @GetMapping("/drafts/{draftId}/tracks")
     @ResponseBody
     public String showTracks(@PathVariable String draftId) {
-        return new TracksView(draftId, draftRepository).getHtml();
+        return new TracksView(draftId, draftRepository).getHtml().render();
     }
 
     /**
@@ -51,7 +51,8 @@ public class TracksController {
     public String showPresetTrackForm(@PathVariable String draftId) {
         return new TracksView(draftId, draftRepository)
             .withShowPresetTrackForm(true)
-            .getHtml();
+            .getHtml()
+            .render();
     }
 
     /**
@@ -91,7 +92,8 @@ public class TracksController {
     public String showCustomTrackForm(@PathVariable String draftId) {
         return new TracksView(draftId, draftRepository)
             .withShowCustomTrackForm(true)
-            .getHtml();
+            .getHtml()
+            .render();
     }
 
     /**
@@ -117,7 +119,8 @@ public class TracksController {
                 .withShowCustomTrackForm(true)
                 .withValidationException(exception)
                 .withTrack(trackDto)
-                .getHtml();
+                .getHtml()
+                .render();
         }
 
         return redirectTo("/drafts/" + draftId + "/tracks", response);

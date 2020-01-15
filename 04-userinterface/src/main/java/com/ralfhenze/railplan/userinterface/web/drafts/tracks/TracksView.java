@@ -12,6 +12,7 @@ import com.ralfhenze.railplan.userinterface.web.views.MasterView;
 import com.ralfhenze.railplan.userinterface.web.views.MasterView.SelectedNavEntry;
 import com.ralfhenze.railplan.userinterface.web.views.NetworkElementTabsView;
 import com.ralfhenze.railplan.userinterface.web.views.NetworkElementTabsView.SelectedTab;
+import com.ralfhenze.railplan.userinterface.web.views.View;
 import j2html.tags.Tag;
 
 import java.util.List;
@@ -43,7 +44,7 @@ import static j2html.TagCreator.ul;
 /**
  * An HTML view that renders a table of Tracks and corresponding forms.
  */
-public class TracksView {
+public class TracksView implements View {
 
     private final String draftId;
     private final RailNetworkDraftRepository draftRepository;
@@ -98,10 +99,9 @@ public class TracksView {
         return this;
     }
 
-    public String getHtml() {
-        final var draftId = this.draftId;
+    @Override
+    public Tag getHtml() {
         final var draftDto = getDraftDto();
-        final var germanyMapSvg = new GermanyMapSvgView(draftDto.getStations(), draftDto.getTracks());
         final var stationNames = getStationNames(draftDto);
         final var trackRows = getTrackRows(draftDto, stationNames);
         var track = this.track;
@@ -166,8 +166,8 @@ public class TracksView {
                     )
                 )
             ),
-            germanyMapSvg.getHtml()
-        ).render();
+            new GermanyMapSvgView(draftDto.getStations(), draftDto.getTracks()).getHtml()
+        );
     }
 
     private Tag getCustomTrackForm(
