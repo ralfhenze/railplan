@@ -9,6 +9,7 @@ import com.ralfhenze.railplan.userinterface.web.views.GermanyMapSvgView;
 import com.ralfhenze.railplan.userinterface.web.views.MasterView;
 import com.ralfhenze.railplan.userinterface.web.views.MasterView.SelectedNavEntry;
 import com.ralfhenze.railplan.userinterface.web.views.NetworkElementTabsView;
+import com.ralfhenze.railplan.userinterface.web.views.NetworkElementTabsView.SelectedTab;
 import j2html.tags.Tag;
 
 import java.time.LocalDate;
@@ -65,7 +66,6 @@ public class ReleaseView {
             draftDto.getStations(),
             draftDto.getTracks()
         );
-        final var tabsView = new NetworkElementTabsView();
 
         final var validityPeriod = this.validityPeriod;
         final var releaseErrors = new ReleaseErrors();
@@ -81,7 +81,7 @@ public class ReleaseView {
         return new MasterView(SelectedNavEntry.DRAFTS).with(
             div().withId("data-panel").with(
                 div().withId("network-elements-box").withClass("box").with(
-                    tabsView.getTag(draftId, NetworkElementTabsView.SelectedTab.RELEASE),
+                    new NetworkElementTabsView(SelectedTab.RELEASE, draftId).getHtml(),
                     form().withId("release-form").withMethod("post").with(
                         h4("Validity Period"),
                         p(
@@ -104,7 +104,7 @@ public class ReleaseView {
                     )
                 )
             )
-        );
+        ).render();
     }
 
     private Tag getErrorMessagesListTag(final String name, final List<String> errors) {

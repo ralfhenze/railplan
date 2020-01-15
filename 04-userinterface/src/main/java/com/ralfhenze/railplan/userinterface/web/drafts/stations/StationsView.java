@@ -10,6 +10,7 @@ import com.ralfhenze.railplan.userinterface.web.views.GermanyMapSvgView;
 import com.ralfhenze.railplan.userinterface.web.views.MasterView;
 import com.ralfhenze.railplan.userinterface.web.views.MasterView.SelectedNavEntry;
 import com.ralfhenze.railplan.userinterface.web.views.NetworkElementTabsView;
+import com.ralfhenze.railplan.userinterface.web.views.NetworkElementTabsView.SelectedTab;
 import j2html.tags.Tag;
 
 import java.util.List;
@@ -171,12 +172,11 @@ public class StationsView {
         final var allPresetStations = List.of(PresetStation.values());
         final var presetStationFormModel = (this.presetStationFormModel == null) ?
             new PresetStationFormModel() : this.presetStationFormModel;
-        final var tabsView = new NetworkElementTabsView();
 
         return new MasterView(SelectedNavEntry.DRAFTS).with(
             div().withId("data-panel").with(
                 div().withId("network-elements-box").withClass("box").with(
-                    tabsView.getTag(draftId, NetworkElementTabsView.SelectedTab.STATIONS),
+                    new NetworkElementTabsView(SelectedTab.STATIONS, draftId).getHtml(),
                     div().withId("stations").with(
                         h1("Draft"),
                         form().withMethod("post").with(
@@ -214,7 +214,7 @@ public class StationsView {
                 )
             ),
             germanyMapSvg.getHtml()
-        );
+        ).render();
     }
 
     private static Tag getStationTableCell(

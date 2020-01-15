@@ -10,13 +10,22 @@ import static j2html.TagCreator.ul;
 /**
  * A tab navigation bar.
  */
-public class NetworkElementTabsView {
+public class NetworkElementTabsView implements View {
+
+    private final SelectedTab selectedTab;
+    private final String draftId;
 
     public enum SelectedTab {
         STATIONS, TRACKS, RELEASE
     }
 
-    public Tag getTag(final String draftId, final SelectedTab selectedTab) {
+    public NetworkElementTabsView(final SelectedTab selectedTab, final String draftId) {
+        this.selectedTab = selectedTab;
+        this.draftId = draftId;
+    }
+
+    @Override
+    public Tag getHtml() {
         return nav().attr("aria-label", "Network Element Tabs").with(
             ul(
                 li(

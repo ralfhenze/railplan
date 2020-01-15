@@ -11,6 +11,7 @@ import com.ralfhenze.railplan.userinterface.web.views.GermanyMapSvgView;
 import com.ralfhenze.railplan.userinterface.web.views.MasterView;
 import com.ralfhenze.railplan.userinterface.web.views.MasterView.SelectedNavEntry;
 import com.ralfhenze.railplan.userinterface.web.views.NetworkElementTabsView;
+import com.ralfhenze.railplan.userinterface.web.views.NetworkElementTabsView.SelectedTab;
 import j2html.tags.Tag;
 
 import java.util.List;
@@ -101,7 +102,6 @@ public class TracksView {
         final var draftId = this.draftId;
         final var draftDto = getDraftDto();
         final var germanyMapSvg = new GermanyMapSvgView(draftDto.getStations(), draftDto.getTracks());
-        final var tabsView = new NetworkElementTabsView();
         final var stationNames = getStationNames(draftDto);
         final var trackRows = getTrackRows(draftDto, stationNames);
         var track = this.track;
@@ -117,7 +117,7 @@ public class TracksView {
         return new MasterView(SelectedNavEntry.DRAFTS).with(
             div().withId("data-panel").with(
                 div().withId("network-elements-box").withClass("box").with(
-                    tabsView.getTag(draftId, NetworkElementTabsView.SelectedTab.TRACKS),
+                    new NetworkElementTabsView(SelectedTab.TRACKS, draftId).getHtml(),
                     div().withId("tracks").with(
                         form().withId("custom-track-form").withMethod("post").with(
                             table(
@@ -167,7 +167,7 @@ public class TracksView {
                 )
             ),
             germanyMapSvg.getHtml()
-        );
+        ).render();
     }
 
     private Tag getCustomTrackForm(
