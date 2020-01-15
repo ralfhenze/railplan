@@ -14,6 +14,6 @@ public class IndexController {
     @GetMapping("/")
     @ResponseBody
     public String showLandingPage() {
-        return new IndexView().getHtml();
+        return new IndexView().getHtml().render();
     }
 }

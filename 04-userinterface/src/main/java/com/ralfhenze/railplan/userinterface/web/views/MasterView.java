@@ -34,9 +34,9 @@ public class MasterView implements View {
         this.selectedNavEntry = selectedNavEntry;
     }
 
-    public String with(final Tag... contentTags) {
+    public Tag with(final Tag... contentTags) {
         this.contentTags = contentTags;
-        return this.getHtml().render();
+        return this.getHtml();
     }
 
     @Override

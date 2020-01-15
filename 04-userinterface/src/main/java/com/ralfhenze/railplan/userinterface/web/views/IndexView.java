@@ -1,6 +1,7 @@
 package com.ralfhenze.railplan.userinterface.web.views;
 
 import com.ralfhenze.railplan.userinterface.web.views.MasterView.SelectedNavEntry;
+import j2html.tags.Tag;
 
 import static j2html.TagCreator.a;
 import static j2html.TagCreator.br;
@@ -11,9 +12,10 @@ import static j2html.TagCreator.h3;
 /**
  * An HTML view for the landing page.
  */
-public class IndexView {
+public class IndexView implements View {
 
-    public String getHtml() {
+    @Override
+    public Tag getHtml() {
         return new MasterView(SelectedNavEntry.START).with(
             div().withClasses("index", "fullscreen-wrapper").with(
                 div().withId("index-box").withClass("box").with(
