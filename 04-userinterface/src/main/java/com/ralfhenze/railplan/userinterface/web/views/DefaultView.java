@@ -13,6 +13,7 @@ import static j2html.TagCreator.li;
 import static j2html.TagCreator.link;
 import static j2html.TagCreator.meta;
 import static j2html.TagCreator.nav;
+import static j2html.TagCreator.rawHtml;
 import static j2html.TagCreator.tag;
 import static j2html.TagCreator.title;
 import static j2html.TagCreator.ul;
@@ -29,7 +30,8 @@ public class DefaultView {
     public String getHtml(final SelectedNavEntry selectedNavEntry, final Tag... contentTags) {
         Config.closeEmptyTags = true;
 
-        return "<!DOCTYPE HTML>\n" +
+        return tag(null).with(
+            rawHtml("<!DOCTYPE html>"),
             html().attr("lang", "en-US").with(
                 head(
                     title("RailPlan"),
@@ -69,6 +71,7 @@ public class DefaultView {
                     )
                 )
             )
-            .renderFormatted();
+        )
+        .render();
     }
 }
