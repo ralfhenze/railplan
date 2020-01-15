@@ -7,7 +7,6 @@ import com.ralfhenze.railplan.infrastructure.persistence.dto.TrainStationDto;
 import j2html.tags.ContainerTag;
 import j2html.tags.EmptyTag;
 import j2html.tags.Tag;
-import org.springframework.ui.Model;
 
 import java.io.IOException;
 import java.util.List;
@@ -55,14 +54,6 @@ public class GermanySvgViewFragment {
                 )
             )
         );
-    }
-
-    public void addRequiredAttributesTo(final Model model) {
-        model.addAttribute("germanyWidth", MAP_WIDTH);
-        model.addAttribute("germanyHeight", MAP_HEIGHT);
-        model.addAttribute("germanySvgPath", getPath());
-        model.addAttribute("germanySvgStations", getStationCoordinates());
-        model.addAttribute("germanySvgTracks", getTrackCoordinates());
     }
 
     private String getPath() {

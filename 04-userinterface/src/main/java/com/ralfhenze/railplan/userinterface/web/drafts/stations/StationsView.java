@@ -10,7 +10,6 @@ import com.ralfhenze.railplan.userinterface.web.views.DefaultView;
 import com.ralfhenze.railplan.userinterface.web.views.GermanySvgViewFragment;
 import com.ralfhenze.railplan.userinterface.web.views.NetworkElementTabsView;
 import j2html.tags.Tag;
-import org.springframework.ui.Model;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -53,6 +52,7 @@ public class StationsView {
     private RailNetworkDraft draft;
     private ValidationException validationException;
     private PresetStationFormModel presetStationFormModel;
+    private StationTableRow stationTableRow;
 
     public StationsView(
         final String draftId,
@@ -84,6 +84,11 @@ public class StationsView {
         return this;
     }
 
+    public StationsView withStationTableRow(final StationTableRow stationTableRow) {
+        this.stationTableRow = stationTableRow;
+        return this;
+    }
+
     public StationsView withValidationException(final ValidationException validationException) {
         this.validationException = validationException;
         return this;
@@ -95,7 +100,7 @@ public class StationsView {
         return new RailNetworkDraftDto(draft);
     }
 
-    private List<StationTableRow> getStationTableRows(final Model model) {
+    private List<StationTableRow> getStationTableRows() {
         final var stations = draft.getStations();
 
         return IntStream
@@ -118,7 +123,7 @@ public class StationsView {
                         row.longitudeErrors = validationException.getErrorsOfField(Field.LONGITUDE);
                     }
 
-                    setStationRowPropertiesIfModelContainsThem(row, model);
+                    setStationRowPropertiesIfModelContainsThem(row);
                 }
 
                 return row;
@@ -126,10 +131,10 @@ public class StationsView {
             .collect(Collectors.toList());
     }
 
-    private StationTableRow getNewStationTableRow(final Model model) {
+    private StationTableRow getNewStationTableRow() {
         final var newStationTableRow = new StationTableRow();
 
-        setStationRowPropertiesIfModelContainsThem(newStationTableRow, model);
+        setStationRowPropertiesIfModelContainsThem(newStationTableRow);
 
         newStationTableRow.showInputField = true;
         newStationTableRow.disabled = (stationIdToEdit != null);
@@ -145,25 +150,22 @@ public class StationsView {
     }
 
     private void setStationRowPropertiesIfModelContainsThem(
-        final StationTableRow row,
-        final Model model
+        final StationTableRow row
     ) {
-        if (model.containsAttribute("updatedStationTableRow")) {
-            final var updatedStationTableRow = (StationTableRow) model
-                .getAttribute("updatedStationTableRow");
-            row.stationName = updatedStationTableRow.getStationName();
-            row.latitude = updatedStationTableRow.getLatitude();
-            row.longitude = updatedStationTableRow.getLongitude();
+        if (stationTableRow != null) {
+            row.stationName = stationTableRow.getStationName();
+            row.latitude = stationTableRow.getLatitude();
+            row.longitude = stationTableRow.getLongitude();
         }
     }
 
-    public String getHtml(final Model model) {
+    public String getHtml() {
         final var draftId = this.draftId;
         final var draftDto = getDraftDto();
         final var germanyMapSvg = new GermanySvgViewFragment(draftDto.getStations(), draftDto.getTracks());
-        final var stationTableRows = getStationTableRows(model);
+        final var stationTableRows = getStationTableRows();
         final var showCustomStationForm = this.showCustomStationForm;
-        final var newStationTableRow = getNewStationTableRow(model);
+        final var newStationTableRow = getNewStationTableRow();
         final var showPresetStationForm = this.showPresetStationForm;
         final var allPresetStations = List.of(PresetStation.values());
         final var presetStationFormModel = (this.presetStationFormModel == null) ?

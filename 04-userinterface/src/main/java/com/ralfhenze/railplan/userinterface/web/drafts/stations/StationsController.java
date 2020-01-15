@@ -9,9 +9,7 @@ import com.ralfhenze.railplan.domain.common.validation.ValidationException;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -40,9 +38,8 @@ public class StationsController {
      */
     @GetMapping({"/drafts/{draftId}", "/drafts/{draftId}/stations"})
     @ResponseBody
-    public String showDraftPage(@PathVariable String draftId, Model model) {
-        return new StationsView(draftId, draftRepository)
-            .getHtml(model);
+    public String showDraftPage(@PathVariable String draftId) {
+        return new StationsView(draftId, draftRepository).getHtml();
     }
 
     /**
@@ -50,10 +47,10 @@ public class StationsController {
      */
     @GetMapping("/drafts/{draftId}/stations/new-from-preset")
     @ResponseBody
-    public String showPresetStationForm(@PathVariable String draftId, Model model) {
+    public String showPresetStationForm(@PathVariable String draftId) {
         return new StationsView(draftId, draftRepository)
             .withShowPresetStationForm(true)
-            .getHtml(model);
+            .getHtml();
     }
 
     /**
@@ -63,8 +60,7 @@ public class StationsController {
     @ResponseBody
     public String createNewStationsFromPresets(
         @PathVariable String draftId,
-        @ModelAttribute PresetStationFormModel presetStationFormModel,
-        Model model,
+        PresetStationFormModel presetStationFormModel,
         HttpServletResponse response
     ) {
         try {
@@ -90,7 +86,7 @@ public class StationsController {
                 .withShowPresetStationForm(true)
                 .withPresetStationFormModel(presetStationFormModel)
                 .withValidationException(exception)
-                .getHtml(model);
+                .getHtml();
         }
 
         return redirectTo("/drafts/" + draftId + "/stations", response);
@@ -101,10 +97,10 @@ public class StationsController {
      */
     @GetMapping("/drafts/{draftId}/stations/new-custom")
     @ResponseBody
-    public String showNewCustomStationForm(@PathVariable String draftId, Model model) {
+    public String showNewCustomStationForm(@PathVariable String draftId) {
         return new StationsView(draftId, draftRepository)
             .withShowCustomStationForm(true)
-            .getHtml(model);
+            .getHtml();
     }
 
     /**
@@ -114,8 +110,7 @@ public class StationsController {
     @ResponseBody
     public String createNewCustomStation(
         @PathVariable String draftId,
-        @ModelAttribute(name = "updatedStationTableRow") StationTableRow stationRow,
-        Model model,
+        StationTableRow stationRow,
         HttpServletResponse response
     ) {
         try {
@@ -131,7 +126,8 @@ public class StationsController {
             return new StationsView(draftId, draftRepository)
                 .withShowCustomStationForm(true)
                 .withValidationException(exception)
-                .getHtml(model);
+                .withStationTableRow(stationRow)
+                .getHtml();
         }
 
         return redirectTo("/drafts/" + draftId + "/stations", response);
@@ -144,12 +140,11 @@ public class StationsController {
     @ResponseBody
     public String editStation(
         @PathVariable String draftId,
-        @PathVariable String stationId,
-        Model model
+        @PathVariable String stationId
     ) {
         return new StationsView(draftId, draftRepository)
             .withStationIdToEdit(stationId)
-            .getHtml(model);
+            .getHtml();
     }
 
     /**
@@ -160,8 +155,7 @@ public class StationsController {
     public String updateStation(
         @PathVariable String draftId,
         @PathVariable String stationId,
-        @ModelAttribute(name = "updatedStationTableRow") StationTableRow stationRow,
-        Model model,
+        StationTableRow stationRow,
         HttpServletResponse response
     ) {
         try {
@@ -178,7 +172,8 @@ public class StationsController {
             return new StationsView(draftId, draftRepository)
                 .withStationIdToEdit(stationId)
                 .withValidationException(exception)
-                .getHtml(model);
+                .withStationTableRow(stationRow)
+                .getHtml();
         }
 
         return redirectTo("/drafts/" + draftId + "/stations", response);
