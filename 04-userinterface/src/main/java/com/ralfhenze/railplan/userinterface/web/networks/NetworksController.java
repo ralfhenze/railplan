@@ -44,6 +44,6 @@ public class NetworksController {
             .getReleasedRailNetworkOfId(new ReleasedRailNetworkId(networkId));
         final var networkDto = new ReleasedRailNetworkDto(network);
 
-        return new NetworkView().getHtml(networkDto);
+        return new NetworkView(networkDto).getHtml().render();
     }
 }

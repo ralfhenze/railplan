@@ -4,6 +4,8 @@ import com.ralfhenze.railplan.infrastructure.persistence.dto.ReleasedRailNetwork
 import com.ralfhenze.railplan.infrastructure.persistence.dto.TrainStationDto;
 import com.ralfhenze.railplan.userinterface.web.views.MasterView;
 import com.ralfhenze.railplan.userinterface.web.views.MasterView.SelectedNavEntry;
+import com.ralfhenze.railplan.userinterface.web.views.View;
+import j2html.tags.Tag;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,15 +28,22 @@ import static j2html.TagCreator.tr;
 /**
  * An HTML view for a single Network.
  */
-public class NetworkView {
+public class NetworkView implements View {
+
+    private final ReleasedRailNetworkDto networkDto;
 
     private static class Track {
         public String firstStationName;
         public String secondStationName;
     }
 
-    public String getHtml(final ReleasedRailNetworkDto networkDto) {
-        final var tracks = getTracksWithStationNames(networkDto);
+    public NetworkView(final ReleasedRailNetworkDto networkDto) {
+        this.networkDto = networkDto;
+    }
+
+    @Override
+    public Tag getHtml() {
+        final var tracks = getTracksWithStationNames();
 
         return new MasterView(SelectedNavEntry.NETWORKS).with(
             div().withClasses("networks", "fullscreen-wrapper").with(
@@ -99,7 +108,7 @@ public class NetworkView {
         );
     }
 
-    private List<Track> getTracksWithStationNames(final ReleasedRailNetworkDto networkDto) {
+    private List<Track> getTracksWithStationNames() {
         final var stationNames = networkDto.getStations().stream()
             .collect(Collectors.toMap(TrainStationDto::getId, TrainStationDto::getName));
 
