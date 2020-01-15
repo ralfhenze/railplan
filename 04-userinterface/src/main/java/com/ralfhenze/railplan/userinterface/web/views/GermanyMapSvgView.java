@@ -16,10 +16,10 @@ import java.util.stream.Collectors;
 import static j2html.TagCreator.div;
 import static j2html.TagCreator.each;
 
-public class GermanySvgViewFragment {
+public class GermanyMapSvgView implements View {
 
-    public static final double MAP_WIDTH = 200;
-    public static final double MAP_HEIGHT = 400;
+    private static final double MAP_WIDTH = 200;
+    private static final double MAP_HEIGHT = 400;
     private static final double EARTH_RADIUS = 6378137.0;
     private static final double ZOOM = 5.0;
     private static final double MAX_LATITUDE = 85.0511287798;
@@ -30,7 +30,7 @@ public class GermanySvgViewFragment {
     private final List<TrainStationDto> stationDtos;
     private final List<RailwayTrackDto> trackDtos;
 
-    public GermanySvgViewFragment(
+    public GermanyMapSvgView(
         final List<TrainStationDto> stationDtos,
         final List<RailwayTrackDto> trackDtos
     ) {
@@ -38,7 +38,8 @@ public class GermanySvgViewFragment {
         this.trackDtos = trackDtos;
     }
 
-    public Tag getDivTag() {
+    @Override
+    public Tag getHtml() {
         return div().withId("germany-map").withClass("box").with(
             svg().attr("viewBox", "0 0 " + MAP_WIDTH + " " + MAP_HEIGHT).with(
                 path().attr("d", getPath()),

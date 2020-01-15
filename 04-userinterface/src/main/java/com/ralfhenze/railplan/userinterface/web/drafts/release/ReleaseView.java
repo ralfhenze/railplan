@@ -6,7 +6,7 @@ import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraf
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftRepository;
 import com.ralfhenze.railplan.infrastructure.persistence.dto.RailNetworkDraftDto;
 import com.ralfhenze.railplan.userinterface.web.views.DefaultView;
-import com.ralfhenze.railplan.userinterface.web.views.GermanySvgViewFragment;
+import com.ralfhenze.railplan.userinterface.web.views.GermanyMapSvgView;
 import com.ralfhenze.railplan.userinterface.web.views.NetworkElementTabsView;
 import j2html.tags.Tag;
 
@@ -60,7 +60,7 @@ public class ReleaseView {
     public String getHtml() {
         final var draftId = this.draftId;
         final var draftDto = getDraftDto();
-        final var germanyMapSvg = new GermanySvgViewFragment(
+        final var germanyMapSvg = new GermanyMapSvgView(
             draftDto.getStations(),
             draftDto.getTracks()
         );
@@ -103,7 +103,7 @@ public class ReleaseView {
                     )
                 )
             ),
-            germanyMapSvg.getDivTag()
+            germanyMapSvg.getHtml()
         );
     }
 

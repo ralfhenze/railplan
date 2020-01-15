@@ -8,7 +8,7 @@ import com.ralfhenze.railplan.infrastructure.persistence.dto.RailNetworkDraftDto
 import com.ralfhenze.railplan.infrastructure.persistence.dto.RailwayTrackDto;
 import com.ralfhenze.railplan.infrastructure.persistence.dto.TrainStationDto;
 import com.ralfhenze.railplan.userinterface.web.views.DefaultView;
-import com.ralfhenze.railplan.userinterface.web.views.GermanySvgViewFragment;
+import com.ralfhenze.railplan.userinterface.web.views.GermanyMapSvgView;
 import com.ralfhenze.railplan.userinterface.web.views.NetworkElementTabsView;
 import j2html.tags.Tag;
 
@@ -99,7 +99,7 @@ public class TracksView {
     public String getHtml() {
         final var draftId = this.draftId;
         final var draftDto = getDraftDto();
-        final var germanyMapSvg = new GermanySvgViewFragment(draftDto.getStations(), draftDto.getTracks());
+        final var germanyMapSvg = new GermanyMapSvgView(draftDto.getStations(), draftDto.getTracks());
         final var tabsView = new NetworkElementTabsView();
         final var stationNames = getStationNames(draftDto);
         final var trackRows = getTrackRows(draftDto, stationNames);
