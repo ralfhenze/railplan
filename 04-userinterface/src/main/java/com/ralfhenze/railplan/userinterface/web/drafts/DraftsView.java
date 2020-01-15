@@ -2,6 +2,8 @@ package com.ralfhenze.railplan.userinterface.web.drafts;
 
 import com.ralfhenze.railplan.userinterface.web.views.MasterView;
 import com.ralfhenze.railplan.userinterface.web.views.MasterView.SelectedNavEntry;
+import com.ralfhenze.railplan.userinterface.web.views.View;
+import j2html.tags.Tag;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,14 +22,21 @@ import static j2html.TagCreator.ul;
 /**
  * An HTML view for the Drafts page.
  */
-public class DraftsView {
+public class DraftsView implements View {
+
+    private final List<String> draftIds;
 
     private static class IndexedDraftId {
         public int index;
         public String draftId;
     }
 
-    public String getHtml(final List<String> draftIds) {
+    public DraftsView(final List<String> draftIds) {
+        this.draftIds = draftIds;
+    }
+
+    @Override
+    public Tag getHtml() {
         final var indexedDraftIds = getIndexedDraftIds(draftIds);
 
         return new MasterView(SelectedNavEntry.DRAFTS).with(

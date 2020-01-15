@@ -30,7 +30,9 @@ public class DraftsController {
     @GetMapping("/drafts")
     @ResponseBody
     public String showDraftsPage() {
-        return new DraftsView().getHtml(queries.getAllDraftIds());
+        return new DraftsView(queries.getAllDraftIds())
+            .getHtml()
+            .render();
     }
 
     /**
