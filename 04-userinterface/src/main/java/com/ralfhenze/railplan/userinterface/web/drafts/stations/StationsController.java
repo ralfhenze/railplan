@@ -39,7 +39,7 @@ public class StationsController {
     @GetMapping({"/drafts/{draftId}", "/drafts/{draftId}/stations"})
     @ResponseBody
     public String showDraftPage(@PathVariable String draftId) {
-        return new StationsView(draftId, draftRepository).getHtml();
+        return new StationsView(draftId, draftRepository).getHtml().render();
     }
 
     /**
@@ -50,7 +50,8 @@ public class StationsController {
     public String showPresetStationForm(@PathVariable String draftId) {
         return new StationsView(draftId, draftRepository)
             .withShowPresetStationForm(true)
-            .getHtml();
+            .getHtml()
+            .render();
     }
 
     /**
@@ -86,7 +87,8 @@ public class StationsController {
                 .withShowPresetStationForm(true)
                 .withPresetStationFormModel(presetStationFormModel)
                 .withValidationException(exception)
-                .getHtml();
+                .getHtml()
+                .render();
         }
 
         return redirectTo("/drafts/" + draftId + "/stations", response);
@@ -100,7 +102,8 @@ public class StationsController {
     public String showNewCustomStationForm(@PathVariable String draftId) {
         return new StationsView(draftId, draftRepository)
             .withShowCustomStationForm(true)
-            .getHtml();
+            .getHtml()
+            .render();
     }
 
     /**
@@ -127,7 +130,8 @@ public class StationsController {
                 .withShowCustomStationForm(true)
                 .withValidationException(exception)
                 .withStationTableRow(stationRow)
-                .getHtml();
+                .getHtml()
+                .render();
         }
 
         return redirectTo("/drafts/" + draftId + "/stations", response);
@@ -144,7 +148,8 @@ public class StationsController {
     ) {
         return new StationsView(draftId, draftRepository)
             .withStationIdToEdit(stationId)
-            .getHtml();
+            .getHtml()
+            .render();
     }
 
     /**
@@ -173,7 +178,8 @@ public class StationsController {
                 .withStationIdToEdit(stationId)
                 .withValidationException(exception)
                 .withStationTableRow(stationRow)
-                .getHtml();
+                .getHtml()
+                .render();
         }
 
         return redirectTo("/drafts/" + draftId + "/stations", response);
