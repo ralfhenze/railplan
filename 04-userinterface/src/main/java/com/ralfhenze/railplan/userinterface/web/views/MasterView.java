@@ -21,13 +21,26 @@ import static j2html.TagCreator.ul;
 /**
  * The wrapping HTML that is common to all pages.
  */
-public class DefaultView {
+public class MasterView implements View {
+
+    private final SelectedNavEntry selectedNavEntry;
+    private Tag[] contentTags;
 
     public enum SelectedNavEntry {
         START, DRAFTS, NETWORKS
     }
 
-    public String getHtml(final SelectedNavEntry selectedNavEntry, final Tag... contentTags) {
+    public MasterView(final SelectedNavEntry selectedNavEntry) {
+        this.selectedNavEntry = selectedNavEntry;
+    }
+
+    public String with(final Tag... contentTags) {
+        this.contentTags = contentTags;
+        return this.getHtml().render();
+    }
+
+    @Override
+    public Tag getHtml() {
         Config.closeEmptyTags = true;
 
         return tag(null).with(
@@ -71,7 +84,6 @@ public class DefaultView {
                     )
                 )
             )
-        )
-        .render();
+        );
     }
 }

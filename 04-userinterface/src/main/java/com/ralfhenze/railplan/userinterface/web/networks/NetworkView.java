@@ -2,7 +2,8 @@ package com.ralfhenze.railplan.userinterface.web.networks;
 
 import com.ralfhenze.railplan.infrastructure.persistence.dto.ReleasedRailNetworkDto;
 import com.ralfhenze.railplan.infrastructure.persistence.dto.TrainStationDto;
-import com.ralfhenze.railplan.userinterface.web.views.DefaultView;
+import com.ralfhenze.railplan.userinterface.web.views.MasterView;
+import com.ralfhenze.railplan.userinterface.web.views.MasterView.SelectedNavEntry;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -35,7 +36,7 @@ public class NetworkView {
     public String getHtml(final ReleasedRailNetworkDto networkDto) {
         final var tracks = getTracksWithStationNames(networkDto);
 
-        return new DefaultView().getHtml(DefaultView.SelectedNavEntry.NETWORKS,
+        return new MasterView(SelectedNavEntry.NETWORKS).with(
             div().withClasses("networks", "fullscreen-wrapper").with(
                 div().withId("index-box").withClass("box").with(
                     div(

@@ -6,8 +6,9 @@ import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraf
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftId;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftRepository;
 import com.ralfhenze.railplan.infrastructure.persistence.dto.RailNetworkDraftDto;
-import com.ralfhenze.railplan.userinterface.web.views.DefaultView;
 import com.ralfhenze.railplan.userinterface.web.views.GermanyMapSvgView;
+import com.ralfhenze.railplan.userinterface.web.views.MasterView;
+import com.ralfhenze.railplan.userinterface.web.views.MasterView.SelectedNavEntry;
 import com.ralfhenze.railplan.userinterface.web.views.NetworkElementTabsView;
 import j2html.tags.Tag;
 
@@ -172,7 +173,7 @@ public class StationsView {
             new PresetStationFormModel() : this.presetStationFormModel;
         final var tabsView = new NetworkElementTabsView();
 
-        return new DefaultView().getHtml(DefaultView.SelectedNavEntry.DRAFTS,
+        return new MasterView(SelectedNavEntry.DRAFTS).with(
             div().withId("data-panel").with(
                 div().withId("network-elements-box").withClass("box").with(
                     tabsView.getTag(draftId, NetworkElementTabsView.SelectedTab.STATIONS),

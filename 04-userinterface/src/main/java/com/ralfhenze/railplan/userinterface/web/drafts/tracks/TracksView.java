@@ -7,8 +7,9 @@ import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraf
 import com.ralfhenze.railplan.infrastructure.persistence.dto.RailNetworkDraftDto;
 import com.ralfhenze.railplan.infrastructure.persistence.dto.RailwayTrackDto;
 import com.ralfhenze.railplan.infrastructure.persistence.dto.TrainStationDto;
-import com.ralfhenze.railplan.userinterface.web.views.DefaultView;
 import com.ralfhenze.railplan.userinterface.web.views.GermanyMapSvgView;
+import com.ralfhenze.railplan.userinterface.web.views.MasterView;
+import com.ralfhenze.railplan.userinterface.web.views.MasterView.SelectedNavEntry;
 import com.ralfhenze.railplan.userinterface.web.views.NetworkElementTabsView;
 import j2html.tags.Tag;
 
@@ -113,7 +114,7 @@ public class TracksView {
             errors = getTrackErrors();
         }
 
-        return new DefaultView().getHtml(DefaultView.SelectedNavEntry.DRAFTS,
+        return new MasterView(SelectedNavEntry.DRAFTS).with(
             div().withId("data-panel").with(
                 div().withId("network-elements-box").withClass("box").with(
                     tabsView.getTag(draftId, NetworkElementTabsView.SelectedTab.TRACKS),
@@ -165,7 +166,7 @@ public class TracksView {
                     )
                 )
             ),
-            germanyMapSvg.getDivTag()
+            germanyMapSvg.getHtml()
         );
     }
 

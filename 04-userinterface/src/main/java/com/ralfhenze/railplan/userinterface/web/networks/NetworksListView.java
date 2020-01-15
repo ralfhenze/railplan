@@ -1,6 +1,7 @@
 package com.ralfhenze.railplan.userinterface.web.networks;
 
-import com.ralfhenze.railplan.userinterface.web.views.DefaultView;
+import com.ralfhenze.railplan.userinterface.web.views.MasterView;
+import com.ralfhenze.railplan.userinterface.web.views.MasterView.SelectedNavEntry;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -27,7 +28,7 @@ public class NetworksListView {
     public String getHtml(final List<String> networkIds) {
         final var indexedNetworkIds = getIndexedNetworkIds(networkIds);
 
-        return new DefaultView().getHtml(DefaultView.SelectedNavEntry.NETWORKS,
+        return new MasterView(SelectedNavEntry.NETWORKS).with(
             div().withClasses("networks", "fullscreen-wrapper").with(
                 div().withId("index-box").withClass("box").with(
                     div().withId("draft-selector").with(
