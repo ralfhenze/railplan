@@ -2,6 +2,8 @@ package com.ralfhenze.railplan.userinterface.web.networks;
 
 import com.ralfhenze.railplan.userinterface.web.views.MasterView;
 import com.ralfhenze.railplan.userinterface.web.views.MasterView.SelectedNavEntry;
+import com.ralfhenze.railplan.userinterface.web.views.View;
+import j2html.tags.Tag;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,15 +20,22 @@ import static j2html.TagCreator.ul;
 /**
  * An HTML view for the Networks page.
  */
-public class NetworksListView {
+public class NetworksListView implements View {
+
+    private final List<String> networkIds;
 
     private static class IndexedNetworkId {
         public int index;
         public String networkId;
     }
 
-    public String getHtml(final List<String> networkIds) {
-        final var indexedNetworkIds = getIndexedNetworkIds(networkIds);
+    public NetworksListView(final List<String> networkIds) {
+        this.networkIds = networkIds;
+    }
+
+    @Override
+    public Tag getHtml() {
+        final var indexedNetworkIds = getIndexedNetworkIds();
 
         return new MasterView(SelectedNavEntry.NETWORKS).with(
             div().withClasses("networks", "fullscreen-wrapper").with(
@@ -51,7 +60,7 @@ public class NetworksListView {
         );
     }
 
-    private List<IndexedNetworkId> getIndexedNetworkIds(final List<String> networkIds) {
+    private List<IndexedNetworkId> getIndexedNetworkIds() {
         return IntStream
             .range(0, networkIds.size())
             .mapToObj(i -> {

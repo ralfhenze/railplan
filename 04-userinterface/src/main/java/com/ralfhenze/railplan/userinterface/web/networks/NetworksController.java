@@ -31,7 +31,7 @@ public class NetworksController {
     @GetMapping("/networks")
     @ResponseBody
     public String showNetworksListPage() {
-        return new NetworksListView().getHtml(queries.getAllNetworkIds());
+        return new NetworksListView(queries.getAllNetworkIds()).getHtml().render();
     }
 
     /**
