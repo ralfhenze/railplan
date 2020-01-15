@@ -37,7 +37,7 @@ public class ReleaseController {
     @GetMapping("/drafts/{draftId}/release")
     @ResponseBody
     public String showDraftReleaseForm(@PathVariable String draftId) {
-        return new ReleaseView(draftId, draftRepository).getHtml();
+        return new ReleaseView(draftId, draftRepository).getHtml().render();
     }
 
     /**
@@ -65,7 +65,8 @@ public class ReleaseController {
             return new ReleaseView(draftId, draftRepository)
                 .withValidationException(exception)
                 .withValidityPeriod(periodDto)
-                .getHtml();
+                .getHtml()
+                .render();
         }
     }
 }

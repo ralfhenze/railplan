@@ -10,6 +10,7 @@ import com.ralfhenze.railplan.userinterface.web.views.MasterView;
 import com.ralfhenze.railplan.userinterface.web.views.MasterView.SelectedNavEntry;
 import com.ralfhenze.railplan.userinterface.web.views.NetworkElementTabsView;
 import com.ralfhenze.railplan.userinterface.web.views.NetworkElementTabsView.SelectedTab;
+import com.ralfhenze.railplan.userinterface.web.views.View;
 import j2html.tags.Tag;
 
 import java.time.LocalDate;
@@ -29,7 +30,7 @@ import static j2html.TagCreator.ul;
 /**
  * An HTML view that provides the possibility to release a Draft.
  */
-public class ReleaseView {
+public class ReleaseView implements View {
 
     private final String draftId;
     private final RailNetworkDraftRepository draftRepository;
@@ -59,15 +60,9 @@ public class ReleaseView {
         return this;
     }
 
-    public String getHtml() {
-        final var draftId = this.draftId;
+    @Override
+    public Tag getHtml() {
         final var draftDto = getDraftDto();
-        final var germanyMapSvg = new GermanyMapSvgView(
-            draftDto.getStations(),
-            draftDto.getTracks()
-        );
-
-        final var validityPeriod = this.validityPeriod;
         final var releaseErrors = new ReleaseErrors();
 
         if (validationException == null) {
@@ -103,8 +98,9 @@ public class ReleaseView {
                         )
                     )
                 )
-            )
-        ).render();
+            ),
+            new GermanyMapSvgView(draftDto.getStations(), draftDto.getTracks()).getHtml()
+        );
     }
 
     private Tag getErrorMessagesListTag(final String name, final List<String> errors) {
