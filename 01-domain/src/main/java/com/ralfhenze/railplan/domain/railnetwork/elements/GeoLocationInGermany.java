@@ -19,10 +19,10 @@ public class GeoLocationInGermany implements ValueObject {
 
     // Germany bounding box taken from
     // https://gist.github.com/graydon/11198540
-    private final static double GERMANY_EAST_LAT = 55.099161;
-    private final static double GERMANY_WEST_LAT = 47.2701114;
-    private final static double GERMANY_NORTH_LNG = 15.0419319;
-    private final static double GERMANY_SOUTH_LNG = 5.8663153;
+    private final static double EAST_LAT = 55.099161;
+    private final static double WEST_LAT = 47.2701114;
+    private final static double NORTH_LNG = 15.0419319;
+    private final static double SOUTH_LNG = 5.8663153;
 
     private final static double EARTH_RADIUS_IN_KILOMETERS = 6371.007177356707;
 
@@ -34,12 +34,8 @@ public class GeoLocationInGermany implements ValueObject {
      */
     public GeoLocationInGermany(final double latitude, final double longitude) {
         new Validation()
-            .ensureThat(
-                latitude, new IsWithinRange(GERMANY_WEST_LAT, GERMANY_EAST_LAT), Field.LATITUDE
-            )
-            .ensureThat(
-                longitude, new IsWithinRange(GERMANY_SOUTH_LNG, GERMANY_NORTH_LNG), Field.LONGITUDE
-            )
+            .ensureThat(latitude, new IsWithinRange(WEST_LAT, EAST_LAT), Field.LATITUDE)
+            .ensureThat(longitude, new IsWithinRange(SOUTH_LNG, NORTH_LNG), Field.LONGITUDE)
             .throwExceptionIfInvalid();
 
         this.latitude = latitude;

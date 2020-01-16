@@ -5,7 +5,6 @@ import com.ralfhenze.railplan.domain.common.EntityNotFoundException;
 import com.ralfhenze.railplan.domain.common.validation.Field;
 import com.ralfhenze.railplan.domain.common.validation.Validation;
 import com.ralfhenze.railplan.domain.common.validation.ValidationException;
-import com.ralfhenze.railplan.domain.common.validation.constraints.IsEqualTo;
 import com.ralfhenze.railplan.domain.railnetwork.elements.GeoLocationInGermany;
 import com.ralfhenze.railplan.domain.railnetwork.elements.RailwayTrack;
 import com.ralfhenze.railplan.domain.railnetwork.elements.TrainStation;
@@ -15,6 +14,7 @@ import com.ralfhenze.railplan.domain.railnetwork.invariants.HasNoDuplicateTracks
 import com.ralfhenze.railplan.domain.railnetwork.invariants.HasNoStationsNearerThan10Km;
 import com.ralfhenze.railplan.domain.railnetwork.invariants.HasNoTracksLongerThan300Km;
 import com.ralfhenze.railplan.domain.railnetwork.invariants.HasUniqueStationNames;
+import com.ralfhenze.railplan.domain.railnetwork.invariants.IsNotNearerThan10KmTo;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 
@@ -94,6 +94,9 @@ public class RailNetworkDraft implements Aggregate {
         var v = new Validation();
         final var name = v.get(() -> new TrainStationName(stationName, getOtherStationNames()));
         final var location = v.get(() -> new GeoLocationInGermany(latitude, longitude));
+        if (location != null) {
+            v = v.ensureThat(location, new IsNotNearerThan10KmTo(stations), Field.LOCATION);
+        }
         v.throwExceptionIfInvalid();
 
         return withNewStation(name, location);
@@ -281,7 +284,7 @@ public class RailNetworkDraft implements Aggregate {
     }
 
     private ImmutableList<String> getOtherStationNames() {
-        return stations.collect((s) -> s.getName().getName());
+        return stations.collect(s -> s.getName().getName());
     }
 
     private ImmutableList<String> getOtherStationNamesWithout(final String stationId) {

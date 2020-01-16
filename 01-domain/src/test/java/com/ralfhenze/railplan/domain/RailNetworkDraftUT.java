@@ -87,6 +87,28 @@ public class RailNetworkDraftUT {
     }
 
     @Test
+    public void accumulatesValidationErrorsWhenAddingNewStationWithTooNearCoordinates() {
+        // Given a Draft with "Berlin Hbf"
+        final var draft = new RailNetworkDraft()
+            .withNewStation(berlinHbfName, berlinHbfPos);
+
+        // When we try to add a new "Berlin Hbf" Station with too near / equal coordinates
+        final var ex = catchThrowable(() ->
+            draft.withNewStation(
+                berlinHbfName.getName(),
+                berlinHbfPos.getLatitude(),
+                berlinHbfPos.getLongitude()
+            )
+        );
+
+        // Then we get a Station name and a Location validation error
+        assertThat(ex)
+            .isInstanceOf(ValidationException.class)
+            .has(oneStationNameError) // Name "Berlin Hbf" already exists
+            .has(oneLocationError); // Too near to existing "Berlin Hbf"
+    }
+
+    @Test
     public void accumulatesValidationErrorsWhenUpdatingStation() {
         // Given a Draft with "Berlin Hbf" and "Hamburg Hbf"
         final var draft = new RailNetworkDraft()

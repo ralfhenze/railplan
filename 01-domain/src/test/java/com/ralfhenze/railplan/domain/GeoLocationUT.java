@@ -23,7 +23,6 @@ public class GeoLocationUT {
         assertThat(Math.floor(distance)).isEqualTo(255);
     }
 
-
     @Test
     @Parameters({
         // coordinates outside of Germany
