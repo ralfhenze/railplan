@@ -48,6 +48,26 @@ public class RailNetworkDraftUT {
     }
 
     @Test
+    public void throwsNoErrorsWhenUpdatingStationWithTheSameData() {
+        // Given a Draft with "Berlin Hbf"
+        final var draft = new RailNetworkDraft()
+            .withNewStation(berlinHbfName, berlinHbfPos);
+
+        // When we update "Berlin Hbf" with the current "Berlin Hbf" data
+        final var ex = catchThrowable(() ->
+            draft.withUpdatedStation(
+                "1",
+                berlinHbfName.getName(),
+                berlinHbfPos.getLatitude(),
+                berlinHbfPos.getLongitude()
+            )
+        );
+
+        // Then no exception is thrown
+        assertThat(ex).doesNotThrowAnyException();
+    }
+
+    @Test
     public void accumulatesValidationErrorsWhenAddingNewStation() {
         // Given a Draft with "Berlin Hbf"
         final var draft = new RailNetworkDraft()

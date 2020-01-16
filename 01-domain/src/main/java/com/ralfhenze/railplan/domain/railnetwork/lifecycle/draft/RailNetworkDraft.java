@@ -142,9 +142,11 @@ public class RailNetworkDraft implements Aggregate {
         final double newLatitude,
         final double newLongitude
     ) {
+        final var otherStationNames = getOtherStationNamesWithout(stationId);
+
         final var v = new Validation();
         final var id = v.get(() -> new TrainStationId(stationId));
-        final var name = v.get(() -> new TrainStationName(newStationName, getOtherStationNames()));
+        final var name = v.get(() -> new TrainStationName(newStationName, otherStationNames));
         final var location = v.get(() -> new GeoLocationInGermany(newLatitude, newLongitude));
         v.throwExceptionIfInvalid();
 
@@ -280,6 +282,12 @@ public class RailNetworkDraft implements Aggregate {
 
     private ImmutableList<String> getOtherStationNames() {
         return stations.collect((s) -> s.getName().getName());
+    }
+
+    private ImmutableList<String> getOtherStationNamesWithout(final String stationId) {
+        return stations
+            .reject(s -> s.getId().toString().equals(stationId))
+            .collect(s -> s.getName().getName());
     }
 
     private void ensureTrackExists(
