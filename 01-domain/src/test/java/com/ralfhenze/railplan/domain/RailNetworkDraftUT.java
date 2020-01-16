@@ -3,7 +3,6 @@ package com.ralfhenze.railplan.domain;
 import com.ralfhenze.railplan.domain.common.EntityNotFoundException;
 import com.ralfhenze.railplan.domain.common.validation.Field;
 import com.ralfhenze.railplan.domain.common.validation.ValidationException;
-import com.ralfhenze.railplan.domain.railnetwork.elements.GeoLocationInGermany;
 import com.ralfhenze.railplan.domain.railnetwork.elements.TrainStation;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraft;
 import org.assertj.core.api.Condition;

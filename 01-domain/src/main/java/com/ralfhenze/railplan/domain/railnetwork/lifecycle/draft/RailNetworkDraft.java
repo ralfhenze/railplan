@@ -11,7 +11,6 @@ import com.ralfhenze.railplan.domain.railnetwork.elements.TrainStation;
 import com.ralfhenze.railplan.domain.railnetwork.elements.TrainStationId;
 import com.ralfhenze.railplan.domain.railnetwork.elements.TrainStationName;
 import com.ralfhenze.railplan.domain.railnetwork.invariants.HasNoDuplicateTracks;
-import com.ralfhenze.railplan.domain.railnetwork.invariants.HasNoStationsNearerThan10Km;
 import com.ralfhenze.railplan.domain.railnetwork.invariants.HasNoTracksLongerThan300Km;
 import com.ralfhenze.railplan.domain.railnetwork.invariants.HasUniqueStationNames;
 import com.ralfhenze.railplan.domain.railnetwork.invariants.IsNotNearerThan10KmTo;
