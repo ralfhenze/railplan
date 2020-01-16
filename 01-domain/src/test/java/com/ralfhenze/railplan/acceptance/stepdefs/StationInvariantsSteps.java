@@ -35,7 +35,12 @@ public class StationInvariantsSteps {
         final var stationToAdd = TestData.getStation(stationName);
         exceptionWasThrown = false;
         try {
-            draft = draft.withNewStation(stationToAdd.getName(), stationToAdd.getLocation());
+            final var location = stationToAdd.getLocation();
+            draft = draft.withNewStation(
+                stationName,
+                location.getLatitude(),
+                location.getLongitude()
+            );
         } catch (IllegalArgumentException | ValidationException e) {
             exceptionWasThrown = true;
         }
