@@ -60,7 +60,7 @@ public class IsNotNearerThan10KmTo implements ValidationConstraint<GeoLocationIn
             .castToList();
 
         return new ValidationError(
-            "Too near to " + String.join(", ", tooNearStations)
+            "Too close to " + String.join(", ", tooNearStations)
             + " (distance must be > " + MINIMUM_STATION_DISTANCE_KM + " km)",
             field
         );

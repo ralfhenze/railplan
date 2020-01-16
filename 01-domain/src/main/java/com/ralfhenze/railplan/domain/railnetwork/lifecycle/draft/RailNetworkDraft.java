@@ -58,7 +58,6 @@ public class RailNetworkDraft implements Aggregate {
     ) {
         new Validation()
             .ensureThat(stations, new HasUniqueStationNames(), Field.STATION_NAME)
-            .ensureThat(stations, new HasNoStationsNearerThan10Km(), Field.LOCATION)
             .ensureThat(tracks, new HasNoTracksLongerThan300Km(stations), Field.TRACKS)
             .ensureThat(tracks, new HasNoDuplicateTracks(stations), Field.TRACKS)
             .throwExceptionIfInvalid();
@@ -94,9 +93,7 @@ public class RailNetworkDraft implements Aggregate {
         final var v = new Validation();
         final var name = v.get(() -> new TrainStationName(stationName, getOtherStationNames()));
         final var location = v.get(() -> new GeoLocationInGermany(latitude, longitude));
-        if (location != null) {
-            v.ensureThat(location, new IsNotNearerThan10KmTo(stations), Field.LOCATION);
-        }
+        validateLocationDistance(location, v, stations);
         v.throwExceptionIfInvalid();
 
         return withNewStation(name, location);
@@ -145,12 +142,14 @@ public class RailNetworkDraft implements Aggregate {
         final double newLatitude,
         final double newLongitude
     ) {
+        final var otherStations = getOtherStationsWithout(stationId);
         final var otherStationNames = getOtherStationNamesWithout(stationId);
 
         final var v = new Validation();
         final var id = v.get(() -> new TrainStationId(stationId));
         final var name = v.get(() -> new TrainStationName(newStationName, otherStationNames));
         final var location = v.get(() -> new GeoLocationInGermany(newLatitude, newLongitude));
+        validateLocationDistance(location, v, otherStations);
         v.throwExceptionIfInvalid();
 
         return withUpdatedStation(id, name, location);
@@ -288,9 +287,22 @@ public class RailNetworkDraft implements Aggregate {
     }
 
     private ImmutableList<String> getOtherStationNamesWithout(final String stationId) {
-        return stations
-            .reject(s -> s.getId().toString().equals(stationId))
+        return getOtherStationsWithout(stationId)
             .collect(s -> s.getName().getName());
+    }
+
+    private ImmutableList<TrainStation> getOtherStationsWithout(final String stationId) {
+        return stations.reject(s -> s.getId().toString().equals(stationId));
+    }
+
+    private void validateLocationDistance(
+        final GeoLocationInGermany location,
+        final Validation validation,
+        final ImmutableList<TrainStation> stations
+    ) {
+        if (location != null) {
+            validation.ensureThat(location, new IsNotNearerThan10KmTo(stations), Field.LOCATION);
+        }
     }
 
     private void ensureTrackExists(

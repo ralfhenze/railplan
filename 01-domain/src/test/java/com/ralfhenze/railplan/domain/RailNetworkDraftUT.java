@@ -129,6 +129,30 @@ public class RailNetworkDraftUT {
     }
 
     @Test
+    public void accumulatesValidationErrorsWhenUpdatingStationWithTooNearCoordinates() {
+        // Given a Draft with "Berlin Hbf" and "Hamburg Hbf"
+        final var draft = new RailNetworkDraft()
+            .withNewStation(berlinHbfName, berlinHbfPos)
+            .withNewStation(hamburgHbfName, hamburgHbfPos);
+
+        // When we try to update "Hamburg Hbf" to "Berlin Hbf" with "Berlin Hbf" coordinates
+        final var ex = catchThrowable(() ->
+            draft.withUpdatedStation(
+                "2",
+                berlinHbfName.getName(),
+                berlinHbfPos.getLatitude(),
+                berlinHbfPos.getLongitude()
+            )
+        );
+
+        // Then we get a Station name and a Location validation error
+        assertThat(ex)
+            .isInstanceOf(ValidationException.class)
+            .has(oneStationNameError) // Name "Berlin Hbf" already exists
+            .has(oneLocationError); // Too near to existing "Berlin Hbf"
+    }
+
+    @Test
     public void ensuresUniqueStationNamesWhenRenaming() {
         // Given a Draft with "Berlin Hbf" and "Hamburg Hbf"
         final var draft = new RailNetworkDraft()
@@ -153,9 +177,14 @@ public class RailNetworkDraftUT {
             .withNewStation(berlinHbfName, berlinHbfPos)
             .withNewStation(hamburgHbfName, hamburgHbfPos);
 
-        // When we move "Hamburg Hbf" to "Berlin Ost" (which is too near to "Berlin Hbf")
+        // When we move "Hamburg Hbf" to "Berlin Ost" (which is too close to "Berlin Hbf")
         final var ex = catchThrowable(() ->
-            draft.withUpdatedStation(hamburgHbfName, hamburgHbfName, berlinOstPos)
+            draft.withUpdatedStation(
+                "2",
+                hamburgHbfName.getName(),
+                berlinOstPos.getLatitude(),
+                berlinOstPos.getLongitude()
+            )
         );
 
         // Then we get a Location validation error
