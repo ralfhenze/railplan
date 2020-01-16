@@ -91,11 +91,11 @@ public class RailNetworkDraft implements Aggregate {
         final double latitude,
         final double longitude
     ) {
-        var v = new Validation();
+        final var v = new Validation();
         final var name = v.get(() -> new TrainStationName(stationName, getOtherStationNames()));
         final var location = v.get(() -> new GeoLocationInGermany(latitude, longitude));
         if (location != null) {
-            v = v.ensureThat(location, new IsNotNearerThan10KmTo(stations), Field.LOCATION);
+            v.ensureThat(location, new IsNotNearerThan10KmTo(stations), Field.LOCATION);
         }
         v.throwExceptionIfInvalid();
 
