@@ -3,7 +3,10 @@ package com.ralfhenze.railplan.domain.railnetwork.presets;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.map.ImmutableMap;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.List;
+import java.util.Optional;
 
 public class PresetStation {
 
@@ -53,27 +56,39 @@ public class PresetStation {
      * @throws IllegalArgumentException if PresetStation with stationName does not exist
      */
     public static PresetStation ofName(final String stationName) {
-        final var staticFields = Lists.immutable.of(PresetStation.class.getDeclaredFields())
-            .select(field -> Modifier.isStatic(field.getModifiers()))
-            .collect(field -> {
-                PresetStation presetStation;
-                try {
-                    presetStation = (PresetStation) field.get(null);
-                } catch (IllegalAccessException e) {
-                    throw new RuntimeException(e);
-                }
-                return presetStation;
-            });
-
-        final ImmutableMap<String, PresetStation> stations = staticFields
+        final var allPresetStations = Lists.immutable.ofAll(getAllPresetStations());
+        final ImmutableMap<String, PresetStation> presetStationsByName = allPresetStations
             .toMap(PresetStation::getName, s -> s)
             .toImmutable();
 
-        if (!stations.containsKey(stationName)) {
+        if (!presetStationsByName.containsKey(stationName)) {
             throw new IllegalArgumentException("\"" + stationName + "\" not found");
         }
 
-        return stations.get(stationName);
+        return presetStationsByName.get(stationName);
+    }
+
+    public static Optional<PresetStation> getOptionalOfName(final String stationName) {
+        return Lists.immutable.ofAll(getAllPresetStations())
+            .detectOptional(s -> s.getName().equals(stationName));
+    }
+
+    public static List<PresetStation> getAllPresetStations() {
+        return Lists.immutable.of(PresetStation.class.getDeclaredFields())
+            .select(field -> Modifier.isStatic(field.getModifiers()))
+            .collect(PresetStation::getPresetStationOfField)
+            .castToList();
+    }
+
+    private static PresetStation getPresetStationOfField(final Field field) {
+        PresetStation presetStation;
+        try {
+            presetStation = (PresetStation) field.get(null);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+
+        return presetStation;
     }
 
     public String getName() {

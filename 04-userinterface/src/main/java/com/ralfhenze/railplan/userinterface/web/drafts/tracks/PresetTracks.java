@@ -1,6 +1,6 @@
 package com.ralfhenze.railplan.userinterface.web.drafts.tracks;
 
-import com.ralfhenze.railplan.userinterface.web.drafts.stations.PresetStation;
+import com.ralfhenze.railplan.domain.railnetwork.presets.PresetStation;
 
 import java.util.Comparator;
 import java.util.List;
@@ -71,7 +71,7 @@ public class PresetTracks {
 
     public List<Track> getAllPresetTracks() {
         return tracks.stream()
-            .sorted(Comparator.comparing(track -> track.station1.name + track.station2.name))
+            .sorted(Comparator.comparing(track -> track.station1.getName() + track.station2.getName()))
             .collect(Collectors.toList());
     }
 

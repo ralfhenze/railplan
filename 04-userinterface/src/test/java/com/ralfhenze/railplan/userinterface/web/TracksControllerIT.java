@@ -100,8 +100,8 @@ public class TracksControllerIT extends HtmlITBase {
             final var executedCommand = executedCommands.get(i);
             final var track = expectedTracks.get(i);
             assertThat(executedCommand.getDraftId()).isEqualTo("123");
-            assertThat(executedCommand.getFirstStationName()).isEqualTo(track.station1.name);
-            assertThat(executedCommand.getSecondStationName()).isEqualTo(track.station2.name);
+            assertThat(executedCommand.getFirstStationName()).isEqualTo(track.station1.getName());
+            assertThat(executedCommand.getSecondStationName()).isEqualTo(track.station2.getName());
         }
 
         // And we will be redirected to the Tracks page

@@ -302,7 +302,7 @@ public class TracksView implements View {
             .mapToObj(i -> {
                 final var track = new PresetTrack();
                 track.value = String.valueOf(i);
-                track.text = presetTracks.get(i).station1.name + " <=> " + presetTracks.get(i).station2.name;
+                track.text = presetTracks.get(i).station1.getName() + " <=> " + presetTracks.get(i).station2.getName();
                 return track;
             })
             .collect(Collectors.toList());

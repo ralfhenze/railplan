@@ -72,8 +72,8 @@ public class TracksController {
                 railwayTrackService.addTrackByStationName(
                     new AddRailwayTrackByStationNameCommand(
                         draftId,
-                        track.get().station1.name,
-                        track.get().station2.name
+                        track.get().station1.getName(),
+                        track.get().station2.getName()
                     )
                 );
             } else {

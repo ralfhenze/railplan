@@ -5,6 +5,7 @@ import com.ralfhenze.railplan.domain.common.validation.ValidationException;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraft;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftId;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftRepository;
+import com.ralfhenze.railplan.domain.railnetwork.presets.PresetStation;
 import com.ralfhenze.railplan.infrastructure.persistence.dto.RailNetworkDraftDto;
 import com.ralfhenze.railplan.userinterface.web.views.GermanyMapSvgView;
 import com.ralfhenze.railplan.userinterface.web.views.MasterView;
@@ -169,7 +170,7 @@ public class StationsView implements View {
         final var showCustomStationForm = this.showCustomStationForm;
         final var newStationTableRow = getNewStationTableRow();
         final var showPresetStationForm = this.showPresetStationForm;
-        final var allPresetStations = List.of(PresetStation.values());
+        final var allPresetStations = PresetStation.getAllPresetStations();
         final var presetStationFormModel = (this.presetStationFormModel == null) ?
             new PresetStationFormModel() : this.presetStationFormModel;
 
@@ -327,10 +328,11 @@ public class StationsView implements View {
             select().attr("multiple", "multiple").attr("size", 10).withName("presetStationsToAdd").with(
                 each(allPresetStations, presetStation ->
                     option()
-                        .withValue(presetStation.name())
-                        .withText(presetStation.name)
+                        .withValue(presetStation.getName())
+                        .withText(presetStation.getName())
                         .condAttr(
-                            presetStationFormModel.getPresetStationsToAdd().contains(presetStation.name()),
+                            presetStationFormModel.getPresetStationsToAdd()
+                                .contains(presetStation.getName()),
                             "selected",
                             "selected"
                         )

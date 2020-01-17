@@ -9,7 +9,7 @@ import com.ralfhenze.railplan.domain.common.validation.Field;
 import com.ralfhenze.railplan.domain.common.validation.ValidationError;
 import com.ralfhenze.railplan.domain.common.validation.ValidationException;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftRepository;
-import com.ralfhenze.railplan.userinterface.web.drafts.stations.PresetStation;
+import com.ralfhenze.railplan.domain.railnetwork.presets.PresetStation;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
 import org.junit.Test;
@@ -87,7 +87,7 @@ public class StationsControllerIT extends HtmlITBase {
         final var document = Jsoup.parse(response.getContentAsString());
         assertThat(response.getStatus()).isEqualTo(HTTP_OK);
         assertThat(document.select("select[name='presetStationsToAdd'] option"))
-            .hasSize(PresetStation.values().length);
+            .hasSize(PresetStation.getAllPresetStations().size());
     }
 
     @Test
@@ -97,8 +97,8 @@ public class StationsControllerIT extends HtmlITBase {
             "/drafts/123/stations/new-from-preset",
             Map.of(
                 "presetStationsToAdd", List.of(
-                    PresetStation.FRANKFURT_HBF.name(),
-                    PresetStation.STUTTGART_HBF.name()
+                    PresetStation.FRANKFURT_HBF.getName(),
+                    PresetStation.STUTTGART_HBF.getName()
                 )
             )
         );
@@ -113,9 +113,9 @@ public class StationsControllerIT extends HtmlITBase {
             final var executedCommand = commandCaptor.getAllValues().get(i);
             final var station = stations.get(i);
             assertThat(executedCommand.getDraftId()).isEqualTo("123");
-            assertThat(executedCommand.getStationName()).isEqualTo(station.name);
-            assertThat(executedCommand.getLatitude()).isEqualTo(station.latitude);
-            assertThat(executedCommand.getLongitude()).isEqualTo(station.longitude);
+            assertThat(executedCommand.getStationName()).isEqualTo(station.getName());
+            assertThat(executedCommand.getLatitude()).isEqualTo(station.getLatitude());
+            assertThat(executedCommand.getLongitude()).isEqualTo(station.getLongitude());
         }
 
         // And we will be redirected to the Stations page
@@ -143,7 +143,7 @@ public class StationsControllerIT extends HtmlITBase {
         // When we call POST /drafts/123/stations/new-from-preset with an already existing Station
         final var response = getPostResponseWithMultiValueParameters(
             "/drafts/123/stations/new-from-preset",
-            Map.of("presetStationsToAdd", List.of(PresetStation.BERLIN_HBF.name()))
+            Map.of("presetStationsToAdd", List.of(PresetStation.BERLIN_HBF.getName()))
         );
 
         // Then the preset Station form shows the error messages

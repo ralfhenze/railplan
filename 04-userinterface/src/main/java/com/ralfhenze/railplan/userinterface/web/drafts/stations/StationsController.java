@@ -7,6 +7,7 @@ import com.ralfhenze.railplan.application.commands.UpdateTrainStationCommand;
 import com.ralfhenze.railplan.domain.common.EntityNotFoundException;
 import com.ralfhenze.railplan.domain.common.validation.ValidationException;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftRepository;
+import com.ralfhenze.railplan.domain.railnetwork.presets.PresetStation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -66,19 +67,20 @@ public class StationsController {
     ) {
         try {
             for (final var stationName : presetStationFormModel.getPresetStationsToAdd()) {
-                final var presetStation = PresetStation.getOptionalOf(stationName);
-                if (presetStation.isPresent()) {
+                final var station = PresetStation.getOptionalOfName(stationName);
+
+                if (station.isPresent()) {
                     trainStationService.addStationToDraft(
                         new AddTrainStationCommand(
                             draftId,
-                            presetStation.get().name,
-                            presetStation.get().latitude,
-                            presetStation.get().longitude
+                            station.get().getName(),
+                            station.get().getLatitude(),
+                            station.get().getLongitude()
                         )
                     );
                 } else {
                     throw new EntityNotFoundException(
-                        "Station \"" + stationName + "\" does not exist"
+                        "Preset Station \"" + stationName + "\" does not exist"
                     );
                 }
             }
