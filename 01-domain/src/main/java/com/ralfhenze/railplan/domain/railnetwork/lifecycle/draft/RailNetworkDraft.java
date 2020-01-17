@@ -14,6 +14,7 @@ import com.ralfhenze.railplan.domain.railnetwork.invariants.HasNoDuplicateTracks
 import com.ralfhenze.railplan.domain.railnetwork.invariants.HasNoTracksLongerThan300Km;
 import com.ralfhenze.railplan.domain.railnetwork.invariants.HasUniqueStationNames;
 import com.ralfhenze.railplan.domain.railnetwork.invariants.IsNotNearerThan10KmTo;
+import com.ralfhenze.railplan.domain.railnetwork.presets.PresetStation;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 
@@ -33,6 +34,22 @@ public class RailNetworkDraft implements Aggregate {
     private final ImmutableList<TrainStation> stations;
     private final ImmutableList<RailwayTrack> tracks;
     private final int stationId;
+
+    /**
+     * Constructs a Draft of given preset Stations
+     */
+    public static RailNetworkDraft of(PresetStation... presetStations) {
+        var draft = new RailNetworkDraft();
+        for (final var presetStation : presetStations) {
+            draft = draft.withNewStation(
+                presetStation.getName(),
+                presetStation.getLatitude(),
+                presetStation.getLongitude()
+            );
+        }
+
+        return draft;
+    }
 
     /**
      * Constructs an empty Draft without Stations or Tracks.

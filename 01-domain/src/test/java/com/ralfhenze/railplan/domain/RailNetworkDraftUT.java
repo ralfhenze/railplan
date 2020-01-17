@@ -3,12 +3,12 @@ package com.ralfhenze.railplan.domain;
 import com.ralfhenze.railplan.domain.common.EntityNotFoundException;
 import com.ralfhenze.railplan.domain.common.validation.Field;
 import com.ralfhenze.railplan.domain.common.validation.ValidationException;
+import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraft;
 import org.assertj.core.api.Condition;
 import org.junit.Test;
 
 import static com.ralfhenze.railplan.domain.TestData.BERLIN_OST_LAT;
 import static com.ralfhenze.railplan.domain.TestData.BERLIN_OST_LNG;
-import static com.ralfhenze.railplan.domain.TestData.getDraftWith;
 import static com.ralfhenze.railplan.domain.railnetwork.presets.PresetStation.BERLIN_HBF;
 import static com.ralfhenze.railplan.domain.railnetwork.presets.PresetStation.FRANKFURT_HBF;
 import static com.ralfhenze.railplan.domain.railnetwork.presets.PresetStation.HAMBURG_HBF;
@@ -27,7 +27,7 @@ public class RailNetworkDraftUT {
     @Test
     public void keepsStationOrderWhenUpdatingStation() {
         // Given a Draft with "Berlin Hbf", "Frankfurt Hbf" and "Stuttgart Hbf"
-        final var draft = getDraftWith(BERLIN_HBF, FRANKFURT_HBF, STUTTGART_HBF);
+        final var draft = RailNetworkDraft.of(BERLIN_HBF, FRANKFURT_HBF, STUTTGART_HBF);
 
         // When we update "Frankfurt Hbf" to "Hamburg Hbf"
         final var updatedDraft = draft.withUpdatedStation(
@@ -49,7 +49,7 @@ public class RailNetworkDraftUT {
     @Test
     public void throwsNoErrorsWhenUpdatingStationWithTheSameData() {
         // Given a Draft with "Berlin Hbf"
-        final var draft = getDraftWith(BERLIN_HBF);
+        final var draft = RailNetworkDraft.of(BERLIN_HBF);
 
         // When we update "Berlin Hbf" with the current "Berlin Hbf" data
         final var ex = catchThrowable(() ->
@@ -68,7 +68,7 @@ public class RailNetworkDraftUT {
     @Test
     public void accumulatesValidationErrorsWhenAddingNewStation() {
         // Given a Draft with "Berlin Hbf"
-        final var draft = getDraftWith(BERLIN_HBF);
+        final var draft = RailNetworkDraft.of(BERLIN_HBF);
 
         // When we try to add a new "Berlin Hbf" Station with invalid coordinates
         final var ex = catchThrowable(() ->
@@ -86,7 +86,7 @@ public class RailNetworkDraftUT {
     @Test
     public void accumulatesValidationErrorsWhenAddingNewStationWithTooNearCoordinates() {
         // Given a Draft with "Berlin Hbf"
-        final var draft = getDraftWith(BERLIN_HBF);
+        final var draft = RailNetworkDraft.of(BERLIN_HBF);
 
         // When we try to add a new "Berlin Hbf" Station with too near / equal coordinates
         final var ex = catchThrowable(() ->
@@ -107,7 +107,7 @@ public class RailNetworkDraftUT {
     @Test
     public void accumulatesValidationErrorsWhenUpdatingStation() {
         // Given a Draft with "Berlin Hbf" and "Hamburg Hbf"
-        final var draft = getDraftWith(BERLIN_HBF, HAMBURG_HBF);
+        final var draft = RailNetworkDraft.of(BERLIN_HBF, HAMBURG_HBF);
 
         // When we try to rename "Hamburg Hbf" to "Berlin Hbf" with invalid coordinates
         final var ex = catchThrowable(() ->
@@ -125,7 +125,7 @@ public class RailNetworkDraftUT {
     @Test
     public void accumulatesValidationErrorsWhenUpdatingStationWithTooNearCoordinates() {
         // Given a Draft with "Berlin Hbf" and "Hamburg Hbf"
-        final var draft = getDraftWith(BERLIN_HBF, HAMBURG_HBF);
+        final var draft = RailNetworkDraft.of(BERLIN_HBF, HAMBURG_HBF);
 
         // When we try to update "Hamburg Hbf" to "Berlin Hbf" with "Berlin Hbf" coordinates
         final var ex = catchThrowable(() ->
@@ -147,7 +147,7 @@ public class RailNetworkDraftUT {
     @Test
     public void ensuresUniqueStationNamesWhenRenaming() {
         // Given a Draft with "Berlin Hbf" and "Hamburg Hbf"
-        final var draft = getDraftWith(BERLIN_HBF, HAMBURG_HBF);
+        final var draft = RailNetworkDraft.of(BERLIN_HBF, HAMBURG_HBF);
 
         // When we rename "Hamburg Hbf" to "Berlin Hbf" (which already exists)
         final var ex = catchThrowable(() ->
@@ -168,7 +168,7 @@ public class RailNetworkDraftUT {
     @Test
     public void ensuresMinimumStationDistanceWhenRelocating() {
         // Given a Draft with "Berlin Hbf" and "Hamburg Hbf"
-        final var draft = getDraftWith(BERLIN_HBF, HAMBURG_HBF);
+        final var draft = RailNetworkDraft.of(BERLIN_HBF, HAMBURG_HBF);
 
         // When we move "Hamburg Hbf" to "Berlin Ost" (which is too close to "Berlin Hbf")
         final var ex = catchThrowable(() ->
@@ -189,7 +189,7 @@ public class RailNetworkDraftUT {
     @Test
     public void ensuresNoDuplicateTracks() {
         // Given a Draft with a Track "Berlin Hbf" <=> "Hamburg Hbf"
-        final var draft = getDraftWith(BERLIN_HBF, HAMBURG_HBF)
+        final var draft = RailNetworkDraft.of(BERLIN_HBF, HAMBURG_HBF)
             .withNewTrack(BERLIN_HBF.getName(), HAMBURG_HBF.getName());
 
         // When we add another Track "Hamburg Hbf" <=> "Berlin Hbf"
@@ -206,7 +206,7 @@ public class RailNetworkDraftUT {
     @Test
     public void deletesAssociatedTracksWhenStationIsDeleted() {
         // Given a Draft with a Track "Berlin Hbf" <=> "Hamburg Hbf"
-        final var draft = getDraftWith(BERLIN_HBF, HAMBURG_HBF)
+        final var draft = RailNetworkDraft.of(BERLIN_HBF, HAMBURG_HBF)
             .withNewTrack(BERLIN_HBF.getName(), HAMBURG_HBF.getName());
 
         // When we delete the Station "Hamburg Hbf"
@@ -222,7 +222,7 @@ public class RailNetworkDraftUT {
     @Test
     public void providesPossibilityToDeleteTracks() {
         // Given a Draft with a Track "Berlin Hbf" <=> "Hamburg Hbf"
-        final var draft = getDraftWith(BERLIN_HBF, HAMBURG_HBF)
+        final var draft = RailNetworkDraft.of(BERLIN_HBF, HAMBURG_HBF)
             .withNewTrack(BERLIN_HBF.getName(), HAMBURG_HBF.getName());
 
         // When we delete the Track
@@ -235,7 +235,7 @@ public class RailNetworkDraftUT {
     @Test
     public void throwsExceptionWhenDeletingNonExistentTrack() {
         // Given a Draft with "Berlin Hbf" <=> "Hamburg Hbf" and "Frankfurt Hbf"
-        final var draft = getDraftWith(BERLIN_HBF, HAMBURG_HBF, FRANKFURT_HBF)
+        final var draft = RailNetworkDraft.of(BERLIN_HBF, HAMBURG_HBF, FRANKFURT_HBF)
             .withNewTrack(BERLIN_HBF.getName(), HAMBURG_HBF.getName());
 
         // When we try to delete a non-existent Track "Hamburg Hbf" <=> "Frankfurt Hbf"
