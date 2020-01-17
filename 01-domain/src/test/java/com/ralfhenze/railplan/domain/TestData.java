@@ -12,61 +12,61 @@ import java.time.LocalDate;
 
 public class TestData {
 
-    public static final String berlinHbfName = "Berlin Hbf";
-    public static final double berlinHbfLat = 52.524927;
-    public static final double berlinHbfLng = 13.369348;
-    public static final TrainStation berlinHbf = new TrainStation(
+    public static final String BERLIN_HBF_NAME = "Berlin Hbf";
+    public static final double BERLIN_HBF_LAT = 52.524927;
+    public static final double BERLIN_HBF_LNG = 13.369348;
+    public static final TrainStation BERLIN_HBF = new TrainStation(
         new TrainStationId(1),
-        new TrainStationName(berlinHbfName),
-        new GeoLocationInGermany(berlinHbfLat, berlinHbfLng)
+        new TrainStationName(BERLIN_HBF_NAME),
+        new GeoLocationInGermany(BERLIN_HBF_LAT, BERLIN_HBF_LNG)
     );
 
-    public static final String berlinOstName = "Berlin Ostbahnhof";
-    public static final double berlinOstLat = 52.510784;
-    public static final double berlinOstLng = 13.434832;
-    public static final TrainStation berlinOst = new TrainStation(
+    public static final String BERLIN_OST_NAME = "Berlin Ostbahnhof";
+    public static final double BERLIN_OST_LAT = 52.510784;
+    public static final double BERLIN_OST_LNG = 13.434832;
+    public static final TrainStation BERLIN_OST = new TrainStation(
         new TrainStationId(2),
-        new TrainStationName(berlinOstName),
-        new GeoLocationInGermany(berlinOstLat, berlinOstLng)
+        new TrainStationName(BERLIN_OST_NAME),
+        new GeoLocationInGermany(BERLIN_OST_LAT, BERLIN_OST_LNG)
     );
 
-    public static final String potsdamHbfName = "Potsdam Hbf";
-    public static final double potsdamHbfLat = 52.391726;
-    public static final double potsdamHbfLng = 13.067120;
-    public static final TrainStation potsdamHbf = new TrainStation(
+    public static final String POTSDAM_HBF_NAME = "Potsdam Hbf";
+    public static final double POTSDAM_HBF_LAT = 52.391726;
+    public static final double POTSDAM_HBF_LNG = 13.067120;
+    public static final TrainStation POTSDAM_HBF = new TrainStation(
         new TrainStationId(3),
-        new TrainStationName(potsdamHbfName),
-        new GeoLocationInGermany(potsdamHbfLat, potsdamHbfLng)
+        new TrainStationName(POTSDAM_HBF_NAME),
+        new GeoLocationInGermany(POTSDAM_HBF_LAT, POTSDAM_HBF_LNG)
     );
 
-    public static final String hamburgHbfName = "Hamburg Hbf";
-    public static final double hamburgHbfLat = 53.552596;
-    public static final double hamburgHbfLng = 10.006727;
-    public static final TrainStation hamburgHbf = new TrainStation(
+    public static final String HAMBURG_HBF_NAME = "Hamburg Hbf";
+    public static final double HAMBURG_HBF_LAT = 53.552596;
+    public static final double HAMBURG_HBF_LNG = 10.006727;
+    public static final TrainStation HAMBURG_HBF = new TrainStation(
         new TrainStationId(4),
-        new TrainStationName(hamburgHbfName),
-        new GeoLocationInGermany(hamburgHbfLat, hamburgHbfLng)
+        new TrainStationName(HAMBURG_HBF_NAME),
+        new GeoLocationInGermany(HAMBURG_HBF_LAT, HAMBURG_HBF_LNG)
     );
 
-    public static final String frankfurtHbfName = "Frankfurt am Main Hbf";
-    public static final double frankfurtHbfLat = 50.106880;
-    public static final double frankfurtHbfLng = 8.663739;
-    public static final TrainStation frankfurtHbf = new TrainStation(
+    public static final String FRANKFURT_HBF_NAME = "Frankfurt am Main Hbf";
+    public static final double FRANKFURT_HBF_LAT = 50.106880;
+    public static final double FRANKFURT_HBF_LNG = 8.663739;
+    public static final TrainStation FRANKFURT_HBF = new TrainStation(
         new TrainStationId(5),
-        new TrainStationName(frankfurtHbfName),
-        new GeoLocationInGermany(frankfurtHbfLat, frankfurtHbfLng)
+        new TrainStationName(FRANKFURT_HBF_NAME),
+        new GeoLocationInGermany(FRANKFURT_HBF_LAT, FRANKFURT_HBF_LNG)
     );
 
-    public static final String stuttgartHbfName = "Stuttgart Hbf";
-    public static final double stuttgartHbfLat = 48.784245;
-    public static final double stuttgartHbfLng = 9.182160;
-    public static final TrainStation stuttgartHbf = new TrainStation(
+    public static final String STUTTGART_HBF_NAME = "Stuttgart Hbf";
+    public static final double STUTTGART_HBF_LAT = 48.784245;
+    public static final double STUTTGART_HBF_LNG = 9.182160;
+    public static final TrainStation STUTTGART_HBF = new TrainStation(
         new TrainStationId(6),
-        new TrainStationName(stuttgartHbfName),
-        new GeoLocationInGermany(stuttgartHbfLat, stuttgartHbfLng)
+        new TrainStationName(STUTTGART_HBF_NAME),
+        new GeoLocationInGermany(STUTTGART_HBF_LAT, STUTTGART_HBF_LNG)
     );
 
-    public static final ValidityPeriod defaultPeriod = new ValidityPeriod(
+    public static final ValidityPeriod DEFAULT_PERIOD = new ValidityPeriod(
         LocalDate.of(2019, 11, 14),
         LocalDate.of(2019, 11, 20)
     );
@@ -74,12 +74,12 @@ public class TestData {
     public static TrainStation getStation(String stationName) {
         ImmutableMap<String, TrainStation> stations =
             Sets.immutable.of(
-                berlinHbf,
-                berlinOst,
-                potsdamHbf,
-                hamburgHbf,
-                frankfurtHbf,
-                stuttgartHbf
+                BERLIN_HBF,
+                BERLIN_OST,
+                POTSDAM_HBF,
+                HAMBURG_HBF,
+                FRANKFURT_HBF,
+                STUTTGART_HBF
             )
             .toMap(s -> s.getName().getName(), s -> s)
             .toImmutable();

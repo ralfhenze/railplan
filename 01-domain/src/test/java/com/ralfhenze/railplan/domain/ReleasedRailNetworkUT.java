@@ -8,12 +8,12 @@ import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.junit.Test;
 
-import static com.ralfhenze.railplan.domain.TestData.berlinHbf;
-import static com.ralfhenze.railplan.domain.TestData.berlinOst;
-import static com.ralfhenze.railplan.domain.TestData.defaultPeriod;
-import static com.ralfhenze.railplan.domain.TestData.frankfurtHbf;
-import static com.ralfhenze.railplan.domain.TestData.hamburgHbf;
-import static com.ralfhenze.railplan.domain.TestData.stuttgartHbf;
+import static com.ralfhenze.railplan.domain.TestData.BERLIN_HBF;
+import static com.ralfhenze.railplan.domain.TestData.BERLIN_OST;
+import static com.ralfhenze.railplan.domain.TestData.DEFAULT_PERIOD;
+import static com.ralfhenze.railplan.domain.TestData.FRANKFURT_HBF;
+import static com.ralfhenze.railplan.domain.TestData.HAMBURG_HBF;
+import static com.ralfhenze.railplan.domain.TestData.STUTTGART_HBF;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 public class ReleasedRailNetworkUT {
@@ -21,14 +21,14 @@ public class ReleasedRailNetworkUT {
     @Test
     public void ensuresAtLeastTwoStations() {
         assertThatExceptionOfType(ValidationException.class).isThrownBy(() ->
-            new ReleasedRailNetwork(defaultPeriod, emptyList(), emptyList())
+            new ReleasedRailNetwork(DEFAULT_PERIOD, emptyList(), emptyList())
         );
     }
 
     @Test
     public void ensuresAtLeastOneTrack() {
         assertThatExceptionOfType(ValidationException.class).isThrownBy(() ->
-            new ReleasedRailNetwork(defaultPeriod, listOf(berlinHbf, hamburgHbf), emptyList())
+            new ReleasedRailNetwork(DEFAULT_PERIOD, listOf(BERLIN_HBF, HAMBURG_HBF), emptyList())
         );
     }
 
@@ -36,11 +36,11 @@ public class ReleasedRailNetworkUT {
     public void ensuresNoUnconnectedSubGraphs() {
         assertThatExceptionOfType(ValidationException.class).isThrownBy(() ->
             new ReleasedRailNetwork(
-                defaultPeriod,
-                listOf(berlinHbf, hamburgHbf, frankfurtHbf, stuttgartHbf),
+                DEFAULT_PERIOD,
+                listOf(BERLIN_HBF, HAMBURG_HBF, FRANKFURT_HBF, STUTTGART_HBF),
                 listOf(
-                    new RailwayTrack(berlinHbf.getId(), hamburgHbf.getId()),
-                    new RailwayTrack(frankfurtHbf.getId(), stuttgartHbf.getId())
+                    new RailwayTrack(BERLIN_HBF.getId(), HAMBURG_HBF.getId()),
+                    new RailwayTrack(FRANKFURT_HBF.getId(), STUTTGART_HBF.getId())
                 )
             )
         );
@@ -50,9 +50,9 @@ public class ReleasedRailNetworkUT {
     public void ensuresNoStandaloneStations() {
         assertThatExceptionOfType(ValidationException.class).isThrownBy(() ->
             new ReleasedRailNetwork(
-                defaultPeriod,
-                listOf(berlinHbf, hamburgHbf, frankfurtHbf),
-                listOf(new RailwayTrack(berlinHbf.getId(), hamburgHbf.getId()))
+                DEFAULT_PERIOD,
+                listOf(BERLIN_HBF, HAMBURG_HBF, FRANKFURT_HBF),
+                listOf(new RailwayTrack(BERLIN_HBF.getId(), HAMBURG_HBF.getId()))
             )
         );
     }
@@ -61,9 +61,9 @@ public class ReleasedRailNetworkUT {
     public void ensuresMaxTrackLength() {
         assertThatExceptionOfType(ValidationException.class).isThrownBy(() -> {
             new ReleasedRailNetwork(
-                defaultPeriod,
-                listOf(berlinHbf, stuttgartHbf),
-                listOf(new RailwayTrack(berlinHbf.getId(), stuttgartHbf.getId()))
+                DEFAULT_PERIOD,
+                listOf(BERLIN_HBF, STUTTGART_HBF),
+                listOf(new RailwayTrack(BERLIN_HBF.getId(), STUTTGART_HBF.getId()))
             );
         });
     }
@@ -72,9 +72,9 @@ public class ReleasedRailNetworkUT {
     public void ensuresUniqueStationNames() {
         assertThatExceptionOfType(ValidationException.class).isThrownBy(() -> {
             new ReleasedRailNetwork(
-                defaultPeriod,
-                listOf(berlinHbf, hamburgHbf.withName(new TrainStationName("Berlin Hbf"))),
-                listOf(new RailwayTrack(berlinHbf.getId(), hamburgHbf.getId()))
+                DEFAULT_PERIOD,
+                listOf(BERLIN_HBF, HAMBURG_HBF.withName(new TrainStationName("Berlin Hbf"))),
+                listOf(new RailwayTrack(BERLIN_HBF.getId(), HAMBURG_HBF.getId()))
             );
         });
     }
@@ -83,11 +83,11 @@ public class ReleasedRailNetworkUT {
     public void ensuresMinimumStationDistance() {
         assertThatExceptionOfType(ValidationException.class).isThrownBy(() -> {
             new ReleasedRailNetwork(
-                defaultPeriod,
-                listOf(berlinHbf, berlinOst, hamburgHbf),
+                DEFAULT_PERIOD,
+                listOf(BERLIN_HBF, BERLIN_OST, HAMBURG_HBF),
                 listOf(
-                    new RailwayTrack(berlinHbf.getId(), berlinOst.getId()),
-                    new RailwayTrack(berlinHbf.getId(), hamburgHbf.getId())
+                    new RailwayTrack(BERLIN_HBF.getId(), BERLIN_OST.getId()),
+                    new RailwayTrack(BERLIN_HBF.getId(), HAMBURG_HBF.getId())
                 )
             );
         });
@@ -97,11 +97,11 @@ public class ReleasedRailNetworkUT {
     public void ensureNoDuplicateTracks() {
         assertThatExceptionOfType(ValidationException.class).isThrownBy(() -> {
             new ReleasedRailNetwork(
-                defaultPeriod,
-                listOf(berlinHbf, hamburgHbf),
+                DEFAULT_PERIOD,
+                listOf(BERLIN_HBF, HAMBURG_HBF),
                 listOf(
-                    new RailwayTrack(berlinHbf.getId(), hamburgHbf.getId()),
-                    new RailwayTrack(hamburgHbf.getId(), berlinHbf.getId())
+                    new RailwayTrack(BERLIN_HBF.getId(), HAMBURG_HBF.getId()),
+                    new RailwayTrack(HAMBURG_HBF.getId(), BERLIN_HBF.getId())
                 )
             );
         });
