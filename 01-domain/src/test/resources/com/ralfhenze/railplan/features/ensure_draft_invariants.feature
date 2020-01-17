@@ -15,7 +15,7 @@ Feature: Ensure Rail Network Draft Invariants
     Then the new Station should be <station-added>
     Examples:
       | station-given | station-to-be-added | distance | station-added |
-      | Berlin Hbf    | Potsdam Hbf         | 25       | added         |
+      | Berlin Hbf    | Erfurt Hbf          | 235      | added         |
       | Berlin Hbf    | Berlin Ostbahnhof   | 5        | rejected      |
 
   Scenario Outline: Tracks must not be longer than 300 km

@@ -56,7 +56,7 @@ public class RailNetworkDraftUT {
             draft.withUpdatedStation(
                 1,
                 BERLIN_HBF.getName(),
-                BERLIN_HBF.getLongitude(),
+                BERLIN_HBF.getLatitude(),
                 BERLIN_HBF.getLongitude()
             )
         );

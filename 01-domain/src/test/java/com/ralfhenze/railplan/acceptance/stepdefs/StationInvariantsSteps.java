@@ -7,12 +7,15 @@ import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 
+import static com.ralfhenze.railplan.domain.TestData.BERLIN_OST_LAT;
+import static com.ralfhenze.railplan.domain.TestData.BERLIN_OST_LNG;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
 
 public class StationInvariantsSteps {
 
     private RailNetworkDraft draft;
-    private boolean exceptionWasThrown;
+    private Throwable thrownException;
 
     @Given("^a Rail Network Draft with a Station \"(.*)\"$")
     public void setupRailNetworkDraft(final String stationName) {
@@ -31,30 +34,33 @@ public class StationInvariantsSteps {
 
     @When("^a Network Planner tries to add a new Station \"(.*)\", which is (.*) away$")
     public void addNearStation(final String stationName, final String distance) {
-        addStation(stationName);
+        if ("Berlin Ostbahnhof".equals(stationName)) {
+            thrownException = catchThrowable(() ->
+                draft = draft.withNewStation(stationName, BERLIN_OST_LAT, BERLIN_OST_LNG)
+            );
+        } else {
+            addStation(stationName);
+        }
     }
 
     private void addStation(final String stationName) {
         final var stationToAdd = PresetStation.ofName(stationName);
-        exceptionWasThrown = false;
-        try {
+        thrownException = catchThrowable(() ->
             draft = draft.withNewStation(
                 stationToAdd.getName(),
                 stationToAdd.getLatitude(),
                 stationToAdd.getLongitude()
-            );
-        } catch (IllegalArgumentException | ValidationException e) {
-            exceptionWasThrown = true;
-        }
+            )
+        );
     }
 
     @Then("^the new Station should be (.*)$")
     public void assertAdded(final String addedOrRejected) {
         if ("added".equals(addedOrRejected)) {
-            assertThat(exceptionWasThrown).isFalse();
+            assertThat(thrownException).doesNotThrowAnyException();
             assertThat(draft.getStations()).hasSize(2);
         } else if ("rejected".equals(addedOrRejected)) {
-            assertThat(exceptionWasThrown).isTrue();
+            assertThat(thrownException).isInstanceOf(ValidationException.class);
         }
     }
 }

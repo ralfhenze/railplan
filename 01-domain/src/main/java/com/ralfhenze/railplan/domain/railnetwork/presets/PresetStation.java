@@ -20,7 +20,7 @@ public class PresetStation {
     public final static PresetStation DUESSELDORF_HBF = new PresetStation("Düsseldorf Hbf", 51.219720, 6.794286);
     public final static PresetStation ERFURT_HBF = new PresetStation("Erfurt Hbf", 50.972668, 11.037770);
     public final static PresetStation ESSEN_HBF = new PresetStation("Essen Hbf", 51.451447, 7.014698);
-    public final static PresetStation FRANKFURT_HBF = new PresetStation("Frankfurt a.M. Hbf", 50.106880, 8.663739);
+    public final static PresetStation FRANKFURT_HBF = new PresetStation("Frankfurt am Main Hbf", 50.106880, 8.663739);
     public final static PresetStation FREIBURG_HBF = new PresetStation("Freiburg Hbf", 47.997183, 7.841269);
     public final static PresetStation HALLE_HBF = new PresetStation("Halle (Saale) Hbf", 51.477752, 11.987061);
     public final static PresetStation HAMBURG_HBF = new PresetStation("Hamburg Hbf", 53.552596, 10.006727);
