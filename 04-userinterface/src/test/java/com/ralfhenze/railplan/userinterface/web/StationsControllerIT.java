@@ -8,8 +8,6 @@ import com.ralfhenze.railplan.application.commands.UpdateTrainStationCommand;
 import com.ralfhenze.railplan.domain.common.validation.Field;
 import com.ralfhenze.railplan.domain.common.validation.ValidationError;
 import com.ralfhenze.railplan.domain.common.validation.ValidationException;
-import com.ralfhenze.railplan.domain.railnetwork.elements.GeoLocationInGermany;
-import com.ralfhenze.railplan.domain.railnetwork.elements.TrainStationName;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftRepository;
 import com.ralfhenze.railplan.userinterface.web.drafts.stations.PresetStation;
 import org.jsoup.Jsoup;
@@ -25,16 +23,16 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.util.List;
 import java.util.Map;
 
-import static com.ralfhenze.railplan.userinterface.web.TestData.berlinHamburgDraft;
-import static com.ralfhenze.railplan.userinterface.web.TestData.berlinHbfLat;
-import static com.ralfhenze.railplan.userinterface.web.TestData.berlinHbfLng;
-import static com.ralfhenze.railplan.userinterface.web.TestData.berlinHbfName;
-import static com.ralfhenze.railplan.userinterface.web.TestData.hamburgHbfLat;
-import static com.ralfhenze.railplan.userinterface.web.TestData.hamburgHbfLng;
-import static com.ralfhenze.railplan.userinterface.web.TestData.hamburgHbfName;
-import static com.ralfhenze.railplan.userinterface.web.TestData.potsdamHbfLat;
-import static com.ralfhenze.railplan.userinterface.web.TestData.potsdamHbfLng;
-import static com.ralfhenze.railplan.userinterface.web.TestData.potsdamHbfName;
+import static com.ralfhenze.railplan.userinterface.web.TestData.BERLIN_HAMBURG_DRAFT;
+import static com.ralfhenze.railplan.userinterface.web.TestData.BERLIN_HBF_LAT;
+import static com.ralfhenze.railplan.userinterface.web.TestData.BERLIN_HBF_LNG;
+import static com.ralfhenze.railplan.userinterface.web.TestData.BERLIN_HBF_NAME;
+import static com.ralfhenze.railplan.userinterface.web.TestData.HAMBURG_HBF_LAT;
+import static com.ralfhenze.railplan.userinterface.web.TestData.HAMBURG_HBF_LNG;
+import static com.ralfhenze.railplan.userinterface.web.TestData.HAMBURG_HBF_NAME;
+import static com.ralfhenze.railplan.userinterface.web.TestData.POTSDAM_HBF_LAT;
+import static com.ralfhenze.railplan.userinterface.web.TestData.POTSDAM_HBF_LNG;
+import static com.ralfhenze.railplan.userinterface.web.TestData.POTSDAM_HBF_NAME;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -58,7 +56,7 @@ public class StationsControllerIT extends HtmlITBase {
     @Test
     public void userGetsAListOfAllStationsOfADraft() throws Exception {
         // Given an existing Draft
-        given(draftRepository.getRailNetworkDraftOfId(any())).willReturn(berlinHamburgDraft);
+        given(draftRepository.getRailNetworkDraftOfId(any())).willReturn(BERLIN_HAMBURG_DRAFT);
 
         // When we call GET /drafts/123/stations
         final var response = getGetResponse("/drafts/123/stations");
@@ -68,8 +66,8 @@ public class StationsControllerIT extends HtmlITBase {
         final var stationRows = document.select("#stations .station-row");
         assertThat(response.getStatus()).isEqualTo(HTTP_OK);
         assertThat(stationRows).hasSize(2);
-        assertThatRowShowsNameAndLocation(stationRows.get(0), berlinHbfName, berlinHbfLat, berlinHbfLng);
-        assertThatRowShowsNameAndLocation(stationRows.get(1), hamburgHbfName, hamburgHbfLat, hamburgHbfLng);
+        assertThatRowShowsNameAndLocation(stationRows.get(0), BERLIN_HBF_NAME, BERLIN_HBF_LAT, BERLIN_HBF_LNG);
+        assertThatRowShowsNameAndLocation(stationRows.get(1), HAMBURG_HBF_NAME, HAMBURG_HBF_LAT, HAMBURG_HBF_LNG);
     }
 
     private void assertThatRowShowsNameAndLocation(
@@ -86,7 +84,7 @@ public class StationsControllerIT extends HtmlITBase {
     @Test
     public void userCanAccessAFormToAddNewStationsFromPresets() throws Exception {
         // Given an existing Draft
-        given(draftRepository.getRailNetworkDraftOfId(any())).willReturn(berlinHamburgDraft);
+        given(draftRepository.getRailNetworkDraftOfId(any())).willReturn(BERLIN_HAMBURG_DRAFT);
 
         // When we call GET /drafts/123/stations/new-from-preset
         final var response = getGetResponse("/drafts/123/stations/new-from-preset");
@@ -146,7 +144,7 @@ public class StationsControllerIT extends HtmlITBase {
         //given(trainStationService.addStationToDraft(any())).willReturn(berlinHamburgDraft);
 
         // Given an existing Draft
-        given(draftRepository.getRailNetworkDraftOfId(any())).willReturn(berlinHamburgDraft);
+        given(draftRepository.getRailNetworkDraftOfId(any())).willReturn(BERLIN_HAMBURG_DRAFT);
 
         // When we call POST /drafts/123/stations/new-from-preset with an already existing Station
         final var response = getPostResponseWithMultiValueParameters(
@@ -163,7 +161,7 @@ public class StationsControllerIT extends HtmlITBase {
     @Test
     public void userCanAccessAFormToAddANewCustomStation() throws Exception {
         // Given an existing Draft
-        given(draftRepository.getRailNetworkDraftOfId(any())).willReturn(berlinHamburgDraft);
+        given(draftRepository.getRailNetworkDraftOfId(any())).willReturn(BERLIN_HAMBURG_DRAFT);
 
         // When we call GET /drafts/123/stations/new-custom
         final var response = getGetResponse("/drafts/123/stations/new-custom");
@@ -182,9 +180,9 @@ public class StationsControllerIT extends HtmlITBase {
         final var response = getPostResponse(
             "/drafts/123/stations/new-custom",
             Map.of(
-                "stationName", potsdamHbfName,
-                "latitude", String.valueOf(potsdamHbfLat),
-                "longitude", String.valueOf(potsdamHbfLng)
+                "stationName", POTSDAM_HBF_NAME,
+                "latitude", String.valueOf(POTSDAM_HBF_LAT),
+                "longitude", String.valueOf(POTSDAM_HBF_LNG)
             )
         );
 
@@ -195,9 +193,9 @@ public class StationsControllerIT extends HtmlITBase {
 
         final var executedCommand = commandCaptor.getValue();
         assertThat(executedCommand.getDraftId()).isEqualTo("123");
-        assertThat(executedCommand.getStationName()).isEqualTo(potsdamHbfName);
-        assertThat(executedCommand.getLatitude()).isEqualTo(potsdamHbfLat);
-        assertThat(executedCommand.getLongitude()).isEqualTo(potsdamHbfLng);
+        assertThat(executedCommand.getStationName()).isEqualTo(POTSDAM_HBF_NAME);
+        assertThat(executedCommand.getLatitude()).isEqualTo(POTSDAM_HBF_LAT);
+        assertThat(executedCommand.getLongitude()).isEqualTo(POTSDAM_HBF_LNG);
 
         // And we will be redirected to the Stations page
         assertThat(response.getStatus()).isEqualTo(HTTP_MOVED_TEMPORARILY);
@@ -215,7 +213,7 @@ public class StationsControllerIT extends HtmlITBase {
     @Test
     public void userCanAccessAFormToEditAnExistingStation() throws Exception {
         // Given an existing Draft
-        given(draftRepository.getRailNetworkDraftOfId(any())).willReturn(berlinHamburgDraft);
+        given(draftRepository.getRailNetworkDraftOfId(any())).willReturn(BERLIN_HAMBURG_DRAFT);
 
         // When we call GET /drafts/123/stations/1/edit
         final var response = getGetResponse("/drafts/123/stations/1/edit");
@@ -224,11 +222,11 @@ public class StationsControllerIT extends HtmlITBase {
         final var document = Jsoup.parse(response.getContentAsString());
         assertThat(response.getStatus()).isEqualTo(HTTP_OK);
         assertThat(document.selectFirst("input[name='stationName']").val())
-            .isEqualTo(berlinHbfName);
+            .isEqualTo(BERLIN_HBF_NAME);
         assertThat(document.selectFirst("input[name='latitude']").val())
-            .isEqualTo(String.valueOf(berlinHbfLat));
+            .isEqualTo(String.valueOf(BERLIN_HBF_LAT));
         assertThat(document.selectFirst("input[name='longitude']").val())
-            .isEqualTo(String.valueOf(berlinHbfLng));
+            .isEqualTo(String.valueOf(BERLIN_HBF_LNG));
     }
 
     @Test
@@ -237,9 +235,9 @@ public class StationsControllerIT extends HtmlITBase {
         final var response = getPostResponse(
             "/drafts/123/stations/1/edit",
             Map.of(
-                "stationName", potsdamHbfName,
-                "latitude", String.valueOf(potsdamHbfLat),
-                "longitude", String.valueOf(potsdamHbfLng)
+                "stationName", POTSDAM_HBF_NAME,
+                "latitude", String.valueOf(POTSDAM_HBF_LAT),
+                "longitude", String.valueOf(POTSDAM_HBF_LNG)
             )
         );
 
@@ -250,9 +248,9 @@ public class StationsControllerIT extends HtmlITBase {
         final var executedCommand = commandCaptor.getValue();
         assertThat(executedCommand.getDraftId()).isEqualTo("123");
         assertThat(executedCommand.getStationId()).isEqualTo(1);
-        assertThat(executedCommand.getStationName()).isEqualTo(potsdamHbfName);
-        assertThat(executedCommand.getLatitude()).isEqualTo(potsdamHbfLat);
-        assertThat(executedCommand.getLongitude()).isEqualTo(potsdamHbfLng);
+        assertThat(executedCommand.getStationName()).isEqualTo(POTSDAM_HBF_NAME);
+        assertThat(executedCommand.getLatitude()).isEqualTo(POTSDAM_HBF_LAT);
+        assertThat(executedCommand.getLongitude()).isEqualTo(POTSDAM_HBF_LNG);
 
         // And we will be redirected to the Stations page
         assertThat(response.getStatus()).isEqualTo(HTTP_MOVED_TEMPORARILY);
@@ -290,7 +288,7 @@ public class StationsControllerIT extends HtmlITBase {
         final Command command
     ) throws Exception {
         // Given an existing Draft
-        given(draftRepository.getRailNetworkDraftOfId(any())).willReturn(berlinHamburgDraft);
+        given(draftRepository.getRailNetworkDraftOfId(any())).willReturn(BERLIN_HAMBURG_DRAFT);
 
         // And the commands will throw a ValidationException
         final var nameError1 = "name error 1";

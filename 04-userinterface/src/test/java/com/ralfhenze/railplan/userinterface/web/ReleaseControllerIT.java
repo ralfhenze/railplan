@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static com.ralfhenze.railplan.userinterface.web.TestData.berlinHamburgDraft;
+import static com.ralfhenze.railplan.userinterface.web.TestData.BERLIN_HAMBURG_DRAFT;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -44,7 +44,7 @@ public class ReleaseControllerIT extends HtmlITBase {
     @Test
     public void userCanAccessAFormToReleaseAnExistingDraft() throws Exception {
         // Given an existing Draft
-        given(draftRepository.getRailNetworkDraftOfId(any())).willReturn(berlinHamburgDraft);
+        given(draftRepository.getRailNetworkDraftOfId(any())).willReturn(BERLIN_HAMBURG_DRAFT);
 
         // When we call GET /drafts/123/release
         final var response = getGetResponse("/drafts/123/release");
@@ -87,7 +87,7 @@ public class ReleaseControllerIT extends HtmlITBase {
     @Test
     public void userSeesValidationErrorsWhenReleasingADraftWithAnInvalidPeriod() throws Exception {
         // Given an existing Draft
-        given(draftRepository.getRailNetworkDraftOfId(any())).willReturn(berlinHamburgDraft);
+        given(draftRepository.getRailNetworkDraftOfId(any())).willReturn(BERLIN_HAMBURG_DRAFT);
 
         // And a ValidationException is thrown when attempting to release the Draft
         final var startDateError = "Start Date error";

@@ -13,15 +13,15 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import static com.ralfhenze.railplan.userinterface.web.TestData.berlinHbfLat;
-import static com.ralfhenze.railplan.userinterface.web.TestData.berlinHbfLng;
-import static com.ralfhenze.railplan.userinterface.web.TestData.berlinHbfName;
-import static com.ralfhenze.railplan.userinterface.web.TestData.hamburgHbfLat;
-import static com.ralfhenze.railplan.userinterface.web.TestData.hamburgHbfLng;
-import static com.ralfhenze.railplan.userinterface.web.TestData.hamburgHbfName;
-import static com.ralfhenze.railplan.userinterface.web.TestData.potsdamHbfLat;
-import static com.ralfhenze.railplan.userinterface.web.TestData.potsdamHbfLng;
-import static com.ralfhenze.railplan.userinterface.web.TestData.potsdamHbfName;
+import static com.ralfhenze.railplan.userinterface.web.TestData.BERLIN_HBF_LAT;
+import static com.ralfhenze.railplan.userinterface.web.TestData.BERLIN_HBF_LNG;
+import static com.ralfhenze.railplan.userinterface.web.TestData.BERLIN_HBF_NAME;
+import static com.ralfhenze.railplan.userinterface.web.TestData.HAMBURG_HBF_LAT;
+import static com.ralfhenze.railplan.userinterface.web.TestData.HAMBURG_HBF_LNG;
+import static com.ralfhenze.railplan.userinterface.web.TestData.HAMBURG_HBF_NAME;
+import static com.ralfhenze.railplan.userinterface.web.TestData.POTSDAM_HBF_LAT;
+import static com.ralfhenze.railplan.userinterface.web.TestData.POTSDAM_HBF_LNG;
+import static com.ralfhenze.railplan.userinterface.web.TestData.POTSDAM_HBF_NAME;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
@@ -65,8 +65,8 @@ public class RailNetworkDraftMongoDbRepositoryIT {
         final var draft = getExampleDraft();
         final var persistedDraft = draftRepository.persist(draft).get();
         final var updatedDraft = persistedDraft
-            .withNewStation(potsdamHbfName, potsdamHbfLat, potsdamHbfLng)
-            .withNewTrack(potsdamHbfName, berlinHbfName);
+            .withNewStation(POTSDAM_HBF_NAME, POTSDAM_HBF_LAT, POTSDAM_HBF_LNG)
+            .withNewTrack(POTSDAM_HBF_NAME, BERLIN_HBF_NAME);
 
         draftRepository.persist(updatedDraft);
 
@@ -109,8 +109,8 @@ public class RailNetworkDraftMongoDbRepositoryIT {
 
     private RailNetworkDraft getExampleDraft() {
         return new RailNetworkDraft()
-            .withNewStation(berlinHbfName, berlinHbfLat, berlinHbfLng)
-            .withNewStation(hamburgHbfName, hamburgHbfLat, hamburgHbfLng)
-            .withNewTrack(berlinHbfName, hamburgHbfName);
+            .withNewStation(BERLIN_HBF_NAME, BERLIN_HBF_LAT, BERLIN_HBF_LNG)
+            .withNewStation(HAMBURG_HBF_NAME, HAMBURG_HBF_LAT, HAMBURG_HBF_LNG)
+            .withNewTrack(BERLIN_HBF_NAME, HAMBURG_HBF_NAME);
     }
 }

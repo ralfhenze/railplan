@@ -1,9 +1,7 @@
 package com.ralfhenze.railplan.userinterface.web;
 
 import com.ralfhenze.railplan.application.queries.Queries;
-import com.ralfhenze.railplan.domain.railnetwork.elements.GeoLocationInGermany;
 import com.ralfhenze.railplan.domain.railnetwork.elements.RailwayTrack;
-import com.ralfhenze.railplan.domain.railnetwork.elements.TrainStationName;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.release.ReleasedRailNetwork;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.release.ReleasedRailNetworkRepository;
 import org.eclipse.collections.api.factory.Lists;
@@ -21,15 +19,15 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 
-import static com.ralfhenze.railplan.userinterface.web.TestData.berlinHbf;
-import static com.ralfhenze.railplan.userinterface.web.TestData.berlinHbfLat;
-import static com.ralfhenze.railplan.userinterface.web.TestData.berlinHbfLng;
-import static com.ralfhenze.railplan.userinterface.web.TestData.berlinHbfName;
-import static com.ralfhenze.railplan.userinterface.web.TestData.defaultPeriod;
-import static com.ralfhenze.railplan.userinterface.web.TestData.hamburgHbf;
-import static com.ralfhenze.railplan.userinterface.web.TestData.hamburgHbfLat;
-import static com.ralfhenze.railplan.userinterface.web.TestData.hamburgHbfLng;
-import static com.ralfhenze.railplan.userinterface.web.TestData.hamburgHbfName;
+import static com.ralfhenze.railplan.userinterface.web.TestData.BERLIN_HBF;
+import static com.ralfhenze.railplan.userinterface.web.TestData.BERLIN_HBF_LAT;
+import static com.ralfhenze.railplan.userinterface.web.TestData.BERLIN_HBF_LNG;
+import static com.ralfhenze.railplan.userinterface.web.TestData.BERLIN_HBF_NAME;
+import static com.ralfhenze.railplan.userinterface.web.TestData.DEFAULT_PERIOD;
+import static com.ralfhenze.railplan.userinterface.web.TestData.HAMBURG_HBF;
+import static com.ralfhenze.railplan.userinterface.web.TestData.HAMBURG_HBF_LAT;
+import static com.ralfhenze.railplan.userinterface.web.TestData.HAMBURG_HBF_LNG;
+import static com.ralfhenze.railplan.userinterface.web.TestData.HAMBURG_HBF_NAME;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -83,20 +81,20 @@ public class NetworksControllerIT {
         final var document = Jsoup.parse(response.getContentAsString());
         assertThat(response.getStatus()).isEqualTo(HTTP_OK);
         assertThat(document.selectFirst(".valid-from").text())
-            .isEqualTo(defaultPeriod.getStartDate().toString());
+            .isEqualTo(DEFAULT_PERIOD.getStartDate().toString());
         assertThat(document.selectFirst(".valid-until").text())
-            .isEqualTo(defaultPeriod.getEndDate().toString());
+            .isEqualTo(DEFAULT_PERIOD.getEndDate().toString());
 
         // And we get a table with all Stations
         final var stationRows = document.select("table#stations .station-row");
         assertThat(stationRows).hasSize(2);
-        assertThatRowShowsNameAndLocation(stationRows.get(0), berlinHbfName, berlinHbfLat, berlinHbfLng);
-        assertThatRowShowsNameAndLocation(stationRows.get(1), hamburgHbfName, hamburgHbfLat, hamburgHbfLng);
+        assertThatRowShowsNameAndLocation(stationRows.get(0), BERLIN_HBF_NAME, BERLIN_HBF_LAT, BERLIN_HBF_LNG);
+        assertThatRowShowsNameAndLocation(stationRows.get(1), HAMBURG_HBF_NAME, HAMBURG_HBF_LAT, HAMBURG_HBF_LNG);
 
         // And we get a table with all Tracks
         final var trackRows = document.select("table#tracks .track-row");
         assertThat(trackRows).hasSize(1);
-        assertThatRowShowsStationNames(trackRows.get(0), berlinHbfName, hamburgHbfName);
+        assertThatRowShowsStationNames(trackRows.get(0), BERLIN_HBF_NAME, HAMBURG_HBF_NAME);
     }
 
     private void assertThatRowShowsNameAndLocation(
@@ -125,9 +123,9 @@ public class NetworksControllerIT {
 
     private ReleasedRailNetwork getBerlinHamburgNetwork() {
         return new ReleasedRailNetwork(
-            defaultPeriod,
-            Lists.immutable.of(berlinHbf, hamburgHbf),
-            Lists.immutable.of(new RailwayTrack(berlinHbf.getId(), hamburgHbf.getId()))
+            DEFAULT_PERIOD,
+            Lists.immutable.of(BERLIN_HBF, HAMBURG_HBF),
+            Lists.immutable.of(new RailwayTrack(BERLIN_HBF.getId(), HAMBURG_HBF.getId()))
         );
     }
 }

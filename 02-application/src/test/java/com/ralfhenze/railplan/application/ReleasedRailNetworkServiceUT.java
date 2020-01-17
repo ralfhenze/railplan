@@ -10,13 +10,13 @@ import org.junit.Test;
 
 import java.util.Optional;
 
-import static com.ralfhenze.railplan.application.TestData.berlinHbfLat;
-import static com.ralfhenze.railplan.application.TestData.berlinHbfLng;
-import static com.ralfhenze.railplan.application.TestData.berlinHbfName;
-import static com.ralfhenze.railplan.application.TestData.defaultPeriod;
-import static com.ralfhenze.railplan.application.TestData.hamburgHbfLat;
-import static com.ralfhenze.railplan.application.TestData.hamburgHbfLng;
-import static com.ralfhenze.railplan.application.TestData.hamburgHbfName;
+import static com.ralfhenze.railplan.application.TestData.BERLIN_HBF_LAT;
+import static com.ralfhenze.railplan.application.TestData.BERLIN_HBF_LNG;
+import static com.ralfhenze.railplan.application.TestData.BERLIN_HBF_NAME;
+import static com.ralfhenze.railplan.application.TestData.DEFAULT_PERIOD;
+import static com.ralfhenze.railplan.application.TestData.HAMBURG_HBF_LAT;
+import static com.ralfhenze.railplan.application.TestData.HAMBURG_HBF_LNG;
+import static com.ralfhenze.railplan.application.TestData.HAMBURG_HBF_NAME;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -40,9 +40,9 @@ public class ReleasedRailNetworkServiceUT {
             draftRepository, networkRepository
         );
         final var draft = new RailNetworkDraft()
-            .withNewStation(berlinHbfName, berlinHbfLat, berlinHbfLng)
-            .withNewStation(hamburgHbfName, hamburgHbfLat, hamburgHbfLng)
-            .withNewTrack(berlinHbfName, hamburgHbfName);
+            .withNewStation(BERLIN_HBF_NAME, BERLIN_HBF_LAT, BERLIN_HBF_LNG)
+            .withNewStation(HAMBURG_HBF_NAME, HAMBURG_HBF_LAT, HAMBURG_HBF_LNG)
+            .withNewTrack(BERLIN_HBF_NAME, HAMBURG_HBF_NAME);
         given(draftRepository.getRailNetworkDraftOfId(any()))
             .willReturn(draft);
         final var network = mock(ReleasedRailNetwork.class);
@@ -54,8 +54,8 @@ public class ReleasedRailNetworkServiceUT {
         releasedRailNetworkService.releaseDraft(
             new ReleaseRailNetworkCommand(
                 "1",
-                defaultPeriod.getStartDate(),
-                defaultPeriod.getEndDate()
+                DEFAULT_PERIOD.getStartDate(),
+                DEFAULT_PERIOD.getEndDate()
             )
         );
 

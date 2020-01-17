@@ -15,18 +15,18 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import static com.ralfhenze.railplan.userinterface.web.TestData.berlinHbf;
-import static com.ralfhenze.railplan.userinterface.web.TestData.berlinHbfLat;
-import static com.ralfhenze.railplan.userinterface.web.TestData.berlinHbfLng;
-import static com.ralfhenze.railplan.userinterface.web.TestData.berlinHbfName;
-import static com.ralfhenze.railplan.userinterface.web.TestData.defaultPeriod;
-import static com.ralfhenze.railplan.userinterface.web.TestData.hamburgHbf;
-import static com.ralfhenze.railplan.userinterface.web.TestData.hamburgHbfLat;
-import static com.ralfhenze.railplan.userinterface.web.TestData.hamburgHbfLng;
-import static com.ralfhenze.railplan.userinterface.web.TestData.hamburgHbfName;
-import static com.ralfhenze.railplan.userinterface.web.TestData.potsdamHbfLat;
-import static com.ralfhenze.railplan.userinterface.web.TestData.potsdamHbfLng;
-import static com.ralfhenze.railplan.userinterface.web.TestData.potsdamHbfName;
+import static com.ralfhenze.railplan.userinterface.web.TestData.BERLIN_HBF;
+import static com.ralfhenze.railplan.userinterface.web.TestData.BERLIN_HBF_LAT;
+import static com.ralfhenze.railplan.userinterface.web.TestData.BERLIN_HBF_LNG;
+import static com.ralfhenze.railplan.userinterface.web.TestData.BERLIN_HBF_NAME;
+import static com.ralfhenze.railplan.userinterface.web.TestData.DEFAULT_PERIOD;
+import static com.ralfhenze.railplan.userinterface.web.TestData.HAMBURG_HBF;
+import static com.ralfhenze.railplan.userinterface.web.TestData.HAMBURG_HBF_LAT;
+import static com.ralfhenze.railplan.userinterface.web.TestData.HAMBURG_HBF_LNG;
+import static com.ralfhenze.railplan.userinterface.web.TestData.HAMBURG_HBF_NAME;
+import static com.ralfhenze.railplan.userinterface.web.TestData.POTSDAM_HBF_LAT;
+import static com.ralfhenze.railplan.userinterface.web.TestData.POTSDAM_HBF_LNG;
+import static com.ralfhenze.railplan.userinterface.web.TestData.POTSDAM_HBF_NAME;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)
@@ -47,13 +47,13 @@ public class MongoDbQueriesIT {
         final var draftRepository = new RailNetworkDraftMongoDbRepository(mongoTemplate);
         final var queries = new MongoDbQueries(mongoTemplate);
         final var draft = new RailNetworkDraft()
-            .withNewStation(berlinHbfName, berlinHbfLat, berlinHbfLng)
-            .withNewStation(hamburgHbfName, hamburgHbfLat, hamburgHbfLng)
-            .withNewTrack(berlinHbfName, hamburgHbfName);
+            .withNewStation(BERLIN_HBF_NAME, BERLIN_HBF_LAT, BERLIN_HBF_LNG)
+            .withNewStation(HAMBURG_HBF_NAME, HAMBURG_HBF_LAT, HAMBURG_HBF_LNG)
+            .withNewTrack(BERLIN_HBF_NAME, HAMBURG_HBF_NAME);
         final var draftId1 = draftRepository
             .persist(draft).get().getId().get().toString();
         final var draftId2 = draftRepository
-            .persist(draft.withUpdatedStation(1, potsdamHbfName, potsdamHbfLat, potsdamHbfLng))
+            .persist(draft.withUpdatedStation(1, POTSDAM_HBF_NAME, POTSDAM_HBF_LAT, POTSDAM_HBF_LNG))
             .get().getId().get().toString();
 
         final var draftIds = queries.getAllDraftIds();
@@ -66,9 +66,9 @@ public class MongoDbQueriesIT {
         final var networkRepository = new ReleasedRailNetworkMongoDbRepository(mongoTemplate);
         final var queries = new MongoDbQueries(mongoTemplate);
         final var network = new ReleasedRailNetwork(
-            defaultPeriod,
-            Lists.immutable.of(berlinHbf, hamburgHbf),
-            Lists.immutable.of(new RailwayTrack(berlinHbf.getId(), hamburgHbf.getId()))
+            DEFAULT_PERIOD,
+            Lists.immutable.of(BERLIN_HBF, HAMBURG_HBF),
+            Lists.immutable.of(new RailwayTrack(BERLIN_HBF.getId(), HAMBURG_HBF.getId()))
         );
         final var networkId1 = networkRepository
             .add(network).getId().get().toString();

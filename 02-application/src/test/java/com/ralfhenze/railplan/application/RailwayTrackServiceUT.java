@@ -7,12 +7,12 @@ import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraf
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
-import static com.ralfhenze.railplan.application.TestData.berlinHbfLat;
-import static com.ralfhenze.railplan.application.TestData.berlinHbfLng;
-import static com.ralfhenze.railplan.application.TestData.berlinHbfName;
-import static com.ralfhenze.railplan.application.TestData.hamburgHbfLat;
-import static com.ralfhenze.railplan.application.TestData.hamburgHbfLng;
-import static com.ralfhenze.railplan.application.TestData.hamburgHbfName;
+import static com.ralfhenze.railplan.application.TestData.BERLIN_HBF_LAT;
+import static com.ralfhenze.railplan.application.TestData.BERLIN_HBF_LNG;
+import static com.ralfhenze.railplan.application.TestData.BERLIN_HBF_NAME;
+import static com.ralfhenze.railplan.application.TestData.HAMBURG_HBF_LAT;
+import static com.ralfhenze.railplan.application.TestData.HAMBURG_HBF_LNG;
+import static com.ralfhenze.railplan.application.TestData.HAMBURG_HBF_NAME;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -26,8 +26,8 @@ public class RailwayTrackServiceUT {
         final var draftRepository = mock(RailNetworkDraftRepository.class);
         final var railwayTrackService = new RailwayTrackService(draftRepository);
         final var draft = new RailNetworkDraft()
-            .withNewStation(berlinHbfName, berlinHbfLat, berlinHbfLng)
-            .withNewStation(hamburgHbfName, hamburgHbfLat, hamburgHbfLng);
+            .withNewStation(BERLIN_HBF_NAME, BERLIN_HBF_LAT, BERLIN_HBF_LNG)
+            .withNewStation(HAMBURG_HBF_NAME, HAMBURG_HBF_LAT, HAMBURG_HBF_LNG);
         given(draftRepository.getRailNetworkDraftOfId(any()))
             .willReturn(draft);
 
@@ -43,9 +43,9 @@ public class RailwayTrackServiceUT {
         final var draftRepository = mock(RailNetworkDraftRepository.class);
         final var railwayTrackService = new RailwayTrackService(draftRepository);
         final var draft = new RailNetworkDraft()
-            .withNewStation(berlinHbfName, berlinHbfLat, berlinHbfLng)
-            .withNewStation(hamburgHbfName, hamburgHbfLat, hamburgHbfLng)
-            .withNewTrack(berlinHbfName, hamburgHbfName);
+            .withNewStation(BERLIN_HBF_NAME, BERLIN_HBF_LAT, BERLIN_HBF_LNG)
+            .withNewStation(HAMBURG_HBF_NAME, HAMBURG_HBF_LAT, HAMBURG_HBF_LNG)
+            .withNewTrack(BERLIN_HBF_NAME, HAMBURG_HBF_NAME);
         final var track = draft.getTracks().getFirstOptional().get();
         final var updatedDraftCaptor = ArgumentCaptor.forClass(RailNetworkDraft.class);
         given(draftRepository.getRailNetworkDraftOfId(any()))

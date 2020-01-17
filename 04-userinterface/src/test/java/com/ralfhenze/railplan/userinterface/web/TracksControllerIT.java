@@ -21,9 +21,9 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.util.List;
 import java.util.Map;
 
-import static com.ralfhenze.railplan.userinterface.web.TestData.berlinHamburgDraft;
-import static com.ralfhenze.railplan.userinterface.web.TestData.berlinHbfName;
-import static com.ralfhenze.railplan.userinterface.web.TestData.hamburgHbfName;
+import static com.ralfhenze.railplan.userinterface.web.TestData.BERLIN_HAMBURG_DRAFT;
+import static com.ralfhenze.railplan.userinterface.web.TestData.BERLIN_HBF_NAME;
+import static com.ralfhenze.railplan.userinterface.web.TestData.HAMBURG_HBF_NAME;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -47,7 +47,7 @@ public class TracksControllerIT extends HtmlITBase {
     @Test
     public void userGetsAListOfAllTracksOfADraft() throws Exception {
         // Given an existing Draft
-        given(draftRepository.getRailNetworkDraftOfId(any())).willReturn(berlinHamburgDraft);
+        given(draftRepository.getRailNetworkDraftOfId(any())).willReturn(BERLIN_HAMBURG_DRAFT);
 
         // When we call GET /drafts/123/tracks
         final var response = getGetResponse("/drafts/123/tracks");
@@ -58,15 +58,15 @@ public class TracksControllerIT extends HtmlITBase {
         assertThat(response.getStatus()).isEqualTo(HTTP_OK);
         assertThat(trackRows).hasSize(1);
         assertThat(trackRows.get(0).selectFirst(".station-1").text())
-            .isEqualTo(berlinHbfName);
+            .isEqualTo(BERLIN_HBF_NAME);
         assertThat(trackRows.get(0).selectFirst(".station-2").text())
-            .isEqualTo(hamburgHbfName);
+            .isEqualTo(HAMBURG_HBF_NAME);
     }
 
     @Test
     public void userCanAccessAFormToAddNewTracksFromPresets() throws Exception {
         // Given an existing Draft
-        given(draftRepository.getRailNetworkDraftOfId(any())).willReturn(berlinHamburgDraft);
+        given(draftRepository.getRailNetworkDraftOfId(any())).willReturn(BERLIN_HAMBURG_DRAFT);
 
         // When we call GET /drafts/123/tracks/new-from-preset
         final var response = getGetResponse("/drafts/123/tracks/new-from-preset");
@@ -112,7 +112,7 @@ public class TracksControllerIT extends HtmlITBase {
     @Test
     public void userCanAccessAFormToAddANewCustomTrack() throws Exception {
         // Given an existing Draft
-        given(draftRepository.getRailNetworkDraftOfId(any())).willReturn(berlinHamburgDraft);
+        given(draftRepository.getRailNetworkDraftOfId(any())).willReturn(BERLIN_HAMBURG_DRAFT);
 
         // When we call GET /drafts/123/tracks/new-custom
         final var response = getGetResponse("/drafts/123/tracks/new-custom");
@@ -150,7 +150,7 @@ public class TracksControllerIT extends HtmlITBase {
     @Test
     public void userSeesValidationErrorsWhenAddingAnInvalidCustomTrack() throws Exception {
         // Given an existing Draft
-        given(draftRepository.getRailNetworkDraftOfId(any())).willReturn(berlinHamburgDraft);
+        given(draftRepository.getRailNetworkDraftOfId(any())).willReturn(BERLIN_HAMBURG_DRAFT);
 
         // And a ValidationException is thrown when attempting to add a Track
         final var firstStationIdError = "First Station ID Error";

@@ -6,15 +6,15 @@ import java.time.LocalDate;
 
 public class TestData {
 
-    public static final String berlinHbfName = "Berlin Hbf";
-    public static final double berlinHbfLat = 52.524927;
-    public static final double berlinHbfLng = 13.369348;
+    public static final String BERLIN_HBF_NAME = "Berlin Hbf";
+    public static final double BERLIN_HBF_LAT = 52.524927;
+    public static final double BERLIN_HBF_LNG = 13.369348;
 
-    public static final String hamburgHbfName = "Hamburg Hbf";
-    public static final double hamburgHbfLat = 53.552596;
-    public static final double hamburgHbfLng = 10.006727;
+    public static final String HAMBURG_HBF_NAME = "Hamburg Hbf";
+    public static final double HAMBURG_HBF_LAT = 53.552596;
+    public static final double HAMBURG_HBF_LNG = 10.006727;
 
-    public static final ValidityPeriod defaultPeriod = new ValidityPeriod(
+    public static final ValidityPeriod DEFAULT_PERIOD = new ValidityPeriod(
         LocalDate.of(2019, 11, 14),
         LocalDate.of(2019, 11, 20)
     );
