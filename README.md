@@ -1,6 +1,17 @@
+```java
+/*****************************************************************
+ *                       DISCLAIMER                              *
+ *  This software is under heavy development!                    *
+ *  It's not ready for production use. There are still a lot of  *
+ *  things to do and bugs to fix. Feel free to play around with  *
+ *  it, but don't expect everything is working fine.             *
+ *****************************************************************/
+```
+
 # RailPlan
 
-A domain-driven implementation of a railway network editor.
+RailPlan is a web application that let's you create simple Railway Networks within Germany. The Railway Network is
+basically an undirected graph, composed of Train Stations as nodes and Railway Tracks as edges.
 
 [![GitHub](https://github.com/ralfhenze/railplan/workflows/Build%20%26%20Test/badge.svg)](https://github.com/ralfhenze/railplan/actions?query=workflow%3A%22Build+%26+Test%22)
 [![CodeFactor](https://www.codefactor.io/repository/github/ralfhenze/railplan/badge)](https://www.codefactor.io/repository/github/ralfhenze/railplan)
@@ -32,45 +43,68 @@ Run tests:
 ```console
 $ docker-compose up -d                 # Start testing environment
 $ mvn verify                           # Run all tests
-$ mvn test                             # Run unit and acceptance tests
-$ mvn surefire:test@unit-tests         # Run only unit tests
-$ mvn surefire:test@acceptance-tests   # Run only acceptance tests
-$ mvn surefire:test@integration-tests  # Run only integration tests
-$ mvn surefire:test@end-to-end-tests   # Run only end-to-end tests
+$ mvn test                             # Run only unit and acceptance tests
 $ docker-compose down                  # Destroy Docker containers
 ```
 
-## Railway Domain Links
+## Goals
 
-*   <https://en.wikipedia.org/wiki/Rail_transport>
-*   <https://en.wikipedia.org/wiki/Glossary_of_rail_transport_terms>
+Why am I doing this:
 
-## Simplifying Assumptions
+*   to have a public reference web project in Java and Spring MVC 
+*   to show my understanding of Domain-Driven Design (how to enforce domain invariants and not letting the domain model
+    get into an invalid state)
+*   to have a web project with almost full test coverage
+*   to improve my Clean Code and Software Design skills
 
-As this is a one-man project and my goal is not to model the real-world with all it's complexities, I will make some simplifying assumptions about the railway domain:
+## Implementation Notes
 
-*   just passenger traffic, no freight traffic
-*   just trains, no distinction between long- and short-distance trains
-*   just one type of passenger, no distinction between first and second class
-*   just a single number of passenger capacity per train, no coaches, no seats, no seat reservations
-*   the rail network is just within Germany (1 time zone)
-*   a connection between two stations is built of two tracks, one for each direction, no passing loops, no more than two parallel tracks
-*   a connection between two stations is a straight line, no curves, no altitude differences
-*   trains travel at constant speed of 150 km/h, no acceleration, no deceleration, no distinct high-speed-tracks and -trains
-*   trains stop at each station on their way, no transit
-*   no trains between 0:00 and 3:59
-*   no distinct platforms on stations
-*   a station can hold any number of trains at the same time
-*   5 minutes is enough for a transfer in any case
-*   therefore every train will always wait 5 minutes on each station
-*   people always want to travel the shortest connection
-*   people can and want to transfer as much as needed
-*   just tickets from A to B tied to a certain train connection, no region tickets, no "Use any connection from A to B on day X" tickets
-*   just a constant ticket price per kilometer, no complex pricing models and special offers
-*   just single day journeys between 4:00 and 23:59, no journeys over several days
-*   everybody who has bought a ticket will go exactly the given route, no "I am sick and won't travel", no booking cancellation
+Architecture:
 
-Even with these assumptions the domain is complex enough to study Microservices and Domain-Driven Design (which is my actual goal for this). Someday I will eventually remove and implement some of the assumptions to see, how the changes affect the overall system.
+*   Onion Architecture
+*   Domain-Driven Design
+*   Validation
+*   CQRS
+
+Domain Core:
+
+*   Eclipse Collections
+
+UI:
+
+*   the UI is completely rendered on the server
+*   no JavaScript is used to keep things simple for now
+*   I orginally used [Thymeleaf](https://www.thymeleaf.org/) as a template engine, but
+    [the templates](https://github.com/ralfhenze/railplan/tree/c3033e918bbd78033c602d05efe04ecf84969876/04-userinterface/src/main/resources/templates)
+    where a PITA to maintain, so I switched to [j2html](https://j2html.com/), which I like a lot for it's type-safety
+*   missing type-safety is also the reason why I stopped using Spring MVC's Model class
+*   my current approach to HTML rendering is somewhat inspired by React, with composable and immutable View objects
+    resembling React's functional components
+
+Tests:
+
+*   JUnit4
+*   I use [AssertJ](https://joel-costigliola.github.io/assertj/) for assertions instead of JUnit's default ones or
+    Hamcrest, because IMHO they are much easier to read and use
+*   Mockito for mocking
+*   Cucumber for BDD
+*   JSoup for HTML parsing
+*   Selenium for end-to-end tests
+
+Quality Assurance:
+
+*   I use [GitHub Actions](https://github.com/ralfhenze/railplan/actions) for continuous integration, to automatically
+    run the tests on each push
+*   I try to adhere to the [Clean Code principles](https://clean-code-developer.com/) as good as possible
+
+Coding Conventions:
+
+*   I use Java's new local type inference (```var```) wherever possible, to make the code easier to read
+*   I use the ```final``` keyword wherever I can, to enforce immutability on local variables, class fields and method
+    parameters. I know
+    [this is](https://softwareengineering.stackexchange.com/questions/98691/excessive-use-final-keyword-in-java)
+    [debatable](https://stackoverflow.com/questions/137868/using-the-final-modifier-whenever-applicable-in-java)
+    but in this case I favor compile-time strictness over readability
 
 ## Domain Model
 
@@ -87,23 +121,19 @@ Even with these assumptions the domain is complex enough to study Microservices 
 | **Geo Location**          | _Location_         | [Geographic coordinates](https://en.wikipedia.org/wiki/Geographic_coordinate_system) within Germany, defined by [Latitude](https://en.wikipedia.org/wiki/Latitude) and [Longitude](https://en.wikipedia.org/wiki/Longitude) |
 | **Network Planner**       | _Planner_          | Person who plans and designs the Rail Network                                                                                                                                                                               |
 
-### Commands
+### Simplifying Assumptions
 
-*   Add Rail Network Draft
-*   Delete Rail Network Draft
-*   Add Train Station
-*   Update Train Station
-*   Delete Train Station
-*   Add Railway Track
-*   Delete Railway Track
-*   Release Rail Network
+As this is a one-man project and my goal is not to model the real-world with all its complexities, I will make some simplifying assumptions:
+
+*   the Rail Network is just within Germany
+*   a Track between two Stations is a straight line, no curves, no altitude differences
+*   a Track between two Stations is actually a double track railway, one for each direction, no passing loops
 
 ### Invariants
 
 Train Station:
 
 *   a Station is located within Germany's bounding rectangle
-*   a Station is located on land
 *   a Station's Name begins with an uppercase letter
 *   a Station's Name is allowed to contain \[a-zA-ZäöüßÄÖÜ .-()\]
 *   a Station's Name is unique within the Rail Network
@@ -113,8 +143,7 @@ Railway Track:
 
 *   a Track connects two different Stations
 *   two Stations can only be connected by a single Track
-*   a Track has no direction
-*   the maximum length of a Track is 200 km
+*   the maximum length of a Track is 300 km
 
 Released Rail Network:
 
@@ -122,3 +151,14 @@ Released Rail Network:
 *   the Rail Network is a single graph without unconnected Stations or sub-graphs
 *   the Validity Periods of Released Rail Networks are continuous without gaps and don't overlap
 *   Released Rail Networks can't be changed any more
+
+### Commands
+
+*   Add Rail Network Draft
+*   Delete Rail Network Draft
+*   Add Train Station
+*   Update Train Station
+*   Delete Train Station
+*   Add Railway Track
+*   Delete Railway Track
+*   Release Rail Network Draft
