@@ -8,12 +8,7 @@ import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.junit.Test;
 
-import static com.ralfhenze.railplan.domain.TestData.BERLIN_HBF;
-import static com.ralfhenze.railplan.domain.TestData.BERLIN_OST;
 import static com.ralfhenze.railplan.domain.TestData.DEFAULT_PERIOD;
-import static com.ralfhenze.railplan.domain.TestData.FRANKFURT_HBF;
-import static com.ralfhenze.railplan.domain.TestData.HAMBURG_HBF;
-import static com.ralfhenze.railplan.domain.TestData.STUTTGART_HBF;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 public class ReleasedRailNetworkUT {

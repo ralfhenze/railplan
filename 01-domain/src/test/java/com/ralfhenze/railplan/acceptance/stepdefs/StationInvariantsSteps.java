@@ -1,8 +1,8 @@
 package com.ralfhenze.railplan.acceptance.stepdefs;
 
-import com.ralfhenze.railplan.domain.TestData;
 import com.ralfhenze.railplan.domain.common.validation.ValidationException;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraft;
+import com.ralfhenze.railplan.domain.railnetwork.presets.PresetStation;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
@@ -16,11 +16,11 @@ public class StationInvariantsSteps {
 
     @Given("^a Rail Network Draft with a Station \"(.*)\"$")
     public void setupRailNetworkDraft(final String stationName) {
-        final var station = TestData.getStation(stationName);
+        final var station = PresetStation.ofName(stationName);
         draft = new RailNetworkDraft().withNewStation(
-            station.getName().getName(),
-            station.getLocation().getLatitude(),
-            station.getLocation().getLongitude()
+            station.getName(),
+            station.getLatitude(),
+            station.getLongitude()
         );
     }
 
@@ -35,14 +35,13 @@ public class StationInvariantsSteps {
     }
 
     private void addStation(final String stationName) {
-        final var stationToAdd = TestData.getStation(stationName);
+        final var stationToAdd = PresetStation.ofName(stationName);
         exceptionWasThrown = false;
         try {
-            final var location = stationToAdd.getLocation();
             draft = draft.withNewStation(
-                stationName,
-                location.getLatitude(),
-                location.getLongitude()
+                stationToAdd.getName(),
+                stationToAdd.getLatitude(),
+                stationToAdd.getLongitude()
             );
         } catch (IllegalArgumentException | ValidationException e) {
             exceptionWasThrown = true;

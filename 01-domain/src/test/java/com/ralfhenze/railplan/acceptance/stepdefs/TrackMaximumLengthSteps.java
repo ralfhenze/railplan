@@ -1,9 +1,8 @@
 package com.ralfhenze.railplan.acceptance.stepdefs;
 
-import com.ralfhenze.railplan.domain.TestData;
 import com.ralfhenze.railplan.domain.common.validation.ValidationException;
-import com.ralfhenze.railplan.domain.railnetwork.elements.TrainStation;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraft;
+import com.ralfhenze.railplan.domain.railnetwork.presets.PresetStation;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
@@ -13,24 +12,24 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class TrackMaximumLengthSteps {
 
     private RailNetworkDraft draft;
-    private TrainStation station1;
-    private TrainStation station2;
+    private PresetStation station1;
+    private PresetStation station2;
     private boolean exceptionWasThrown;
 
     @Given("^a Rail Network Draft with two Stations \"(.*)\" and \"(.*)\" \\(distance: (.*)\\)$")
     public void setupTwoStations(String stationName1, String stationName2, String distance) {
-        station1 = TestData.getStation(stationName1);
-        station2 = TestData.getStation(stationName2);
+        station1 = PresetStation.ofName(stationName1);
+        station2 = PresetStation.ofName(stationName2);
         draft = new RailNetworkDraft()
             .withNewStation(
-                station1.getName().getName(),
-                station1.getLocation().getLatitude(),
-                station1.getLocation().getLongitude()
+                station1.getName(),
+                station1.getLatitude(),
+                station1.getLongitude()
             )
             .withNewStation(
-                station2.getName().getName(),
-                station2.getLocation().getLatitude(),
-                station2.getLocation().getLongitude()
+                station2.getName(),
+                station2.getLatitude(),
+                station2.getLongitude()
             );
     }
 
@@ -39,8 +38,8 @@ public class TrackMaximumLengthSteps {
         exceptionWasThrown = false;
         try {
             draft = draft.withNewTrack(
-                station1.getName().getName(),
-                station2.getName().getName()
+                station1.getName(),
+                station2.getName()
             );
         } catch (IllegalArgumentException | ValidationException e) {
             exceptionWasThrown = true;
