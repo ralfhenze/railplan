@@ -6,14 +6,14 @@ package com.ralfhenze.railplan.application.commands;
 public class UpdateTrainStationCommand implements Command {
 
     private final String draftId;
-    private final String stationId;
+    private final int stationId;
     private final String stationName;
     private final double latitude;
     private final double longitude;
 
     public UpdateTrainStationCommand(
         final String draftId,
-        final String stationId,
+        final int stationId,
         final String stationName,
         final double latitude,
         final double longitude
@@ -29,7 +29,7 @@ public class UpdateTrainStationCommand implements Command {
         return draftId;
     }
 
-    public String getStationId() {
+    public int getStationId() {
         return stationId;
     }
 

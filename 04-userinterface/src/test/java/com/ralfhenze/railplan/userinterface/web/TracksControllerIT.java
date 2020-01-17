@@ -139,8 +139,8 @@ public class TracksControllerIT extends HtmlITBase {
 
         final var executedCommand = commandCaptor.getValue();
         assertThat(executedCommand.getDraftId()).isEqualTo("123");
-        assertThat(executedCommand.getFirstStationId()).isEqualTo("1");
-        assertThat(executedCommand.getSecondStationId()).isEqualTo("2");
+        assertThat(executedCommand.getFirstStationId()).isEqualTo(1);
+        assertThat(executedCommand.getSecondStationId()).isEqualTo(2);
 
         // And we will be redirected to the Tracks page
         assertThat(response.getStatus()).isEqualTo(HTTP_MOVED_TEMPORARILY);
@@ -191,8 +191,8 @@ public class TracksControllerIT extends HtmlITBase {
 
         final var executedCommand = commandCaptor.getValue();
         assertThat(executedCommand.getDraftId()).isEqualTo("123");
-        assertThat(executedCommand.getStationId1()).isEqualTo("1");
-        assertThat(executedCommand.getStationId2()).isEqualTo("2");
+        assertThat(executedCommand.getFirstStationId()).isEqualTo(1);
+        assertThat(executedCommand.getSecondStationId()).isEqualTo(2);
 
         // And we will be redirected to the Tracks page
         assertThat(response.getStatus()).isEqualTo(HTTP_MOVED_TEMPORARILY);

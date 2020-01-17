@@ -30,7 +30,7 @@ public class RailwayTrackServiceUT {
             .willReturn(draft);
 
         railwayTrackService.addTrackByStationId(
-            new AddRailwayTrackByStationIdCommand("1", "1", "2")
+            new AddRailwayTrackByStationIdCommand("1", 1, 2)
         );
 
         verify(draftRepository).persist(any());
@@ -52,8 +52,8 @@ public class RailwayTrackServiceUT {
         railwayTrackService.deleteTrackFromDraft(
             new DeleteRailwayTrackCommand(
                 "1",
-                track.getFirstStationId().toString(),
-                track.getSecondStationId().toString()
+                track.getFirstStationId().getId(),
+                track.getSecondStationId().getId()
             )
         );
 

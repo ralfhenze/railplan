@@ -6,9 +6,9 @@ package com.ralfhenze.railplan.application.commands;
 public class DeleteTrainStationCommand implements Command {
 
     private final String draftId;
-    private final String stationId;
+    private final int stationId;
 
-    public DeleteTrainStationCommand(final String draftId, final String stationId) {
+    public DeleteTrainStationCommand(final String draftId, final int stationId) {
         this.draftId = draftId;
         this.stationId = stationId;
     }
@@ -17,7 +17,7 @@ public class DeleteTrainStationCommand implements Command {
         return draftId;
     }
 
-    public String getStationId() {
+    public int getStationId() {
         return stationId;
     }
 }

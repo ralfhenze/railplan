@@ -94,8 +94,8 @@ public class RestApiController {
         new RailwayTrackService(draftRepository).addTrackByStationId(
             new AddRailwayTrackByStationIdCommand(
                 draftId,
-                String.valueOf(trackDto.getFirstStationId()),
-                String.valueOf(trackDto.getSecondStationId())
+                trackDto.getFirstStationId(),
+                trackDto.getSecondStationId()
             )
         );
 

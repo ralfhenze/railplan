@@ -87,7 +87,7 @@ public class TrainStationServiceUT {
         trainStationService.updateStationOfDraft(
             new UpdateTrainStationCommand(
                 "1",
-                "1",
+                1,
                 hamburgHbfName.getName(),
                 hamburgHbfPos.getLatitude(),
                 hamburgHbfPos.getLongitude()
@@ -110,7 +110,7 @@ public class TrainStationServiceUT {
             .willReturn(draft);
 
         trainStationService.deleteStationFromDraft(
-            new DeleteTrainStationCommand("1", "1")
+            new DeleteTrainStationCommand("1", 1)
         );
 
         verify(draftRepository).persist(updatedDraftCaptor.capture());

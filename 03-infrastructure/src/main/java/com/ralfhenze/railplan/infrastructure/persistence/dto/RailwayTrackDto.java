@@ -17,8 +17,8 @@ public class RailwayTrackDto {
 
     public RailwayTrack toRailwayTrack() {
         return new RailwayTrack(
-            new TrainStationId(String.valueOf(firstStationId)),
-            new TrainStationId(String.valueOf(secondStationId))
+            new TrainStationId(firstStationId),
+            new TrainStationId(secondStationId)
         );
     }
 

@@ -49,7 +49,7 @@ public class StationsView implements View {
 
     private final String draftId;
     private final RailNetworkDraftRepository draftRepository;
-    private String stationIdToEdit;
+    private int stationIdToEdit = -1;
     private boolean showCustomStationForm = false;
     private boolean showPresetStationForm = false;
     private RailNetworkDraft draft;
@@ -65,7 +65,7 @@ public class StationsView implements View {
         this.draftRepository = draftRepository;
     }
 
-    public StationsView withStationIdToEdit(final String stationIdToEdit) {
+    public StationsView withStationIdToEdit(final int stationIdToEdit) {
         this.stationIdToEdit = stationIdToEdit;
         return this;
     }
@@ -112,13 +112,13 @@ public class StationsView implements View {
                 final var station = stations.get(index);
                 final var row = new StationTableRow();
                 row.index = index + 1;
-                row.stationId = station.getId().toString();
+                row.stationId = station.getId().getId();
                 row.stationName = station.getName().getName();
                 row.latitude = station.getLocation().getLatitudeAsString();
                 row.longitude = station.getLocation().getLongitudeAsString();
-                row.showInputField = (row.stationId.equals(stationIdToEdit));
+                row.showInputField = (row.stationId == stationIdToEdit);
 
-                if (row.stationId.equals(stationIdToEdit)) {
+                if (row.stationId == stationIdToEdit) {
                     if (validationException != null) {
                         row.stationNameErrors = validationException.getErrorsOfField(Field.STATION_NAME);
                         row.locationErrors = validationException.getErrorsOfField(Field.LOCATION);
@@ -140,9 +140,9 @@ public class StationsView implements View {
         setStationRowPropertiesIfModelContainsThem(newStationTableRow);
 
         newStationTableRow.showInputField = true;
-        newStationTableRow.disabled = (stationIdToEdit != null);
+        newStationTableRow.disabled = (stationIdToEdit != -1);
 
-        if (stationIdToEdit == null && validationException != null) {
+        if (stationIdToEdit == -1 && validationException != null) {
             newStationTableRow.stationNameErrors = validationException.getErrorsOfField(Field.STATION_NAME);
             newStationTableRow.locationErrors = validationException.getErrorsOfField(Field.LOCATION);
             newStationTableRow.latitudeErrors = validationException.getErrorsOfField(Field.LATITUDE);

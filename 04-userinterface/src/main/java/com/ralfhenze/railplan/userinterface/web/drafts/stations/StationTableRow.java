@@ -7,7 +7,7 @@ public class StationTableRow {
     public boolean showInputField = false;
     public boolean disabled = false;
     public int index = 0;
-    public String stationId = "";
+    public int stationId = -1;
     public String stationName = "";
     public List<String> stationNameErrors = List.of();
     public List<String> locationErrors = List.of();
@@ -52,11 +52,11 @@ public class StationTableRow {
         this.disabled = disabled;
     }
 
-    public String getStationId() {
+    public int getStationId() {
         return stationId;
     }
 
-    public void setStationId(String stationId) {
+    public void setStationId(int stationId) {
         this.stationId = stationId;
     }
 

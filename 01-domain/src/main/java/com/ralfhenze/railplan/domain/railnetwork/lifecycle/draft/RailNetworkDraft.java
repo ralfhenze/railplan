@@ -108,7 +108,7 @@ public class RailNetworkDraft implements Aggregate {
         final TrainStationName stationName,
         final GeoLocationInGermany location
     ) {
-        final var stationId = new TrainStationId(String.valueOf(this.stationId));
+        final var stationId = new TrainStationId(this.stationId);
         final var addedStation = new TrainStation(stationId, stationName, location);
         final var newStations = stations.newWith(addedStation);
 
@@ -136,7 +136,7 @@ public class RailNetworkDraft implements Aggregate {
      * @throws ValidationException if Station Name, Location or Draft invariants are violated
      */
     public RailNetworkDraft withUpdatedStation(
-        final String stationId,
+        final int stationId,
         final String newStationName,
         final double newLatitude,
         final double newLongitude
@@ -285,13 +285,13 @@ public class RailNetworkDraft implements Aggregate {
         return stations.collect(s -> s.getName().getName());
     }
 
-    private ImmutableList<String> getOtherStationNamesWithout(final String stationId) {
+    private ImmutableList<String> getOtherStationNamesWithout(final int stationId) {
         return getOtherStationsWithout(stationId)
             .collect(s -> s.getName().getName());
     }
 
-    private ImmutableList<TrainStation> getOtherStationsWithout(final String stationId) {
-        return stations.reject(s -> s.getId().toString().equals(stationId));
+    private ImmutableList<TrainStation> getOtherStationsWithout(final int stationId) {
+        return stations.reject(s -> s.getId().getId() == stationId);
     }
 
     private void validateLocationDistance(

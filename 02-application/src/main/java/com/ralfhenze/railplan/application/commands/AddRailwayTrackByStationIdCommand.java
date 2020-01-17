@@ -3,13 +3,13 @@ package com.ralfhenze.railplan.application.commands;
 public class AddRailwayTrackByStationIdCommand implements Command {
 
     private final String draftId;
-    private final String firstStationId;
-    private final String secondStationId;
+    private final int firstStationId;
+    private final int secondStationId;
 
     public AddRailwayTrackByStationIdCommand(
         final String draftId,
-        final String firstStationId,
-        final String secondStationId
+        final int firstStationId,
+        final int secondStationId
     ) {
         this.draftId = draftId;
         this.firstStationId = firstStationId;
@@ -20,11 +20,11 @@ public class AddRailwayTrackByStationIdCommand implements Command {
         return draftId;
     }
 
-    public String getFirstStationId() {
+    public int getFirstStationId() {
         return firstStationId;
     }
 
-    public String getSecondStationId() {
+    public int getSecondStationId() {
         return secondStationId;
     }
 }

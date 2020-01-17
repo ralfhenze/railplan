@@ -147,7 +147,7 @@ public class StationsController {
         @PathVariable String stationId
     ) {
         return new StationsView(draftId, draftRepository)
-            .withStationIdToEdit(stationId)
+            .withStationIdToEdit(Integer.parseInt(stationId))
             .getHtml()
             .render();
     }
@@ -163,11 +163,13 @@ public class StationsController {
         StationTableRow stationRow,
         HttpServletResponse response
     ) {
+        final var intStationId = Integer.parseInt(stationId);
+
         try {
             trainStationService.updateStationOfDraft(
                 new UpdateTrainStationCommand(
                     draftId,
-                    stationId,
+                    intStationId,
                     stationRow.stationName,
                     Double.parseDouble(stationRow.latitude),
                     Double.parseDouble(stationRow.longitude)
@@ -175,7 +177,7 @@ public class StationsController {
             );
         } catch (ValidationException exception) {
             return new StationsView(draftId, draftRepository)
-                .withStationIdToEdit(stationId)
+                .withStationIdToEdit(intStationId)
                 .withValidationException(exception)
                 .withStationTableRow(stationRow)
                 .getHtml()
@@ -194,7 +196,10 @@ public class StationsController {
         @PathVariable String stationId
     ) {
         trainStationService.deleteStationFromDraft(
-            new DeleteTrainStationCommand(draftId, stationId)
+            new DeleteTrainStationCommand(
+                draftId,
+                Integer.parseInt(stationId)
+            )
         );
 
         return "redirect:/drafts/{draftId}/stations";

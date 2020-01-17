@@ -110,8 +110,8 @@ public class TracksController {
             railwayTrackService.addTrackByStationId(
                 new AddRailwayTrackByStationIdCommand(
                     draftId,
-                    String.valueOf(trackDto.getFirstStationId()),
-                    String.valueOf(trackDto.getSecondStationId())
+                    trackDto.getFirstStationId(),
+                    trackDto.getSecondStationId()
                 )
             );
         } catch (ValidationException exception){
@@ -136,7 +136,11 @@ public class TracksController {
         @PathVariable String secondStationId
     ) {
         railwayTrackService.deleteTrackFromDraft(
-            new DeleteRailwayTrackCommand(draftId, firstStationId, secondStationId)
+            new DeleteRailwayTrackCommand(
+                draftId,
+                Integer.parseInt(firstStationId),
+                Integer.parseInt(secondStationId)
+            )
         );
 
         return "redirect:/drafts/{draftId}/tracks";

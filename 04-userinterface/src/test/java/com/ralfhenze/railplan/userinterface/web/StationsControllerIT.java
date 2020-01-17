@@ -251,7 +251,7 @@ public class StationsControllerIT extends HtmlITBase {
 
         final var executedCommand = commandCaptor.getValue();
         assertThat(executedCommand.getDraftId()).isEqualTo("123");
-        assertThat(executedCommand.getStationId()).isEqualTo("1");
+        assertThat(executedCommand.getStationId()).isEqualTo(1);
         assertThat(executedCommand.getStationName()).isEqualTo(potsdamHbfName.getName());
         assertThat(executedCommand.getLatitude()).isEqualTo(potsdamHbfPos.getLatitude());
         assertThat(executedCommand.getLongitude()).isEqualTo(potsdamHbfPos.getLongitude());
@@ -265,7 +265,7 @@ public class StationsControllerIT extends HtmlITBase {
     public void userSeesValidationErrorsWhenUpdatingAStationWithInvalidData() throws Exception {
         verifyPostRequestWithInvalidStationData(
             "/drafts/123/stations/1/edit",
-            new UpdateTrainStationCommand("", "", "", 0, 0)
+            new UpdateTrainStationCommand("", 1, "", 0, 0)
         );
     }
 
@@ -280,7 +280,7 @@ public class StationsControllerIT extends HtmlITBase {
 
         final var executedDeleteCommand = commandCaptor.getValue();
         assertThat(executedDeleteCommand.getDraftId()).isEqualTo("123");
-        assertThat(executedDeleteCommand.getStationId()).isEqualTo("1");
+        assertThat(executedDeleteCommand.getStationId()).isEqualTo(1);
 
         // And we will be redirected to the Stations page
         assertThat(response.getStatus()).isEqualTo(HTTP_MOVED_TEMPORARILY);

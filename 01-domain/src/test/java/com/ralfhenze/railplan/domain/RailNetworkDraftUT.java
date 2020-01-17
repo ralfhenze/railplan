@@ -55,7 +55,7 @@ public class RailNetworkDraftUT {
         // When we update "Berlin Hbf" with the current "Berlin Hbf" data
         final var ex = catchThrowable(() ->
             draft.withUpdatedStation(
-                "1",
+                1,
                 berlinHbfName.getName(),
                 berlinHbfPos.getLatitude(),
                 berlinHbfPos.getLongitude()
@@ -116,7 +116,7 @@ public class RailNetworkDraftUT {
 
         // When we try to rename "Hamburg Hbf" to "Berlin Hbf" with invalid coordinates
         final var ex = catchThrowable(() ->
-            draft.withUpdatedStation("2", berlinHbfName.getName(), 0, 0)
+            draft.withUpdatedStation(2, berlinHbfName.getName(), 0, 0)
         );
 
         // Then we get a Station name, a Latitude and a Longitude validation error
@@ -137,7 +137,7 @@ public class RailNetworkDraftUT {
         // When we try to update "Hamburg Hbf" to "Berlin Hbf" with "Berlin Hbf" coordinates
         final var ex = catchThrowable(() ->
             draft.withUpdatedStation(
-                "2",
+                2,
                 berlinHbfName.getName(),
                 berlinHbfPos.getLatitude(),
                 berlinHbfPos.getLongitude()
@@ -179,7 +179,7 @@ public class RailNetworkDraftUT {
         // When we move "Hamburg Hbf" to "Berlin Ost" (which is too close to "Berlin Hbf")
         final var ex = catchThrowable(() ->
             draft.withUpdatedStation(
-                "2",
+                2,
                 hamburgHbfName.getName(),
                 berlinOstPos.getLatitude(),
                 berlinOstPos.getLongitude()

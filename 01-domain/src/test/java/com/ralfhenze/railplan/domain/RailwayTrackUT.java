@@ -12,8 +12,8 @@ public class RailwayTrackUT {
 
     @Test
     public void isEqualWhenConnectingTheSameStations() {
-        final var stationId1 = new TrainStationId("1");
-        final var stationId2 = new TrainStationId("2");
+        final var stationId1 = new TrainStationId(1);
+        final var stationId2 = new TrainStationId(2);
         final var track1 = new RailwayTrack(stationId1, stationId2);
         final var track2 = new RailwayTrack(stationId1, stationId2);
         final var track3 = new RailwayTrack(stationId2, stationId1);
@@ -24,7 +24,7 @@ public class RailwayTrackUT {
 
     @Test
     public void isInvalidWithTheSameStationIds() {
-        final var stationId = new TrainStationId("1");
+        final var stationId = new TrainStationId(1);
 
         assertThatExceptionOfType(ValidationException.class).isThrownBy(() ->
             new RailwayTrack(stationId, stationId)

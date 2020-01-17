@@ -39,8 +39,8 @@ public class RailNetworkDraftDto {
 
         for (final var track : tracks) {
             draft = draft.withNewTrack(
-                new TrainStationId(String.valueOf(track.getFirstStationId())),
-                new TrainStationId(String.valueOf(track.getSecondStationId()))
+                new TrainStationId(track.getFirstStationId()),
+                new TrainStationId(track.getSecondStationId())
             );
         }
 

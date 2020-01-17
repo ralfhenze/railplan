@@ -6,28 +6,28 @@ package com.ralfhenze.railplan.application.commands;
 public class DeleteRailwayTrackCommand implements Command {
 
     private final String draftId;
-    private final String stationId1;
-    private final String stationId2;
+    private final int firstStationId;
+    private final int secondStationId;
 
     public DeleteRailwayTrackCommand(
         final String draftId,
-        final String stationId1,
-        final String stationId2
+        final int firstStationId,
+        final int secondStationId
     ) {
         this.draftId = draftId;
-        this.stationId1 = stationId1;
-        this.stationId2 = stationId2;
+        this.firstStationId = firstStationId;
+        this.secondStationId = secondStationId;
     }
 
     public String getDraftId() {
         return draftId;
     }
 
-    public String getStationId1() {
-        return stationId1;
+    public int getFirstStationId() {
+        return firstStationId;
     }
 
-    public String getStationId2() {
-        return stationId2;
+    public int getSecondStationId() {
+        return secondStationId;
     }
 }

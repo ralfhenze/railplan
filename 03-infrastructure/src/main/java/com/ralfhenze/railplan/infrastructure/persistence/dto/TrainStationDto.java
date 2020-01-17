@@ -23,7 +23,7 @@ public class TrainStationDto {
 
     public TrainStation toTrainStation() {
         return new TrainStation(
-            new TrainStationId(String.valueOf(id)),
+            new TrainStationId(id),
             new TrainStationName(name),
             new GeoLocationInGermany(latitude, longitude)
         );
