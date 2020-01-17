@@ -12,9 +12,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import static com.ralfhenze.railplan.userinterface.web.TestData.BERLIN_HBF;
+import static com.ralfhenze.railplan.userinterface.web.TestData.BERLIN_HBF_STATION;
 import static com.ralfhenze.railplan.userinterface.web.TestData.DEFAULT_PERIOD;
-import static com.ralfhenze.railplan.userinterface.web.TestData.HAMBURG_HBF;
+import static com.ralfhenze.railplan.userinterface.web.TestData.HAMBURG_HBF_STATION;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)
@@ -57,8 +57,8 @@ public class ReleasedRailNetworkMongoDbRepositoryIT {
     private ReleasedRailNetwork getBerlinHamburgNetwork() {
         return new ReleasedRailNetwork(
             DEFAULT_PERIOD,
-            Lists.immutable.of(BERLIN_HBF, HAMBURG_HBF),
-            Lists.immutable.of(new RailwayTrack(BERLIN_HBF.getId(), HAMBURG_HBF.getId()))
+            Lists.immutable.of(BERLIN_HBF_STATION, HAMBURG_HBF_STATION),
+            Lists.immutable.of(new RailwayTrack(BERLIN_HBF_STATION.getId(), HAMBURG_HBF_STATION.getId()))
         );
     }
 }

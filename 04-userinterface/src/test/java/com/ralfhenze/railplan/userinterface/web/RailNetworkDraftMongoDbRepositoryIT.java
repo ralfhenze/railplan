@@ -13,15 +13,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import static com.ralfhenze.railplan.userinterface.web.TestData.BERLIN_HBF_LAT;
-import static com.ralfhenze.railplan.userinterface.web.TestData.BERLIN_HBF_LNG;
-import static com.ralfhenze.railplan.userinterface.web.TestData.BERLIN_HBF_NAME;
-import static com.ralfhenze.railplan.userinterface.web.TestData.HAMBURG_HBF_LAT;
-import static com.ralfhenze.railplan.userinterface.web.TestData.HAMBURG_HBF_LNG;
-import static com.ralfhenze.railplan.userinterface.web.TestData.HAMBURG_HBF_NAME;
-import static com.ralfhenze.railplan.userinterface.web.TestData.POTSDAM_HBF_LAT;
-import static com.ralfhenze.railplan.userinterface.web.TestData.POTSDAM_HBF_LNG;
-import static com.ralfhenze.railplan.userinterface.web.TestData.POTSDAM_HBF_NAME;
+import static com.ralfhenze.railplan.domain.railnetwork.presets.PresetStation.BERLIN_HBF;
+import static com.ralfhenze.railplan.domain.railnetwork.presets.PresetStation.HAMBURG_HBF;
+import static com.ralfhenze.railplan.domain.railnetwork.presets.PresetStation.ERFURT_HBF;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
@@ -65,8 +59,8 @@ public class RailNetworkDraftMongoDbRepositoryIT {
         final var draft = getExampleDraft();
         final var persistedDraft = draftRepository.persist(draft).get();
         final var updatedDraft = persistedDraft
-            .withNewStation(POTSDAM_HBF_NAME, POTSDAM_HBF_LAT, POTSDAM_HBF_LNG)
-            .withNewTrack(POTSDAM_HBF_NAME, BERLIN_HBF_NAME);
+            .withNewStation(ERFURT_HBF.getName(), ERFURT_HBF.getLatitude(), ERFURT_HBF.getLongitude())
+            .withNewTrack(ERFURT_HBF.getName(), BERLIN_HBF.getName());
 
         draftRepository.persist(updatedDraft);
 
@@ -108,9 +102,7 @@ public class RailNetworkDraftMongoDbRepositoryIT {
     }
 
     private RailNetworkDraft getExampleDraft() {
-        return new RailNetworkDraft()
-            .withNewStation(BERLIN_HBF_NAME, BERLIN_HBF_LAT, BERLIN_HBF_LNG)
-            .withNewStation(HAMBURG_HBF_NAME, HAMBURG_HBF_LAT, HAMBURG_HBF_LNG)
-            .withNewTrack(BERLIN_HBF_NAME, HAMBURG_HBF_NAME);
+        return RailNetworkDraft.of(BERLIN_HBF, HAMBURG_HBF)
+            .withNewTrack(BERLIN_HBF.getName(), HAMBURG_HBF.getName());
     }
 }

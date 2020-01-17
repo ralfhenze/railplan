@@ -15,18 +15,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import static com.ralfhenze.railplan.userinterface.web.TestData.BERLIN_HBF;
-import static com.ralfhenze.railplan.userinterface.web.TestData.BERLIN_HBF_LAT;
-import static com.ralfhenze.railplan.userinterface.web.TestData.BERLIN_HBF_LNG;
-import static com.ralfhenze.railplan.userinterface.web.TestData.BERLIN_HBF_NAME;
+import static com.ralfhenze.railplan.userinterface.web.TestData.BERLIN_HBF_STATION;
 import static com.ralfhenze.railplan.userinterface.web.TestData.DEFAULT_PERIOD;
-import static com.ralfhenze.railplan.userinterface.web.TestData.HAMBURG_HBF;
-import static com.ralfhenze.railplan.userinterface.web.TestData.HAMBURG_HBF_LAT;
-import static com.ralfhenze.railplan.userinterface.web.TestData.HAMBURG_HBF_LNG;
-import static com.ralfhenze.railplan.userinterface.web.TestData.HAMBURG_HBF_NAME;
-import static com.ralfhenze.railplan.userinterface.web.TestData.POTSDAM_HBF_LAT;
-import static com.ralfhenze.railplan.userinterface.web.TestData.POTSDAM_HBF_LNG;
-import static com.ralfhenze.railplan.userinterface.web.TestData.POTSDAM_HBF_NAME;
+import static com.ralfhenze.railplan.userinterface.web.TestData.HAMBURG_HBF_STATION;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)
@@ -46,14 +37,9 @@ public class MongoDbQueriesIT {
     public void providesAllDraftIds() {
         final var draftRepository = new RailNetworkDraftMongoDbRepository(mongoTemplate);
         final var queries = new MongoDbQueries(mongoTemplate);
-        final var draft = new RailNetworkDraft()
-            .withNewStation(BERLIN_HBF_NAME, BERLIN_HBF_LAT, BERLIN_HBF_LNG)
-            .withNewStation(HAMBURG_HBF_NAME, HAMBURG_HBF_LAT, HAMBURG_HBF_LNG)
-            .withNewTrack(BERLIN_HBF_NAME, HAMBURG_HBF_NAME);
-        final var draftId1 = draftRepository
-            .persist(draft).get().getId().get().toString();
-        final var draftId2 = draftRepository
-            .persist(draft.withUpdatedStation(1, POTSDAM_HBF_NAME, POTSDAM_HBF_LAT, POTSDAM_HBF_LNG))
+        final var draftId1 = draftRepository.persist(new RailNetworkDraft())
+            .get().getId().get().toString();
+        final var draftId2 = draftRepository.persist(new RailNetworkDraft())
             .get().getId().get().toString();
 
         final var draftIds = queries.getAllDraftIds();
@@ -67,8 +53,8 @@ public class MongoDbQueriesIT {
         final var queries = new MongoDbQueries(mongoTemplate);
         final var network = new ReleasedRailNetwork(
             DEFAULT_PERIOD,
-            Lists.immutable.of(BERLIN_HBF, HAMBURG_HBF),
-            Lists.immutable.of(new RailwayTrack(BERLIN_HBF.getId(), HAMBURG_HBF.getId()))
+            Lists.immutable.of(BERLIN_HBF_STATION, HAMBURG_HBF_STATION),
+            Lists.immutable.of(new RailwayTrack(BERLIN_HBF_STATION.getId(), HAMBURG_HBF_STATION.getId()))
         );
         final var networkId1 = networkRepository
             .add(network).getId().get().toString();

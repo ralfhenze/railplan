@@ -21,9 +21,9 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.util.List;
 import java.util.Map;
 
+import static com.ralfhenze.railplan.domain.railnetwork.presets.PresetStation.BERLIN_HBF;
+import static com.ralfhenze.railplan.domain.railnetwork.presets.PresetStation.HAMBURG_HBF;
 import static com.ralfhenze.railplan.userinterface.web.TestData.BERLIN_HAMBURG_DRAFT;
-import static com.ralfhenze.railplan.userinterface.web.TestData.BERLIN_HBF_NAME;
-import static com.ralfhenze.railplan.userinterface.web.TestData.HAMBURG_HBF_NAME;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -58,9 +58,9 @@ public class TracksControllerIT extends HtmlITBase {
         assertThat(response.getStatus()).isEqualTo(HTTP_OK);
         assertThat(trackRows).hasSize(1);
         assertThat(trackRows.get(0).selectFirst(".station-1").text())
-            .isEqualTo(BERLIN_HBF_NAME);
+            .isEqualTo(BERLIN_HBF.getName());
         assertThat(trackRows.get(0).selectFirst(".station-2").text())
-            .isEqualTo(HAMBURG_HBF_NAME);
+            .isEqualTo(HAMBURG_HBF.getName());
     }
 
     @Test

@@ -19,15 +19,11 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 
-import static com.ralfhenze.railplan.userinterface.web.TestData.BERLIN_HBF;
-import static com.ralfhenze.railplan.userinterface.web.TestData.BERLIN_HBF_LAT;
-import static com.ralfhenze.railplan.userinterface.web.TestData.BERLIN_HBF_LNG;
-import static com.ralfhenze.railplan.userinterface.web.TestData.BERLIN_HBF_NAME;
+import static com.ralfhenze.railplan.domain.railnetwork.presets.PresetStation.BERLIN_HBF;
+import static com.ralfhenze.railplan.domain.railnetwork.presets.PresetStation.HAMBURG_HBF;
+import static com.ralfhenze.railplan.userinterface.web.TestData.BERLIN_HBF_STATION;
 import static com.ralfhenze.railplan.userinterface.web.TestData.DEFAULT_PERIOD;
-import static com.ralfhenze.railplan.userinterface.web.TestData.HAMBURG_HBF;
-import static com.ralfhenze.railplan.userinterface.web.TestData.HAMBURG_HBF_LAT;
-import static com.ralfhenze.railplan.userinterface.web.TestData.HAMBURG_HBF_LNG;
-import static com.ralfhenze.railplan.userinterface.web.TestData.HAMBURG_HBF_NAME;
+import static com.ralfhenze.railplan.userinterface.web.TestData.HAMBURG_HBF_STATION;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -88,24 +84,25 @@ public class NetworksControllerIT {
         // And we get a table with all Stations
         final var stationRows = document.select("table#stations .station-row");
         assertThat(stationRows).hasSize(2);
-        assertThatRowShowsNameAndLocation(stationRows.get(0), BERLIN_HBF_NAME, BERLIN_HBF_LAT, BERLIN_HBF_LNG);
-        assertThatRowShowsNameAndLocation(stationRows.get(1), HAMBURG_HBF_NAME, HAMBURG_HBF_LAT, HAMBURG_HBF_LNG);
+        assertThatRowShowsNameAndLocation(stationRows.get(0), BERLIN_HBF);
+        assertThatRowShowsNameAndLocation(stationRows.get(1), HAMBURG_HBF);
 
         // And we get a table with all Tracks
         final var trackRows = document.select("table#tracks .track-row");
         assertThat(trackRows).hasSize(1);
-        assertThatRowShowsStationNames(trackRows.get(0), BERLIN_HBF_NAME, HAMBURG_HBF_NAME);
+        assertThatRowShowsStationNames(trackRows.get(0), BERLIN_HBF.getName(), HAMBURG_HBF.getName());
     }
 
     private void assertThatRowShowsNameAndLocation(
         final Element row,
-        final String stationName,
-        final double latitude,
-        final double longitude
+        final com.ralfhenze.railplan.domain.railnetwork.presets.PresetStation station
     ) {
-        assertThat(row.selectFirst(".stationName").text()).isEqualTo(stationName);
-        assertThat(row.selectFirst(".latitude").text()).isEqualTo(String.valueOf(latitude));
-        assertThat(row.selectFirst(".longitude").text()).isEqualTo(String.valueOf(longitude));
+        assertThat(row.selectFirst(".stationName").text())
+            .isEqualTo(station.getName());
+        assertThat(row.selectFirst(".latitude").text())
+            .isEqualTo(String.valueOf(station.getLatitude()));
+        assertThat(row.selectFirst(".longitude").text())
+            .isEqualTo(String.valueOf(station.getLongitude()));
     }
 
     private void assertThatRowShowsStationNames(
@@ -124,8 +121,8 @@ public class NetworksControllerIT {
     private ReleasedRailNetwork getBerlinHamburgNetwork() {
         return new ReleasedRailNetwork(
             DEFAULT_PERIOD,
-            Lists.immutable.of(BERLIN_HBF, HAMBURG_HBF),
-            Lists.immutable.of(new RailwayTrack(BERLIN_HBF.getId(), HAMBURG_HBF.getId()))
+            Lists.immutable.of(BERLIN_HBF_STATION, HAMBURG_HBF_STATION),
+            Lists.immutable.of(new RailwayTrack(BERLIN_HBF_STATION.getId(), HAMBURG_HBF_STATION.getId()))
         );
     }
 }
