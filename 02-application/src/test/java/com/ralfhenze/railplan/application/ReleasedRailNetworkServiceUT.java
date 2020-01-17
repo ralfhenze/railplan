@@ -8,15 +8,11 @@ import com.ralfhenze.railplan.domain.railnetwork.lifecycle.release.ReleasedRailN
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.release.ReleasedRailNetworkRepository;
 import org.junit.Test;
 
+import java.time.LocalDate;
 import java.util.Optional;
 
-import static com.ralfhenze.railplan.application.TestData.BERLIN_HBF_LAT;
-import static com.ralfhenze.railplan.application.TestData.BERLIN_HBF_LNG;
-import static com.ralfhenze.railplan.application.TestData.BERLIN_HBF_NAME;
-import static com.ralfhenze.railplan.application.TestData.DEFAULT_PERIOD;
-import static com.ralfhenze.railplan.application.TestData.HAMBURG_HBF_LAT;
-import static com.ralfhenze.railplan.application.TestData.HAMBURG_HBF_LNG;
-import static com.ralfhenze.railplan.application.TestData.HAMBURG_HBF_NAME;
+import static com.ralfhenze.railplan.domain.railnetwork.presets.PresetStation.BERLIN_HBF;
+import static com.ralfhenze.railplan.domain.railnetwork.presets.PresetStation.HAMBURG_HBF;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -39,10 +35,8 @@ public class ReleasedRailNetworkServiceUT {
         final var releasedRailNetworkService = new ReleasedRailNetworkService(
             draftRepository, networkRepository
         );
-        final var draft = new RailNetworkDraft()
-            .withNewStation(BERLIN_HBF_NAME, BERLIN_HBF_LAT, BERLIN_HBF_LNG)
-            .withNewStation(HAMBURG_HBF_NAME, HAMBURG_HBF_LAT, HAMBURG_HBF_LNG)
-            .withNewTrack(BERLIN_HBF_NAME, HAMBURG_HBF_NAME);
+        final var draft = RailNetworkDraft.of(BERLIN_HBF, HAMBURG_HBF)
+            .withNewTrack(BERLIN_HBF.getName(), HAMBURG_HBF.getName());
         given(draftRepository.getRailNetworkDraftOfId(any()))
             .willReturn(draft);
         final var network = mock(ReleasedRailNetwork.class);
@@ -54,8 +48,8 @@ public class ReleasedRailNetworkServiceUT {
         releasedRailNetworkService.releaseDraft(
             new ReleaseRailNetworkCommand(
                 "1",
-                DEFAULT_PERIOD.getStartDate(),
-                DEFAULT_PERIOD.getEndDate()
+                LocalDate.of(2019, 11, 14),
+                LocalDate.of(2019, 11, 20)
             )
         );
 

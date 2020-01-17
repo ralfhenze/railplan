@@ -12,12 +12,8 @@ import org.mockito.ArgumentCaptor;
 
 import java.util.List;
 
-import static com.ralfhenze.railplan.application.TestData.BERLIN_HBF_LAT;
-import static com.ralfhenze.railplan.application.TestData.BERLIN_HBF_LNG;
-import static com.ralfhenze.railplan.application.TestData.BERLIN_HBF_NAME;
-import static com.ralfhenze.railplan.application.TestData.HAMBURG_HBF_LAT;
-import static com.ralfhenze.railplan.application.TestData.HAMBURG_HBF_LNG;
-import static com.ralfhenze.railplan.application.TestData.HAMBURG_HBF_NAME;
+import static com.ralfhenze.railplan.domain.railnetwork.presets.PresetStation.BERLIN_HBF;
+import static com.ralfhenze.railplan.domain.railnetwork.presets.PresetStation.HAMBURG_HBF;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
@@ -42,7 +38,12 @@ public class TrainStationServiceUT {
             .willReturn(new RailNetworkDraft());
 
         trainStationService.addStationToDraft(
-            new AddTrainStationCommand("1", BERLIN_HBF_NAME, BERLIN_HBF_LAT, BERLIN_HBF_LNG)
+            new AddTrainStationCommand(
+                "1",
+                BERLIN_HBF.getName(),
+                BERLIN_HBF.getLatitude(),
+                BERLIN_HBF.getLongitude()
+            )
         );
 
         verify(draftRepository).persist(any());
@@ -76,29 +77,33 @@ public class TrainStationServiceUT {
     public void persistsUpdatedStation() {
         final var draftRepository = mock(RailNetworkDraftRepository.class);
         final var trainStationService = new TrainStationService(draftRepository);
-        final var draft = new RailNetworkDraft()
-            .withNewStation(BERLIN_HBF_NAME, BERLIN_HBF_LAT, BERLIN_HBF_LNG);
+        final var draft = RailNetworkDraft.of(BERLIN_HBF);
         final var updatedDraftCaptor = ArgumentCaptor.forClass(RailNetworkDraft.class);
         given(draftRepository.getRailNetworkDraftOfId(any()))
             .willReturn(draft);
 
         trainStationService.updateStationOfDraft(
-            new UpdateTrainStationCommand("1", 1, HAMBURG_HBF_NAME, HAMBURG_HBF_LAT, HAMBURG_HBF_LNG)
+            new UpdateTrainStationCommand(
+                "1",
+                1,
+                HAMBURG_HBF.getName(),
+                HAMBURG_HBF.getLatitude(),
+                HAMBURG_HBF.getLongitude()
+            )
         );
 
         verify(draftRepository).persist(updatedDraftCaptor.capture());
         final var updatedStation = updatedDraftCaptor.getValue().getStations().getAny();
-        assertThat(updatedStation.getName().getName()).isEqualTo(HAMBURG_HBF_NAME);
-        assertThat(updatedStation.getLocation().getLatitude()).isEqualTo(HAMBURG_HBF_LAT);
-        assertThat(updatedStation.getLocation().getLongitude()).isEqualTo(HAMBURG_HBF_LNG);
+        assertThat(updatedStation.getName().getName()).isEqualTo(HAMBURG_HBF.getName());
+        assertThat(updatedStation.getLocation().getLatitude()).isEqualTo(HAMBURG_HBF.getLatitude());
+        assertThat(updatedStation.getLocation().getLongitude()).isEqualTo(HAMBURG_HBF.getLongitude());
     }
 
     @Test
     public void deletesStationAndPersistsUpdatedDraft() {
         final var draftRepository = mock(RailNetworkDraftRepository.class);
         final var trainStationService = new TrainStationService(draftRepository);
-        final var draft = new RailNetworkDraft()
-            .withNewStation(BERLIN_HBF_NAME, BERLIN_HBF_LAT, BERLIN_HBF_LNG);
+        final var draft = RailNetworkDraft.of(BERLIN_HBF);
         final var updatedDraftCaptor = ArgumentCaptor.forClass(RailNetworkDraft.class);
         given(draftRepository.getRailNetworkDraftOfId(any()))
             .willReturn(draft);
