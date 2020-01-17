@@ -4,6 +4,7 @@ import com.ralfhenze.railplan.domain.railnetwork.elements.GeoLocationInGermany;
 import com.ralfhenze.railplan.domain.railnetwork.elements.TrainStation;
 import com.ralfhenze.railplan.domain.railnetwork.elements.TrainStationId;
 import com.ralfhenze.railplan.domain.railnetwork.elements.TrainStationName;
+import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraft;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.release.ValidityPeriod;
 import org.eclipse.collections.api.factory.Sets;
 import org.eclipse.collections.api.map.ImmutableMap;
@@ -89,5 +90,18 @@ public class TestData {
         }
 
         return stations.get(stationName);
+    }
+
+    public static RailNetworkDraft getDraftWith(TrainStation... stations) {
+        var draft = new RailNetworkDraft();
+        for (final var station : stations) {
+            draft = draft.withNewStation(
+                station.getName().getName(),
+                station.getLocation().getLatitude(),
+                station.getLocation().getLongitude()
+            );
+        }
+
+        return draft;
     }
 }
