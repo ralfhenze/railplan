@@ -16,12 +16,16 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import static com.ralfhenze.railplan.userinterface.web.TestData.berlinHbf;
+import static com.ralfhenze.railplan.userinterface.web.TestData.berlinHbfLat;
+import static com.ralfhenze.railplan.userinterface.web.TestData.berlinHbfLng;
 import static com.ralfhenze.railplan.userinterface.web.TestData.berlinHbfName;
-import static com.ralfhenze.railplan.userinterface.web.TestData.berlinHbfPos;
 import static com.ralfhenze.railplan.userinterface.web.TestData.defaultPeriod;
 import static com.ralfhenze.railplan.userinterface.web.TestData.hamburgHbf;
+import static com.ralfhenze.railplan.userinterface.web.TestData.hamburgHbfLat;
+import static com.ralfhenze.railplan.userinterface.web.TestData.hamburgHbfLng;
 import static com.ralfhenze.railplan.userinterface.web.TestData.hamburgHbfName;
-import static com.ralfhenze.railplan.userinterface.web.TestData.hamburgHbfPos;
+import static com.ralfhenze.railplan.userinterface.web.TestData.potsdamHbfLat;
+import static com.ralfhenze.railplan.userinterface.web.TestData.potsdamHbfLng;
 import static com.ralfhenze.railplan.userinterface.web.TestData.potsdamHbfName;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -43,13 +47,13 @@ public class MongoDbQueriesIT {
         final var draftRepository = new RailNetworkDraftMongoDbRepository(mongoTemplate);
         final var queries = new MongoDbQueries(mongoTemplate);
         final var draft = new RailNetworkDraft()
-            .withNewStation(berlinHbfName, berlinHbfPos)
-            .withNewStation(hamburgHbfName, hamburgHbfPos)
+            .withNewStation(berlinHbfName, berlinHbfLat, berlinHbfLng)
+            .withNewStation(hamburgHbfName, hamburgHbfLat, hamburgHbfLng)
             .withNewTrack(berlinHbfName, hamburgHbfName);
         final var draftId1 = draftRepository
             .persist(draft).get().getId().get().toString();
         final var draftId2 = draftRepository
-            .persist(draft.withUpdatedStation(hamburgHbfName, potsdamHbfName, hamburgHbfPos))
+            .persist(draft.withUpdatedStation(1, potsdamHbfName, potsdamHbfLat, potsdamHbfLng))
             .get().getId().get().toString();
 
         final var draftIds = queries.getAllDraftIds();

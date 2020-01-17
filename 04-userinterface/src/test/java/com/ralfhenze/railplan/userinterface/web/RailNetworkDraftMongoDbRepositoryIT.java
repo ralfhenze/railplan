@@ -13,12 +13,15 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import static com.ralfhenze.railplan.userinterface.web.TestData.berlinHbfLat;
+import static com.ralfhenze.railplan.userinterface.web.TestData.berlinHbfLng;
 import static com.ralfhenze.railplan.userinterface.web.TestData.berlinHbfName;
-import static com.ralfhenze.railplan.userinterface.web.TestData.berlinHbfPos;
+import static com.ralfhenze.railplan.userinterface.web.TestData.hamburgHbfLat;
+import static com.ralfhenze.railplan.userinterface.web.TestData.hamburgHbfLng;
 import static com.ralfhenze.railplan.userinterface.web.TestData.hamburgHbfName;
-import static com.ralfhenze.railplan.userinterface.web.TestData.hamburgHbfPos;
+import static com.ralfhenze.railplan.userinterface.web.TestData.potsdamHbfLat;
+import static com.ralfhenze.railplan.userinterface.web.TestData.potsdamHbfLng;
 import static com.ralfhenze.railplan.userinterface.web.TestData.potsdamHbfName;
-import static com.ralfhenze.railplan.userinterface.web.TestData.potsdamHbfPos;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
@@ -62,7 +65,7 @@ public class RailNetworkDraftMongoDbRepositoryIT {
         final var draft = getExampleDraft();
         final var persistedDraft = draftRepository.persist(draft).get();
         final var updatedDraft = persistedDraft
-            .withNewStation(potsdamHbfName, potsdamHbfPos)
+            .withNewStation(potsdamHbfName, potsdamHbfLat, potsdamHbfLng)
             .withNewTrack(potsdamHbfName, berlinHbfName);
 
         draftRepository.persist(updatedDraft);
@@ -106,8 +109,8 @@ public class RailNetworkDraftMongoDbRepositoryIT {
 
     private RailNetworkDraft getExampleDraft() {
         return new RailNetworkDraft()
-            .withNewStation(berlinHbfName, berlinHbfPos)
-            .withNewStation(hamburgHbfName, hamburgHbfPos)
+            .withNewStation(berlinHbfName, berlinHbfLat, berlinHbfLng)
+            .withNewStation(hamburgHbfName, hamburgHbfLat, hamburgHbfLng)
             .withNewTrack(berlinHbfName, hamburgHbfName);
     }
 }

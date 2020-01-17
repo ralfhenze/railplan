@@ -22,12 +22,14 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.List;
 
 import static com.ralfhenze.railplan.userinterface.web.TestData.berlinHbf;
+import static com.ralfhenze.railplan.userinterface.web.TestData.berlinHbfLat;
+import static com.ralfhenze.railplan.userinterface.web.TestData.berlinHbfLng;
 import static com.ralfhenze.railplan.userinterface.web.TestData.berlinHbfName;
-import static com.ralfhenze.railplan.userinterface.web.TestData.berlinHbfPos;
 import static com.ralfhenze.railplan.userinterface.web.TestData.defaultPeriod;
 import static com.ralfhenze.railplan.userinterface.web.TestData.hamburgHbf;
+import static com.ralfhenze.railplan.userinterface.web.TestData.hamburgHbfLat;
+import static com.ralfhenze.railplan.userinterface.web.TestData.hamburgHbfLng;
 import static com.ralfhenze.railplan.userinterface.web.TestData.hamburgHbfName;
-import static com.ralfhenze.railplan.userinterface.web.TestData.hamburgHbfPos;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -88,8 +90,8 @@ public class NetworksControllerIT {
         // And we get a table with all Stations
         final var stationRows = document.select("table#stations .station-row");
         assertThat(stationRows).hasSize(2);
-        assertThatRowShowsNameAndLocation(stationRows.get(0), berlinHbfName, berlinHbfPos);
-        assertThatRowShowsNameAndLocation(stationRows.get(1), hamburgHbfName, hamburgHbfPos);
+        assertThatRowShowsNameAndLocation(stationRows.get(0), berlinHbfName, berlinHbfLat, berlinHbfLng);
+        assertThatRowShowsNameAndLocation(stationRows.get(1), hamburgHbfName, hamburgHbfLat, hamburgHbfLng);
 
         // And we get a table with all Tracks
         final var trackRows = document.select("table#tracks .track-row");
@@ -99,26 +101,22 @@ public class NetworksControllerIT {
 
     private void assertThatRowShowsNameAndLocation(
         final Element row,
-        final TrainStationName stationName,
-        final GeoLocationInGermany location
+        final String stationName,
+        final double latitude,
+        final double longitude
     ) {
-        assertThat(row.selectFirst(".stationName").text())
-            .isEqualTo(stationName.getName());
-        assertThat(row.selectFirst(".latitude").text())
-            .isEqualTo(location.getLatitudeAsString());
-        assertThat(row.selectFirst(".longitude").text())
-            .isEqualTo(location.getLongitudeAsString());
+        assertThat(row.selectFirst(".stationName").text()).isEqualTo(stationName);
+        assertThat(row.selectFirst(".latitude").text()).isEqualTo(String.valueOf(latitude));
+        assertThat(row.selectFirst(".longitude").text()).isEqualTo(String.valueOf(longitude));
     }
 
     private void assertThatRowShowsStationNames(
         final Element row,
-        final TrainStationName stationName1,
-        final TrainStationName stationName2
+        final String stationName1,
+        final String stationName2
     ) {
-        assertThat(row.selectFirst(".station-1").text())
-            .isEqualTo(stationName1.getName());
-        assertThat(row.selectFirst(".station-2").text())
-            .isEqualTo(stationName2.getName());
+        assertThat(row.selectFirst(".station-1").text()).isEqualTo(stationName1);
+        assertThat(row.selectFirst(".station-2").text()).isEqualTo(stationName2);
     }
 
     private MockHttpServletResponse getGetResponse(final String url) throws Exception {

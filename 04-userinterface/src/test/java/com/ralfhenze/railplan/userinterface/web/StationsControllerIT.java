@@ -9,9 +9,7 @@ import com.ralfhenze.railplan.domain.common.validation.Field;
 import com.ralfhenze.railplan.domain.common.validation.ValidationError;
 import com.ralfhenze.railplan.domain.common.validation.ValidationException;
 import com.ralfhenze.railplan.domain.railnetwork.elements.GeoLocationInGermany;
-import com.ralfhenze.railplan.domain.railnetwork.elements.TrainStationId;
 import com.ralfhenze.railplan.domain.railnetwork.elements.TrainStationName;
-import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraft;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftRepository;
 import com.ralfhenze.railplan.userinterface.web.drafts.stations.PresetStation;
 import org.jsoup.Jsoup;
@@ -28,17 +26,19 @@ import java.util.List;
 import java.util.Map;
 
 import static com.ralfhenze.railplan.userinterface.web.TestData.berlinHamburgDraft;
+import static com.ralfhenze.railplan.userinterface.web.TestData.berlinHbfLat;
+import static com.ralfhenze.railplan.userinterface.web.TestData.berlinHbfLng;
 import static com.ralfhenze.railplan.userinterface.web.TestData.berlinHbfName;
-import static com.ralfhenze.railplan.userinterface.web.TestData.berlinHbfPos;
+import static com.ralfhenze.railplan.userinterface.web.TestData.hamburgHbfLat;
+import static com.ralfhenze.railplan.userinterface.web.TestData.hamburgHbfLng;
 import static com.ralfhenze.railplan.userinterface.web.TestData.hamburgHbfName;
-import static com.ralfhenze.railplan.userinterface.web.TestData.hamburgHbfPos;
+import static com.ralfhenze.railplan.userinterface.web.TestData.potsdamHbfLat;
+import static com.ralfhenze.railplan.userinterface.web.TestData.potsdamHbfLng;
 import static com.ralfhenze.railplan.userinterface.web.TestData.potsdamHbfName;
-import static com.ralfhenze.railplan.userinterface.web.TestData.potsdamHbfPos;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -68,21 +68,19 @@ public class StationsControllerIT extends HtmlITBase {
         final var stationRows = document.select("#stations .station-row");
         assertThat(response.getStatus()).isEqualTo(HTTP_OK);
         assertThat(stationRows).hasSize(2);
-        assertThatRowShowsNameAndLocation(stationRows.get(0), berlinHbfName, berlinHbfPos);
-        assertThatRowShowsNameAndLocation(stationRows.get(1), hamburgHbfName, hamburgHbfPos);
+        assertThatRowShowsNameAndLocation(stationRows.get(0), berlinHbfName, berlinHbfLat, berlinHbfLng);
+        assertThatRowShowsNameAndLocation(stationRows.get(1), hamburgHbfName, hamburgHbfLat, hamburgHbfLng);
     }
 
     private void assertThatRowShowsNameAndLocation(
         final Element row,
-        final TrainStationName stationName,
-        final GeoLocationInGermany location
+        final String stationName,
+        final double latitude,
+        final double longitude
     ) {
-        assertThat(row.selectFirst(".stationName").text())
-            .isEqualTo(stationName.getName());
-        assertThat(row.selectFirst(".latitude").text())
-            .isEqualTo(location.getLatitudeAsString());
-        assertThat(row.selectFirst(".longitude").text())
-            .isEqualTo(location.getLongitudeAsString());
+        assertThat(row.selectFirst(".stationName").text()).isEqualTo(stationName);
+        assertThat(row.selectFirst(".latitude").text()).isEqualTo(String.valueOf(latitude));
+        assertThat(row.selectFirst(".longitude").text()).isEqualTo(String.valueOf(longitude));
     }
 
     @Test
@@ -184,9 +182,9 @@ public class StationsControllerIT extends HtmlITBase {
         final var response = getPostResponse(
             "/drafts/123/stations/new-custom",
             Map.of(
-                "stationName", potsdamHbfName.getName(),
-                "latitude", potsdamHbfPos.getLatitudeAsString(),
-                "longitude", potsdamHbfPos.getLongitudeAsString()
+                "stationName", potsdamHbfName,
+                "latitude", String.valueOf(potsdamHbfLat),
+                "longitude", String.valueOf(potsdamHbfLng)
             )
         );
 
@@ -197,9 +195,9 @@ public class StationsControllerIT extends HtmlITBase {
 
         final var executedCommand = commandCaptor.getValue();
         assertThat(executedCommand.getDraftId()).isEqualTo("123");
-        assertThat(executedCommand.getStationName()).isEqualTo(potsdamHbfName.getName());
-        assertThat(executedCommand.getLatitude()).isEqualTo(potsdamHbfPos.getLatitude());
-        assertThat(executedCommand.getLongitude()).isEqualTo(potsdamHbfPos.getLongitude());
+        assertThat(executedCommand.getStationName()).isEqualTo(potsdamHbfName);
+        assertThat(executedCommand.getLatitude()).isEqualTo(potsdamHbfLat);
+        assertThat(executedCommand.getLongitude()).isEqualTo(potsdamHbfLng);
 
         // And we will be redirected to the Stations page
         assertThat(response.getStatus()).isEqualTo(HTTP_MOVED_TEMPORARILY);
@@ -226,11 +224,11 @@ public class StationsControllerIT extends HtmlITBase {
         final var document = Jsoup.parse(response.getContentAsString());
         assertThat(response.getStatus()).isEqualTo(HTTP_OK);
         assertThat(document.selectFirst("input[name='stationName']").val())
-            .isEqualTo(berlinHbfName.getName());
+            .isEqualTo(berlinHbfName);
         assertThat(document.selectFirst("input[name='latitude']").val())
-            .isEqualTo(berlinHbfPos.getLatitudeAsString());
+            .isEqualTo(String.valueOf(berlinHbfLat));
         assertThat(document.selectFirst("input[name='longitude']").val())
-            .isEqualTo(berlinHbfPos.getLongitudeAsString());
+            .isEqualTo(String.valueOf(berlinHbfLng));
     }
 
     @Test
@@ -239,9 +237,9 @@ public class StationsControllerIT extends HtmlITBase {
         final var response = getPostResponse(
             "/drafts/123/stations/1/edit",
             Map.of(
-                "stationName", potsdamHbfName.getName(),
-                "latitude", potsdamHbfPos.getLatitudeAsString(),
-                "longitude", potsdamHbfPos.getLongitudeAsString()
+                "stationName", potsdamHbfName,
+                "latitude", String.valueOf(potsdamHbfLat),
+                "longitude", String.valueOf(potsdamHbfLng)
             )
         );
 
@@ -252,9 +250,9 @@ public class StationsControllerIT extends HtmlITBase {
         final var executedCommand = commandCaptor.getValue();
         assertThat(executedCommand.getDraftId()).isEqualTo("123");
         assertThat(executedCommand.getStationId()).isEqualTo(1);
-        assertThat(executedCommand.getStationName()).isEqualTo(potsdamHbfName.getName());
-        assertThat(executedCommand.getLatitude()).isEqualTo(potsdamHbfPos.getLatitude());
-        assertThat(executedCommand.getLongitude()).isEqualTo(potsdamHbfPos.getLongitude());
+        assertThat(executedCommand.getStationName()).isEqualTo(potsdamHbfName);
+        assertThat(executedCommand.getLatitude()).isEqualTo(potsdamHbfLat);
+        assertThat(executedCommand.getLongitude()).isEqualTo(potsdamHbfLng);
 
         // And we will be redirected to the Stations page
         assertThat(response.getStatus()).isEqualTo(HTTP_MOVED_TEMPORARILY);

@@ -58,9 +58,9 @@ public class TracksControllerIT extends HtmlITBase {
         assertThat(response.getStatus()).isEqualTo(HTTP_OK);
         assertThat(trackRows).hasSize(1);
         assertThat(trackRows.get(0).selectFirst(".station-1").text())
-            .isEqualTo(berlinHbfName.getName());
+            .isEqualTo(berlinHbfName);
         assertThat(trackRows.get(0).selectFirst(".station-2").text())
-            .isEqualTo(hamburgHbfName.getName());
+            .isEqualTo(hamburgHbfName);
     }
 
     @Test

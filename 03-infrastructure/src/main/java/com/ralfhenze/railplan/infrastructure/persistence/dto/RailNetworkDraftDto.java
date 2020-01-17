@@ -1,8 +1,6 @@
 package com.ralfhenze.railplan.infrastructure.persistence.dto;
 
-import com.ralfhenze.railplan.domain.railnetwork.elements.GeoLocationInGermany;
 import com.ralfhenze.railplan.domain.railnetwork.elements.TrainStationId;
-import com.ralfhenze.railplan.domain.railnetwork.elements.TrainStationName;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraft;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftId;
 import org.springframework.data.annotation.Id;
@@ -32,8 +30,9 @@ public class RailNetworkDraftDto {
 
         for (final var station : stations) {
             draft = draft.withNewStation(
-                new TrainStationName(station.getName()),
-                new GeoLocationInGermany(station.getLatitude(), station.getLongitude())
+                station.getName(),
+                station.getLatitude(),
+                station.getLongitude()
             );
         }
 

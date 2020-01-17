@@ -95,21 +95,8 @@ public class RailNetworkDraft implements Aggregate {
         validateLocationDistance(location, v, stations);
         v.throwExceptionIfInvalid();
 
-        return withNewStation(name, location);
-    }
-
-    /**
-     * Returns a new Draft with added Station. The new Station will be appended to the
-     * end of the Stations list.
-     *
-     * @throws ValidationException if any Draft invariants are violated
-     */
-    public RailNetworkDraft withNewStation(
-        final TrainStationName stationName,
-        final GeoLocationInGermany location
-    ) {
         final var stationId = new TrainStationId(this.stationId);
-        final var addedStation = new TrainStation(stationId, stationName, location);
+        final var addedStation = new TrainStation(stationId, name, location);
         final var newStations = stations.newWith(addedStation);
 
         return new RailNetworkDraft(this.id, newStations, this.tracks, this.stationId + 1);
@@ -118,21 +105,7 @@ public class RailNetworkDraft implements Aggregate {
     /**
      * Returns a new Draft with updated Station name and location.
      *
-     * @throws EntityNotFoundException if TrainStation with currentStationName does not exist
-     * @throws ValidationException if any Draft invariants are violated
-     */
-    public RailNetworkDraft withUpdatedStation(
-        final TrainStationName currentStationName,
-        final TrainStationName newStationName,
-        final GeoLocationInGermany newLocation
-    ) {
-        return withUpdatedStation(getStationIdOf(currentStationName), newStationName, newLocation);
-    }
-
-    /**
-     * Returns a new Draft with updated Station name and location.
-     *
-     * @throws EntityNotFoundException if TrainStation with currentStationName does not exist
+     * @throws EntityNotFoundException if TrainStation with stationId does not exist
      * @throws ValidationException if Station Name, Location or Draft invariants are violated
      */
     public RailNetworkDraft withUpdatedStation(
@@ -146,31 +119,17 @@ public class RailNetworkDraft implements Aggregate {
 
         final var v = new Validation();
         final var id = v.get(() -> new TrainStationId(stationId));
-        final var name = v.get(() -> new TrainStationName(newStationName, otherStationNames));
-        final var location = v.get(() -> new GeoLocationInGermany(newLatitude, newLongitude));
-        validateLocationDistance(location, v, otherStations);
+        final var newName = v.get(() -> new TrainStationName(newStationName, otherStationNames));
+        final var newLocation = v.get(() -> new GeoLocationInGermany(newLatitude, newLongitude));
+        validateLocationDistance(newLocation, v, otherStations);
         v.throwExceptionIfInvalid();
 
-        return withUpdatedStation(id, name, location);
-    }
+        ensureStationExists(id);
 
-    /**
-     * Returns a new Draft with updated Station name and location.
-     *
-     * @throws EntityNotFoundException if TrainStation with stationId does not exist
-     * @throws ValidationException if any Draft invariants are violated
-     */
-    public RailNetworkDraft withUpdatedStation(
-        final TrainStationId stationId,
-        final TrainStationName newStationName,
-        final GeoLocationInGermany newLocation
-    ) {
-        ensureStationExists(stationId);
-
-        final var stationIndex = stations.detectIndex(s -> s.getId().equals(stationId));
+        final var stationIndex = stations.detectIndex(s -> s.getId().equals(id));
         final var mutableStations = Lists.mutable.ofAll(stations);
         mutableStations.set(stationIndex, stations.get(stationIndex)
-            .withName(newStationName)
+            .withName(newName)
             .withLocation(newLocation)
         );
         final var newStations = mutableStations.toImmutable();
@@ -184,7 +143,7 @@ public class RailNetworkDraft implements Aggregate {
      *
      * @throws EntityNotFoundException if TrainStation with stationName does not exist
      */
-    public RailNetworkDraft withoutStation(final TrainStationName stationName) {
+    public RailNetworkDraft withoutStation(final String stationName) {
         return withoutStation(getStationIdOf(stationName));
     }
 
@@ -209,8 +168,8 @@ public class RailNetworkDraft implements Aggregate {
      * @throws ValidationException if any Draft invariants are violated
      */
     public RailNetworkDraft withNewTrack(
-        final TrainStationName name1,
-        final TrainStationName name2
+        final String name1,
+        final String name2
     ) {
         return withNewTrack(getStationIdOf(name1), getStationIdOf(name2));
     }
@@ -233,8 +192,8 @@ public class RailNetworkDraft implements Aggregate {
      * @throws EntityNotFoundException if TrainStation of stationName or Track does not exist
      */
     public RailNetworkDraft withoutTrack(
-        final TrainStationName stationName1,
-        final TrainStationName stationName2
+        final String stationName1,
+        final String stationName2
     ) {
         return withoutTrack(getStationIdOf(stationName1), getStationIdOf(stationName2));
     }
@@ -274,10 +233,10 @@ public class RailNetworkDraft implements Aggregate {
         return tracks;
     }
 
-    private TrainStationId getStationIdOf(final TrainStationName name) {
+    private TrainStationId getStationIdOf(final String name) {
         return stations
-            .detectOptional(station -> station.getName().equals(name))
-            .orElseThrow(() -> new EntityNotFoundException("Station", "name", name.getName()))
+            .detectOptional(station -> station.getName().getName().equals(name))
+            .orElseThrow(() -> new EntityNotFoundException("Station", "name", name))
             .getId();
     }
 

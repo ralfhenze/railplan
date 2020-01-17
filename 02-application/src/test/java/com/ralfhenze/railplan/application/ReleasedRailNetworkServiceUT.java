@@ -10,11 +10,13 @@ import org.junit.Test;
 
 import java.util.Optional;
 
+import static com.ralfhenze.railplan.application.TestData.berlinHbfLat;
+import static com.ralfhenze.railplan.application.TestData.berlinHbfLng;
 import static com.ralfhenze.railplan.application.TestData.berlinHbfName;
-import static com.ralfhenze.railplan.application.TestData.berlinHbfPos;
 import static com.ralfhenze.railplan.application.TestData.defaultPeriod;
+import static com.ralfhenze.railplan.application.TestData.hamburgHbfLat;
+import static com.ralfhenze.railplan.application.TestData.hamburgHbfLng;
 import static com.ralfhenze.railplan.application.TestData.hamburgHbfName;
-import static com.ralfhenze.railplan.application.TestData.hamburgHbfPos;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -38,8 +40,8 @@ public class ReleasedRailNetworkServiceUT {
             draftRepository, networkRepository
         );
         final var draft = new RailNetworkDraft()
-            .withNewStation(berlinHbfName, berlinHbfPos)
-            .withNewStation(hamburgHbfName, hamburgHbfPos)
+            .withNewStation(berlinHbfName, berlinHbfLat, berlinHbfLng)
+            .withNewStation(hamburgHbfName, hamburgHbfLat, hamburgHbfLng)
             .withNewTrack(berlinHbfName, hamburgHbfName);
         given(draftRepository.getRailNetworkDraftOfId(any()))
             .willReturn(draft);

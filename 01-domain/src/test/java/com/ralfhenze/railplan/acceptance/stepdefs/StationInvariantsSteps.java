@@ -17,8 +17,11 @@ public class StationInvariantsSteps {
     @Given("^a Rail Network Draft with a Station \"(.*)\"$")
     public void setupRailNetworkDraft(final String stationName) {
         final var station = TestData.getStation(stationName);
-        draft = new RailNetworkDraft()
-            .withNewStation(station.getName(), station.getLocation());
+        draft = new RailNetworkDraft().withNewStation(
+            station.getName().getName(),
+            station.getLocation().getLatitude(),
+            station.getLocation().getLongitude()
+        );
     }
 
     @When("^a Network Planner tries to add a new Station \"(.*)\"$")

@@ -61,8 +61,8 @@ public class RailwayTrackService implements ApplicationService {
         final var draft = draftRepository.getRailNetworkDraftOfId(draftId);
 
         final var updatedDraft = draft.withNewTrack(
-            new TrainStationName(command.getFirstStationName()),
-            new TrainStationName(command.getSecondStationName())
+            command.getFirstStationName(),
+            command.getSecondStationName()
         );
 
         draftRepository.persist(updatedDraft);

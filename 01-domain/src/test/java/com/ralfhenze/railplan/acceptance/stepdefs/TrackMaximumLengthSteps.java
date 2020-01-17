@@ -22,15 +22,26 @@ public class TrackMaximumLengthSteps {
         station1 = TestData.getStation(stationName1);
         station2 = TestData.getStation(stationName2);
         draft = new RailNetworkDraft()
-            .withNewStation(station1.getName(), station1.getLocation())
-            .withNewStation(station2.getName(), station2.getLocation());
+            .withNewStation(
+                station1.getName().getName(),
+                station1.getLocation().getLatitude(),
+                station1.getLocation().getLongitude()
+            )
+            .withNewStation(
+                station2.getName().getName(),
+                station2.getLocation().getLatitude(),
+                station2.getLocation().getLongitude()
+            );
     }
 
     @When("^a Network Planner tries to connect those two stations with a new Railway Track$")
     public void addRailwayTrack() {
         exceptionWasThrown = false;
         try {
-            draft = draft.withNewTrack(station1.getName(), station2.getName());
+            draft = draft.withNewTrack(
+                station1.getName().getName(),
+                station2.getName().getName()
+            );
         } catch (IllegalArgumentException | ValidationException e) {
             exceptionWasThrown = true;
         }
