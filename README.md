@@ -24,21 +24,17 @@ basically an undirected graph, composed of Train Stations as nodes and Railway T
 
 ## Run
 
+You need Docker, docker-compose, JDK 11 and Maven installed on your system. (only tested on a Linux system)
+
 ```console           
 $ docker-compose up -d
-$ mvn spring-boot:run
+$ mvn package
+$ cd target/modules
+$ java -cp ./*:../lib/* com.ralfhenze.railplan.userinterface.web.RailPlanApplication
 ```
 The UI should now be accessible at <http://localhost:8080/>
 
-### Tests
-
-Naming scheme / test class suffixes:
-
-*   UT = Unit Tests
-*   IT = Integration Tests
-*   ET = End-to-End Tests
-
-Run tests:
+## Tests
 
 ```console
 $ docker-compose up -d                 # Start testing environment
