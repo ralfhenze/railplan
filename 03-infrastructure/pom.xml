@@ -13,6 +13,20 @@
 
     <artifactId>03-infrastructure</artifactId>
 
+    <build>
+        <plugins>
+            <!-- Copy JAR to ../target/modules -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.2.0</version>
+                <configuration>
+                    <outputDirectory>../target/modules</outputDirectory>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
     <dependencyManagement>
         <dependencies>
             <dependency>
