@@ -23,7 +23,7 @@ basically an undirected graph, composed of Train Stations as nodes and Railway T
 
 ## Run
 
-You need Docker, docker-compose, JDK 11 and Maven installed on your system. (only tested on a Linux system)
+You need Docker, docker-compose, JDK 11 and Maven installed on your system. (only tested on Linux)
 
 ```console           
 $ docker-compose up -d
@@ -198,3 +198,7 @@ Released Rail Network:
 *   Add Railway Track
 *   Delete Railway Track
 *   Release Rail Network Draft
+
+## Author
+
+*   Ralf Henze
