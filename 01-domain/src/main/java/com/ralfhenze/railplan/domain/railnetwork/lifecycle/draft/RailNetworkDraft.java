@@ -33,7 +33,6 @@ public class RailNetworkDraft implements Aggregate {
     private final Optional<RailNetworkDraftId> id;
     private final ImmutableList<TrainStation> stations;
     private final ImmutableList<RailwayTrack> tracks;
-    private final int stationId;
 
     /**
      * Constructs a Draft of given preset Stations
@@ -58,8 +57,7 @@ public class RailNetworkDraft implements Aggregate {
         this(
             Optional.empty(),
             Lists.immutable.empty(),
-            Lists.immutable.empty(),
-            1
+            Lists.immutable.empty()
         );
     }
 
@@ -69,8 +67,7 @@ public class RailNetworkDraft implements Aggregate {
     private RailNetworkDraft(
         final Optional<RailNetworkDraftId> id,
         final ImmutableList<TrainStation> stations,
-        final ImmutableList<RailwayTrack> tracks,
-        final int stationId
+        final ImmutableList<RailwayTrack> tracks
     ) {
         new Validation()
             .ensureThat(stations, new HasUniqueStationNames(), Field.STATION_NAME)
@@ -81,7 +78,6 @@ public class RailNetworkDraft implements Aggregate {
         this.id = id;
         this.stations = stations;
         this.tracks = tracks;
-        this.stationId = stationId;
     }
 
     /**
@@ -92,7 +88,7 @@ public class RailNetworkDraft implements Aggregate {
     public RailNetworkDraft withId(RailNetworkDraftId id) {
         ensureNotNull(id, "Rail Network Draft ID");
 
-        return new RailNetworkDraft(Optional.of(id), stations, tracks, stationId);
+        return new RailNetworkDraft(Optional.of(id), stations, tracks);
     }
 
     /**
@@ -112,11 +108,11 @@ public class RailNetworkDraft implements Aggregate {
         validateLocationDistance(location, v, stations);
         v.throwExceptionIfInvalid();
 
-        final var stationId = new TrainStationId(this.stationId);
+        final var stationId = new TrainStationId(getNextStationId());
         final var addedStation = new TrainStation(stationId, name, location);
         final var newStations = stations.newWith(addedStation);
 
-        return new RailNetworkDraft(this.id, newStations, this.tracks, this.stationId + 1);
+        return new RailNetworkDraft(this.id, newStations, this.tracks);
     }
 
     /**
@@ -151,7 +147,7 @@ public class RailNetworkDraft implements Aggregate {
         );
         final var newStations = mutableStations.toImmutable();
 
-        return new RailNetworkDraft(this.id, newStations, this.tracks, this.stationId);
+        return new RailNetworkDraft(this.id, newStations, this.tracks);
     }
 
     /**
@@ -176,8 +172,7 @@ public class RailNetworkDraft implements Aggregate {
         return new RailNetworkDraft(
             this.id,
             this.stations.reject(station -> station.getId().equals(stationId)),
-            this.tracks.reject(track -> track.connectsStation(stationId)),
-            this.stationId
+            this.tracks.reject(track -> track.connectsStation(stationId))
         );
     }
 
@@ -200,7 +195,7 @@ public class RailNetworkDraft implements Aggregate {
 
         final var updatedTracks = tracks.newWith(new RailwayTrack(id1, id2));
 
-        return new RailNetworkDraft(this.id, this.stations, updatedTracks, this.stationId);
+        return new RailNetworkDraft(this.id, this.stations, updatedTracks);
     }
 
     /**
@@ -233,8 +228,7 @@ public class RailNetworkDraft implements Aggregate {
         return new RailNetworkDraft(
             this.id,
             this.stations,
-            this.tracks.reject(track -> track.equals(trackToBeDeleted)),
-            this.stationId
+            this.tracks.reject(track -> track.equals(trackToBeDeleted))
         );
     }
 
@@ -297,6 +291,14 @@ public class RailNetworkDraft implements Aggregate {
     private void ensureStationExists(final TrainStationId stationId) {
         if (stations.noneSatisfy(s -> s.getId().equals(stationId))) {
             throw new EntityNotFoundException("Station", stationId.toString());
+        }
+    }
+
+    private int getNextStationId() {
+        if (stations.isEmpty()) {
+            return 1;
+        } else {
+            return stations.collect(s -> s.getId().getId()).max() + 1;
         }
     }
 }
