@@ -4,6 +4,7 @@ import com.ralfhenze.railplan.domain.common.Aggregate;
 import com.ralfhenze.railplan.domain.common.EntityNotFoundException;
 import com.ralfhenze.railplan.domain.common.validation.Field;
 import com.ralfhenze.railplan.domain.common.validation.Validation;
+import com.ralfhenze.railplan.domain.common.validation.ValidationError;
 import com.ralfhenze.railplan.domain.common.validation.ValidationException;
 import com.ralfhenze.railplan.domain.railnetwork.elements.GeoLocationInGermany;
 import com.ralfhenze.railplan.domain.railnetwork.elements.RailwayTrack;
@@ -102,14 +103,32 @@ public class RailNetworkDraft implements Aggregate {
         final double latitude,
         final double longitude
     ) {
+        return withNewStation(getNextStationId(), stationName, latitude, longitude);
+    }
+
+    /**
+     * Returns a new Draft with added Station. The new Station will be appended to the
+     * end of the Stations list.
+     *
+     * @throws ValidationException if Station Name, Location or Draft invariants are violated
+     *                             or Station ID already exists
+     */
+    public RailNetworkDraft withNewStation(
+        final int stationId,
+        final String stationName,
+        final double latitude,
+        final double longitude
+    ) {
+        ensureStationIdDoesNotExistAlready(stationId);
+
         final var v = new Validation();
+        final var id = v.get(() -> new TrainStationId(stationId));
         final var name = v.get(() -> new TrainStationName(stationName, getOtherStationNames()));
         final var location = v.get(() -> new GeoLocationInGermany(latitude, longitude));
         validateLocationDistance(location, v, stations);
         v.throwExceptionIfInvalid();
 
-        final var stationId = new TrainStationId(getNextStationId());
-        final var addedStation = new TrainStation(stationId, name, location);
+        final var addedStation = new TrainStation(id, name, location);
         final var newStations = stations.newWith(addedStation);
 
         return new RailNetworkDraft(this.id, newStations, this.tracks);
@@ -291,6 +310,14 @@ public class RailNetworkDraft implements Aggregate {
     private void ensureStationExists(final TrainStationId stationId) {
         if (stations.noneSatisfy(s -> s.getId().equals(stationId))) {
             throw new EntityNotFoundException("Station", stationId.toString());
+        }
+    }
+
+    private void ensureStationIdDoesNotExistAlready(final int stationId) {
+        if (stations.anySatisfy(s -> s.getId().getId() == stationId)) {
+            throw new ValidationException(Lists.immutable.of(
+                new ValidationError(stationId + " already exists", Field.STATION_ID)
+            ));
         }
     }
 

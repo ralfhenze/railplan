@@ -19,6 +19,7 @@ import static org.assertj.core.api.ThrowableAssert.catchThrowable;
 public class RailNetworkDraftUT {
 
     private final Condition<Throwable> oneStationNameError = getErrorCondition(Field.STATION_NAME, 1);
+    private final Condition<Throwable> oneStationIdError = getErrorCondition(Field.STATION_ID, 1);
     private final Condition<Throwable> oneLocationError = getErrorCondition(Field.LOCATION, 1);
     private final Condition<Throwable> oneLatitudeError = getErrorCondition(Field.LATITUDE, 1);
     private final Condition<Throwable> oneLongitudeError = getErrorCondition(Field.LONGITUDE, 1);
@@ -63,6 +64,27 @@ public class RailNetworkDraftUT {
 
         // Then no exception is thrown
         assertThat(ex).doesNotThrowAnyException();
+    }
+
+    @Test
+    public void throwsValidationErrorWhenAddingNewStationWithExistingId() {
+        // Given a Draft with "Berlin Hbf"
+        final var draft = RailNetworkDraft.of(BERLIN_HBF);
+
+        // When we try to add a new Station with an already existing Station ID
+        final var ex = catchThrowable(() ->
+            draft.withNewStation(
+                1,
+                HAMBURG_HBF.getName(),
+                HAMBURG_HBF.getLatitude(),
+                HAMBURG_HBF.getLongitude()
+            )
+        );
+
+        // Then we get a Station ID validation error
+        assertThat(ex)
+            .isInstanceOf(ValidationException.class)
+            .has(oneStationIdError);
     }
 
     @Test
