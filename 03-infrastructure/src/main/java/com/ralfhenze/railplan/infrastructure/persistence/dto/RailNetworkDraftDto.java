@@ -30,6 +30,7 @@ public class RailNetworkDraftDto {
 
         for (final var station : stations) {
             draft = draft.withNewStation(
+                station.getId(),
                 station.getName(),
                 station.getLatitude(),
                 station.getLongitude()

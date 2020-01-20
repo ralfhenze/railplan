@@ -15,7 +15,7 @@ public class TrainStationDto {
     public TrainStationDto() {}
 
     public TrainStationDto(TrainStation station) {
-        this.id = Integer.parseInt(station.getId().toString());
+        this.id = station.getId().getId();
         this.name = station.getName().getName();
         this.latitude = station.getLocation().getLatitude();
         this.longitude = station.getLocation().getLongitude();

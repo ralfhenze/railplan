@@ -11,8 +11,8 @@ public class RailwayTrackDto {
     public RailwayTrackDto() {}
 
     public RailwayTrackDto(RailwayTrack track) {
-        this.firstStationId = Integer.parseInt(track.getFirstStationId().toString());
-        this.secondStationId = Integer.parseInt(track.getSecondStationId().toString());
+        this.firstStationId = track.getFirstStationId().getId();
+        this.secondStationId = track.getSecondStationId().getId();
     }
 
     public RailwayTrack toRailwayTrack() {
