@@ -4,6 +4,7 @@ import com.ralfhenze.railplan.application.queries.Queries;
 import com.ralfhenze.railplan.domain.railnetwork.elements.RailwayTrack;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.release.ReleasedRailNetwork;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.release.ReleasedRailNetworkRepository;
+import com.ralfhenze.railplan.domain.railnetwork.presets.PresetStation;
 import org.eclipse.collections.api.factory.Lists;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
@@ -93,10 +94,7 @@ public class NetworksControllerIT {
         assertThatRowShowsStationNames(trackRows.get(0), BERLIN_HBF.getName(), HAMBURG_HBF.getName());
     }
 
-    private void assertThatRowShowsNameAndLocation(
-        final Element row,
-        final com.ralfhenze.railplan.domain.railnetwork.presets.PresetStation station
-    ) {
+    private void assertThatRowShowsNameAndLocation(final Element row, final PresetStation station) {
         assertThat(row.selectFirst(".stationName").text())
             .isEqualTo(station.getName());
         assertThat(row.selectFirst(".latitude").text())

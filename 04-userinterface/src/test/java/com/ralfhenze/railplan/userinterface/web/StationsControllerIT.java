@@ -63,10 +63,7 @@ public class StationsControllerIT extends HtmlITBase {
         assertThatRowShowsNameAndLocation(stationRows.get(1), HAMBURG_HBF);
     }
 
-    private void assertThatRowShowsNameAndLocation(
-        final Element row,
-        final com.ralfhenze.railplan.domain.railnetwork.presets.PresetStation station
-    ) {
+    private void assertThatRowShowsNameAndLocation(final Element row, final PresetStation station) {
         assertThat(row.selectFirst(".stationName").text())
             .isEqualTo(station.getName());
         assertThat(row.selectFirst(".latitude").text())
