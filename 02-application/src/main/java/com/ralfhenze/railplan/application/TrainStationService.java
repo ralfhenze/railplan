@@ -78,9 +78,7 @@ public class TrainStationService implements ApplicationService {
         final var draftId = new RailNetworkDraftId(command.getDraftId());
         final var draft = draftRepository.getRailNetworkDraftOfId(draftId);
 
-        final var updatedDraft = draft.withoutStation(
-            new TrainStationId(command.getStationId())
-        );
+        final var updatedDraft = draft.withoutStation(command.getStationId());
 
         draftRepository.persist(updatedDraft);
     }

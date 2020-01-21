@@ -38,7 +38,7 @@ public class RailNetworkDraft implements Aggregate {
     /**
      * Constructs a Draft of given preset Stations
      */
-    public static RailNetworkDraft of(PresetStation... presetStations) {
+    public static RailNetworkDraft of(final PresetStation... presetStations) {
         var draft = new RailNetworkDraft();
         for (final var presetStation : presetStations) {
             draft = draft.withNewStation(
@@ -176,22 +176,25 @@ public class RailNetworkDraft implements Aggregate {
      * @throws EntityNotFoundException if TrainStation with stationName does not exist
      */
     public RailNetworkDraft withoutStation(final String stationName) {
-        return withoutStation(getStationIdOf(stationName));
+        return withoutStation(getStationIdOf(stationName).getId());
     }
 
     /**
      * Returns a new Draft without the Station of given ID. The Tracks connected to this
      * Station will also be removed.
      *
+     * @throws ValidationException if stationId is invalid
      * @throws EntityNotFoundException if TrainStation with stationId does not exist
      */
-    public RailNetworkDraft withoutStation(final TrainStationId stationId) {
-        ensureStationExists(stationId);
+    public RailNetworkDraft withoutStation(final int stationId) {
+        final var id = new TrainStationId(stationId);
+
+        ensureStationExists(id);
 
         return new RailNetworkDraft(
             this.id,
-            this.stations.reject(station -> station.getId().equals(stationId)),
-            this.tracks.reject(track -> track.connectsStation(stationId))
+            this.stations.reject(station -> station.getId().equals(id)),
+            this.tracks.reject(track -> track.connectsStation(id))
         );
     }
 
