@@ -238,26 +238,32 @@ public class RailNetworkDraft implements Aggregate {
      * @throws EntityNotFoundException if TrainStation of stationName or Track does not exist
      */
     public RailNetworkDraft withoutTrack(
-        final String stationName1,
-        final String stationName2
+        final String firstStationName,
+        final String secondStationName
     ) {
-        return withoutTrack(getStationIdOf(stationName1), getStationIdOf(stationName2));
+        return withoutTrack(
+            getStationIdOf(firstStationName).getId(),
+            getStationIdOf(secondStationName).getId()
+        );
     }
 
     /**
      * Returns a new Draft without the Track between the Stations of given IDs.
      *
+     * @throws ValidationException if any stationId is invalid
      * @throws EntityNotFoundException if TrainStation of stationId or Track does not exist
      */
-    public RailNetworkDraft withoutTrack(
-        final TrainStationId stationId1,
-        final TrainStationId stationId2
-    ) {
-        ensureStationExists(stationId1);
-        ensureStationExists(stationId2);
-        ensureTrackExists(stationId1, stationId2);
+    public RailNetworkDraft withoutTrack(final int firstStationId, final int secondStationId) {
+        final var v = new Validation();
+        final var firstId = v.get(() -> new TrainStationId(firstStationId));
+        final var secondId = v.get(() -> new TrainStationId(secondStationId));
+        v.throwExceptionIfInvalid();
 
-        final var trackToBeDeleted = new RailwayTrack(stationId1, stationId2);
+        ensureStationExists(firstId);
+        ensureStationExists(secondId);
+        ensureTrackExists(firstId, secondId);
+
+        final var trackToBeDeleted = new RailwayTrack(firstId, secondId);
 
         return new RailNetworkDraft(
             this.id,

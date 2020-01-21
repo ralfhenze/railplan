@@ -5,7 +5,6 @@ import com.ralfhenze.railplan.application.commands.AddRailwayTrackByStationNameC
 import com.ralfhenze.railplan.application.commands.DeleteRailwayTrackCommand;
 import com.ralfhenze.railplan.domain.common.EntityNotFoundException;
 import com.ralfhenze.railplan.domain.common.validation.ValidationException;
-import com.ralfhenze.railplan.domain.railnetwork.elements.TrainStationId;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftId;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftRepository;
 
@@ -79,8 +78,8 @@ public class RailwayTrackService implements ApplicationService {
         final var draft = draftRepository.getRailNetworkDraftOfId(draftId);
 
         final var updatedDraft = draft.withoutTrack(
-            new TrainStationId(command.getFirstStationId()),
-            new TrainStationId(command.getSecondStationId())
+            command.getFirstStationId(),
+            command.getSecondStationId()
         );
 
         draftRepository.persist(updatedDraft);
