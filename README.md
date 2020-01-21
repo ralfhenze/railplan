@@ -62,7 +62,7 @@ Why am I doing this:
     *    [Domain](01-domain/src/main/java/com/ralfhenze/railplan/domain):
          technology agnostic domain objects to enforce domain invariants
     *    [Application](02-application/src/main/java/com/ralfhenze/railplan/application):
-         application services, segregated into commands and queries
+         technology agnostic application services, segregated into commands and queries
          (see [CQRS](https://cqrs.nu/Faq/command-query-responsibility-segregation))
     *    [Infrastructure](03-infrastructure/src/main/java/com/ralfhenze/railplan/infrastructure):
          MongoDB persistence
@@ -85,7 +85,7 @@ Why am I doing this:
 *   The domain model won't ever get into an invalid state, because I validate everything at construction
     time and throw a ValidationException if any invariant is violated. This technique ensures that you won't ever get
     an instance of a domain object with invalid state.
-*   Probably the most important domain object is the
+*   probably the most important domain object is the
     [RailNetworkDraft](01-domain/src/main/java/com/ralfhenze/railplan/domain/railnetwork/lifecycle/draft/RailNetworkDraft.java)
     aggregate
 
