@@ -32,8 +32,8 @@ public class TestData {
         LocalDate.of(2019, 11, 20)
     );
 
-    public static final RailNetworkDraft BERLIN_HAMBURG_DRAFT = RailNetworkDraft
-        .of(BERLIN_HBF, HAMBURG_HBF)
+    public static final RailNetworkDraft BERLIN_HAMBURG_DRAFT = new RailNetworkDraft()
+        .withStations(BERLIN_HBF, HAMBURG_HBF)
         .withNewTrack(BERLIN_HBF.getName(), HAMBURG_HBF.getName())
         .withId(new RailNetworkDraftId("123"));
 }
