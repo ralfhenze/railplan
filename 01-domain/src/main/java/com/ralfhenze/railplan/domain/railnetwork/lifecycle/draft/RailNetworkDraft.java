@@ -199,23 +199,35 @@ public class RailNetworkDraft implements Aggregate {
     }
 
     /**
-     * @throws ValidationException if any Draft invariants are violated
+     * Returns a new Draft with added Track appended to the end of the Tracks list.
+     *
+     * @throws ValidationException if any Track or Draft invariants are violated
      */
     public RailNetworkDraft withNewTrack(
-        final String name1,
-        final String name2
+        final String firstStationName,
+        final String secondStationName
     ) {
-        return withNewTrack(getStationIdOf(name1), getStationIdOf(name2));
+        return withNewTrack(
+            getStationIdOf(firstStationName).getId(),
+            getStationIdOf(secondStationName).getId()
+        );
     }
 
     /**
-     * @throws ValidationException if any Draft invariants are violated
+     * Returns a new Draft with added Track appended to the end of the Tracks list.
+     *
+     * @throws ValidationException if any Station ID, Track or Draft invariants are violated
      */
-    public RailNetworkDraft withNewTrack(final TrainStationId id1, final TrainStationId id2) {
-        ensureStationExists(id1);
-        ensureStationExists(id2);
+    public RailNetworkDraft withNewTrack(final int firstStationId, final int secondStationId) {
+        final var v = new Validation();
+        final var firstId = v.get(() -> new TrainStationId(firstStationId));
+        final var secondId = v.get(() -> new TrainStationId(secondStationId));
+        v.throwExceptionIfInvalid();
 
-        final var updatedTracks = tracks.newWith(new RailwayTrack(id1, id2));
+        ensureStationExists(firstId);
+        ensureStationExists(secondId);
+
+        final var updatedTracks = tracks.newWith(new RailwayTrack(firstId, secondId));
 
         return new RailNetworkDraft(this.id, this.stations, updatedTracks);
     }

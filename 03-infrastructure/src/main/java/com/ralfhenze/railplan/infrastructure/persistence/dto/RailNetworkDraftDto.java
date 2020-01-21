@@ -1,6 +1,5 @@
 package com.ralfhenze.railplan.infrastructure.persistence.dto;
 
-import com.ralfhenze.railplan.domain.railnetwork.elements.TrainStationId;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraft;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftId;
 import org.springframework.data.annotation.Id;
@@ -16,7 +15,7 @@ public class RailNetworkDraftDto {
 
     public RailNetworkDraftDto() {}
 
-    public RailNetworkDraftDto(RailNetworkDraft draft) {
+    public RailNetworkDraftDto(final RailNetworkDraft draft) {
         if (draft.getId().isPresent()) {
             this.id = draft.getId().get().toString();
         }
@@ -39,8 +38,8 @@ public class RailNetworkDraftDto {
 
         for (final var track : tracks) {
             draft = draft.withNewTrack(
-                new TrainStationId(track.getFirstStationId()),
-                new TrainStationId(track.getSecondStationId())
+                track.getFirstStationId(),
+                track.getSecondStationId()
             );
         }
 
@@ -59,7 +58,7 @@ public class RailNetworkDraftDto {
         return stations;
     }
 
-    public void setStations(List<TrainStationDto> stations) {
+    public void setStations(final List<TrainStationDto> stations) {
         this.stations = stations;
     }
 
@@ -67,7 +66,7 @@ public class RailNetworkDraftDto {
         return tracks;
     }
 
-    public void setTracks(List<RailwayTrackDto> tracks) {
+    public void setTracks(final List<RailwayTrackDto> tracks) {
         this.tracks = tracks;
     }
 }
