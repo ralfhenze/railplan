@@ -38,7 +38,7 @@ public class RailwayTrackServiceUT {
         final var railwayTrackService = new RailwayTrackService(draftRepository);
         final var draft = new RailNetworkDraft()
             .withStations(BERLIN_HBF, HAMBURG_HBF)
-            .withNewTrack(BERLIN_HBF.getName(), HAMBURG_HBF.getName());
+            .withTrackBetween(BERLIN_HBF, HAMBURG_HBF);
         final var track = draft.getTracks().getFirstOptional().get();
         final var updatedDraftCaptor = ArgumentCaptor.forClass(RailNetworkDraft.class);
         given(draftRepository.getRailNetworkDraftOfId(any()))

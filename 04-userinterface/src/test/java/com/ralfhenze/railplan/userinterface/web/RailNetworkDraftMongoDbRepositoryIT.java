@@ -59,8 +59,8 @@ public class RailNetworkDraftMongoDbRepositoryIT {
         final var draft = getExampleDraft();
         final var persistedDraft = draftRepository.persist(draft).get();
         final var updatedDraft = persistedDraft
-            .withNewStation(ERFURT_HBF.getName(), ERFURT_HBF.getLatitude(), ERFURT_HBF.getLongitude())
-            .withNewTrack(ERFURT_HBF.getName(), BERLIN_HBF.getName());
+            .withStations(ERFURT_HBF)
+            .withTrackBetween(ERFURT_HBF, BERLIN_HBF);
 
         draftRepository.persist(updatedDraft);
 
@@ -104,6 +104,6 @@ public class RailNetworkDraftMongoDbRepositoryIT {
     private RailNetworkDraft getExampleDraft() {
         return new RailNetworkDraft()
             .withStations(BERLIN_HBF, HAMBURG_HBF)
-            .withNewTrack(BERLIN_HBF.getName(), HAMBURG_HBF.getName());
+            .withTrackBetween(BERLIN_HBF, HAMBURG_HBF);
     }
 }

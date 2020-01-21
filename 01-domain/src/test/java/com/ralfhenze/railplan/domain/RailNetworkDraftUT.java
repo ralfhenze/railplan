@@ -214,11 +214,11 @@ public class RailNetworkDraftUT {
         // Given a Draft with a Track "Berlin Hbf" <=> "Hamburg Hbf"
         final var draft = new RailNetworkDraft()
             .withStations(BERLIN_HBF, HAMBURG_HBF)
-            .withNewTrack(BERLIN_HBF.getName(), HAMBURG_HBF.getName());
+            .withTrackBetween(BERLIN_HBF, HAMBURG_HBF);
 
         // When we add another Track "Hamburg Hbf" <=> "Berlin Hbf"
         final var ex = catchThrowable(() ->
-            draft.withNewTrack(HAMBURG_HBF.getName(), BERLIN_HBF.getName())
+            draft.withTrackBetween(HAMBURG_HBF, BERLIN_HBF)
         );
 
         // Then we get a Tracks validation error
@@ -232,7 +232,7 @@ public class RailNetworkDraftUT {
         // Given a Draft with a Track "Berlin Hbf" <=> "Hamburg Hbf"
         final var draft = new RailNetworkDraft()
             .withStations(BERLIN_HBF, HAMBURG_HBF)
-            .withNewTrack(BERLIN_HBF.getName(), HAMBURG_HBF.getName());
+            .withTrackBetween(BERLIN_HBF, HAMBURG_HBF);
 
         // When we delete the Station "Hamburg Hbf"
         final var updatedDraft = draft.withoutStation(HAMBURG_HBF.getName());
@@ -249,7 +249,7 @@ public class RailNetworkDraftUT {
         // Given a Draft with a Track "Berlin Hbf" <=> "Hamburg Hbf"
         final var draft = new RailNetworkDraft()
             .withStations(BERLIN_HBF, HAMBURG_HBF)
-            .withNewTrack(BERLIN_HBF.getName(), HAMBURG_HBF.getName());
+            .withTrackBetween(BERLIN_HBF, HAMBURG_HBF);
 
         // When we delete the Track
         final var updatedDraft = draft.withoutTrack(BERLIN_HBF.getName(), HAMBURG_HBF.getName());
@@ -263,7 +263,7 @@ public class RailNetworkDraftUT {
         // Given a Draft with "Berlin Hbf" <=> "Hamburg Hbf" and "Frankfurt Hbf"
         final var draft = new RailNetworkDraft()
             .withStations(BERLIN_HBF, HAMBURG_HBF, FRANKFURT_HBF)
-            .withNewTrack(BERLIN_HBF.getName(), HAMBURG_HBF.getName());
+            .withTrackBetween(BERLIN_HBF, HAMBURG_HBF);
 
         // When we try to delete a non-existent Track "Hamburg Hbf" <=> "Frankfurt Hbf"
         final var ex = catchThrowable(() ->
@@ -272,7 +272,6 @@ public class RailNetworkDraftUT {
 
         // Then we get an EntityNotFound error
         assertThat(ex).isInstanceOf(EntityNotFoundException.class);
-
     }
 
     private Condition<Throwable> getErrorCondition(final Field field, final long count) {

@@ -37,7 +37,7 @@ public class ReleasedRailNetworkServiceUT {
         );
         final var draft = new RailNetworkDraft()
             .withStations(BERLIN_HBF, HAMBURG_HBF)
-            .withNewTrack(BERLIN_HBF.getName(), HAMBURG_HBF.getName());
+            .withTrackBetween(BERLIN_HBF, HAMBURG_HBF);
         given(draftRepository.getRailNetworkDraftOfId(any()))
             .willReturn(draft);
         final var network = mock(ReleasedRailNetwork.class);

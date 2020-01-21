@@ -205,6 +205,18 @@ public class RailNetworkDraft implements Aggregate {
      *
      * @throws ValidationException if any Track or Draft invariants are violated
      */
+    public RailNetworkDraft withTrackBetween(
+        final PresetStation firstStation,
+        final PresetStation secondStation
+    ) {
+        return withNewTrack(firstStation.getName(), secondStation.getName());
+    }
+
+    /**
+     * Returns a new Draft with added Track appended to the end of the Tracks list.
+     *
+     * @throws ValidationException if any Track or Draft invariants are violated
+     */
     public RailNetworkDraft withNewTrack(
         final String firstStationName,
         final String secondStationName

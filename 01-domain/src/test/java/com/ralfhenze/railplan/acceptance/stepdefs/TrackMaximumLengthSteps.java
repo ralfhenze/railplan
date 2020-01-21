@@ -37,7 +37,7 @@ public class TrackMaximumLengthSteps {
     @When("^a Network Planner tries to connect those two stations with a new Railway Track$")
     public void addRailwayTrack() {
         thrownException = catchThrowable(() ->
-            draft = draft.withNewTrack(station1.getName(), station2.getName())
+            draft = draft.withTrackBetween(station1, station2)
         );
     }
 
