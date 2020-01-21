@@ -36,22 +36,6 @@ public class RailNetworkDraft implements Aggregate {
     private final ImmutableList<RailwayTrack> tracks;
 
     /**
-     * Constructs a Draft of given preset Stations
-     */
-    public static RailNetworkDraft of(final PresetStation... presetStations) {
-        var draft = new RailNetworkDraft();
-        for (final var presetStation : presetStations) {
-            draft = draft.withNewStation(
-                presetStation.getName(),
-                presetStation.getLatitude(),
-                presetStation.getLongitude()
-            );
-        }
-
-        return draft;
-    }
-
-    /**
      * Constructs an empty Draft without Stations or Tracks.
      */
     public RailNetworkDraft() {
@@ -90,6 +74,24 @@ public class RailNetworkDraft implements Aggregate {
         ensureNotNull(id, "Rail Network Draft ID");
 
         return new RailNetworkDraft(Optional.of(id), stations, tracks);
+    }
+
+    /**
+     * Returns a new Draft with added preset Stations.
+     *
+     * @throws ValidationException if Station Name, Location or Draft invariants are violated
+     */
+    public RailNetworkDraft withStations(final PresetStation... presetStations) {
+        var draft = this;
+        for (final var presetStation : presetStations) {
+            draft = draft.withNewStation(
+                presetStation.getName(),
+                presetStation.getLatitude(),
+                presetStation.getLongitude()
+            );
+        }
+
+        return draft;
     }
 
     /**

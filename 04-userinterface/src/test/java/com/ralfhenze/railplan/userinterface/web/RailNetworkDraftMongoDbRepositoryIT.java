@@ -102,7 +102,8 @@ public class RailNetworkDraftMongoDbRepositoryIT {
     }
 
     private RailNetworkDraft getExampleDraft() {
-        return RailNetworkDraft.of(BERLIN_HBF, HAMBURG_HBF)
+        return new RailNetworkDraft()
+            .withStations(BERLIN_HBF, HAMBURG_HBF)
             .withNewTrack(BERLIN_HBF.getName(), HAMBURG_HBF.getName());
     }
 }

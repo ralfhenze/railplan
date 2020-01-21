@@ -21,7 +21,7 @@ public class RailwayTrackServiceUT {
     public void persistsAddedTrack() {
         final var draftRepository = mock(RailNetworkDraftRepository.class);
         final var railwayTrackService = new RailwayTrackService(draftRepository);
-        final var draft = RailNetworkDraft.of(BERLIN_HBF, HAMBURG_HBF);
+        final var draft = new RailNetworkDraft().withStations(BERLIN_HBF, HAMBURG_HBF);
         given(draftRepository.getRailNetworkDraftOfId(any()))
             .willReturn(draft);
 
@@ -36,7 +36,8 @@ public class RailwayTrackServiceUT {
     public void deletesTrackAndPersistsUpdatedDraft() {
         final var draftRepository = mock(RailNetworkDraftRepository.class);
         final var railwayTrackService = new RailwayTrackService(draftRepository);
-        final var draft = RailNetworkDraft.of(BERLIN_HBF, HAMBURG_HBF)
+        final var draft = new RailNetworkDraft()
+            .withStations(BERLIN_HBF, HAMBURG_HBF)
             .withNewTrack(BERLIN_HBF.getName(), HAMBURG_HBF.getName());
         final var track = draft.getTracks().getFirstOptional().get();
         final var updatedDraftCaptor = ArgumentCaptor.forClass(RailNetworkDraft.class);

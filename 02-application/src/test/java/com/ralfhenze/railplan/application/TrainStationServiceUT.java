@@ -77,7 +77,7 @@ public class TrainStationServiceUT {
     public void persistsUpdatedStation() {
         final var draftRepository = mock(RailNetworkDraftRepository.class);
         final var trainStationService = new TrainStationService(draftRepository);
-        final var draft = RailNetworkDraft.of(BERLIN_HBF);
+        final var draft = new RailNetworkDraft().withStations(BERLIN_HBF);
         final var updatedDraftCaptor = ArgumentCaptor.forClass(RailNetworkDraft.class);
         given(draftRepository.getRailNetworkDraftOfId(any()))
             .willReturn(draft);
@@ -103,7 +103,7 @@ public class TrainStationServiceUT {
     public void deletesStationAndPersistsUpdatedDraft() {
         final var draftRepository = mock(RailNetworkDraftRepository.class);
         final var trainStationService = new TrainStationService(draftRepository);
-        final var draft = RailNetworkDraft.of(BERLIN_HBF);
+        final var draft = new RailNetworkDraft().withStations(BERLIN_HBF);
         final var updatedDraftCaptor = ArgumentCaptor.forClass(RailNetworkDraft.class);
         given(draftRepository.getRailNetworkDraftOfId(any()))
             .willReturn(draft);

@@ -35,7 +35,8 @@ public class ReleasedRailNetworkServiceUT {
         final var releasedRailNetworkService = new ReleasedRailNetworkService(
             draftRepository, networkRepository
         );
-        final var draft = RailNetworkDraft.of(BERLIN_HBF, HAMBURG_HBF)
+        final var draft = new RailNetworkDraft()
+            .withStations(BERLIN_HBF, HAMBURG_HBF)
             .withNewTrack(BERLIN_HBF.getName(), HAMBURG_HBF.getName());
         given(draftRepository.getRailNetworkDraftOfId(any()))
             .willReturn(draft);
