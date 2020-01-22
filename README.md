@@ -1,11 +1,9 @@
 ```java
-/*****************************************************************
- *                       DISCLAIMER                              *
- *  This software is under heavy development!                    *
- *  It's not ready for production use. There are still a lot of  *
- *  things to do and bugs to fix. Feel free to play around with  *
- *  it, but don't expect everything to work and look smoothly.   *
- *****************************************************************/
+/*****************************************************
+ *                  DISCLAIMER                       *
+ *  This software is still under heavy development!  *
+ *  It's not ready for production use yet.           *
+ *****************************************************/
 ```
 
 # RailPlan
