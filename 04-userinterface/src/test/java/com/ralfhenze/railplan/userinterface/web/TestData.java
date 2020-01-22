@@ -33,7 +33,7 @@ public class TestData {
     );
 
     public static final RailNetworkDraft BERLIN_HAMBURG_DRAFT = new RailNetworkDraft()
-        .withStations(BERLIN_HBF, HAMBURG_HBF)
-        .withNewTrack(BERLIN_HBF.getName(), HAMBURG_HBF.getName())
+        .addStations(BERLIN_HBF, HAMBURG_HBF)
+        .addTrackBetween(BERLIN_HBF, HAMBURG_HBF)
         .withId(new RailNetworkDraftId("123"));
 }

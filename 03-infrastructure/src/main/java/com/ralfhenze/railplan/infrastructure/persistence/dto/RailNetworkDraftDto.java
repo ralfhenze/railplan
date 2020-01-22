@@ -28,7 +28,7 @@ public class RailNetworkDraftDto {
             .withId(new RailNetworkDraftId(String.valueOf(id)));
 
         for (final var station : stations) {
-            draft = draft.withNewStation(
+            draft = draft.addStation(
                 station.getId(),
                 station.getName(),
                 station.getLatitude(),
@@ -37,7 +37,7 @@ public class RailNetworkDraftDto {
         }
 
         for (final var track : tracks) {
-            draft = draft.withNewTrack(
+            draft = draft.addTrackBetween(
                 track.getFirstStationId(),
                 track.getSecondStationId()
             );

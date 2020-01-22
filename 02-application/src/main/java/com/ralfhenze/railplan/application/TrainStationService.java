@@ -5,7 +5,6 @@ import com.ralfhenze.railplan.application.commands.DeleteTrainStationCommand;
 import com.ralfhenze.railplan.application.commands.UpdateTrainStationCommand;
 import com.ralfhenze.railplan.domain.common.EntityNotFoundException;
 import com.ralfhenze.railplan.domain.common.validation.ValidationException;
-import com.ralfhenze.railplan.domain.railnetwork.elements.TrainStationId;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftId;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftRepository;
 
@@ -37,7 +36,7 @@ public class TrainStationService implements ApplicationService {
         final var draftId = new RailNetworkDraftId(command.getDraftId());
         final var draft = draftRepository.getRailNetworkDraftOfId(draftId);
 
-        final var updatedDraft = draft.withNewStation(
+        final var updatedDraft = draft.addStation(
             command.getStationName(),
             command.getLatitude(),
             command.getLongitude()
@@ -57,7 +56,7 @@ public class TrainStationService implements ApplicationService {
         final var draftId = new RailNetworkDraftId(command.getDraftId());
         final var draft = draftRepository.getRailNetworkDraftOfId(draftId);
 
-        final var updatedDraft = draft.withUpdatedStation(
+        final var updatedDraft = draft.updateStation(
             command.getStationId(),
             command.getStationName(),
             command.getLatitude(),
@@ -78,7 +77,7 @@ public class TrainStationService implements ApplicationService {
         final var draftId = new RailNetworkDraftId(command.getDraftId());
         final var draft = draftRepository.getRailNetworkDraftOfId(draftId);
 
-        final var updatedDraft = draft.withoutStation(command.getStationId());
+        final var updatedDraft = draft.deleteStation(command.getStationId());
 
         draftRepository.persist(updatedDraft);
     }

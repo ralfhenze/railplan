@@ -20,7 +20,7 @@ public class StationInvariantsSteps {
     @Given("^a Rail Network Draft with a Station \"(.*)\"$")
     public void setupRailNetworkDraft(final String stationName) {
         final var station = PresetStation.ofName(stationName);
-        draft = new RailNetworkDraft().withNewStation(
+        draft = new RailNetworkDraft().addStation(
             station.getName(),
             station.getLatitude(),
             station.getLongitude()
@@ -36,7 +36,7 @@ public class StationInvariantsSteps {
     public void addNearStation(final String stationName, final String distance) {
         if ("Berlin Ostbahnhof".equals(stationName)) {
             thrownException = catchThrowable(() ->
-                draft = draft.withNewStation(stationName, BERLIN_OST_LAT, BERLIN_OST_LNG)
+                draft = draft.addStation(stationName, BERLIN_OST_LAT, BERLIN_OST_LNG)
             );
         } else {
             addStation(stationName);
@@ -46,7 +46,7 @@ public class StationInvariantsSteps {
     private void addStation(final String stationName) {
         final var stationToAdd = PresetStation.ofName(stationName);
         thrownException = catchThrowable(() ->
-            draft = draft.withNewStation(
+            draft = draft.addStation(
                 stationToAdd.getName(),
                 stationToAdd.getLatitude(),
                 stationToAdd.getLongitude()

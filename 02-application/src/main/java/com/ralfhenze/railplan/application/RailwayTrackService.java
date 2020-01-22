@@ -38,7 +38,7 @@ public class RailwayTrackService implements ApplicationService {
         final var draftId = new RailNetworkDraftId(command.getDraftId());
         final var draft = draftRepository.getRailNetworkDraftOfId(draftId);
 
-        final var updatedDraft = draft.withNewTrack(
+        final var updatedDraft = draft.addTrackBetween(
             command.getFirstStationId(),
             command.getSecondStationId()
         );
@@ -58,7 +58,7 @@ public class RailwayTrackService implements ApplicationService {
         final var draftId = new RailNetworkDraftId(command.getDraftId());
         final var draft = draftRepository.getRailNetworkDraftOfId(draftId);
 
-        final var updatedDraft = draft.withNewTrack(
+        final var updatedDraft = draft.addTrackBetween(
             command.getFirstStationName(),
             command.getSecondStationName()
         );
@@ -77,7 +77,7 @@ public class RailwayTrackService implements ApplicationService {
         final var draftId = new RailNetworkDraftId(command.getDraftId());
         final var draft = draftRepository.getRailNetworkDraftOfId(draftId);
 
-        final var updatedDraft = draft.withoutTrack(
+        final var updatedDraft = draft.deleteTrackBetween(
             command.getFirstStationId(),
             command.getSecondStationId()
         );

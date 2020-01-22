@@ -22,12 +22,12 @@ public class TrackMaximumLengthSteps {
         station1 = PresetStation.ofName(stationName1);
         station2 = PresetStation.ofName(stationName2);
         draft = new RailNetworkDraft()
-            .withNewStation(
+            .addStation(
                 station1.getName(),
                 station1.getLatitude(),
                 station1.getLongitude()
             )
-            .withNewStation(
+            .addStation(
                 station2.getName(),
                 station2.getLatitude(),
                 station2.getLongitude()
@@ -37,7 +37,7 @@ public class TrackMaximumLengthSteps {
     @When("^a Network Planner tries to connect those two stations with a new Railway Track$")
     public void addRailwayTrack() {
         thrownException = catchThrowable(() ->
-            draft = draft.withTrackBetween(station1, station2)
+            draft = draft.addTrackBetween(station1, station2)
         );
     }
 
