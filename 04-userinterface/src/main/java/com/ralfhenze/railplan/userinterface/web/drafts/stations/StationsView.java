@@ -7,6 +7,7 @@ import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraf
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftRepository;
 import com.ralfhenze.railplan.domain.railnetwork.presets.PresetStation;
 import com.ralfhenze.railplan.infrastructure.persistence.dto.RailNetworkDraftDto;
+import com.ralfhenze.railplan.infrastructure.persistence.dto.TrainStationDto;
 import com.ralfhenze.railplan.userinterface.web.views.GermanyMapSvgView;
 import com.ralfhenze.railplan.userinterface.web.views.MasterView;
 import com.ralfhenze.railplan.userinterface.web.views.MasterView.SelectedNavEntry;
@@ -170,7 +171,6 @@ public class StationsView implements View {
         final var showCustomStationForm = this.showCustomStationForm;
         final var newStationTableRow = getNewStationTableRow();
         final var showPresetStationForm = this.showPresetStationForm;
-        final var allPresetStations = PresetStation.getAllPresetStations();
         final var presetStationFormModel = (this.presetStationFormModel == null) ?
             new PresetStationFormModel() : this.presetStationFormModel;
 
@@ -210,7 +210,10 @@ public class StationsView implements View {
                                 )
                             )
                         ),
-                        iff(showPresetStationForm, getPresetStationForm(draftId, allPresetStations, presetStationFormModel))
+                        iff(
+                            showPresetStationForm,
+                            getPresetStationForm(draftId, draftDto.getStations(), presetStationFormModel)
+                        )
                     )
                 )
             ),
@@ -321,12 +324,19 @@ public class StationsView implements View {
 
     private static Tag getPresetStationForm(
         final String draftId,
-        final List<PresetStation> allPresetStations,
+        final List<TrainStationDto> stations,
         final PresetStationFormModel presetStationFormModel
     ) {
+        final var stationNames = stations.stream()
+            .map(TrainStationDto::getName)
+            .collect(Collectors.toList());
+        final var presetStations = PresetStation.getAllPresetStations().stream()
+            .filter(s -> !stationNames.contains(s.getName()))
+            .collect(Collectors.toList());
+
         return form().withId("preset-station-form").withMethod("post").with(
             select().attr("multiple", "multiple").attr("size", 10).withName("presetStationsToAdd").with(
-                each(allPresetStations, presetStation ->
+                each(presetStations, presetStation ->
                     option()
                         .withValue(presetStation.getName())
                         .withText(presetStation.getName())
