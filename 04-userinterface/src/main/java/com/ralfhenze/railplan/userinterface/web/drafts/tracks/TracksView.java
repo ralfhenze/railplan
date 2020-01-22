@@ -67,8 +67,9 @@ public class TracksView implements View {
     }
 
     private static class PresetTrack {
-        public String text;
-        public String value;
+        public String id;
+        public String firstStationName;
+        public String secondStationName;
     }
 
     public TracksView(
@@ -162,7 +163,7 @@ public class TracksView implements View {
                                 )
                             )
                         ),
-                        getPresetTrackForm()
+                        getPresetTrackForm(draftDto, trackRows)
                     )
                 )
             ),
@@ -228,17 +229,35 @@ public class TracksView implements View {
         );
     }
 
-    private Tag getPresetTrackForm() {
+    private Tag getPresetTrackForm(
+        final RailNetworkDraftDto draftDto,
+        final List<TrackRow> trackRows
+    ) {
         if (showPresetTrackForm) {
-            final var allPresetTracks = getAllPresetTracks();
+            final var stationNames = draftDto.getStations().stream()
+                .map(TrainStationDto::getName)
+                .collect(Collectors.toList());
+            final var presetTracks = getAllPresetTracks().stream()
+                .filter(t -> stationNames.contains(t.firstStationName) && stationNames.contains(t.secondStationName))
+                .filter(t -> trackRows.stream()
+                    .filter(tr ->
+                        (tr.firstStationName.equals(t.firstStationName) && tr.secondStationName.equals(t.secondStationName))
+                        || (tr.firstStationName.equals(t.secondStationName) && tr.secondStationName.equals(t.firstStationName))
+                    )
+                    .findAny()
+                    .isEmpty()
+                )
+                .collect(Collectors.toList());
 
             return form().withId("preset-track-form").withMethod("post").with(
                 select().withName("presetTrackIdsToAdd")
                     .attr("multiple", "multiple")
                     .attr("size", 10)
                     .with(
-                        each(allPresetTracks, presetTrack ->
-                            option().withValue(presetTrack.value).withText(presetTrack.text)
+                        each(presetTracks, presetTrack ->
+                            option().withValue(presetTrack.id).withText(
+                                presetTrack.firstStationName + " <=> " + presetTrack.secondStationName
+                            )
                         )
                     ),
                 p(
@@ -301,8 +320,9 @@ public class TracksView implements View {
             .range(0, presetTracks.size())
             .mapToObj(i -> {
                 final var track = new PresetTrack();
-                track.value = String.valueOf(i);
-                track.text = presetTracks.get(i).station1.getName() + " <=> " + presetTracks.get(i).station2.getName();
+                track.id = String.valueOf(i);
+                track.firstStationName = presetTracks.get(i).station1.getName();
+                track.secondStationName = presetTracks.get(i).station2.getName();
                 return track;
             })
             .collect(Collectors.toList());
