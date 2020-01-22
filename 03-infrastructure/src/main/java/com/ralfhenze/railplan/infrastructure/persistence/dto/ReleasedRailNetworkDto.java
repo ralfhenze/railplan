@@ -21,7 +21,7 @@ public class ReleasedRailNetworkDto {
 
     public ReleasedRailNetworkDto() {}
 
-    public ReleasedRailNetworkDto(ReleasedRailNetwork network) {
+    public ReleasedRailNetworkDto(final ReleasedRailNetwork network) {
         if (network.getId().isPresent()) {
             this.id = network.getId().get().toString();
         }
@@ -44,7 +44,7 @@ public class ReleasedRailNetworkDto {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(final String id) {
         this.id = id;
     }
 
@@ -52,7 +52,7 @@ public class ReleasedRailNetworkDto {
         return startDate;
     }
 
-    public void setStartDate(String startDate) {
+    public void setStartDate(final String startDate) {
         this.startDate = startDate;
     }
 
@@ -60,7 +60,7 @@ public class ReleasedRailNetworkDto {
         return endDate;
     }
 
-    public void setEndDate(String endDate) {
+    public void setEndDate(final String endDate) {
         this.endDate = endDate;
     }
 
@@ -68,7 +68,7 @@ public class ReleasedRailNetworkDto {
         return stations;
     }
 
-    public void setStations(List<TrainStationDto> stations) {
+    public void setStations(final List<TrainStationDto> stations) {
         this.stations = stations;
     }
 
@@ -76,7 +76,7 @@ public class ReleasedRailNetworkDto {
         return tracks;
     }
 
-    public void setTracks(List<RailwayTrackDto> tracks) {
+    public void setTracks(final List<RailwayTrackDto> tracks) {
         this.tracks = tracks;
     }
 }

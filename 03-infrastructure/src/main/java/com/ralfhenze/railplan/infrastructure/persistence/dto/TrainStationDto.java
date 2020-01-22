@@ -14,7 +14,7 @@ public class TrainStationDto {
 
     public TrainStationDto() {}
 
-    public TrainStationDto(TrainStation station) {
+    public TrainStationDto(final TrainStation station) {
         this.id = station.getId().getId();
         this.name = station.getName().getName();
         this.latitude = station.getLocation().getLatitude();
@@ -41,7 +41,7 @@ public class TrainStationDto {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(final String name) {
         this.name = name;
     }
 
@@ -49,7 +49,7 @@ public class TrainStationDto {
         return latitude;
     }
 
-    public void setLatitude(double latitude) {
+    public void setLatitude(final double latitude) {
         this.latitude = latitude;
     }
 
@@ -57,7 +57,7 @@ public class TrainStationDto {
         return longitude;
     }
 
-    public void setLongitude(double longitude) {
+    public void setLongitude(final double longitude) {
         this.longitude = longitude;
     }
 }

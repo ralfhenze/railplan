@@ -10,7 +10,7 @@ public class RailwayTrackDto {
 
     public RailwayTrackDto() {}
 
-    public RailwayTrackDto(RailwayTrack track) {
+    public RailwayTrackDto(final RailwayTrack track) {
         this.firstStationId = track.getFirstStationId().getId();
         this.secondStationId = track.getSecondStationId().getId();
     }
@@ -26,7 +26,7 @@ public class RailwayTrackDto {
         return firstStationId;
     }
 
-    public void setFirstStationId(int firstStationId) {
+    public void setFirstStationId(final int firstStationId) {
         this.firstStationId = firstStationId;
     }
 
@@ -34,7 +34,7 @@ public class RailwayTrackDto {
         return secondStationId;
     }
 
-    public void setSecondStationId(int secondStationId) {
+    public void setSecondStationId(final int secondStationId) {
         this.secondStationId = secondStationId;
     }
 }
