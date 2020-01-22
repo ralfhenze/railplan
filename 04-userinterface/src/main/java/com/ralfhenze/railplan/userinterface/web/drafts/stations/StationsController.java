@@ -123,8 +123,8 @@ public class StationsController {
                 new AddTrainStationCommand(
                     draftId,
                     stationRow.stationName,
-                    Double.parseDouble(stationRow.latitude),
-                    Double.parseDouble(stationRow.longitude)
+                    getCoordinateDouble(stationRow.latitude),
+                    getCoordinateDouble(stationRow.longitude)
                 )
             );
         } catch (ValidationException exception) {
@@ -173,8 +173,8 @@ public class StationsController {
                     draftId,
                     intStationId,
                     stationRow.stationName,
-                    Double.parseDouble(stationRow.latitude),
-                    Double.parseDouble(stationRow.longitude)
+                    getCoordinateDouble(stationRow.latitude),
+                    getCoordinateDouble(stationRow.longitude)
                 )
             );
         } catch (ValidationException exception) {
@@ -205,5 +205,13 @@ public class StationsController {
         );
 
         return "redirect:/drafts/{draftId}/stations";
+    }
+
+    private double getCoordinateDouble(final String coordinate) {
+        try {
+            return Double.parseDouble(coordinate);
+        } catch (NumberFormatException e) {
+            return 0.0;
+        }
     }
 }
