@@ -15,6 +15,7 @@ import com.ralfhenze.railplan.userinterface.web.views.NetworkElementTabsView.Sel
 import com.ralfhenze.railplan.userinterface.web.views.View;
 import j2html.tags.Tag;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -272,7 +273,9 @@ public class TracksView implements View {
 
     private TrackErrors getTrackErrors() {
         final var trackErrors = new TrackErrors();
-        trackErrors.firstStationErrors = validationException.getErrorsOfField(Field.FIRST_STATION_ID);
+        trackErrors.firstStationErrors = new ArrayList<>();
+        trackErrors.firstStationErrors.addAll(validationException.getErrorsOfField(Field.FIRST_STATION_ID));
+        trackErrors.firstStationErrors.addAll(validationException.getErrorsOfField(Field.TRACKS));
         trackErrors.secondStationErrors = validationException.getErrorsOfField(Field.SECOND_STATION_ID);
 
         return trackErrors;
