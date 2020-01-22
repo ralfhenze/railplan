@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.ralfhenze.railplan.domain.railnetwork.presets.PresetStation.BERLIN_HBF;
+import static com.ralfhenze.railplan.domain.railnetwork.presets.PresetStation.DRESDEN_HBF;
 import static com.ralfhenze.railplan.domain.railnetwork.presets.PresetStation.HAMBURG_HBF;
 import static com.ralfhenze.railplan.userinterface.web.TestData.BERLIN_HAMBURG_DRAFT;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -66,7 +67,9 @@ public class TracksControllerIT extends HtmlITBase {
     @Test
     public void userCanAccessAFormToAddNewTracksFromPresets() throws Exception {
         // Given an existing Draft
-        given(draftRepository.getRailNetworkDraftOfId(any())).willReturn(BERLIN_HAMBURG_DRAFT);
+        given(draftRepository.getRailNetworkDraftOfId(any())).willReturn(
+            BERLIN_HAMBURG_DRAFT.addStations(DRESDEN_HBF)
+        );
 
         // When we call GET /drafts/123/tracks/new-from-preset
         final var response = getGetResponse("/drafts/123/tracks/new-from-preset");
@@ -74,8 +77,7 @@ public class TracksControllerIT extends HtmlITBase {
         // Then we get a form with a multi-select-box of all preset Tracks
         final var presetTrackForm = getElement("#preset-track-form", response);
         assertThat(response.getStatus()).isEqualTo(HTTP_OK);
-        assertThat(presetTrackForm.select("select[name='presetTrackIdsToAdd'] option"))
-            .hasSize(new PresetTracks().getAllPresetTracks().size());
+        assertThat(presetTrackForm.select("select[name='presetTrackIdsToAdd'] option")).hasSize(1);
         assertThat(presetTrackForm.select("input[type='submit']")).hasSize(1);
     }
 

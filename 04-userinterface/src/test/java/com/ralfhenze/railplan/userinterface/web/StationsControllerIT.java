@@ -84,7 +84,7 @@ public class StationsControllerIT extends HtmlITBase {
         final var document = Jsoup.parse(response.getContentAsString());
         assertThat(response.getStatus()).isEqualTo(HTTP_OK);
         assertThat(document.select("select[name='presetStationsToAdd'] option"))
-            .hasSize(PresetStation.getAllPresetStations().size());
+            .hasSize(PresetStation.getAllPresetStations().size() - 2);
     }
 
     @Test
