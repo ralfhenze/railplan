@@ -203,6 +203,15 @@ table th, td {
     text-align: left;
 }
 
+table tr.with-errors td {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.no-wrap {
+    white-space: nowrap;
+}
+
 .invalid {
     background-color: #ffdddd;
     border: 1px solid #ff7777;

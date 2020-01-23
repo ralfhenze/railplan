@@ -195,7 +195,7 @@ public class StationsView implements View {
                                 tbody(
                                     each(stationTableRows, row ->
                                         tag(null).with(
-                                            tr().withClass("station-row").with(
+                                            tr().withClass("station-row").withCondClass(row.hasErrors(), "with-errors").with(
                                                 td(span().withText(String.valueOf(row.index))),
                                                 td(getStationTableCell("stationName", row.stationName, row.showInputField, row.stationNameIsInvalid())),
                                                 td(getStationTableCell("latitude", row.latitude, row.showInputField, row.latitudeIsInvalid())),
@@ -236,7 +236,7 @@ public class StationsView implements View {
 
     private static Tag getActionsCell(final String draftId, final StationTableRow row) {
         if (row.showInputField) {
-            return div(
+            return div().withClass("no-wrap").with(
                 input().withType("submit").withClass("add-button").withValue("Update"),
                 a().withHref("/drafts/" + draftId + "/stations/").withText("Cancel")
             );
@@ -293,12 +293,12 @@ public class StationsView implements View {
         final StationTableRow row
     ) {
         if (showCustomStationForm) {
-            return tr(
+            return tr().withCondClass(row.hasErrors(), "with-errors").with(
                 td().withText("+"),
                 td(getStationTableCell("stationName", row.stationName, row.showInputField, row.stationNameIsInvalid())),
                 td(getStationTableCell("latitude", row.latitude, row.showInputField, row.latitudeIsInvalid())),
                 td(getStationTableCell("longitude", row.longitude, row.showInputField, row.longitudeIsInvalid())),
-                td(
+                td().withClass("no-wrap").with(
                     input().withType("submit").withClass("add-button").withValue("Add Station"),
                     a().withHref("/drafts/" + draftId + "/stations").withText("Cancel")
                 )
