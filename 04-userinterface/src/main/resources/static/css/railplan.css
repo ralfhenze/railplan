@@ -223,6 +223,7 @@ table th, td {
     color: #ffffff;
     padding: 6px 12px;
     text-decoration: none;
+    margin-right: 10px;
 }
 .add-button:hover {
     background: linear-gradient(to bottom, #68a54b 5%, #74ad5a 100%);
@@ -239,7 +240,6 @@ table th, td {
 
 .add-button-row .add-button {
     text-align: center;
-    margin-right: 6px;
 }
 
 #germany-map {
@@ -267,4 +267,15 @@ table th, td {
     fill: #bbbbbb;
     stroke: #444444;
     stroke-width: 3;
+}
+
+#preset-station-form select, #preset-track-form select {
+    display: block;
+    margin-bottom: 10px;
+    *min-width: 240px;
+}
+
+#preset-station-form option, #preset-track-form option {
+    padding: 3px 80px 3px 8px;
+    border-bottom: 1px solid #eeeeee;
 }

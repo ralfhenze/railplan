@@ -237,11 +237,8 @@ public class StationsView implements View {
     private static Tag getActionsCell(final String draftId, final StationTableRow row) {
         if (row.showInputField) {
             return div(
-                join(
-                    input().withType("submit").withClass("add-button").withValue("Update"),
-                    " | ",
-                    a().withHref("/drafts/" + draftId + "/stations/").withText("Cancel")
-                )
+                input().withType("submit").withClass("add-button").withValue("Update"),
+                a().withHref("/drafts/" + draftId + "/stations/").withText("Cancel")
             );
         } else {
             return div(
