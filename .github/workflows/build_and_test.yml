@@ -32,7 +32,7 @@ jobs:
       run: mvn -B package --file pom.xml
 
     - name: Start Docker Environment
-      run: docker-compose -f docker-compose.yml up -d
+      run: docker-compose -f docker-compose.yml up -d mongodb
 
     - name: Run Tests
       run: mvn verify jacoco:report
