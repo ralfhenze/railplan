@@ -10,9 +10,11 @@ import org.springframework.data.mongodb.core.convert.DefaultMongoTypeMapper;
 import org.springframework.data.mongodb.core.convert.MappingMongoConverter;
 
 /**
- * This is needed to prevent the default "_class" field of Spring Data's MongoDB implementation
+ * This is needed to prevent the default "_class" field of Spring Data's MongoDB implementation.
+ * See: https://docs.spring.io/spring-data/data-mongodb/docs/current/reference/html/#mongo-template.type-mapping
  *
- * https://docs.spring.io/spring-data/data-mongodb/docs/current/reference/html/#mongo-template.type-mapping
+ * It's also heavily inspired by:
+ * https://stackoverflow.com/questions/23515295/spring-boot-and-how-to-configure-connection-details-to-mongodb
  */
 @Configuration
 public class MongoConfiguration extends AbstractMongoClientConfiguration {
