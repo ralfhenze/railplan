@@ -56,11 +56,14 @@ public class IsNotNearerThan10KmTo implements ValidationConstraint<GeoLocationIn
         final Field field
     ) {
         final var tooNearStations = tooNearStationDistances
-            .collect(d -> "\"" + d.stationName + "\" (" + d.distance + " km)")
+            .collect(d -> {
+                final var distance = Math.round(d.distance * 100.0) / 100.0;
+                return "\"" + d.stationName + "\" (" + distance + " km)";
+            })
             .castToList();
 
         return new ValidationError(
-            "Too close to " + String.join(", ", tooNearStations)
+            "too close to " + String.join(", ", tooNearStations)
             + " (distance must be > " + MINIMUM_STATION_DISTANCE_KM + " km)",
             field
         );
