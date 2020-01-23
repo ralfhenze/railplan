@@ -288,3 +288,7 @@ table tr.with-errors td {
     padding: 3px 80px 3px 8px;
     border-bottom: 1px solid #eeeeee;
 }
+
+input[type="text"] {
+    padding: 2px 4px;
+}
