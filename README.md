@@ -21,20 +21,24 @@ basically an undirected graph, composed of Train Stations as nodes and Railway T
 
 ## Run
 
-You need Docker, docker-compose, JDK 11 and Maven installed on your system. (only tested on Linux)
+You need docker-compose installed on your system. This was only tested on Linux! Just run:
 
 ```console           
 $ docker-compose up -d
-$ mvn package
-$ cd target/modules
-$ java -cp ./*:../lib/* com.ralfhenze.railplan.userinterface.web.RailPlanApplication
 ```
-The UI should now be accessible at <http://localhost:8080/>
+This will spin up a MongoDB instance, compile the application code with Maven and run the application in it's own
+container. When everything is up and running the UI should be accessible at <http://localhost:8080/>
+
+You can stop and destroy the Docker containers by running:
+ 
+```console           
+$ docker-compose down
+```
 
 ## Tests
 
 ```console
-$ docker-compose up -d                 # Start testing environment
+$ docker-compose up -d mongodb         # Start MongoDB container
 $ mvn verify                           # Run all tests
 $ mvn test                             # Run only unit and acceptance tests
 $ docker-compose down                  # Destroy Docker containers
