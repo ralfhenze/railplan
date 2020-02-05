@@ -27,7 +27,7 @@ public class NetworksController {
     /**
      * Provides a list of all Networks.
      */
-    @GetMapping("/networks")
+    @GetMapping({"/", "/networks"})
     @ResponseBody
     public String showNetworksPage() {
         return new NetworksView(queries.getAllNetworkIds())

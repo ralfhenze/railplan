@@ -125,12 +125,8 @@ nav ul {
     background-repeat: no-repeat;
 }
 
-.index {
-    background-image: url("../img/railway-tracks.jpg");
-}
-
 .networks {
-    background-image: url("../img/railway-construction.jpg");
+    background-image: url("../img/railway-tracks.jpg");
 }
 
 #index-box {

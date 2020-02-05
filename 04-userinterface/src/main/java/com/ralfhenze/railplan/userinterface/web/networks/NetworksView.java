@@ -1,7 +1,6 @@
 package com.ralfhenze.railplan.userinterface.web.networks;
 
 import com.ralfhenze.railplan.userinterface.web.views.MasterView;
-import com.ralfhenze.railplan.userinterface.web.views.MasterView.SelectedNavEntry;
 import com.ralfhenze.railplan.userinterface.web.views.View;
 import j2html.tags.Tag;
 
@@ -10,11 +9,9 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static j2html.TagCreator.a;
-import static j2html.TagCreator.br;
 import static j2html.TagCreator.div;
 import static j2html.TagCreator.each;
 import static j2html.TagCreator.h3;
-import static j2html.TagCreator.join;
 import static j2html.TagCreator.li;
 import static j2html.TagCreator.nav;
 import static j2html.TagCreator.ul;
@@ -39,7 +36,7 @@ public class NetworksView implements View {
     public Tag getHtml() {
         final var indexedNetworkIds = getIndexedNetworkIds(networkIds);
 
-        return new MasterView(SelectedNavEntry.NETWORKS).with(
+        return new MasterView().with(
             div().withClasses("networks", "fullscreen-wrapper").with(
                 div().withId("index-box").withClass("box").with(
                     div().withId("network-selector").with(
@@ -62,7 +59,7 @@ public class NetworksView implements View {
                             a().withHref("/networks/new")
                                 .withId("add-network-button")
                                 .withClass("add-button")
-                                .withText("+ Add Network")
+                                .withText("+ Add Rail Network")
                         )
                     )
                 )

@@ -9,7 +9,6 @@ import com.ralfhenze.railplan.infrastructure.persistence.dto.RailwayTrackDto;
 import com.ralfhenze.railplan.infrastructure.persistence.dto.TrainStationDto;
 import com.ralfhenze.railplan.userinterface.web.views.GermanyMapSvgView;
 import com.ralfhenze.railplan.userinterface.web.views.MasterView;
-import com.ralfhenze.railplan.userinterface.web.views.MasterView.SelectedNavEntry;
 import com.ralfhenze.railplan.userinterface.web.views.NetworkElementTabsView;
 import com.ralfhenze.railplan.userinterface.web.views.NetworkElementTabsView.SelectedTab;
 import com.ralfhenze.railplan.userinterface.web.views.View;
@@ -116,7 +115,7 @@ public class TracksView implements View {
             errors = getTrackErrors();
         }
 
-        return new MasterView(SelectedNavEntry.NETWORKS).with(
+        return new MasterView().with(
             div().withId("data-panel").with(
                 div().withId("network-elements-box").withClass("box").with(
                     new NetworkElementTabsView(SelectedTab.TRACKS, networkId).getHtml(),

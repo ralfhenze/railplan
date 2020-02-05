@@ -9,31 +9,18 @@ import static j2html.TagCreator.h2;
 import static j2html.TagCreator.head;
 import static j2html.TagCreator.header;
 import static j2html.TagCreator.html;
-import static j2html.TagCreator.li;
 import static j2html.TagCreator.link;
 import static j2html.TagCreator.meta;
-import static j2html.TagCreator.nav;
 import static j2html.TagCreator.rawHtml;
 import static j2html.TagCreator.tag;
 import static j2html.TagCreator.title;
-import static j2html.TagCreator.ul;
 
 /**
  * The wrapping HTML that is common to all pages.
  */
 public class MasterView implements View {
 
-    private final SelectedNavEntry selectedNavEntry;
     private Tag[] contentTags;
-
-    public enum SelectedNavEntry {
-        START,
-        NETWORKS
-    }
-
-    public MasterView(final SelectedNavEntry selectedNavEntry) {
-        this.selectedNavEntry = selectedNavEntry;
-    }
 
     public Tag with(final Tag... contentTags) {
         this.contentTags = contentTags;
@@ -58,18 +45,6 @@ public class MasterView implements View {
                     header(
                         h2().withId("logo").with(
                             a().withHref("/").withText("RailPlan")
-                        ),
-                        nav().withId("main-navigation").with(
-                            ul(
-                                li(
-                                    a().withHref("/networks")
-                                        .withCondClass(
-                                            selectedNavEntry.equals(SelectedNavEntry.NETWORKS),
-                                            "selected"
-                                        )
-                                        .withText("Networks")
-                                )
-                            )
                         )
                     ),
                     tag(null).with(
