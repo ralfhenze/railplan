@@ -2,8 +2,8 @@ package com.ralfhenze.railplan.application;
 
 import com.ralfhenze.railplan.application.commands.AddRailwayTrackByStationIdCommand;
 import com.ralfhenze.railplan.application.commands.DeleteRailwayTrackCommand;
-import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraft;
-import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftRepository;
+import com.ralfhenze.railplan.domain.railnetwork.RailNetworkDraft;
+import com.ralfhenze.railplan.domain.railnetwork.RailNetworkDraftRepository;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 

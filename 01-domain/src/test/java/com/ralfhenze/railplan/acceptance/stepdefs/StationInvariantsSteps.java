@@ -1,7 +1,7 @@
 package com.ralfhenze.railplan.acceptance.stepdefs;
 
 import com.ralfhenze.railplan.domain.common.validation.ValidationException;
-import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraft;
+import com.ralfhenze.railplan.domain.railnetwork.RailNetworkDraft;
 import com.ralfhenze.railplan.domain.railnetwork.presets.PresetStation;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;

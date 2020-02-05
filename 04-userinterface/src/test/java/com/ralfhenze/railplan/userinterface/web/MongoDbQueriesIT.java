@@ -1,6 +1,6 @@
 package com.ralfhenze.railplan.userinterface.web;
 
-import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraft;
+import com.ralfhenze.railplan.domain.railnetwork.RailNetworkDraft;
 import com.ralfhenze.railplan.infrastructure.persistence.MongoDbQueries;
 import com.ralfhenze.railplan.infrastructure.persistence.RailNetworkDraftMongoDbRepository;
 import org.junit.Before;

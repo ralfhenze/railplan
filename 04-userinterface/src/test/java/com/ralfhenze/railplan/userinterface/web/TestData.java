@@ -4,8 +4,8 @@ import com.ralfhenze.railplan.domain.railnetwork.elements.GeoLocationInGermany;
 import com.ralfhenze.railplan.domain.railnetwork.elements.TrainStation;
 import com.ralfhenze.railplan.domain.railnetwork.elements.TrainStationId;
 import com.ralfhenze.railplan.domain.railnetwork.elements.TrainStationName;
-import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraft;
-import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftId;
+import com.ralfhenze.railplan.domain.railnetwork.RailNetworkDraft;
+import com.ralfhenze.railplan.domain.railnetwork.RailNetworkDraftId;
 
 import static com.ralfhenze.railplan.domain.railnetwork.presets.PresetStation.BERLIN_HBF;
 import static com.ralfhenze.railplan.domain.railnetwork.presets.PresetStation.HAMBURG_HBF;

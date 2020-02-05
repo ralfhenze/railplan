@@ -2,9 +2,9 @@ package com.ralfhenze.railplan.userinterface.web.drafts.stations;
 
 import com.ralfhenze.railplan.domain.common.validation.Field;
 import com.ralfhenze.railplan.domain.common.validation.ValidationException;
-import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraft;
-import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftId;
-import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftRepository;
+import com.ralfhenze.railplan.domain.railnetwork.RailNetworkDraft;
+import com.ralfhenze.railplan.domain.railnetwork.RailNetworkDraftId;
+import com.ralfhenze.railplan.domain.railnetwork.RailNetworkDraftRepository;
 import com.ralfhenze.railplan.domain.railnetwork.presets.PresetStation;
 import com.ralfhenze.railplan.infrastructure.persistence.dto.RailNetworkDraftDto;
 import com.ralfhenze.railplan.infrastructure.persistence.dto.TrainStationDto;

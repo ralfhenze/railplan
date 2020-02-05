@@ -7,7 +7,7 @@ import com.ralfhenze.railplan.application.commands.DeleteRailwayTrackCommand;
 import com.ralfhenze.railplan.domain.common.validation.Field;
 import com.ralfhenze.railplan.domain.common.validation.ValidationError;
 import com.ralfhenze.railplan.domain.common.validation.ValidationException;
-import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftRepository;
+import com.ralfhenze.railplan.domain.railnetwork.RailNetworkDraftRepository;
 import com.ralfhenze.railplan.userinterface.web.drafts.tracks.PresetTracks;
 import org.jsoup.Jsoup;
 import org.junit.Test;

@@ -1,4 +1,4 @@
-package com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft;
+package com.ralfhenze.railplan.domain.railnetwork;
 
 import com.ralfhenze.railplan.domain.common.Id;
 import com.ralfhenze.railplan.domain.common.validation.Field;

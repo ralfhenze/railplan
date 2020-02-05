@@ -8,7 +8,7 @@ import com.ralfhenze.railplan.application.commands.UpdateTrainStationCommand;
 import com.ralfhenze.railplan.domain.common.validation.Field;
 import com.ralfhenze.railplan.domain.common.validation.ValidationError;
 import com.ralfhenze.railplan.domain.common.validation.ValidationException;
-import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftRepository;
+import com.ralfhenze.railplan.domain.railnetwork.RailNetworkDraftRepository;
 import com.ralfhenze.railplan.domain.railnetwork.presets.PresetStation;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;

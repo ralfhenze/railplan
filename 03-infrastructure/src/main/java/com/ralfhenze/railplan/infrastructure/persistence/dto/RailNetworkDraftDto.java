@@ -1,7 +1,7 @@
 package com.ralfhenze.railplan.infrastructure.persistence.dto;
 
-import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraft;
-import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftId;
+import com.ralfhenze.railplan.domain.railnetwork.RailNetworkDraft;
+import com.ralfhenze.railplan.domain.railnetwork.RailNetworkDraftId;
 import org.springframework.data.annotation.Id;
 
 import java.util.List;

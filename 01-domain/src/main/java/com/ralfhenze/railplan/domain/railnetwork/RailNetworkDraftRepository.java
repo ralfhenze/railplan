@@ -1,7 +1,9 @@
-package com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft;
+package com.ralfhenze.railplan.domain.railnetwork;
 
 import com.ralfhenze.railplan.domain.common.EntityNotFoundException;
 import com.ralfhenze.railplan.domain.common.Repository;
+import com.ralfhenze.railplan.domain.railnetwork.RailNetworkDraft;
+import com.ralfhenze.railplan.domain.railnetwork.RailNetworkDraftId;
 
 import java.util.Optional;
 
