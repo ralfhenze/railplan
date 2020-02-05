@@ -145,6 +145,44 @@ nav ul {
     box-sizing: border-box;
 }
 
+#network-navigation ul {
+    display: table;
+    width: 100%;
+    margin: 20px 0;
+}
+
+#network-navigation li {
+    display: table-row;
+}
+
+#network-navigation .network-button {
+    text-decoration: none;
+    background-color: #eeeeee;
+    padding: 10px 20px;
+    display: table-cell;
+    color: #000000;
+    border-bottom: 3px solid #ffffff;
+}
+
+#network-navigation .network-button:hover {
+    background-color: #dddddd;
+}
+
+#network-navigation .delete-button {
+    text-decoration: none;
+    background-color: #eeeeee;
+    width: 40px;
+    text-align: center;
+    display: table-cell;
+    color: #000000;
+    border-bottom: 3px solid #ffffff;
+}
+
+#network-navigation .delete-button:hover {
+    background-color: #ff4444;
+    color: #ffffff;
+}
+
 #network-elements-box {
     min-height: 752px;
     padding-top: 100px;

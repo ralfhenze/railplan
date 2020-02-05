@@ -48,20 +48,17 @@ public class NetworksView implements View {
                             ul(
                                 each(indexedNetworkIds, networkId ->
                                     li(
-                                        join(
-                                            a().withHref("/networks/" + networkId.networkId)
-                                                .withText("Network " + networkId.index),
-                                            " (",
-                                            a().withHref("/networks/" + networkId.networkId + "/delete")
-                                                .withText("Delete"),
-                                            ")"
-                                        )
+                                        a().withHref("/networks/" + networkId.networkId)
+                                            .withClass("network-button")
+                                            .withText("Network " + networkId.index),
+                                        a().withHref("/networks/" + networkId.networkId + "/delete")
+                                            .withClass("delete-button")
+                                            .withText("x").attr("title", "Delete")
                                     )
                                 )
                             )
                         ),
                         div(
-                            br(),
                             a().withHref("/networks/new")
                                 .withId("add-network-button")
                                 .withClass("add-button")
