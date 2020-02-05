@@ -16,7 +16,8 @@ public class NetworkElementTabsView implements View {
     private final String draftId;
 
     public enum SelectedTab {
-        STATIONS, TRACKS, RELEASE
+        STATIONS,
+        TRACKS
     }
 
     public NetworkElementTabsView(final SelectedTab selectedTab, final String draftId) {
@@ -37,11 +38,6 @@ public class NetworkElementTabsView implements View {
                     a().withHref("/drafts/" + draftId + "/tracks")
                         .withCondClass(selectedTab.equals(SelectedTab.TRACKS), "selected")
                         .withText("Railway Tracks")
-                ),
-                li(
-                    a().withHref("/drafts/" + draftId + "/release")
-                        .withCondClass(selectedTab.equals(SelectedTab.RELEASE), "selected")
-                        .withText("Release")
                 )
             )
         );

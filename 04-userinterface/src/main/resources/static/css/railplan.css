@@ -289,19 +289,6 @@ table tr.with-errors td {
     border-bottom: 1px solid #eeeeee;
 }
 
-#release-form h4, #release-form #end-date {
-    margin-bottom: 10px;
-}
-
-#release-form #start-date {
-    margin-bottom: 4px;
-}
-
-#release-form label {
-    width: 50px;
-    display: inline-block;
-}
-
 input[type="text"] {
     padding: 2px 4px;
 }
