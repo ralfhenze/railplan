@@ -11,6 +11,9 @@ basically an undirected graph, composed of Train Stations as nodes and Railway T
 [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=ralfhenze_railplan&metric=bugs)](https://sonarcloud.io/dashboard?id=ralfhenze_railplan)
 ![Java 11](https://img.shields.io/badge/Java-11-blue)
 
+![](img/railplan-01.jpg)
+![](img/railplan-02.jpg)
+
 ## Run
 
 You need docker-compose installed on your system. This was only tested on Linux! Just run:
@@ -35,16 +38,6 @@ $ mvn verify                           # Run all tests
 $ mvn test                             # Run only unit and acceptance tests
 $ docker-compose down                  # Destroy Docker containers
 ```
-
-## Goals
-
-Why am I doing this:
-
-*   to have a public reference web project in Java and Spring MVC 
-*   to show my understanding of Domain-Driven Design (how to enforce domain invariants and not letting the domain model
-    get into an invalid state)
-*   to have a web project with almost full test coverage
-*   to improve my Clean Code and Software Design skills
 
 ## Implementation Notes
 
@@ -114,9 +107,7 @@ Why am I doing this:
     because it expects Hamcrest assertions and I wanted to be consistent with AssertJ. They make the tests easier to
     maintain and read.
 *   I use [Selenium](https://selenium.dev/) with ChromeDriver for end-to-end tests
-*   I favor Black-Box-Tests over White-Box-Tests, because they make the tests less bound to the actual implementation
 *   I use test class suffixes for better distinction: UT = Unit Tests, IT = Integration Tests, ET = End-to-End Tests
-*   I try to stick to a clear Given-When-Then / Arrange-Act-Assert test structure
 
 ### Quality Assurance
 
@@ -134,7 +125,6 @@ Why am I doing this:
     [this is](https://softwareengineering.stackexchange.com/questions/98691/excessive-use-final-keyword-in-java)
     [debatable](https://stackoverflow.com/questions/137868/using-the-final-modifier-whenever-applicable-in-java)
     but in this case I favor compile-time strictness over readability
-*   I use this [convention for Git commit messages](https://chris.beams.io/posts/git-commit/)
 
 ## Domain Model
 
