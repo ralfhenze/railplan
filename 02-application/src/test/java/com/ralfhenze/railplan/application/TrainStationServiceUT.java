@@ -5,8 +5,8 @@ import com.ralfhenze.railplan.application.commands.DeleteTrainStationCommand;
 import com.ralfhenze.railplan.application.commands.UpdateTrainStationCommand;
 import com.ralfhenze.railplan.domain.common.validation.ValidationError;
 import com.ralfhenze.railplan.domain.common.validation.ValidationException;
-import com.ralfhenze.railplan.domain.railnetwork.RailNetworkDraft;
-import com.ralfhenze.railplan.domain.railnetwork.RailNetworkDraftRepository;
+import com.ralfhenze.railplan.domain.railnetwork.RailNetwork;
+import com.ralfhenze.railplan.domain.railnetwork.RailNetworkRepository;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
@@ -32,12 +32,12 @@ public class TrainStationServiceUT {
 
     @Test
     public void persistsAddedStation() {
-        final var draftRepository = mock(RailNetworkDraftRepository.class);
-        final var trainStationService = new TrainStationService(draftRepository);
-        given(draftRepository.getRailNetworkDraftOfId(any()))
-            .willReturn(new RailNetworkDraft());
+        final var networkRepository = mock(RailNetworkRepository.class);
+        final var trainStationService = new TrainStationService(networkRepository);
+        given(networkRepository.getRailNetworkOfId(any()))
+            .willReturn(new RailNetwork());
 
-        trainStationService.addStationToDraft(
+        trainStationService.addStationToNetwork(
             new AddTrainStationCommand(
                 "1",
                 BERLIN_HBF.getName(),
@@ -46,19 +46,19 @@ public class TrainStationServiceUT {
             )
         );
 
-        verify(draftRepository).persist(any());
+        verify(networkRepository).persist(any());
     }
 
     @Test
     public void returnsStationValidationErrorsIfInvalid() {
-        final var draftRepository = mock(RailNetworkDraftRepository.class);
-        final var trainStationService = new TrainStationService(draftRepository);
-        given(draftRepository.getRailNetworkDraftOfId(any()))
-            .willReturn(new RailNetworkDraft());
+        final var networkRepository = mock(RailNetworkRepository.class);
+        final var trainStationService = new TrainStationService(networkRepository);
+        given(networkRepository.getRailNetworkOfId(any()))
+            .willReturn(new RailNetwork());
 
         List<ValidationError> validationErrors = List.of();
         try {
-            trainStationService.addStationToDraft(
+            trainStationService.addStationToNetwork(
                 new AddTrainStationCommand(
                     "1",
                     "Be", // 1. too short + 2. doesn't match Regex
@@ -75,14 +75,14 @@ public class TrainStationServiceUT {
 
     @Test
     public void persistsUpdatedStation() {
-        final var draftRepository = mock(RailNetworkDraftRepository.class);
-        final var trainStationService = new TrainStationService(draftRepository);
-        final var draft = new RailNetworkDraft().addStations(BERLIN_HBF);
-        final var updatedDraftCaptor = ArgumentCaptor.forClass(RailNetworkDraft.class);
-        given(draftRepository.getRailNetworkDraftOfId(any()))
-            .willReturn(draft);
+        final var networkRepository = mock(RailNetworkRepository.class);
+        final var trainStationService = new TrainStationService(networkRepository);
+        final var network = new RailNetwork().addStations(BERLIN_HBF);
+        final var updatedNetworkCaptor = ArgumentCaptor.forClass(RailNetwork.class);
+        given(networkRepository.getRailNetworkOfId(any()))
+            .willReturn(network);
 
-        trainStationService.updateStationOfDraft(
+        trainStationService.updateStationOfNetwork(
             new UpdateTrainStationCommand(
                 "1",
                 1,
@@ -92,27 +92,27 @@ public class TrainStationServiceUT {
             )
         );
 
-        verify(draftRepository).persist(updatedDraftCaptor.capture());
-        final var updatedStation = updatedDraftCaptor.getValue().getStations().getAny();
+        verify(networkRepository).persist(updatedNetworkCaptor.capture());
+        final var updatedStation = updatedNetworkCaptor.getValue().getStations().getAny();
         assertThat(updatedStation.getName().getName()).isEqualTo(HAMBURG_HBF.getName());
         assertThat(updatedStation.getLocation().getLatitude()).isEqualTo(HAMBURG_HBF.getLatitude());
         assertThat(updatedStation.getLocation().getLongitude()).isEqualTo(HAMBURG_HBF.getLongitude());
     }
 
     @Test
-    public void deletesStationAndPersistsUpdatedDraft() {
-        final var draftRepository = mock(RailNetworkDraftRepository.class);
-        final var trainStationService = new TrainStationService(draftRepository);
-        final var draft = new RailNetworkDraft().addStations(BERLIN_HBF);
-        final var updatedDraftCaptor = ArgumentCaptor.forClass(RailNetworkDraft.class);
-        given(draftRepository.getRailNetworkDraftOfId(any()))
-            .willReturn(draft);
+    public void deletesStationAndPersistsUpdatedNetwork() {
+        final var networkRepository = mock(RailNetworkRepository.class);
+        final var trainStationService = new TrainStationService(networkRepository);
+        final var network = new RailNetwork().addStations(BERLIN_HBF);
+        final var updatedNetworkCaptor = ArgumentCaptor.forClass(RailNetwork.class);
+        given(networkRepository.getRailNetworkOfId(any()))
+            .willReturn(network);
 
-        trainStationService.deleteStationFromDraft(
+        trainStationService.deleteStationFromNetwork(
             new DeleteTrainStationCommand("1", 1)
         );
 
-        verify(draftRepository).persist(updatedDraftCaptor.capture());
-        assertThat(updatedDraftCaptor.getValue().getStations()).isEmpty();
+        verify(networkRepository).persist(updatedNetworkCaptor.capture());
+        assertThat(updatedNetworkCaptor.getValue().getStations()).isEmpty();
     }
 }

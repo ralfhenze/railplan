@@ -1,10 +1,10 @@
-package com.ralfhenze.railplan.userinterface.web.drafts.tracks;
+package com.ralfhenze.railplan.userinterface.web.networks.tracks;
 
 import com.ralfhenze.railplan.domain.common.validation.Field;
 import com.ralfhenze.railplan.domain.common.validation.ValidationException;
-import com.ralfhenze.railplan.domain.railnetwork.RailNetworkDraftId;
-import com.ralfhenze.railplan.domain.railnetwork.RailNetworkDraftRepository;
-import com.ralfhenze.railplan.infrastructure.persistence.dto.RailNetworkDraftDto;
+import com.ralfhenze.railplan.domain.railnetwork.RailNetworkId;
+import com.ralfhenze.railplan.domain.railnetwork.RailNetworkRepository;
+import com.ralfhenze.railplan.infrastructure.persistence.dto.RailNetworkDto;
 import com.ralfhenze.railplan.infrastructure.persistence.dto.RailwayTrackDto;
 import com.ralfhenze.railplan.infrastructure.persistence.dto.TrainStationDto;
 import com.ralfhenze.railplan.userinterface.web.views.GermanyMapSvgView;
@@ -47,8 +47,8 @@ import static j2html.TagCreator.ul;
  */
 public class TracksView implements View {
 
-    private final String draftId;
-    private final RailNetworkDraftRepository draftRepository;
+    private final String networkId;
+    private final RailNetworkRepository networkRepository;
     private boolean showCustomTrackForm = false;
     private boolean showPresetTrackForm = false;
     private ValidationException validationException;
@@ -74,11 +74,11 @@ public class TracksView implements View {
     }
 
     public TracksView(
-        final String draftId,
-        final RailNetworkDraftRepository draftRepository
+        final String networkId,
+        final RailNetworkRepository networkRepository
     ) {
-        this.draftId = draftId;
-        this.draftRepository = draftRepository;
+        this.networkId = networkId;
+        this.networkRepository = networkRepository;
     }
 
     public TracksView withShowCustomTrackForm(final boolean showCustomTrackForm) {
@@ -103,9 +103,9 @@ public class TracksView implements View {
 
     @Override
     public Tag getHtml() {
-        final var draftDto = getDraftDto();
-        final var stationNames = getStationNames(draftDto);
-        final var trackRows = getTrackRows(draftDto, stationNames);
+        final var networkDto = getNetworkDto();
+        final var stationNames = getStationNames(networkDto);
+        final var trackRows = getTrackRows(networkDto, stationNames);
         var track = this.track;
         if (track == null) {
             track = new RailwayTrackDto();
@@ -116,10 +116,10 @@ public class TracksView implements View {
             errors = getTrackErrors();
         }
 
-        return new MasterView(SelectedNavEntry.DRAFTS).with(
+        return new MasterView(SelectedNavEntry.NETWORKS).with(
             div().withId("data-panel").with(
                 div().withId("network-elements-box").withClass("box").with(
-                    new NetworkElementTabsView(SelectedTab.TRACKS, draftId).getHtml(),
+                    new NetworkElementTabsView(SelectedTab.TRACKS, networkId).getHtml(),
                     div().withId("tracks").with(
                         form().withId("custom-track-form").withMethod("post").with(
                             table(
@@ -142,7 +142,7 @@ public class TracksView implements View {
                                                 td("<=>"),
                                                 td().withClass("station-2").withText(row.secondStationName),
                                                 td(
-                                                    a().withHref("/drafts/" + draftId + "/tracks/" + row.firstStationId + "/" + row.secondStationId + "/delete")
+                                                    a().withHref("/networks/" + networkId + "/tracks/" + row.firstStationId + "/" + row.secondStationId + "/delete")
                                                         .withText("Delete")
                                                 )
                                             )
@@ -152,10 +152,10 @@ public class TracksView implements View {
                                         tr().withClass("add-button-row").with(
                                             td().attr("colspan", "5").with(
                                                 a().withClass("add-button")
-                                                    .withHref("/drafts/" + draftId + "/tracks/new-from-preset")
+                                                    .withHref("/networks/" + networkId + "/tracks/new-from-preset")
                                                     .withText("+ Add Preset Tracks"),
                                                 a().withClass("add-button")
-                                                    .withHref("/drafts/" + draftId + "/tracks/new-custom")
+                                                    .withHref("/networks/" + networkId + "/tracks/new-custom")
                                                     .withText("+ Add Custom Track")
                                             )
                                         )
@@ -164,11 +164,11 @@ public class TracksView implements View {
                                 )
                             )
                         ),
-                        getPresetTrackForm(draftDto, trackRows)
+                        getPresetTrackForm(networkDto, trackRows)
                     )
                 )
             ),
-            new GermanyMapSvgView(draftDto.getStations(), draftDto.getTracks()).getHtml()
+            new GermanyMapSvgView(networkDto.getStations(), networkDto.getTracks()).getHtml()
         );
     }
 
@@ -199,7 +199,7 @@ public class TracksView implements View {
                 ),
                 td(
                     input().withClass("add-button").withType("submit").withValue("Add Track"),
-                    a().withHref("/drafts/" + draftId + "/tracks").withText("Cancel")
+                    a().withHref("/networks/" + networkId + "/tracks").withText("Cancel")
                 )
             );
         }
@@ -231,11 +231,11 @@ public class TracksView implements View {
     }
 
     private Tag getPresetTrackForm(
-        final RailNetworkDraftDto draftDto,
+        final RailNetworkDto networkDto,
         final List<TrackRow> trackRows
     ) {
         if (showPresetTrackForm) {
-            final var stationNames = draftDto.getStations().stream()
+            final var stationNames = networkDto.getStations().stream()
                 .map(TrainStationDto::getName)
                 .collect(Collectors.toList());
             final var presetTracks = getAllPresetTracks().stream()
@@ -263,7 +263,7 @@ public class TracksView implements View {
                     ),
                 p(
                     input().withClass("add-button").withType("submit").withValue("Add Tracks"),
-                    a().withHref("/drafts/" + draftId + "/tracks").withText("Cancel")
+                    a().withHref("/networks/" + networkId + "/tracks").withText("Cancel")
                 )
             );
         }
@@ -281,25 +281,25 @@ public class TracksView implements View {
         return trackErrors;
     }
 
-    private RailNetworkDraftDto getDraftDto() {
-        final var draft = draftRepository
-            .getRailNetworkDraftOfId(new RailNetworkDraftId(draftId));
+    private RailNetworkDto getNetworkDto() {
+        final var network = networkRepository
+            .getRailNetworkOfId(new RailNetworkId(networkId));
 
-        return new RailNetworkDraftDto(draft);
+        return new RailNetworkDto(network);
     }
 
-    private Map<Integer, String> getStationNames(final RailNetworkDraftDto draftDto) {
-        return draftDto
+    private Map<Integer, String> getStationNames(final RailNetworkDto networkDto) {
+        return networkDto
             .getStations()
             .stream()
             .collect(Collectors.toMap(TrainStationDto::getId, TrainStationDto::getName));
     }
 
     private List<TrackRow> getTrackRows(
-        final RailNetworkDraftDto draftDto,
+        final RailNetworkDto networkDto,
         final Map<Integer, String> stationNames
     ) {
-        final var tracks = draftDto.getTracks();
+        final var tracks = networkDto.getTracks();
 
         return IntStream
             .range(0, tracks.size())

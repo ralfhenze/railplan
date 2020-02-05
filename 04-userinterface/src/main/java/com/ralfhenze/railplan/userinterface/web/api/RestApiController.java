@@ -1,14 +1,14 @@
 package com.ralfhenze.railplan.userinterface.web.api;
 
-import com.ralfhenze.railplan.application.RailNetworkDraftService;
+import com.ralfhenze.railplan.application.RailNetworkService;
 import com.ralfhenze.railplan.application.RailwayTrackService;
 import com.ralfhenze.railplan.application.TrainStationService;
 import com.ralfhenze.railplan.application.commands.AddRailwayTrackByStationIdCommand;
 import com.ralfhenze.railplan.application.commands.AddTrainStationCommand;
-import com.ralfhenze.railplan.domain.railnetwork.RailNetworkDraftId;
+import com.ralfhenze.railplan.domain.railnetwork.RailNetworkId;
 import com.ralfhenze.railplan.infrastructure.persistence.MongoDbQueries;
-import com.ralfhenze.railplan.infrastructure.persistence.RailNetworkDraftMongoDbRepository;
-import com.ralfhenze.railplan.infrastructure.persistence.dto.RailNetworkDraftDto;
+import com.ralfhenze.railplan.infrastructure.persistence.RailNetworkMongoDbRepository;
+import com.ralfhenze.railplan.infrastructure.persistence.dto.RailNetworkDto;
 import com.ralfhenze.railplan.infrastructure.persistence.dto.RailwayTrackDto;
 import com.ralfhenze.railplan.infrastructure.persistence.dto.TrainStationDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,49 +29,49 @@ public class RestApiController {
     @Autowired
     private MongoTemplate mongoTemplate;
 
-    @GetMapping("/drafts")
-    public List<RailNetworkDraftDto> getDrafts() {
-        return new MongoDbQueries(mongoTemplate).getAllDrafts();
+    @GetMapping("/networks")
+    public List<RailNetworkDto> getNetworks() {
+        return new MongoDbQueries(mongoTemplate).getAllNetworks();
     }
 
-    @PostMapping("/drafts")
-    public RailNetworkDraftDto addDraft() {
-        final var addedDraft =
-            new RailNetworkDraftService(new RailNetworkDraftMongoDbRepository(mongoTemplate))
-                .addDraft()
+    @PostMapping("/networks")
+    public RailNetworkDto addNetwork() {
+        final var addedNetwork =
+            new RailNetworkService(new RailNetworkMongoDbRepository(mongoTemplate))
+                .addNetwork()
                 .get();
 
-        return new RailNetworkDraftDto(addedDraft);
+        return new RailNetworkDto(addedNetwork);
     }
 
-    @GetMapping("/drafts/{draftId}")
-    public RailNetworkDraftDto getDraft(@PathVariable String draftId) {
-        return new MongoDbQueries(mongoTemplate).getDraftOfId(draftId);
+    @GetMapping("/networks/{networkId}")
+    public RailNetworkDto getNetwork(@PathVariable String networkId) {
+        return new MongoDbQueries(mongoTemplate).getNetworkOfId(networkId);
     }
 
-    @GetMapping("/drafts/{draftId}/stations")
-    public List<TrainStationDto> getStations(@PathVariable String draftId) {
-        return new MongoDbQueries(mongoTemplate).getDraftOfId(draftId).getStations();
+    @GetMapping("/networks/{networkId}/stations")
+    public List<TrainStationDto> getStations(@PathVariable String networkId) {
+        return new MongoDbQueries(mongoTemplate).getNetworkOfId(networkId).getStations();
     }
 
-    @PostMapping("/drafts/{draftId}/stations")
+    @PostMapping("/networks/{networkId}/stations")
     public TrainStationDto addStation(
-        @PathVariable String draftId,
+        @PathVariable String networkId,
         @RequestBody TrainStationDto stationDto
     ) {
-        final var draftRepository = new RailNetworkDraftMongoDbRepository(mongoTemplate);
+        final var networkRepository = new RailNetworkMongoDbRepository(mongoTemplate);
 
-        new TrainStationService(draftRepository).addStationToDraft(
+        new TrainStationService(networkRepository).addStationToNetwork(
             new AddTrainStationCommand(
-                draftId,
+                networkId,
                 stationDto.getName(),
                 stationDto.getLatitude(),
                 stationDto.getLongitude()
             )
         );
 
-        final var addedStation = draftRepository
-            .getRailNetworkDraftOfId(new RailNetworkDraftId(draftId))
+        final var addedStation = networkRepository
+            .getRailNetworkOfId(new RailNetworkId(networkId))
             .getStations()
             .getLastOptional()
             .get();
@@ -79,28 +79,28 @@ public class RestApiController {
         return new TrainStationDto(addedStation);
     }
 
-    @GetMapping("/drafts/{draftId}/tracks")
-    public List<RailwayTrackDto> getTracks(@PathVariable String draftId) {
-        return new MongoDbQueries(mongoTemplate).getDraftOfId(draftId).getTracks();
+    @GetMapping("/networks/{networkId}/tracks")
+    public List<RailwayTrackDto> getTracks(@PathVariable String networkId) {
+        return new MongoDbQueries(mongoTemplate).getNetworkOfId(networkId).getTracks();
     }
 
-    @PostMapping("/drafts/{draftId}/tracks")
+    @PostMapping("/networks/{networkId}/tracks")
     public RailwayTrackDto createNewTrack(
-        @PathVariable String draftId,
+        @PathVariable String networkId,
         @RequestBody RailwayTrackDto trackDto
     ) {
-        final var draftRepository = new RailNetworkDraftMongoDbRepository(mongoTemplate);
+        final var networkRepository = new RailNetworkMongoDbRepository(mongoTemplate);
 
-        new RailwayTrackService(draftRepository).addTrackByStationId(
+        new RailwayTrackService(networkRepository).addTrackByStationId(
             new AddRailwayTrackByStationIdCommand(
-                draftId,
+                networkId,
                 trackDto.getFirstStationId(),
                 trackDto.getSecondStationId()
             )
         );
 
-        final var addedTrack = draftRepository
-            .getRailNetworkDraftOfId(new RailNetworkDraftId(draftId))
+        final var addedTrack = networkRepository
+            .getRailNetworkOfId(new RailNetworkId(networkId))
             .getTracks()
             .getLastOptional()
             .get();

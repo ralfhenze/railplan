@@ -29,16 +29,16 @@ import static com.ralfhenze.railplan.domain.common.Preconditions.ensureNotNull;
  * [x] two Stations can only be connected by a single Track
  * [x] the maximum length of a Track is 300 km
  */
-public class RailNetworkDraft implements Aggregate {
+public class RailNetwork implements Aggregate {
 
-    private final Optional<RailNetworkDraftId> id;
+    private final Optional<RailNetworkId> id;
     private final ImmutableList<TrainStation> stations;
     private final ImmutableList<RailwayTrack> tracks;
 
     /**
-     * Constructs an empty Draft without Stations or Tracks.
+     * Constructs an empty Network without Stations or Tracks.
      */
-    public RailNetworkDraft() {
+    public RailNetwork() {
         this(
             Optional.empty(),
             Lists.immutable.empty(),
@@ -47,10 +47,10 @@ public class RailNetworkDraft implements Aggregate {
     }
 
     /**
-     * @throws ValidationException if any Draft invariants are violated
+     * @throws ValidationException if any Network invariants are violated
      */
-    private RailNetworkDraft(
-        final Optional<RailNetworkDraftId> id,
+    private RailNetwork(
+        final Optional<RailNetworkId> id,
         final ImmutableList<TrainStation> stations,
         final ImmutableList<RailwayTrack> tracks
     ) {
@@ -66,41 +66,41 @@ public class RailNetworkDraft implements Aggregate {
     }
 
     /**
-     * Returns a new Draft with given Draft ID.
+     * Returns a new Network with given Network ID.
      *
      * @throws IllegalArgumentException if given ID is null
      */
-    public RailNetworkDraft withId(RailNetworkDraftId id) {
-        ensureNotNull(id, "Rail Network Draft ID");
+    public RailNetwork withId(RailNetworkId id) {
+        ensureNotNull(id, "Rail Network ID");
 
-        return new RailNetworkDraft(Optional.of(id), stations, tracks);
+        return new RailNetwork(Optional.of(id), stations, tracks);
     }
 
     /**
-     * Returns a new Draft with added preset Stations.
+     * Returns a new Network with added preset Stations.
      *
-     * @throws ValidationException if Station Name, Location or Draft invariants are violated
+     * @throws ValidationException if Station Name, Location or Network invariants are violated
      */
-    public RailNetworkDraft addStations(final PresetStation... presetStations) {
-        var draft = this;
+    public RailNetwork addStations(final PresetStation... presetStations) {
+        var network = this;
         for (final var presetStation : presetStations) {
-            draft = draft.addStation(
+            network = network.addStation(
                 presetStation.getName(),
                 presetStation.getLatitude(),
                 presetStation.getLongitude()
             );
         }
 
-        return draft;
+        return network;
     }
 
     /**
-     * Returns a new Draft with added Station. The new Station will be appended to the
+     * Returns a new Network with added Station. The new Station will be appended to the
      * end of the Stations list.
      *
-     * @throws ValidationException if Station Name, Location or Draft invariants are violated
+     * @throws ValidationException if Station Name, Location or Network invariants are violated
      */
-    public RailNetworkDraft addStation(
+    public RailNetwork addStation(
         final String stationName,
         final double latitude,
         final double longitude
@@ -109,13 +109,13 @@ public class RailNetworkDraft implements Aggregate {
     }
 
     /**
-     * Returns a new Draft with added Station. The new Station will be appended to the
+     * Returns a new Network with added Station. The new Station will be appended to the
      * end of the Stations list.
      *
-     * @throws ValidationException if Station Name, Location or Draft invariants are violated
+     * @throws ValidationException if Station Name, Location or Network invariants are violated
      *                             or Station ID already exists
      */
-    public RailNetworkDraft addStation(
+    public RailNetwork addStation(
         final int stationId,
         final String stationName,
         final double latitude,
@@ -133,16 +133,16 @@ public class RailNetworkDraft implements Aggregate {
         final var addedStation = new TrainStation(id, name, location);
         final var newStations = stations.newWith(addedStation);
 
-        return new RailNetworkDraft(this.id, newStations, this.tracks);
+        return new RailNetwork(this.id, newStations, this.tracks);
     }
 
     /**
-     * Returns a new Draft with updated Station name and location.
+     * Returns a new Network with updated Station name and location.
      *
      * @throws EntityNotFoundException if TrainStation with stationId does not exist
-     * @throws ValidationException if Station Name, Location or Draft invariants are violated
+     * @throws ValidationException if Station Name, Location or Network invariants are violated
      */
-    public RailNetworkDraft updateStation(
+    public RailNetwork updateStation(
         final int stationId,
         final String newStationName,
         final double newLatitude,
@@ -168,32 +168,32 @@ public class RailNetworkDraft implements Aggregate {
         );
         final var newStations = mutableStations.toImmutable();
 
-        return new RailNetworkDraft(this.id, newStations, this.tracks);
+        return new RailNetwork(this.id, newStations, this.tracks);
     }
 
     /**
-     * Returns a new Draft without the Station of given name. The Tracks connected to this
+     * Returns a new Network without the Station of given name. The Tracks connected to this
      * Station will also be removed.
      *
      * @throws EntityNotFoundException if TrainStation with stationName does not exist
      */
-    public RailNetworkDraft deleteStation(final String stationName) {
+    public RailNetwork deleteStation(final String stationName) {
         return deleteStation(getStationIdOf(stationName).getId());
     }
 
     /**
-     * Returns a new Draft without the Station of given ID. The Tracks connected to this
+     * Returns a new Network without the Station of given ID. The Tracks connected to this
      * Station will also be removed.
      *
      * @throws ValidationException if stationId is invalid
      * @throws EntityNotFoundException if TrainStation with stationId does not exist
      */
-    public RailNetworkDraft deleteStation(final int stationId) {
+    public RailNetwork deleteStation(final int stationId) {
         final var id = new TrainStationId(stationId);
 
         ensureStationExists(id);
 
-        return new RailNetworkDraft(
+        return new RailNetwork(
             this.id,
             this.stations.reject(station -> station.getId().equals(id)),
             this.tracks.reject(track -> track.connectsStation(id))
@@ -201,11 +201,11 @@ public class RailNetworkDraft implements Aggregate {
     }
 
     /**
-     * Returns a new Draft with added Track appended to the end of the Tracks list.
+     * Returns a new Network with added Track appended to the end of the Tracks list.
      *
-     * @throws ValidationException if any Track or Draft invariants are violated
+     * @throws ValidationException if any Track or Network invariants are violated
      */
-    public RailNetworkDraft addTrackBetween(
+    public RailNetwork addTrackBetween(
         final PresetStation firstStation,
         final PresetStation secondStation
     ) {
@@ -213,11 +213,11 @@ public class RailNetworkDraft implements Aggregate {
     }
 
     /**
-     * Returns a new Draft with added Track appended to the end of the Tracks list.
+     * Returns a new Network with added Track appended to the end of the Tracks list.
      *
-     * @throws ValidationException if any Track or Draft invariants are violated
+     * @throws ValidationException if any Track or Network invariants are violated
      */
-    public RailNetworkDraft addTrackBetween(
+    public RailNetwork addTrackBetween(
         final String firstStationName,
         final String secondStationName
     ) {
@@ -228,11 +228,11 @@ public class RailNetworkDraft implements Aggregate {
     }
 
     /**
-     * Returns a new Draft with added Track appended to the end of the Tracks list.
+     * Returns a new Network with added Track appended to the end of the Tracks list.
      *
-     * @throws ValidationException if any Station ID, Track or Draft invariants are violated
+     * @throws ValidationException if any Station ID, Track or Network invariants are violated
      */
-    public RailNetworkDraft addTrackBetween(final int firstStationId, final int secondStationId) {
+    public RailNetwork addTrackBetween(final int firstStationId, final int secondStationId) {
         final var v = new Validation();
         final var firstId = v.get(() -> new TrainStationId(firstStationId));
         final var secondId = v.get(() -> new TrainStationId(secondStationId));
@@ -243,15 +243,15 @@ public class RailNetworkDraft implements Aggregate {
 
         final var updatedTracks = tracks.newWith(new RailwayTrack(firstId, secondId));
 
-        return new RailNetworkDraft(this.id, this.stations, updatedTracks);
+        return new RailNetwork(this.id, this.stations, updatedTracks);
     }
 
     /**
-     * Returns a new Draft without the Track between the Stations of given names.
+     * Returns a new Network without the Track between the Stations of given names.
      *
      * @throws EntityNotFoundException if TrainStation of stationName or Track does not exist
      */
-    public RailNetworkDraft deleteTrackBetween(
+    public RailNetwork deleteTrackBetween(
         final String firstStationName,
         final String secondStationName
     ) {
@@ -262,12 +262,12 @@ public class RailNetworkDraft implements Aggregate {
     }
 
     /**
-     * Returns a new Draft without the Track between the Stations of given IDs.
+     * Returns a new Network without the Track between the Stations of given IDs.
      *
      * @throws ValidationException if any stationId is invalid
      * @throws EntityNotFoundException if TrainStation of stationId or Track does not exist
      */
-    public RailNetworkDraft deleteTrackBetween(
+    public RailNetwork deleteTrackBetween(
         final int firstStationId,
         final int secondStationId
     ) {
@@ -282,14 +282,14 @@ public class RailNetworkDraft implements Aggregate {
 
         final var trackToBeDeleted = new RailwayTrack(firstId, secondId);
 
-        return new RailNetworkDraft(
+        return new RailNetwork(
             this.id,
             this.stations,
             this.tracks.reject(track -> track.equals(trackToBeDeleted))
         );
     }
 
-    public Optional<RailNetworkDraftId> getId() {
+    public Optional<RailNetworkId> getId() {
         return id;
     }
 

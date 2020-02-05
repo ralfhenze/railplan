@@ -21,7 +21,7 @@ public class IndexView implements View {
                 div().withId("index-box").withClass("box").with(
                     h2("Create your own railway network!"),
                     br(),
-                    h3(a().withHref("/drafts").withText("Drafts"))
+                    h3(a().withHref("/networks").withText("Networks"))
                 )
             )
         );

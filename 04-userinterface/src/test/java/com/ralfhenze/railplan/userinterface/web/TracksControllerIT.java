@@ -7,8 +7,8 @@ import com.ralfhenze.railplan.application.commands.DeleteRailwayTrackCommand;
 import com.ralfhenze.railplan.domain.common.validation.Field;
 import com.ralfhenze.railplan.domain.common.validation.ValidationError;
 import com.ralfhenze.railplan.domain.common.validation.ValidationException;
-import com.ralfhenze.railplan.domain.railnetwork.RailNetworkDraftRepository;
-import com.ralfhenze.railplan.userinterface.web.drafts.tracks.PresetTracks;
+import com.ralfhenze.railplan.domain.railnetwork.RailNetworkRepository;
+import com.ralfhenze.railplan.userinterface.web.networks.tracks.PresetTracks;
 import org.jsoup.Jsoup;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,7 +24,7 @@ import java.util.Map;
 import static com.ralfhenze.railplan.domain.railnetwork.presets.PresetStation.BERLIN_HBF;
 import static com.ralfhenze.railplan.domain.railnetwork.presets.PresetStation.DRESDEN_HBF;
 import static com.ralfhenze.railplan.domain.railnetwork.presets.PresetStation.HAMBURG_HBF;
-import static com.ralfhenze.railplan.userinterface.web.TestData.BERLIN_HAMBURG_DRAFT;
+import static com.ralfhenze.railplan.userinterface.web.TestData.BERLIN_HAMBURG_NETWORK;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -40,18 +40,18 @@ public class TracksControllerIT extends HtmlITBase {
     private MongoTemplate mongoTemplate;
 
     @MockBean
-    private RailNetworkDraftRepository draftRepository;
+    private RailNetworkRepository networkRepository;
 
     @MockBean
     private RailwayTrackService railwayTrackService;
 
     @Test
-    public void userGetsAListOfAllTracksOfADraft() throws Exception {
-        // Given an existing Draft
-        given(draftRepository.getRailNetworkDraftOfId(any())).willReturn(BERLIN_HAMBURG_DRAFT);
+    public void userGetsAListOfAllTracksOfANetwork() throws Exception {
+        // Given an existing Network
+        given(networkRepository.getRailNetworkOfId(any())).willReturn(BERLIN_HAMBURG_NETWORK);
 
-        // When we call GET /drafts/123/tracks
-        final var response = getGetResponse("/drafts/123/tracks");
+        // When we call GET /networks/123/tracks
+        final var response = getGetResponse("/networks/123/tracks");
 
         // Then we get a table with all Tracks
         final var document = Jsoup.parse(response.getContentAsString());
@@ -66,13 +66,13 @@ public class TracksControllerIT extends HtmlITBase {
 
     @Test
     public void userCanAccessAFormToAddNewTracksFromPresets() throws Exception {
-        // Given an existing Draft
-        given(draftRepository.getRailNetworkDraftOfId(any())).willReturn(
-            BERLIN_HAMBURG_DRAFT.addStations(DRESDEN_HBF)
+        // Given an existing Network
+        given(networkRepository.getRailNetworkOfId(any())).willReturn(
+            BERLIN_HAMBURG_NETWORK.addStations(DRESDEN_HBF)
         );
 
-        // When we call GET /drafts/123/tracks/new-from-preset
-        final var response = getGetResponse("/drafts/123/tracks/new-from-preset");
+        // When we call GET /networks/123/tracks/new-from-preset
+        final var response = getGetResponse("/networks/123/tracks/new-from-preset");
 
         // Then we get a form with a multi-select-box of all preset Tracks
         final var presetTrackForm = getElement("#preset-track-form", response);
@@ -83,9 +83,9 @@ public class TracksControllerIT extends HtmlITBase {
 
     @Test
     public void userCanAddNewTracksFromPresets() throws Exception {
-        // When we call POST /drafts/123/tracks/new-from-preset with two valid preset Track IDs
+        // When we call POST /networks/123/tracks/new-from-preset with two valid preset Track IDs
         final var response = getPostResponseWithMultiValueParameters(
-            "/drafts/123/tracks/new-from-preset",
+            "/networks/123/tracks/new-from-preset",
             Map.of("presetTrackIdsToAdd", List.of("1", "2"))
         );
 
@@ -101,23 +101,23 @@ public class TracksControllerIT extends HtmlITBase {
         for (final var i : List.of(0, 1)) {
             final var executedCommand = executedCommands.get(i);
             final var track = expectedTracks.get(i);
-            assertThat(executedCommand.getDraftId()).isEqualTo("123");
+            assertThat(executedCommand.getNetworkId()).isEqualTo("123");
             assertThat(executedCommand.getFirstStationName()).isEqualTo(track.station1.getName());
             assertThat(executedCommand.getSecondStationName()).isEqualTo(track.station2.getName());
         }
 
         // And we will be redirected to the Tracks page
         assertThat(response.getStatus()).isEqualTo(HTTP_MOVED_TEMPORARILY);
-        assertThat(response.getRedirectedUrl()).isEqualTo("/drafts/123/tracks");
+        assertThat(response.getRedirectedUrl()).isEqualTo("/networks/123/tracks");
     }
 
     @Test
     public void userCanAccessAFormToAddANewCustomTrack() throws Exception {
-        // Given an existing Draft
-        given(draftRepository.getRailNetworkDraftOfId(any())).willReturn(BERLIN_HAMBURG_DRAFT);
+        // Given an existing Network
+        given(networkRepository.getRailNetworkOfId(any())).willReturn(BERLIN_HAMBURG_NETWORK);
 
-        // When we call GET /drafts/123/tracks/new-custom
-        final var response = getGetResponse("/drafts/123/tracks/new-custom");
+        // When we call GET /networks/123/tracks/new-custom
+        final var response = getGetResponse("/networks/123/tracks/new-custom");
 
         // Then we get a form with dropdown lists for first and second Station
         final var customTrackForm = getElement("#custom-track-form", response);
@@ -129,9 +129,9 @@ public class TracksControllerIT extends HtmlITBase {
 
     @Test
     public void userCanAddANewCustomTrack() throws Exception {
-        // When we call POST /drafts/123/tracks/new-custom with valid Track parameters
+        // When we call POST /networks/123/tracks/new-custom with valid Track parameters
         final var response = getPostResponse(
-            "/drafts/123/tracks/new-custom",
+            "/networks/123/tracks/new-custom",
             Map.of("firstStationId", "1", "secondStationId", "2")
         );
 
@@ -140,19 +140,19 @@ public class TracksControllerIT extends HtmlITBase {
         verify(railwayTrackService).addTrackByStationId(commandCaptor.capture());
 
         final var executedCommand = commandCaptor.getValue();
-        assertThat(executedCommand.getDraftId()).isEqualTo("123");
+        assertThat(executedCommand.getNetworkId()).isEqualTo("123");
         assertThat(executedCommand.getFirstStationId()).isEqualTo(1);
         assertThat(executedCommand.getSecondStationId()).isEqualTo(2);
 
         // And we will be redirected to the Tracks page
         assertThat(response.getStatus()).isEqualTo(HTTP_MOVED_TEMPORARILY);
-        assertThat(response.getRedirectedUrl()).isEqualTo("/drafts/123/tracks");
+        assertThat(response.getRedirectedUrl()).isEqualTo("/networks/123/tracks");
     }
 
     @Test
     public void userSeesValidationErrorsWhenAddingAnInvalidCustomTrack() throws Exception {
-        // Given an existing Draft
-        given(draftRepository.getRailNetworkDraftOfId(any())).willReturn(BERLIN_HAMBURG_DRAFT);
+        // Given an existing Network
+        given(networkRepository.getRailNetworkOfId(any())).willReturn(BERLIN_HAMBURG_NETWORK);
 
         // And a ValidationException is thrown when attempting to add a Track
         final var firstStationIdError = "First Station ID Error";
@@ -163,9 +163,9 @@ public class TracksControllerIT extends HtmlITBase {
         ));
         doThrow(validationException).when(railwayTrackService).addTrackByStationId(any());
 
-        // When we call POST /drafts/123/tracks/new-custom with invalid Track parameters
+        // When we call POST /networks/123/tracks/new-custom with invalid Track parameters
         final var response = getPostResponse(
-            "/drafts/123/tracks/new-custom",
+            "/networks/123/tracks/new-custom",
             Map.of("firstStationId", "2", "secondStationId", "2")
         );
 
@@ -184,20 +184,20 @@ public class TracksControllerIT extends HtmlITBase {
 
     @Test
     public void userCanDeleteAnExistingTrack() throws Exception {
-        // When we call GET /drafts/123/tracks/1/2/delete
-        final var response = getGetResponse("/drafts/123/tracks/1/2/delete");
+        // When we call GET /networks/123/tracks/1/2/delete
+        final var response = getGetResponse("/networks/123/tracks/1/2/delete");
 
         // Then a DeleteRailwayTrackCommand is issued
         final var commandCaptor = ArgumentCaptor.forClass(DeleteRailwayTrackCommand.class);
-        verify(railwayTrackService).deleteTrackFromDraft(commandCaptor.capture());
+        verify(railwayTrackService).deleteTrackFromNetwork(commandCaptor.capture());
 
         final var executedCommand = commandCaptor.getValue();
-        assertThat(executedCommand.getDraftId()).isEqualTo("123");
+        assertThat(executedCommand.getNetworkId()).isEqualTo("123");
         assertThat(executedCommand.getFirstStationId()).isEqualTo(1);
         assertThat(executedCommand.getSecondStationId()).isEqualTo(2);
 
         // And we will be redirected to the Tracks page
         assertThat(response.getStatus()).isEqualTo(HTTP_MOVED_TEMPORARILY);
-        assertThat(response.getRedirectedUrl()).isEqualTo("/drafts/123/tracks");
+        assertThat(response.getRedirectedUrl()).isEqualTo("/networks/123/tracks");
     }
 }

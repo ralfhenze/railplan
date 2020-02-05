@@ -5,8 +5,8 @@ import com.ralfhenze.railplan.application.commands.AddRailwayTrackByStationNameC
 import com.ralfhenze.railplan.application.commands.DeleteRailwayTrackCommand;
 import com.ralfhenze.railplan.domain.common.EntityNotFoundException;
 import com.ralfhenze.railplan.domain.common.validation.ValidationException;
-import com.ralfhenze.railplan.domain.railnetwork.RailNetworkDraftId;
-import com.ralfhenze.railplan.domain.railnetwork.RailNetworkDraftRepository;
+import com.ralfhenze.railplan.domain.railnetwork.RailNetworkId;
+import com.ralfhenze.railplan.domain.railnetwork.RailNetworkRepository;
 
 import static com.ralfhenze.railplan.domain.common.Preconditions.ensureNotNull;
 
@@ -15,73 +15,73 @@ import static com.ralfhenze.railplan.domain.common.Preconditions.ensureNotNull;
  */
 public class RailwayTrackService implements ApplicationService {
 
-    final private RailNetworkDraftRepository draftRepository;
+    final private RailNetworkRepository networkRepository;
 
     /**
      * Constructs the Track service.
      *
-     * @throws IllegalArgumentException if draftRepository is null
+     * @throws IllegalArgumentException if networkRepository is null
      */
-    public RailwayTrackService(final RailNetworkDraftRepository draftRepository) {
-        this.draftRepository = ensureNotNull(draftRepository, "Draft Repository");
+    public RailwayTrackService(final RailNetworkRepository networkRepository) {
+        this.networkRepository = ensureNotNull(networkRepository, "Network Repository");
     }
 
     /**
-     * Adds a new Track (identified by Station IDs) to an existing Draft.
+     * Adds a new Track (identified by Station IDs) to an existing Network.
      *
-     * @throws ValidationException if draftId or stationIds are not valid or Track
+     * @throws ValidationException if networkId or stationIds are not valid or Track
      *                             invariants are violated
-     * @throws EntityNotFoundException if RailNetworkDraft with draftId or TrainStation with
+     * @throws EntityNotFoundException if RailNetwork with networkId or TrainStation with
      *                                 firstStationId or secondStationId does not exist
      */
     public void addTrackByStationId(final AddRailwayTrackByStationIdCommand command) {
-        final var draftId = new RailNetworkDraftId(command.getDraftId());
-        final var draft = draftRepository.getRailNetworkDraftOfId(draftId);
+        final var networkId = new RailNetworkId(command.getNetworkId());
+        final var network = networkRepository.getRailNetworkOfId(networkId);
 
-        final var updatedDraft = draft.addTrackBetween(
+        final var updatedNetwork = network.addTrackBetween(
             command.getFirstStationId(),
             command.getSecondStationId()
         );
 
-        draftRepository.persist(updatedDraft);
+        networkRepository.persist(updatedNetwork);
     }
 
     /**
-     * Adds a new Track (identified by Station names) to an existing Draft.
+     * Adds a new Track (identified by Station names) to an existing Network.
      *
-     * @throws ValidationException if draftId or stationNames are not valid or Track
+     * @throws ValidationException if networkId or stationNames are not valid or Track
      *                             invariants are violated
-     * @throws EntityNotFoundException if RailNetworkDraft with draftId or TrainStation with
+     * @throws EntityNotFoundException if RailNetwork with networkId or TrainStation with
      *                                 firstStationName or secondStationName does not exist
      */
     public void addTrackByStationName(final AddRailwayTrackByStationNameCommand command) {
-        final var draftId = new RailNetworkDraftId(command.getDraftId());
-        final var draft = draftRepository.getRailNetworkDraftOfId(draftId);
+        final var networkId = new RailNetworkId(command.getNetworkId());
+        final var network = networkRepository.getRailNetworkOfId(networkId);
 
-        final var updatedDraft = draft.addTrackBetween(
+        final var updatedNetwork = network.addTrackBetween(
             command.getFirstStationName(),
             command.getSecondStationName()
         );
 
-        draftRepository.persist(updatedDraft);
+        networkRepository.persist(updatedNetwork);
     }
 
     /**
-     * Deletes an existing Track from an existing Draft.
+     * Deletes an existing Track from an existing Network.
      *
-     * @throws ValidationException if draftId or stationIds are not valid
-     * @throws EntityNotFoundException if RailNetworkDraft with draftId or TrainStation
+     * @throws ValidationException if networkId or stationIds are not valid
+     * @throws EntityNotFoundException if RailNetwork with networkId or TrainStation
      *                                 with stationId1 or stationId2 does not exist
      */
-    public void deleteTrackFromDraft(final DeleteRailwayTrackCommand command) {
-        final var draftId = new RailNetworkDraftId(command.getDraftId());
-        final var draft = draftRepository.getRailNetworkDraftOfId(draftId);
+    public void deleteTrackFromNetwork(final DeleteRailwayTrackCommand command) {
+        final var networkId = new RailNetworkId(command.getNetworkId());
+        final var network = networkRepository.getRailNetworkOfId(networkId);
 
-        final var updatedDraft = draft.deleteTrackBetween(
+        final var updatedNetwork = network.deleteTrackBetween(
             command.getFirstStationId(),
             command.getSecondStationId()
         );
 
-        draftRepository.persist(updatedDraft);
+        networkRepository.persist(updatedNetwork);
     }
 }

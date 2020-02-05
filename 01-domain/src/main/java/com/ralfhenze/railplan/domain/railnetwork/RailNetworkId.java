@@ -6,16 +6,16 @@ import com.ralfhenze.railplan.domain.common.validation.Validation;
 import com.ralfhenze.railplan.domain.common.validation.ValidationException;
 import com.ralfhenze.railplan.domain.common.validation.constraints.IsNotBlank;
 
-public class RailNetworkDraftId implements Id {
+public class RailNetworkId implements Id {
 
     private final String id;
 
     /**
      * @throws ValidationException if id is blank
      */
-    public RailNetworkDraftId(final String id) {
+    public RailNetworkId(final String id) {
         new Validation()
-            .ensureThat(id, new IsNotBlank(), Field.DRAFT_ID)
+            .ensureThat(id, new IsNotBlank(), Field.NETWORK_ID)
             .throwExceptionIfInvalid();
 
         this.id = id;
@@ -23,7 +23,7 @@ public class RailNetworkDraftId implements Id {
 
     @Override
     public boolean equals(Object o) {
-        return (o != null && ((RailNetworkDraftId)o).id.equals(this.id));
+        return (o != null && ((RailNetworkId)o).id.equals(this.id));
     }
 
     @Override

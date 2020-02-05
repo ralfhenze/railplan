@@ -1,4 +1,4 @@
-package com.ralfhenze.railplan.userinterface.web.drafts.stations;
+package com.ralfhenze.railplan.userinterface.web.networks.stations;
 
 import com.ralfhenze.railplan.application.TrainStationService;
 import com.ralfhenze.railplan.application.commands.AddTrainStationCommand;
@@ -6,7 +6,7 @@ import com.ralfhenze.railplan.application.commands.DeleteTrainStationCommand;
 import com.ralfhenze.railplan.application.commands.UpdateTrainStationCommand;
 import com.ralfhenze.railplan.domain.common.EntityNotFoundException;
 import com.ralfhenze.railplan.domain.common.validation.ValidationException;
-import com.ralfhenze.railplan.domain.railnetwork.RailNetworkDraftRepository;
+import com.ralfhenze.railplan.domain.railnetwork.RailNetworkRepository;
 import com.ralfhenze.railplan.domain.railnetwork.presets.PresetStation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -22,34 +22,34 @@ import static com.ralfhenze.railplan.userinterface.web.ControllerHelper.redirect
 @Controller
 public class StationsController {
 
-    private final RailNetworkDraftRepository draftRepository;
+    private final RailNetworkRepository networkRepository;
     private final TrainStationService trainStationService;
 
     @Autowired
     public StationsController(
-        final RailNetworkDraftRepository draftRepository,
+        final RailNetworkRepository networkRepository,
         final TrainStationService trainStationService
     ) {
-        this.draftRepository = draftRepository;
+        this.networkRepository = networkRepository;
         this.trainStationService = trainStationService;
     }
 
     /**
      * Shows a list of Stations.
      */
-    @GetMapping({"/drafts/{draftId}", "/drafts/{draftId}/stations"})
+    @GetMapping({"/networks/{networkId}", "/networks/{networkId}/stations"})
     @ResponseBody
-    public String showDraftPage(@PathVariable String draftId) {
-        return new StationsView(draftId, draftRepository).getHtml().render();
+    public String showNetworkPage(@PathVariable String networkId) {
+        return new StationsView(networkId, networkRepository).getHtml().render();
     }
 
     /**
      * Shows a form to create new Stations from presets.
      */
-    @GetMapping("/drafts/{draftId}/stations/new-from-preset")
+    @GetMapping("/networks/{networkId}/stations/new-from-preset")
     @ResponseBody
-    public String showPresetStationForm(@PathVariable String draftId) {
-        return new StationsView(draftId, draftRepository)
+    public String showPresetStationForm(@PathVariable String networkId) {
+        return new StationsView(networkId, networkRepository)
             .withShowPresetStationForm(true)
             .getHtml()
             .render();
@@ -58,10 +58,10 @@ public class StationsController {
     /**
      * Creates new Stations from presets or shows validation errors.
      */
-    @PostMapping("/drafts/{draftId}/stations/new-from-preset")
+    @PostMapping("/networks/{networkId}/stations/new-from-preset")
     @ResponseBody
     public String createNewStationsFromPresets(
-        @PathVariable String draftId,
+        @PathVariable String networkId,
         PresetStationFormModel presetStationFormModel,
         HttpServletResponse response
     ) {
@@ -70,9 +70,9 @@ public class StationsController {
                 final var station = PresetStation.getOptionalOfName(stationName);
 
                 if (station.isPresent()) {
-                    trainStationService.addStationToDraft(
+                    trainStationService.addStationToNetwork(
                         new AddTrainStationCommand(
-                            draftId,
+                            networkId,
                             station.get().getName(),
                             station.get().getLatitude(),
                             station.get().getLongitude()
@@ -85,7 +85,7 @@ public class StationsController {
                 }
             }
         } catch (ValidationException exception) {
-            return new StationsView(draftId, draftRepository)
+            return new StationsView(networkId, networkRepository)
                 .withShowPresetStationForm(true)
                 .withPresetStationFormModel(presetStationFormModel)
                 .withValidationException(exception)
@@ -93,16 +93,16 @@ public class StationsController {
                 .render();
         }
 
-        return redirectTo("/drafts/" + draftId + "/stations", response);
+        return redirectTo("/networks/" + networkId + "/stations", response);
     }
 
     /**
      * Shows a form to create a new custom Station.
      */
-    @GetMapping("/drafts/{draftId}/stations/new-custom")
+    @GetMapping("/networks/{networkId}/stations/new-custom")
     @ResponseBody
-    public String showNewCustomStationForm(@PathVariable String draftId) {
-        return new StationsView(draftId, draftRepository)
+    public String showNewCustomStationForm(@PathVariable String networkId) {
+        return new StationsView(networkId, networkRepository)
             .withShowCustomStationForm(true)
             .getHtml()
             .render();
@@ -111,24 +111,24 @@ public class StationsController {
     /**
      * Creates a new custom Station or shows validation errors.
      */
-    @PostMapping("/drafts/{draftId}/stations/new-custom")
+    @PostMapping("/networks/{networkId}/stations/new-custom")
     @ResponseBody
     public String createNewCustomStation(
-        @PathVariable String draftId,
+        @PathVariable String networkId,
         StationTableRow stationRow,
         HttpServletResponse response
     ) {
         try {
-            trainStationService.addStationToDraft(
+            trainStationService.addStationToNetwork(
                 new AddTrainStationCommand(
-                    draftId,
+                    networkId,
                     stationRow.stationName,
                     getCoordinateDouble(stationRow.latitude),
                     getCoordinateDouble(stationRow.longitude)
                 )
             );
         } catch (ValidationException exception) {
-            return new StationsView(draftId, draftRepository)
+            return new StationsView(networkId, networkRepository)
                 .withShowCustomStationForm(true)
                 .withValidationException(exception)
                 .withStationTableRow(stationRow)
@@ -136,19 +136,19 @@ public class StationsController {
                 .render();
         }
 
-        return redirectTo("/drafts/" + draftId + "/stations", response);
+        return redirectTo("/networks/" + networkId + "/stations", response);
     }
 
     /**
      * Shows a form to edit an existing Station.
      */
-    @GetMapping("/drafts/{draftId}/stations/{stationId}/edit")
+    @GetMapping("/networks/{networkId}/stations/{stationId}/edit")
     @ResponseBody
     public String editStation(
-        @PathVariable String draftId,
+        @PathVariable String networkId,
         @PathVariable String stationId
     ) {
-        return new StationsView(draftId, draftRepository)
+        return new StationsView(networkId, networkRepository)
             .withStationIdToEdit(Integer.parseInt(stationId))
             .getHtml()
             .render();
@@ -157,10 +157,10 @@ public class StationsController {
     /**
      * Updates an existing Station or shows validation errors.
      */
-    @PostMapping("/drafts/{draftId}/stations/{stationId}/edit")
+    @PostMapping("/networks/{networkId}/stations/{stationId}/edit")
     @ResponseBody
     public String updateStation(
-        @PathVariable String draftId,
+        @PathVariable String networkId,
         @PathVariable String stationId,
         StationTableRow stationRow,
         HttpServletResponse response
@@ -168,9 +168,9 @@ public class StationsController {
         final var intStationId = Integer.parseInt(stationId);
 
         try {
-            trainStationService.updateStationOfDraft(
+            trainStationService.updateStationOfNetwork(
                 new UpdateTrainStationCommand(
-                    draftId,
+                    networkId,
                     intStationId,
                     stationRow.stationName,
                     getCoordinateDouble(stationRow.latitude),
@@ -178,7 +178,7 @@ public class StationsController {
                 )
             );
         } catch (ValidationException exception) {
-            return new StationsView(draftId, draftRepository)
+            return new StationsView(networkId, networkRepository)
                 .withStationIdToEdit(intStationId)
                 .withValidationException(exception)
                 .withStationTableRow(stationRow)
@@ -186,25 +186,25 @@ public class StationsController {
                 .render();
         }
 
-        return redirectTo("/drafts/" + draftId + "/stations", response);
+        return redirectTo("/networks/" + networkId + "/stations", response);
     }
 
     /**
      * Deletes an existing Station and redirects to Stations page.
      */
-    @GetMapping("/drafts/{draftId}/stations/{stationId}/delete")
+    @GetMapping("/networks/{networkId}/stations/{stationId}/delete")
     public String deleteStation(
-        @PathVariable String draftId,
+        @PathVariable String networkId,
         @PathVariable String stationId
     ) {
-        trainStationService.deleteStationFromDraft(
+        trainStationService.deleteStationFromNetwork(
             new DeleteTrainStationCommand(
-                draftId,
+                networkId,
                 Integer.parseInt(stationId)
             )
         );
 
-        return "redirect:/drafts/{draftId}/stations";
+        return "redirect:/networks/{networkId}/stations";
     }
 
     private double getCoordinateDouble(final String coordinate) {

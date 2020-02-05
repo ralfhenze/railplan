@@ -4,8 +4,8 @@ import com.ralfhenze.railplan.domain.railnetwork.elements.GeoLocationInGermany;
 import com.ralfhenze.railplan.domain.railnetwork.elements.TrainStation;
 import com.ralfhenze.railplan.domain.railnetwork.elements.TrainStationId;
 import com.ralfhenze.railplan.domain.railnetwork.elements.TrainStationName;
-import com.ralfhenze.railplan.domain.railnetwork.RailNetworkDraft;
-import com.ralfhenze.railplan.domain.railnetwork.RailNetworkDraftId;
+import com.ralfhenze.railplan.domain.railnetwork.RailNetwork;
+import com.ralfhenze.railplan.domain.railnetwork.RailNetworkId;
 
 import static com.ralfhenze.railplan.domain.railnetwork.presets.PresetStation.BERLIN_HBF;
 import static com.ralfhenze.railplan.domain.railnetwork.presets.PresetStation.HAMBURG_HBF;
@@ -24,8 +24,8 @@ public class TestData {
         new GeoLocationInGermany(HAMBURG_HBF.getLatitude(), HAMBURG_HBF.getLongitude())
     );
 
-    public static final RailNetworkDraft BERLIN_HAMBURG_DRAFT = new RailNetworkDraft()
+    public static final RailNetwork BERLIN_HAMBURG_NETWORK = new RailNetwork()
         .addStations(BERLIN_HBF, HAMBURG_HBF)
         .addTrackBetween(BERLIN_HBF, HAMBURG_HBF)
-        .withId(new RailNetworkDraftId("123"));
+        .withId(new RailNetworkId("123"));
 }

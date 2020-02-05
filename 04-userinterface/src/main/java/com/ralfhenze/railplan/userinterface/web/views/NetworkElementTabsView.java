@@ -13,16 +13,16 @@ import static j2html.TagCreator.ul;
 public class NetworkElementTabsView implements View {
 
     private final SelectedTab selectedTab;
-    private final String draftId;
+    private final String networkId;
 
     public enum SelectedTab {
         STATIONS,
         TRACKS
     }
 
-    public NetworkElementTabsView(final SelectedTab selectedTab, final String draftId) {
+    public NetworkElementTabsView(final SelectedTab selectedTab, final String networkId) {
         this.selectedTab = selectedTab;
-        this.draftId = draftId;
+        this.networkId = networkId;
     }
 
     @Override
@@ -30,12 +30,12 @@ public class NetworkElementTabsView implements View {
         return nav().attr("aria-label", "Network Element Tabs").with(
             ul(
                 li(
-                    a().withHref("/drafts/" + draftId + "/stations")
+                    a().withHref("/networks/" + networkId + "/stations")
                         .withCondClass(selectedTab.equals(SelectedTab.STATIONS), "selected")
                         .withText("Train Stations")
                 ),
                 li(
-                    a().withHref("/drafts/" + draftId + "/tracks")
+                    a().withHref("/networks/" + networkId + "/tracks")
                         .withCondClass(selectedTab.equals(SelectedTab.TRACKS), "selected")
                         .withText("Railway Tracks")
                 )

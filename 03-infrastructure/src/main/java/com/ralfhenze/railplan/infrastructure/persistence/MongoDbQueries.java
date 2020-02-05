@@ -1,7 +1,7 @@
 package com.ralfhenze.railplan.infrastructure.persistence;
 
 import com.ralfhenze.railplan.application.queries.Queries;
-import com.ralfhenze.railplan.infrastructure.persistence.dto.RailNetworkDraftDto;
+import com.ralfhenze.railplan.infrastructure.persistence.dto.RailNetworkDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Repository;
@@ -20,24 +20,24 @@ public class MongoDbQueries implements Queries {
     }
 
     @Override
-    public List<String> getAllDraftIds() {
+    public List<String> getAllNetworkIds() {
         return mongoTemplate
-            .findAll(RailNetworkDraftDto.class, RailNetworkDraftMongoDbRepository.COLLECTION_NAME)
+            .findAll(RailNetworkDto.class, RailNetworkMongoDbRepository.COLLECTION_NAME)
             .stream()
-            .map(RailNetworkDraftDto::getId)
+            .map(RailNetworkDto::getId)
             .collect(Collectors.toList());
     }
 
-    public List<RailNetworkDraftDto> getAllDrafts() {
+    public List<RailNetworkDto> getAllNetworks() {
         return mongoTemplate
-            .findAll(RailNetworkDraftDto.class, RailNetworkDraftMongoDbRepository.COLLECTION_NAME);
+            .findAll(RailNetworkDto.class, RailNetworkMongoDbRepository.COLLECTION_NAME);
     }
 
-    public RailNetworkDraftDto getDraftOfId(String id) {
+    public RailNetworkDto getNetworkOfId(String id) {
         return mongoTemplate.findById(
             id,
-            RailNetworkDraftDto.class,
-            RailNetworkDraftMongoDbRepository.COLLECTION_NAME
+            RailNetworkDto.class,
+            RailNetworkMongoDbRepository.COLLECTION_NAME
         );
     }
 }

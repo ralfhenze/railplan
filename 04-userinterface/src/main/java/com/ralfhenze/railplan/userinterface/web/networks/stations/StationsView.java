@@ -1,12 +1,12 @@
-package com.ralfhenze.railplan.userinterface.web.drafts.stations;
+package com.ralfhenze.railplan.userinterface.web.networks.stations;
 
 import com.ralfhenze.railplan.domain.common.validation.Field;
 import com.ralfhenze.railplan.domain.common.validation.ValidationException;
-import com.ralfhenze.railplan.domain.railnetwork.RailNetworkDraft;
-import com.ralfhenze.railplan.domain.railnetwork.RailNetworkDraftId;
-import com.ralfhenze.railplan.domain.railnetwork.RailNetworkDraftRepository;
+import com.ralfhenze.railplan.domain.railnetwork.RailNetwork;
+import com.ralfhenze.railplan.domain.railnetwork.RailNetworkId;
+import com.ralfhenze.railplan.domain.railnetwork.RailNetworkRepository;
 import com.ralfhenze.railplan.domain.railnetwork.presets.PresetStation;
-import com.ralfhenze.railplan.infrastructure.persistence.dto.RailNetworkDraftDto;
+import com.ralfhenze.railplan.infrastructure.persistence.dto.RailNetworkDto;
 import com.ralfhenze.railplan.infrastructure.persistence.dto.TrainStationDto;
 import com.ralfhenze.railplan.userinterface.web.views.GermanyMapSvgView;
 import com.ralfhenze.railplan.userinterface.web.views.MasterView;
@@ -49,22 +49,22 @@ import static j2html.TagCreator.ul;
  */
 public class StationsView implements View {
 
-    private final String draftId;
-    private final RailNetworkDraftRepository draftRepository;
+    private final String networkId;
+    private final RailNetworkRepository networkRepository;
     private int stationIdToEdit = -1;
     private boolean showCustomStationForm = false;
     private boolean showPresetStationForm = false;
-    private RailNetworkDraft draft;
+    private RailNetwork network;
     private ValidationException validationException;
     private PresetStationFormModel presetStationFormModel;
     private StationTableRow stationTableRow;
 
     public StationsView(
-        final String draftId,
-        final RailNetworkDraftRepository draftRepository
+        final String networkId,
+        final RailNetworkRepository networkRepository
     ) {
-        this.draftId = draftId;
-        this.draftRepository = draftRepository;
+        this.networkId = networkId;
+        this.networkRepository = networkRepository;
     }
 
     public StationsView withStationIdToEdit(final int stationIdToEdit) {
@@ -99,14 +99,14 @@ public class StationsView implements View {
         return this;
     }
 
-    private RailNetworkDraftDto getDraftDto() {
-        draft = draftRepository.getRailNetworkDraftOfId(new RailNetworkDraftId(draftId));
+    private RailNetworkDto getNetworkDto() {
+        network = networkRepository.getRailNetworkOfId(new RailNetworkId(networkId));
 
-        return new RailNetworkDraftDto(draft);
+        return new RailNetworkDto(network);
     }
 
     private List<StationTableRow> getStationTableRows() {
-        final var stations = draft.getStations();
+        final var stations = network.getStations();
 
         return IntStream
             .range(0, stations.size())
@@ -166,7 +166,7 @@ public class StationsView implements View {
 
     @Override
     public Tag getHtml() {
-        final var draftDto = getDraftDto();
+        final var networkDto = getNetworkDto();
         final var stationTableRows = getStationTableRows();
         final var showCustomStationForm = this.showCustomStationForm;
         final var newStationTableRow = getNewStationTableRow();
@@ -174,12 +174,12 @@ public class StationsView implements View {
         final var presetStationFormModel = (this.presetStationFormModel == null) ?
             new PresetStationFormModel() : this.presetStationFormModel;
 
-        return new MasterView(SelectedNavEntry.DRAFTS).with(
+        return new MasterView(SelectedNavEntry.NETWORKS).with(
             div().withId("data-panel").with(
                 div().withId("network-elements-box").withClass("box").with(
-                    new NetworkElementTabsView(SelectedTab.STATIONS, draftId).getHtml(),
+                    new NetworkElementTabsView(SelectedTab.STATIONS, networkId).getHtml(),
                     div().withId("stations").with(
-                        h1("Draft"),
+                        h1("Network"),
                         form().withMethod("post").with(
                             table(
                                 caption(h3("Train Stations")),
@@ -200,24 +200,24 @@ public class StationsView implements View {
                                                 td(getStationTableCell("stationName", row.stationName, row.showInputField, row.stationNameIsInvalid())),
                                                 td(getStationTableCell("latitude", row.latitude, row.showInputField, row.latitudeIsInvalid())),
                                                 td(getStationTableCell("longitude", row.longitude, row.showInputField, row.longitudeIsInvalid())),
-                                                td(getActionsCell(draftId, row))
+                                                td(getActionsCell(networkId, row))
                                             ),
                                             getErrorsRow(row)
                                         )
                                     ),
-                                    getLastStationsTableRow(draftId, showCustomStationForm, showPresetStationForm, newStationTableRow),
+                                    getLastStationsTableRow(networkId, showCustomStationForm, showPresetStationForm, newStationTableRow),
                                     iff(newStationTableRow.hasErrors(), getErrorsRow(newStationTableRow))
                                 )
                             )
                         ),
                         iff(
                             showPresetStationForm,
-                            getPresetStationForm(draftId, draftDto.getStations(), presetStationFormModel)
+                            getPresetStationForm(networkId, networkDto.getStations(), presetStationFormModel)
                         )
                     )
                 )
             ),
-            new GermanyMapSvgView(draftDto.getStations(), draftDto.getTracks()).getHtml()
+            new GermanyMapSvgView(networkDto.getStations(), networkDto.getTracks()).getHtml()
         );
     }
 
@@ -234,19 +234,19 @@ public class StationsView implements View {
         }
     }
 
-    private static Tag getActionsCell(final String draftId, final StationTableRow row) {
+    private static Tag getActionsCell(final String networkId, final StationTableRow row) {
         if (row.showInputField) {
             return div().withClass("no-wrap").with(
                 input().withType("submit").withClass("add-button").withValue("Update"),
-                a().withHref("/drafts/" + draftId + "/stations/").withText("Cancel")
+                a().withHref("/networks/" + networkId + "/stations/").withText("Cancel")
             );
         } else {
             return div(
                 join(
-                    a().withHref("/drafts/" + draftId + "/stations/" + row.stationId + "/edit")
+                    a().withHref("/networks/" + networkId + "/stations/" + row.stationId + "/edit")
                         .withText("Edit"),
                     " | ",
-                    a().withHref("/drafts/" + draftId + "/stations/" + row.stationId + "/delete")
+                    a().withHref("/networks/" + networkId + "/stations/" + row.stationId + "/delete")
                         .withText("Delete")
                 )
             );
@@ -287,7 +287,7 @@ public class StationsView implements View {
     }
 
     private static Tag getLastStationsTableRow(
-        final String draftId,
+        final String networkId,
         final boolean showCustomStationForm,
         final boolean showPresetStationForm,
         final StationTableRow row
@@ -300,17 +300,17 @@ public class StationsView implements View {
                 td(getStationTableCell("longitude", row.longitude, row.showInputField, row.longitudeIsInvalid())),
                 td().withClass("no-wrap").with(
                     input().withType("submit").withClass("add-button").withValue("Add Station"),
-                    a().withHref("/drafts/" + draftId + "/stations").withText("Cancel")
+                    a().withHref("/networks/" + networkId + "/stations").withText("Cancel")
                 )
             );
         } else if (!showPresetStationForm) {
             return tr().withClass("add-button-row").with(
                 td().attr("colspan", "5").with(
                     a().withClass("add-button")
-                        .withHref("/drafts/" + draftId + "/stations/new-from-preset")
+                        .withHref("/networks/" + networkId + "/stations/new-from-preset")
                         .withText("+ Add Preset Stations"),
                     a().withClass("add-button")
-                        .withHref("/drafts/" + draftId + "/stations/new-custom")
+                        .withHref("/networks/" + networkId + "/stations/new-custom")
                         .withText("+ Add Custom Station")
                 )
             );
@@ -320,7 +320,7 @@ public class StationsView implements View {
     }
 
     private static Tag getPresetStationForm(
-        final String draftId,
+        final String networkId,
         final List<TrainStationDto> stations,
         final PresetStationFormModel presetStationFormModel
     ) {
@@ -347,7 +347,7 @@ public class StationsView implements View {
             ),
             // TODO: render presetStationErrors
             input().withType("submit").withClass("add-button").withValue("Add Stations"),
-            a().withHref("/drafts/" + draftId + "/stations").withText("Cancel")
+            a().withHref("/networks/" + networkId + "/stations").withText("Cancel")
         );
     }
 }

@@ -1,6 +1,6 @@
 package com.ralfhenze.railplan.userinterface.web;
 
-import com.ralfhenze.railplan.infrastructure.persistence.RailNetworkDraftMongoDbRepository;
+import com.ralfhenze.railplan.infrastructure.persistence.RailNetworkMongoDbRepository;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,7 +18,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-public class DraftsOverviewET {
+public class NetworksOverviewET {
 
     @LocalServerPort
     private int serverPort;
@@ -36,21 +36,21 @@ public class DraftsOverviewET {
         driver = new ChromeDriver(chromeOptions);
 
         baseUrl = "http://localhost:" + serverPort;
-        mongoTemplate.dropCollection(RailNetworkDraftMongoDbRepository.COLLECTION_NAME);
+        mongoTemplate.dropCollection(RailNetworkMongoDbRepository.COLLECTION_NAME);
     }
 
     @Test
-    public void userCanCreateNewDraft() {
-        // Given I am on the Drafts page
-        driver.get(baseUrl + "/drafts");
+    public void userCanCreateNewNetwork() {
+        // Given I am on the Networks page
+        driver.get(baseUrl + "/networks");
 
-        // When I click the Add-Draft button
-        driver.findElementById("add-draft-button").click();
+        // When I click the Add-Network button
+        driver.findElementById("add-network-button").click();
 
-        // Then I should see one Draft in the navigation
-        driver.get(baseUrl + "/drafts");
-        final var draftNavEntries = driver.findElementsByCssSelector("#draft-navigation li");
-        assertThat(draftNavEntries).hasSize(1);
+        // Then I should see one Network in the navigation
+        driver.get(baseUrl + "/networks");
+        final var networkNavEntries = driver.findElementsByCssSelector("#network-navigation li");
+        assertThat(networkNavEntries).hasSize(1);
     }
 
     @After

@@ -1,4 +1,4 @@
-package com.ralfhenze.railplan.userinterface.web.drafts.tracks;
+package com.ralfhenze.railplan.userinterface.web.networks.tracks;
 
 import java.util.List;
 

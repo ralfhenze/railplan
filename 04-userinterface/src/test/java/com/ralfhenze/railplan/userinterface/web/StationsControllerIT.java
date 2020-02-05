@@ -8,7 +8,7 @@ import com.ralfhenze.railplan.application.commands.UpdateTrainStationCommand;
 import com.ralfhenze.railplan.domain.common.validation.Field;
 import com.ralfhenze.railplan.domain.common.validation.ValidationError;
 import com.ralfhenze.railplan.domain.common.validation.ValidationException;
-import com.ralfhenze.railplan.domain.railnetwork.RailNetworkDraftRepository;
+import com.ralfhenze.railplan.domain.railnetwork.RailNetworkRepository;
 import com.ralfhenze.railplan.domain.railnetwork.presets.PresetStation;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
@@ -25,7 +25,7 @@ import java.util.Map;
 
 import static com.ralfhenze.railplan.domain.railnetwork.presets.PresetStation.BERLIN_HBF;
 import static com.ralfhenze.railplan.domain.railnetwork.presets.PresetStation.HAMBURG_HBF;
-import static com.ralfhenze.railplan.userinterface.web.TestData.BERLIN_HAMBURG_DRAFT;
+import static com.ralfhenze.railplan.userinterface.web.TestData.BERLIN_HAMBURG_NETWORK;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -41,18 +41,18 @@ public class StationsControllerIT extends HtmlITBase {
     private MongoTemplate mongoTemplate;
 
     @MockBean
-    private RailNetworkDraftRepository draftRepository;
+    private RailNetworkRepository networkRepository;
 
     @MockBean
     private TrainStationService trainStationService;
 
     @Test
-    public void userGetsAListOfAllStationsOfADraft() throws Exception {
-        // Given an existing Draft
-        given(draftRepository.getRailNetworkDraftOfId(any())).willReturn(BERLIN_HAMBURG_DRAFT);
+    public void userGetsAListOfAllStationsOfANetwork() throws Exception {
+        // Given an existing Network
+        given(networkRepository.getRailNetworkOfId(any())).willReturn(BERLIN_HAMBURG_NETWORK);
 
-        // When we call GET /drafts/123/stations
-        final var response = getGetResponse("/drafts/123/stations");
+        // When we call GET /networks/123/stations
+        final var response = getGetResponse("/networks/123/stations");
 
         // Then we get a table with all Stations
         final var document = Jsoup.parse(response.getContentAsString());
@@ -74,11 +74,11 @@ public class StationsControllerIT extends HtmlITBase {
 
     @Test
     public void userCanAccessAFormToAddNewStationsFromPresets() throws Exception {
-        // Given an existing Draft
-        given(draftRepository.getRailNetworkDraftOfId(any())).willReturn(BERLIN_HAMBURG_DRAFT);
+        // Given an existing Network
+        given(networkRepository.getRailNetworkOfId(any())).willReturn(BERLIN_HAMBURG_NETWORK);
 
-        // When we call GET /drafts/123/stations/new-from-preset
-        final var response = getGetResponse("/drafts/123/stations/new-from-preset");
+        // When we call GET /networks/123/stations/new-from-preset
+        final var response = getGetResponse("/networks/123/stations/new-from-preset");
 
         // Then we get a form with a multi-select-box of all preset Stations
         final var document = Jsoup.parse(response.getContentAsString());
@@ -89,9 +89,9 @@ public class StationsControllerIT extends HtmlITBase {
 
     @Test
     public void userCanAddNewStationsFromPresets() throws Exception {
-        // When we call POST /drafts/123/stations/new-from-preset with two valid preset Stations
+        // When we call POST /networks/123/stations/new-from-preset with two valid preset Stations
         final var response = getPostResponseWithMultiValueParameters(
-            "/drafts/123/stations/new-from-preset",
+            "/networks/123/stations/new-from-preset",
             Map.of(
                 "presetStationsToAdd", List.of(
                     PresetStation.FRANKFURT_HBF.getName(),
@@ -104,12 +104,12 @@ public class StationsControllerIT extends HtmlITBase {
         final var stations = List.of(PresetStation.FRANKFURT_HBF, PresetStation.STUTTGART_HBF);
         final var commandCaptor = ArgumentCaptor.forClass(AddTrainStationCommand.class);
 
-        verify(trainStationService, times(2)).addStationToDraft(commandCaptor.capture());
+        verify(trainStationService, times(2)).addStationToNetwork(commandCaptor.capture());
 
         for (final var i : List.of(0, 1)) {
             final var executedCommand = commandCaptor.getAllValues().get(i);
             final var station = stations.get(i);
-            assertThat(executedCommand.getDraftId()).isEqualTo("123");
+            assertThat(executedCommand.getNetworkId()).isEqualTo("123");
             assertThat(executedCommand.getStationName()).isEqualTo(station.getName());
             assertThat(executedCommand.getLatitude()).isEqualTo(station.getLatitude());
             assertThat(executedCommand.getLongitude()).isEqualTo(station.getLongitude());
@@ -117,7 +117,7 @@ public class StationsControllerIT extends HtmlITBase {
 
         // And we will be redirected to the Stations page
         assertThat(response.getStatus()).isEqualTo(HTTP_MOVED_TEMPORARILY);
-        assertThat(response.getRedirectedUrl()).isEqualTo("/drafts/123/stations");
+        assertThat(response.getRedirectedUrl()).isEqualTo("/networks/123/stations");
     }
 
     @Test
@@ -126,20 +126,20 @@ public class StationsControllerIT extends HtmlITBase {
            Was kann alles schief gehen?
 
             * Stations-ID ist nicht als Preset Station bekannt (z.B. XYZ)
-            * Station bereits in Draft vorhanden
+            * Station bereits in Network vorhanden
             * gar keine Stations-IDs mitgegeben
             * mitgegebene Stations-IDs enthalten Duplikate
             * keine Verbindung zur Datenbank (Netzwerkfehler)
          */
         final var nameErrors = List.of("name error 1", "name error 2");
-        //given(trainStationService.addStationToDraft(any())).willReturn(BERLIN_HAMBURG_DRAFT);
+        //given(trainStationService.addStationToNetwork(any())).willReturn(BERLIN_HAMBURG_NETWORK);
 
-        // Given an existing Draft
-        given(draftRepository.getRailNetworkDraftOfId(any())).willReturn(BERLIN_HAMBURG_DRAFT);
+        // Given an existing Network
+        given(networkRepository.getRailNetworkOfId(any())).willReturn(BERLIN_HAMBURG_NETWORK);
 
-        // When we call POST /drafts/123/stations/new-from-preset with an already existing Station
+        // When we call POST /networks/123/stations/new-from-preset with an already existing Station
         final var response = getPostResponseWithMultiValueParameters(
-            "/drafts/123/stations/new-from-preset",
+            "/networks/123/stations/new-from-preset",
             Map.of("presetStationsToAdd", List.of(PresetStation.BERLIN_HBF.getName()))
         );
 
@@ -151,11 +151,11 @@ public class StationsControllerIT extends HtmlITBase {
 
     @Test
     public void userCanAccessAFormToAddANewCustomStation() throws Exception {
-        // Given an existing Draft
-        given(draftRepository.getRailNetworkDraftOfId(any())).willReturn(BERLIN_HAMBURG_DRAFT);
+        // Given an existing Network
+        given(networkRepository.getRailNetworkOfId(any())).willReturn(BERLIN_HAMBURG_NETWORK);
 
-        // When we call GET /drafts/123/stations/new-custom
-        final var response = getGetResponse("/drafts/123/stations/new-custom");
+        // When we call GET /networks/123/stations/new-custom
+        final var response = getGetResponse("/networks/123/stations/new-custom");
 
         // Then we get a form with input fields for Station name and coordinates
         final var document = Jsoup.parse(response.getContentAsString());
@@ -167,9 +167,9 @@ public class StationsControllerIT extends HtmlITBase {
 
     @Test
     public void userCanAddANewCustomStation() throws Exception {
-        // When we call POST /drafts/123/stations/new-custom with valid Station parameters
+        // When we call POST /networks/123/stations/new-custom with valid Station parameters
         final var response = getPostResponse(
-            "/drafts/123/stations/new-custom",
+            "/networks/123/stations/new-custom",
             Map.of(
                 "stationName", BERLIN_HBF.getName(),
                 "latitude", String.valueOf(BERLIN_HBF.getLatitude()),
@@ -180,34 +180,34 @@ public class StationsControllerIT extends HtmlITBase {
         // Then an AddTrainStationCommand is issued with given Station parameters
         final var commandCaptor = ArgumentCaptor.forClass(AddTrainStationCommand.class);
 
-        verify(trainStationService).addStationToDraft(commandCaptor.capture());
+        verify(trainStationService).addStationToNetwork(commandCaptor.capture());
 
         final var executedCommand = commandCaptor.getValue();
-        assertThat(executedCommand.getDraftId()).isEqualTo("123");
+        assertThat(executedCommand.getNetworkId()).isEqualTo("123");
         assertThat(executedCommand.getStationName()).isEqualTo(BERLIN_HBF.getName());
         assertThat(executedCommand.getLatitude()).isEqualTo(BERLIN_HBF.getLatitude());
         assertThat(executedCommand.getLongitude()).isEqualTo(BERLIN_HBF.getLongitude());
 
         // And we will be redirected to the Stations page
         assertThat(response.getStatus()).isEqualTo(HTTP_MOVED_TEMPORARILY);
-        assertThat(response.getRedirectedUrl()).isEqualTo("/drafts/123/stations");
+        assertThat(response.getRedirectedUrl()).isEqualTo("/networks/123/stations");
     }
 
     @Test
     public void userSeesValidationErrorsWhenAddingAnInvalidCustomStation() throws Exception {
         verifyPostRequestWithInvalidStationData(
-            "/drafts/123/stations/new-custom",
+            "/networks/123/stations/new-custom",
             new AddTrainStationCommand("", "", 0, 0)
         );
     }
 
     @Test
     public void userCanAccessAFormToEditAnExistingStation() throws Exception {
-        // Given an existing Draft
-        given(draftRepository.getRailNetworkDraftOfId(any())).willReturn(BERLIN_HAMBURG_DRAFT);
+        // Given an existing Network
+        given(networkRepository.getRailNetworkOfId(any())).willReturn(BERLIN_HAMBURG_NETWORK);
 
-        // When we call GET /drafts/123/stations/1/edit
-        final var response = getGetResponse("/drafts/123/stations/1/edit");
+        // When we call GET /networks/123/stations/1/edit
+        final var response = getGetResponse("/networks/123/stations/1/edit");
 
         // Then we get a form with pre-filled input fields for Station name and coordinates
         final var document = Jsoup.parse(response.getContentAsString());
@@ -222,9 +222,9 @@ public class StationsControllerIT extends HtmlITBase {
 
     @Test
     public void userCanUpdateAnExistingStation() throws Exception {
-        // When we call POST /drafts/123/stations/1/edit with valid Station parameters
+        // When we call POST /networks/123/stations/1/edit with valid Station parameters
         final var response = getPostResponse(
-            "/drafts/123/stations/1/edit",
+            "/networks/123/stations/1/edit",
             Map.of(
                 "stationName", BERLIN_HBF.getName(),
                 "latitude", String.valueOf(BERLIN_HBF.getLatitude()),
@@ -234,10 +234,10 @@ public class StationsControllerIT extends HtmlITBase {
 
         // Then an UpdateTrainStationCommand is issued with given Station parameters
         final var commandCaptor = ArgumentCaptor.forClass(UpdateTrainStationCommand.class);
-        verify(trainStationService).updateStationOfDraft(commandCaptor.capture());
+        verify(trainStationService).updateStationOfNetwork(commandCaptor.capture());
 
         final var executedCommand = commandCaptor.getValue();
-        assertThat(executedCommand.getDraftId()).isEqualTo("123");
+        assertThat(executedCommand.getNetworkId()).isEqualTo("123");
         assertThat(executedCommand.getStationId()).isEqualTo(1);
         assertThat(executedCommand.getStationName()).isEqualTo(BERLIN_HBF.getName());
         assertThat(executedCommand.getLatitude()).isEqualTo(BERLIN_HBF.getLatitude());
@@ -245,41 +245,41 @@ public class StationsControllerIT extends HtmlITBase {
 
         // And we will be redirected to the Stations page
         assertThat(response.getStatus()).isEqualTo(HTTP_MOVED_TEMPORARILY);
-        assertThat(response.getRedirectedUrl()).isEqualTo("/drafts/123/stations");
+        assertThat(response.getRedirectedUrl()).isEqualTo("/networks/123/stations");
     }
 
     @Test
     public void userSeesValidationErrorsWhenUpdatingAStationWithInvalidData() throws Exception {
         verifyPostRequestWithInvalidStationData(
-            "/drafts/123/stations/1/edit",
+            "/networks/123/stations/1/edit",
             new UpdateTrainStationCommand("", 1, "", 0, 0)
         );
     }
 
     @Test
     public void userCanDeleteAnExistingStation() throws Exception {
-        // When we call GET /drafts/123/stations/1/delete
-        final var response = getGetResponse("/drafts/123/stations/1/delete");
+        // When we call GET /networks/123/stations/1/delete
+        final var response = getGetResponse("/networks/123/stations/1/delete");
 
         // Then a DeleteTrainStationCommand is issued
         final var commandCaptor = ArgumentCaptor.forClass(DeleteTrainStationCommand.class);
-        verify(trainStationService).deleteStationFromDraft(commandCaptor.capture());
+        verify(trainStationService).deleteStationFromNetwork(commandCaptor.capture());
 
         final var executedDeleteCommand = commandCaptor.getValue();
-        assertThat(executedDeleteCommand.getDraftId()).isEqualTo("123");
+        assertThat(executedDeleteCommand.getNetworkId()).isEqualTo("123");
         assertThat(executedDeleteCommand.getStationId()).isEqualTo(1);
 
         // And we will be redirected to the Stations page
         assertThat(response.getStatus()).isEqualTo(HTTP_MOVED_TEMPORARILY);
-        assertThat(response.getRedirectedUrl()).isEqualTo("/drafts/123/stations");
+        assertThat(response.getRedirectedUrl()).isEqualTo("/networks/123/stations");
     }
 
     private void verifyPostRequestWithInvalidStationData(
         final String url,
         final Command command
     ) throws Exception {
-        // Given an existing Draft
-        given(draftRepository.getRailNetworkDraftOfId(any())).willReturn(BERLIN_HAMBURG_DRAFT);
+        // Given an existing Network
+        given(networkRepository.getRailNetworkOfId(any())).willReturn(BERLIN_HAMBURG_NETWORK);
 
         // And the commands will throw a ValidationException
         final var nameError1 = "name error 1";
@@ -293,9 +293,9 @@ public class StationsControllerIT extends HtmlITBase {
             new ValidationError(lngError, Field.LONGITUDE)
         ));
         if (command instanceof AddTrainStationCommand) {
-            doThrow(validationException).when(trainStationService).addStationToDraft(any());
+            doThrow(validationException).when(trainStationService).addStationToNetwork(any());
         } else if (command instanceof UpdateTrainStationCommand) {
-            doThrow(validationException).when(trainStationService).updateStationOfDraft(any());
+            doThrow(validationException).when(trainStationService).updateStationOfNetwork(any());
         } else {
             throw new IllegalArgumentException("Unsupported command " + command.toString());
         }

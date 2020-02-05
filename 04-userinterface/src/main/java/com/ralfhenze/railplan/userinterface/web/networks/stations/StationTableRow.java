@@ -1,4 +1,4 @@
-package com.ralfhenze.railplan.userinterface.web.drafts.stations;
+package com.ralfhenze.railplan.userinterface.web.networks.stations;
 
 import java.util.List;
 

@@ -1,6 +1,6 @@
 package com.ralfhenze.railplan.userinterface.web;
 
-import com.ralfhenze.railplan.infrastructure.persistence.dto.RailNetworkDraftDto;
+import com.ralfhenze.railplan.infrastructure.persistence.dto.RailNetworkDto;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,28 +28,28 @@ public class RestApiIT {
     private MongoTemplate mongoTemplate;
 
     @Test
-    public void providesAllDrafts() throws Exception {
-        // Given an existing Draft
+    public void providesAllNetworks() throws Exception {
+        // Given an existing Network
         given(mongoTemplate.findAll(any(), any()))
-            .willReturn(List.of(getDraftDto()));
+            .willReturn(List.of(getNetworkDto()));
 
-        // When we call GET /api/drafts
+        // When we call GET /api/networks
         final var response = mockMvc
-            .perform(get("/api/drafts")).andReturn().getResponse();
+            .perform(get("/api/networks")).andReturn().getResponse();
 
-        // Then we get the Draft as JSON
+        // Then we get the Network as JSON
         assertThat(response.getStatus()).isEqualTo(200);
         assertThat(response.getContentAsString()).isEqualTo(
             "[{\"id\":\"123\",\"stations\":[],\"tracks\":[]}]"
         );
     }
 
-    private RailNetworkDraftDto getDraftDto() {
-        final var draftDto = new RailNetworkDraftDto();
-        draftDto.setId("123");
-        draftDto.setStations(List.of());
-        draftDto.setTracks(List.of());
+    private RailNetworkDto getNetworkDto() {
+        final var networkDto = new RailNetworkDto();
+        networkDto.setId("123");
+        networkDto.setStations(List.of());
+        networkDto.setTracks(List.of());
 
-        return draftDto;
+        return networkDto;
     }
 }

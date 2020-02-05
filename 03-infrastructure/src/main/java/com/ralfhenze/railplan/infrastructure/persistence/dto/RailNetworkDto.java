@@ -1,34 +1,34 @@
 package com.ralfhenze.railplan.infrastructure.persistence.dto;
 
-import com.ralfhenze.railplan.domain.railnetwork.RailNetworkDraft;
-import com.ralfhenze.railplan.domain.railnetwork.RailNetworkDraftId;
+import com.ralfhenze.railplan.domain.railnetwork.RailNetwork;
+import com.ralfhenze.railplan.domain.railnetwork.RailNetworkId;
 import org.springframework.data.annotation.Id;
 
 import java.util.List;
 
-public class RailNetworkDraftDto {
+public class RailNetworkDto {
 
     @Id
     private String id;
     private List<TrainStationDto> stations;
     private List<RailwayTrackDto> tracks;
 
-    public RailNetworkDraftDto() {}
+    public RailNetworkDto() {}
 
-    public RailNetworkDraftDto(final RailNetworkDraft draft) {
-        if (draft.getId().isPresent()) {
-            this.id = draft.getId().get().toString();
+    public RailNetworkDto(final RailNetwork network) {
+        if (network.getId().isPresent()) {
+            this.id = network.getId().get().toString();
         }
-        this.stations = draft.getStations().collect(TrainStationDto::new).castToList();
-        this.tracks = draft.getTracks().collect(RailwayTrackDto::new).castToList();
+        this.stations = network.getStations().collect(TrainStationDto::new).castToList();
+        this.tracks = network.getTracks().collect(RailwayTrackDto::new).castToList();
     }
 
-    public RailNetworkDraft toRailNetworkDraft() {
-        var draft = new RailNetworkDraft()
-            .withId(new RailNetworkDraftId(String.valueOf(id)));
+    public RailNetwork toRailNetwork() {
+        var network = new RailNetwork()
+            .withId(new RailNetworkId(String.valueOf(id)));
 
         for (final var station : stations) {
-            draft = draft.addStation(
+            network = network.addStation(
                 station.getId(),
                 station.getName(),
                 station.getLatitude(),
@@ -37,13 +37,13 @@ public class RailNetworkDraftDto {
         }
 
         for (final var track : tracks) {
-            draft = draft.addTrackBetween(
+            network = network.addTrackBetween(
                 track.getFirstStationId(),
                 track.getSecondStationId()
             );
         }
 
-        return draft;
+        return network;
     }
 
     public String getId() {

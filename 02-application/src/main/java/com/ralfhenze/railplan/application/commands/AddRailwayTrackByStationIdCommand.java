@@ -2,22 +2,22 @@ package com.ralfhenze.railplan.application.commands;
 
 public class AddRailwayTrackByStationIdCommand implements Command {
 
-    private final String draftId;
+    private final String networkId;
     private final int firstStationId;
     private final int secondStationId;
 
     public AddRailwayTrackByStationIdCommand(
-        final String draftId,
+        final String networkId,
         final int firstStationId,
         final int secondStationId
     ) {
-        this.draftId = draftId;
+        this.networkId = networkId;
         this.firstStationId = firstStationId;
         this.secondStationId = secondStationId;
     }
 
-    public String getDraftId() {
-        return draftId;
+    public String getNetworkId() {
+        return networkId;
     }
 
     public int getFirstStationId() {

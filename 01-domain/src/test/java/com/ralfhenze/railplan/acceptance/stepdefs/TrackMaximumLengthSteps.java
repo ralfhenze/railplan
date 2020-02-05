@@ -1,7 +1,7 @@
 package com.ralfhenze.railplan.acceptance.stepdefs;
 
 import com.ralfhenze.railplan.domain.common.validation.ValidationException;
-import com.ralfhenze.railplan.domain.railnetwork.RailNetworkDraft;
+import com.ralfhenze.railplan.domain.railnetwork.RailNetwork;
 import com.ralfhenze.railplan.domain.railnetwork.presets.PresetStation;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
@@ -12,16 +12,16 @@ import static org.assertj.core.api.Assertions.catchThrowable;
 
 public class TrackMaximumLengthSteps {
 
-    private RailNetworkDraft draft;
+    private RailNetwork network;
     private PresetStation station1;
     private PresetStation station2;
     private Throwable thrownException;
 
-    @Given("^a Rail Network Draft with two Stations \"(.*)\" and \"(.*)\" \\(distance: (.*)\\)$")
+    @Given("^a Rail Network with two Stations \"(.*)\" and \"(.*)\" \\(distance: (.*)\\)$")
     public void setupTwoStations(String stationName1, String stationName2, String distance) {
         station1 = PresetStation.ofName(stationName1);
         station2 = PresetStation.ofName(stationName2);
-        draft = new RailNetworkDraft()
+        network = new RailNetwork()
             .addStation(
                 station1.getName(),
                 station1.getLatitude(),
@@ -37,7 +37,7 @@ public class TrackMaximumLengthSteps {
     @When("^a Network Planner tries to connect those two stations with a new Railway Track$")
     public void addRailwayTrack() {
         thrownException = catchThrowable(() ->
-            draft = draft.addTrackBetween(station1, station2)
+            network = network.addTrackBetween(station1, station2)
         );
     }
 
@@ -45,7 +45,7 @@ public class TrackMaximumLengthSteps {
     public void assertAdded(String addedOrRejected) {
         if ("added".equals(addedOrRejected)) {
             assertThat(thrownException).doesNotThrowAnyException();
-            assertThat(draft.getTracks()).hasSize(1);
+            assertThat(network.getTracks()).hasSize(1);
         } else if ("rejected".equals(addedOrRejected)) {
             assertThat(thrownException).isInstanceOf(ValidationException.class);
         }

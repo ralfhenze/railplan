@@ -1,8 +1,8 @@
 package com.ralfhenze.railplan.userinterface.web;
 
-import com.ralfhenze.railplan.domain.railnetwork.RailNetworkDraft;
+import com.ralfhenze.railplan.domain.railnetwork.RailNetwork;
 import com.ralfhenze.railplan.infrastructure.persistence.MongoDbQueries;
-import com.ralfhenze.railplan.infrastructure.persistence.RailNetworkDraftMongoDbRepository;
+import com.ralfhenze.railplan.infrastructure.persistence.RailNetworkMongoDbRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,20 +22,20 @@ public class MongoDbQueriesIT {
 
     @Before
     public void clearRepository() {
-        mongoTemplate.dropCollection(RailNetworkDraftMongoDbRepository.COLLECTION_NAME);
+        mongoTemplate.dropCollection(RailNetworkMongoDbRepository.COLLECTION_NAME);
     }
 
     @Test
-    public void providesAllDraftIds() {
-        final var draftRepository = new RailNetworkDraftMongoDbRepository(mongoTemplate);
+    public void providesAllNetworkIds() {
+        final var networkRepository = new RailNetworkMongoDbRepository(mongoTemplate);
         final var queries = new MongoDbQueries(mongoTemplate);
-        final var draftId1 = draftRepository.persist(new RailNetworkDraft())
+        final var networkId1 = networkRepository.persist(new RailNetwork())
             .get().getId().get().toString();
-        final var draftId2 = draftRepository.persist(new RailNetworkDraft())
+        final var networkId2 = networkRepository.persist(new RailNetwork())
             .get().getId().get().toString();
 
-        final var draftIds = queries.getAllDraftIds();
+        final var networkIds = queries.getAllNetworkIds();
 
-        assertThat(draftIds).containsExactly(draftId1, draftId2);
+        assertThat(networkIds).containsExactly(networkId1, networkId2);
     }
 }

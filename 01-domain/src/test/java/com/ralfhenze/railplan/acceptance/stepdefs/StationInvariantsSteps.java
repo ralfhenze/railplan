@@ -1,7 +1,7 @@
 package com.ralfhenze.railplan.acceptance.stepdefs;
 
 import com.ralfhenze.railplan.domain.common.validation.ValidationException;
-import com.ralfhenze.railplan.domain.railnetwork.RailNetworkDraft;
+import com.ralfhenze.railplan.domain.railnetwork.RailNetwork;
 import com.ralfhenze.railplan.domain.railnetwork.presets.PresetStation;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
@@ -14,13 +14,13 @@ import static org.assertj.core.api.Assertions.catchThrowable;
 
 public class StationInvariantsSteps {
 
-    private RailNetworkDraft draft;
+    private RailNetwork network;
     private Throwable thrownException;
 
-    @Given("^a Rail Network Draft with a Station \"(.*)\"$")
-    public void setupRailNetworkDraft(final String stationName) {
+    @Given("^a Rail Network with a Station \"(.*)\"$")
+    public void setupRailNetwork(final String stationName) {
         final var station = PresetStation.ofName(stationName);
-        draft = new RailNetworkDraft().addStation(
+        network = new RailNetwork().addStation(
             station.getName(),
             station.getLatitude(),
             station.getLongitude()
@@ -36,7 +36,7 @@ public class StationInvariantsSteps {
     public void addNearStation(final String stationName, final String distance) {
         if ("Berlin Ostbahnhof".equals(stationName)) {
             thrownException = catchThrowable(() ->
-                draft = draft.addStation(stationName, BERLIN_OST_LAT, BERLIN_OST_LNG)
+                network = network.addStation(stationName, BERLIN_OST_LAT, BERLIN_OST_LNG)
             );
         } else {
             addStation(stationName);
@@ -46,7 +46,7 @@ public class StationInvariantsSteps {
     private void addStation(final String stationName) {
         final var stationToAdd = PresetStation.ofName(stationName);
         thrownException = catchThrowable(() ->
-            draft = draft.addStation(
+            network = network.addStation(
                 stationToAdd.getName(),
                 stationToAdd.getLatitude(),
                 stationToAdd.getLongitude()
@@ -58,7 +58,7 @@ public class StationInvariantsSteps {
     public void assertAdded(final String addedOrRejected) {
         if ("added".equals(addedOrRejected)) {
             assertThat(thrownException).doesNotThrowAnyException();
-            assertThat(draft.getStations()).hasSize(2);
+            assertThat(network.getStations()).hasSize(2);
         } else if ("rejected".equals(addedOrRejected)) {
             assertThat(thrownException).isInstanceOf(ValidationException.class);
         }

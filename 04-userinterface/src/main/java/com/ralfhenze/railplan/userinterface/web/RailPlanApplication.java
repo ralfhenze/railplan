@@ -1,12 +1,12 @@
 package com.ralfhenze.railplan.userinterface.web;
 
-import com.ralfhenze.railplan.application.RailNetworkDraftService;
+import com.ralfhenze.railplan.application.RailNetworkService;
 import com.ralfhenze.railplan.application.RailwayTrackService;
 import com.ralfhenze.railplan.application.TrainStationService;
 import com.ralfhenze.railplan.application.queries.Queries;
-import com.ralfhenze.railplan.domain.railnetwork.RailNetworkDraftRepository;
+import com.ralfhenze.railplan.domain.railnetwork.RailNetworkRepository;
 import com.ralfhenze.railplan.infrastructure.persistence.MongoDbQueries;
-import com.ralfhenze.railplan.infrastructure.persistence.RailNetworkDraftMongoDbRepository;
+import com.ralfhenze.railplan.infrastructure.persistence.RailNetworkMongoDbRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -20,7 +20,7 @@ public class RailPlanApplication {
     private MongoTemplate mongoTemplate;
 
     @Autowired
-    private RailNetworkDraftRepository railNetworkDraftRepository;
+    private RailNetworkRepository railNetworkRepository;
 
     public static void main(String[] args) {
         SpringApplication.run(RailPlanApplication.class, args);
@@ -32,22 +32,22 @@ public class RailPlanApplication {
     }
 
     @Bean
-    public RailNetworkDraftRepository getRailNetworkDraftRepository() {
-        return new RailNetworkDraftMongoDbRepository(mongoTemplate);
+    public RailNetworkRepository getRailNetworkRepository() {
+        return new RailNetworkMongoDbRepository(mongoTemplate);
     }
 
     @Bean
-    public RailNetworkDraftService getRailNetworkDraftService() {
-        return new RailNetworkDraftService(railNetworkDraftRepository);
+    public RailNetworkService getRailNetworkService() {
+        return new RailNetworkService(railNetworkRepository);
     }
 
     @Bean
     public RailwayTrackService getRailwayTrackService() {
-        return new RailwayTrackService(railNetworkDraftRepository);
+        return new RailwayTrackService(railNetworkRepository);
     }
 
     @Bean
     public TrainStationService getTrainStationService() {
-        return new TrainStationService(railNetworkDraftRepository);
+        return new TrainStationService(railNetworkRepository);
     }
 }

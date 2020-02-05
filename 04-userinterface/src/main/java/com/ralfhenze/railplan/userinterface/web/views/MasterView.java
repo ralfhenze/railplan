@@ -28,7 +28,7 @@ public class MasterView implements View {
 
     public enum SelectedNavEntry {
         START,
-        DRAFTS
+        NETWORKS
     }
 
     public MasterView(final SelectedNavEntry selectedNavEntry) {
@@ -62,12 +62,12 @@ public class MasterView implements View {
                         nav().withId("main-navigation").with(
                             ul(
                                 li(
-                                    a().withHref("/drafts")
+                                    a().withHref("/networks")
                                         .withCondClass(
-                                            selectedNavEntry.equals(SelectedNavEntry.DRAFTS),
+                                            selectedNavEntry.equals(SelectedNavEntry.NETWORKS),
                                             "selected"
                                         )
-                                        .withText("Drafts")
+                                        .withText("Networks")
                                 )
                             )
                         )
