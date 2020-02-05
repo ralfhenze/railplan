@@ -1,11 +1,3 @@
-```java
-/*****************************************************
- *                  DISCLAIMER                       *
- *  This software is still under heavy development!  *
- *  It's not ready for production use yet.           *
- *****************************************************/
-```
-
 # RailPlan
 
 RailPlan is a web application that let's you create simple Railway Networks within Germany. The Railway Network is
@@ -88,7 +80,7 @@ Why am I doing this:
     time and throw a ValidationException if any invariant is violated. This technique ensures that you won't ever get
     an instance of a domain object with invalid state.
 *   probably the most important domain object is the
-    [RailNetworkDraft](01-domain/src/main/java/com/ralfhenze/railplan/domain/railnetwork/lifecycle/draft/RailNetworkDraft.java)
+    [RailNetwork](01-domain/src/main/java/com/ralfhenze/railplan/domain/railnetwork/RailNetwork.java)
     aggregate
 
 ### User Interface
@@ -152,12 +144,8 @@ Why am I doing this:
 |---------------------------|--------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | **Train Station**         | _Station_          | Building where trains regularly stop to load or unload passengers, [more info](https://en.wikipedia.org/wiki/Train_station)                                                                                                 |
 | **Railway Track**         | _Track_            | Straight [double track railway](https://en.wikipedia.org/wiki/Double-track_railway) connection between two train stations, [more info](https://en.wikipedia.org/wiki/Track_%28rail_transport%29)                            |
-| **Rail Network**          |                    | Undirected graph with Train Stations as nodes and Railway Tracks as edges                                                                                                                                                   |
-| **Rail Network Draft**    | _Draft_            | Work-in-progress editable Rail Network                                                                                                                                                                                      |
-| **Released Rail Network** | _Network_          | Read-only Rail Network, released over a specific Validity Period                                                                                                                                                            |
-| **Validity Period**       | _Period_           | Date timeframe for which a Released Rail Network is valid                                                                                                                                                                   |
+| **Rail Network**          | _Network_          | Undirected graph with Train Stations as nodes and Railway Tracks as edges                                                                                                                                                   |
 | **Geo Location**          | _Location_         | [Geographic coordinates](https://en.wikipedia.org/wiki/Geographic_coordinate_system) within Germany, defined by [Latitude](https://en.wikipedia.org/wiki/Latitude) and [Longitude](https://en.wikipedia.org/wiki/Longitude) |
-| **Network Planner**       | _Planner_          | Person who plans and designs the Rail Network                                                                                                                                                                               |
 
 ### Simplifying Assumptions
 
@@ -182,24 +170,6 @@ Railway Track:
 *   a Track connects two different Stations
 *   two Stations can only be connected by a single Track
 *   the maximum length of a Track is 300 km
-
-Released Rail Network:
-
-*   the Rail Network contains at least two Stations and one Track
-*   the Rail Network is a single graph without unconnected Stations or sub-graphs
-*   the Validity Periods of Released Rail Networks are continuous without gaps and don't overlap
-*   Released Rail Networks can't be changed any more
-
-### Commands
-
-*   Add Rail Network Draft
-*   Delete Rail Network Draft
-*   Add Train Station
-*   Update Train Station
-*   Delete Train Station
-*   Add Railway Track
-*   Delete Railway Track
-*   Release Rail Network Draft
 
 ## Author
 
