@@ -2,14 +2,11 @@ package com.ralfhenze.railplan.userinterface.web;
 
 import com.ralfhenze.railplan.application.RailNetworkDraftService;
 import com.ralfhenze.railplan.application.RailwayTrackService;
-import com.ralfhenze.railplan.application.ReleasedRailNetworkService;
 import com.ralfhenze.railplan.application.TrainStationService;
 import com.ralfhenze.railplan.application.queries.Queries;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftRepository;
-import com.ralfhenze.railplan.domain.railnetwork.lifecycle.release.ReleasedRailNetworkRepository;
 import com.ralfhenze.railplan.infrastructure.persistence.MongoDbQueries;
 import com.ralfhenze.railplan.infrastructure.persistence.RailNetworkDraftMongoDbRepository;
-import com.ralfhenze.railplan.infrastructure.persistence.ReleasedRailNetworkMongoDbRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -24,9 +21,6 @@ public class RailPlanApplication {
 
     @Autowired
     private RailNetworkDraftRepository railNetworkDraftRepository;
-
-    @Autowired
-    private ReleasedRailNetworkRepository releasedRailNetworkRepository;
 
     public static void main(String[] args) {
         SpringApplication.run(RailPlanApplication.class, args);
@@ -43,11 +37,6 @@ public class RailPlanApplication {
     }
 
     @Bean
-    public ReleasedRailNetworkRepository getReleasedRailNetworkRepository() {
-        return new ReleasedRailNetworkMongoDbRepository(mongoTemplate);
-    }
-
-    @Bean
     public RailNetworkDraftService getRailNetworkDraftService() {
         return new RailNetworkDraftService(railNetworkDraftRepository);
     }
@@ -60,13 +49,5 @@ public class RailPlanApplication {
     @Bean
     public TrainStationService getTrainStationService() {
         return new TrainStationService(railNetworkDraftRepository);
-    }
-
-    @Bean
-    public ReleasedRailNetworkService getReleasedRailNetworkService() {
-        return new ReleasedRailNetworkService(
-            railNetworkDraftRepository,
-            releasedRailNetworkRepository
-        );
     }
 }

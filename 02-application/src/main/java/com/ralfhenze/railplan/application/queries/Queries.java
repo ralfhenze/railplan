@@ -4,5 +4,4 @@ import java.util.List;
 
 public interface Queries {
     List<String> getAllDraftIds();
-    List<String> getAllNetworkIds();
 }

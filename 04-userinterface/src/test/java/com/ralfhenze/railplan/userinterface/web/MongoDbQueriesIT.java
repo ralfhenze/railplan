@@ -1,12 +1,8 @@
 package com.ralfhenze.railplan.userinterface.web;
 
-import com.ralfhenze.railplan.domain.railnetwork.elements.RailwayTrack;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraft;
-import com.ralfhenze.railplan.domain.railnetwork.lifecycle.release.ReleasedRailNetwork;
 import com.ralfhenze.railplan.infrastructure.persistence.MongoDbQueries;
 import com.ralfhenze.railplan.infrastructure.persistence.RailNetworkDraftMongoDbRepository;
-import com.ralfhenze.railplan.infrastructure.persistence.ReleasedRailNetworkMongoDbRepository;
-import org.eclipse.collections.api.factory.Lists;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,9 +11,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import static com.ralfhenze.railplan.userinterface.web.TestData.BERLIN_HBF_STATION;
-import static com.ralfhenze.railplan.userinterface.web.TestData.DEFAULT_PERIOD;
-import static com.ralfhenze.railplan.userinterface.web.TestData.HAMBURG_HBF_STATION;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)
@@ -30,7 +23,6 @@ public class MongoDbQueriesIT {
     @Before
     public void clearRepository() {
         mongoTemplate.dropCollection(RailNetworkDraftMongoDbRepository.COLLECTION_NAME);
-        mongoTemplate.dropCollection(ReleasedRailNetworkMongoDbRepository.COLLECTION_NAME);
     }
 
     @Test
@@ -45,24 +37,5 @@ public class MongoDbQueriesIT {
         final var draftIds = queries.getAllDraftIds();
 
         assertThat(draftIds).containsExactly(draftId1, draftId2);
-    }
-
-    @Test
-    public void providesAllNetworkIds() {
-        final var networkRepository = new ReleasedRailNetworkMongoDbRepository(mongoTemplate);
-        final var queries = new MongoDbQueries(mongoTemplate);
-        final var network = new ReleasedRailNetwork(
-            DEFAULT_PERIOD,
-            Lists.immutable.of(BERLIN_HBF_STATION, HAMBURG_HBF_STATION),
-            Lists.immutable.of(new RailwayTrack(BERLIN_HBF_STATION.getId(), HAMBURG_HBF_STATION.getId()))
-        );
-        final var networkId1 = networkRepository
-            .add(network).getId().get().toString();
-        final var networkId2 = networkRepository
-            .add(network).getId().get().toString();
-
-        final var networkIds = queries.getAllNetworkIds();
-
-        assertThat(networkIds).containsExactly(networkId1, networkId2);
     }
 }

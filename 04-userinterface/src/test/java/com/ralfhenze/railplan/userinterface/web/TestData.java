@@ -6,9 +6,6 @@ import com.ralfhenze.railplan.domain.railnetwork.elements.TrainStationId;
 import com.ralfhenze.railplan.domain.railnetwork.elements.TrainStationName;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraft;
 import com.ralfhenze.railplan.domain.railnetwork.lifecycle.draft.RailNetworkDraftId;
-import com.ralfhenze.railplan.domain.railnetwork.lifecycle.release.ValidityPeriod;
-
-import java.time.LocalDate;
 
 import static com.ralfhenze.railplan.domain.railnetwork.presets.PresetStation.BERLIN_HBF;
 import static com.ralfhenze.railplan.domain.railnetwork.presets.PresetStation.HAMBURG_HBF;
@@ -25,11 +22,6 @@ public class TestData {
         new TrainStationId(2),
         new TrainStationName(HAMBURG_HBF.getName()),
         new GeoLocationInGermany(HAMBURG_HBF.getLatitude(), HAMBURG_HBF.getLongitude())
-    );
-
-    public static final ValidityPeriod DEFAULT_PERIOD = new ValidityPeriod(
-        LocalDate.of(2019, 11, 14),
-        LocalDate.of(2019, 11, 20)
     );
 
     public static final RailNetworkDraft BERLIN_HAMBURG_DRAFT = new RailNetworkDraft()
