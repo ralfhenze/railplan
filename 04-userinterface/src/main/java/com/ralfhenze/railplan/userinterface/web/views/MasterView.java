@@ -27,7 +27,8 @@ public class MasterView implements View {
     private Tag[] contentTags;
 
     public enum SelectedNavEntry {
-        START, DRAFTS, NETWORKS
+        START,
+        DRAFTS
     }
 
     public MasterView(final SelectedNavEntry selectedNavEntry) {
@@ -67,14 +68,6 @@ public class MasterView implements View {
                                             "selected"
                                         )
                                         .withText("Drafts")
-                                ),
-                                li(
-                                    a().withHref("/networks")
-                                        .withCondClass(
-                                            selectedNavEntry.equals(SelectedNavEntry.NETWORKS),
-                                            "selected"
-                                        )
-                                        .withText("Networks")
                                 )
                             )
                         )
