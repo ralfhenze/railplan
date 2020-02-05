@@ -145,6 +145,40 @@ nav ul {
     box-sizing: border-box;
 }
 
+#network-elements-box {
+    min-height: 752px;
+    padding-top: 100px;
+}
+
+#network-elements-box nav {
+    margin-bottom: 40px;
+    background-color: #eeeeee;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+}
+
+#network-elements-box nav li {
+    display: block;
+    float: left;
+}
+
+#network-elements-box nav li a {
+    display: block;
+    padding: 20px 40px;
+    text-decoration: none;
+    color: #444444;
+    background-color: #e0e0e0;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 20px;
+}
+
+#network-elements-box nav li .selected {
+    background-color: #ffffff;
+    color: #000000;
+}
+
 table {
     border-collapse: collapse;
     width: 100%;
